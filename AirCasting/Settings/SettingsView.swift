@@ -153,8 +153,16 @@ struct SettingsView: View {
                 Spacer()
                 temperatureDescription
             }
-            if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
-                clearSDCard
+            Group {
+                if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
+                    clearSDCard
+                }
+                if featureFlagsViewModel.enabledFeatures.contains(.microphoneCalibrationWizard) {
+                    autoCalibrateMicrophone
+                }
+                if featureFlagsViewModel.enabledFeatures.contains(.microphoneCalibrationWizard) {
+                    calibrateMicrophone
+                }
             }
             navigateToBackendSettingsButton
         }
@@ -269,7 +277,7 @@ struct SettingsView: View {
                         .font(Fonts.muliBoldHeading1)
                         .accentColor(.primary)
                     Spacer()
-                    Image(systemName: "control")
+                    Image(systemName: "chevron.right")
                         .accentColor(.gray).opacity(0.6)
                 }
             }
@@ -294,6 +302,39 @@ struct SettingsView: View {
              }
          }
      }
+    
+    private var calibrateMicrophone: some View {
+        Button(action: {
+            viewModel.manualMicrophoneCalibrationTapped()
+        }) {
+            VStack(alignment: .leading) {
+                buttonCell(title: Strings.MicrophoneCalibration.settingsItemTitle)
+                Spacer()
+                Text(Strings.MicrophoneCalibration.settingsItemDescription)
+                    .font(Fonts.muliRegularHeading3)
+                    .foregroundColor(.aircastingGray)
+                    .multilineTextAlignment(.leading)
+            }
+        }
+        .sheet(isPresented: $viewModel.showMicrophoneManualCalibation, content: {
+            MicrophoneManualCalibrationView { viewModel.showMicrophoneManualCalibation = false }
+        })
+    }
+    
+    private var autoCalibrateMicrophone: some View {
+        VStack(alignment: .leading) {
+            NavigationLink(Strings.MicrophoneCalibration.Wizard.settingsItemTitle) {
+                MicrophoneAutoCalibrationView(onFinish: { } )
+            }
+            .font(Fonts.muliBoldHeading1)
+            .accentColor(.primary)
+            Spacer()
+            Text(Strings.MicrophoneCalibration.Wizard.settingsItemDescription)
+                .font(Fonts.muliRegularHeading3)
+                .foregroundColor(.aircastingGray)
+                .multilineTextAlignment(.leading)
+        }
+    }
 
     #if DEBUG || BETA
     private var navigateToAppConfigurationButton: some View {
@@ -326,6 +367,19 @@ struct SettingsView: View {
 }
 
 extension SettingsView {
+    func buttonCell(title: String) -> some View {
+        Group {
+            HStack {
+                Text(title)
+                    .font(Fonts.muliBoldHeading1)
+                    .accentColor(.primary)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .accentColor(.gray).opacity(0.6)
+            }
+        }
+    }
+    
     func settingSwitch(toogle using: Binding<Bool>, label with: String) -> some View {
         Toggle(isOn: using, label: {
             Text(with)

@@ -20,7 +20,9 @@ struct SingleMeasurementView: View {
     @Binding var isCollapsed: Bool
     @InjectedObject private var userSettings: UserSettings
     let measurementPresentationStyle: MeasurementPresentationStyle
+    var buttonDisabled: Bool = false
     let isDormant: Bool
+    
     var value: Double? {
         guard let measurementValue = isDormant ? stream.averageValue : stream.latestValue else {
             return nil
@@ -71,6 +73,7 @@ struct SingleMeasurementView: View {
                     }
                 }
             })
+            .disabled(buttonDisabled)
         }
     }
     

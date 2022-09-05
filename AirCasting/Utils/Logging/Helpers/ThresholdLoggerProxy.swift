@@ -10,7 +10,7 @@ class ThresholdLoggerProxy: Logger {
         self.logger = logger
     }
     
-    func log(_ message: @escaping @autoclosure () -> String, type: LogLevel, file: String = #file, function: String = #function, line: Int = #line) {
+    func log(_ message: @escaping @autoclosure () -> String, type: LogLevel, file: String = #fileID, function: String = #function, line: Int = #line) {
         guard thresholdLevel.rawValue <= type.rawValue else {
             return
         }

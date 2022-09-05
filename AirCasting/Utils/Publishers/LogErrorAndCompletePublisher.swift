@@ -10,7 +10,7 @@ extension Publisher {
     ///   - logFunc: Optional custom logging function.
     /// - Returns: A publisher that matches the upstream `Output` and has a `Failure` set to `Never`.
     func logErrorAndComplete(message: String = "",
-                             file: String = #file,
+                             file: String = #fileID,
                              function: String = #function,
                              line: Int = #line,
                              logFunc: @escaping Publishers.Logging.LogFunc = { Log.error($0, file: $1, function: $2, line: $3) }) -> Publishers.LogErrorAndComplete<Self> {

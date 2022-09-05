@@ -21,13 +21,18 @@ struct ReorderingDashboard: View {
             LazyVGrid(columns: columns) {
                 ForEach(viewModel.sessions, id: \.uuid) { session in
                     ReoredringSessionCard(session: session, thresholds: viewModel.thresholds)
-                        .overlay(viewModel.currentlyDraggedSession?.uuid == session.uuid && changedView ? Color.white.opacity(0.8) : Color.clear)
+                        .overlay(viewModel.currentlyDraggedSession?.uuid == session.uuid && changedView ? Color.aircastingWhite.opacity(0.8) : Color.clear)
                         .onDrag({
                             viewModel.currentlyDraggedSession = session
                             changedView = false
                             return NSItemProvider(object: String(describing: session.uuid) as NSString)
                         })
                         .onDrop(of: [.text], delegate: DropViewDelegate(sessionAtDropDestination: session, currentlyDraggedSession: $viewModel.currentlyDraggedSession, sessions: $viewModel.sessions, changedView: $changedView))
+                        .trailingSwipeAction {
+                            withAnimation(.easeOut(duration: 0.5)) {
+                                viewModel.clear(session: session)
+                            }
+                        }
                 }
             }
             .padding()
@@ -45,3 +50,12 @@ struct ReorderingDashboard: View {
         }
     }
 }
+
+#if DEBUG
+struct ReorderingDashboard_Previews: PreviewProvider {
+    static var previews: some View {
+        ReorderingDashboard(sessions: [SessionEntity.mock(uuid: "mock1"), SessionEntity.mock(uuid: "mock2"), SessionEntity.mock(uuid: "mock3")], thresholds: [.mock, .mock])
+            .environmentObject(SearchAndFollowButton())
+    }
+}
+#endif

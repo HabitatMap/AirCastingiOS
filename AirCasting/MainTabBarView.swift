@@ -27,7 +27,7 @@ struct MainTabBarView: View {
     @StateObject var viewModel = MainTabBarViewModel()
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     @Environment(\.colorScheme) var colorScheme
-    
+
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             TabView(selection: $tabSelection.selection) {
@@ -43,7 +43,7 @@ struct MainTabBarView: View {
                     .fill(Color.clear)
                     .frame(width: UIScreen.main.bounds.width / 3, height: 60)
             }
-            
+
         }
         .onAppCameToForeground {
             measurementUpdatingService.updateAllSessionsMeasurements()
@@ -60,7 +60,7 @@ struct MainTabBarView: View {
             tabSelection.selection == .dashboard ? (homeImage = HomeIcon.selected.string) : (homeImage = HomeIcon.unselected.string)
             tabSelection.selection == .settings ? (settingsImage = SettingsIcon.selected.string) : (settingsImage = SettingsIcon.unselected.string)
             tabSelection.selection == .createSession ? (plusImage = PlusIcon.selected.string) : (plusImage = PlusIcon.unselected.string)
-            
+
         })
         .onChange(of: bluetoothManager.mobileSessionReconnected, perform: { _ in
             if bluetoothManager.mobileSessionReconnected {
@@ -94,7 +94,7 @@ private extension MainTabBarView {
                         if !searchAndFollow.isHidden && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) && selectedSection.section == .following {
                             searchAndFollowButton
                         }
-                        if !reorderButton.isHidden && reorderButton.sessionsCountThresholdExceeded && selectedSection.section == .following {
+                        if reorderButton.reorderIsOn || (!reorderButton.isHidden && reorderButton.sessionsCountThresholdExceeded && selectedSection.section == .following) {
                             reorderingButton
                         }
                     }
@@ -102,7 +102,7 @@ private extension MainTabBarView {
                 alignment: .topTrailing
             )
     }
-    
+
     private var createSessionTab: some View {
         ChooseSessionTypeView(sessionContext: sessionContext)
             .tabItem {
@@ -110,7 +110,7 @@ private extension MainTabBarView {
             }
             .tag(TabBarSelection.Tab.createSession)
     }
-    
+
     private var settingsTab: some View {
         SettingsView(sessionContext: sessionContext)
             .tabItem {
@@ -118,7 +118,7 @@ private extension MainTabBarView {
             }
             .tag(TabBarSelection.Tab.settings)
     }
-    
+
     private var reorderingButton: some View {
         Group {
             if !reorderButton.reorderIsOn {
@@ -151,7 +151,7 @@ private extension MainTabBarView {
             }
         }
     }
-    
+
     private var searchAndFollowButton: some View {
         Group {
             Button {
@@ -165,7 +165,7 @@ private extension MainTabBarView {
             .offset(CGSize(width: 0.0, height: 40.0))
         }
     }
-    
+
     private func createTabBarImage(_ imageName: String) -> some View {
         Group {
             if colorScheme == .light {
@@ -181,10 +181,10 @@ private extension MainTabBarView {
 
 class MainTabBarViewModel: ObservableObject {
     @Injected private var persistenceController: PersistenceController
-    
+
     func chooseDashboardSection(completion: @escaping (DashboardSection) -> Void) {
         let context = persistenceController.viewContext
-        
+
         context.perform {
             do {
                 let request = NSFetchRequest<SessionEntity>(entityName: "SessionEntity")
@@ -206,7 +206,7 @@ class MainTabBarViewModel: ObservableObject {
 
 class TabBarSelection: ObservableObject {
     @Published var selection = Tab.dashboard
-    
+
     enum Tab {
         case dashboard
         case createSession
@@ -223,7 +223,7 @@ enum DashboardSection: String, CaseIterable {
     case mobileActive = "Mobile active"
     case mobileDormant = "Mobile dormant"
     case fixed = "Fixed"
-    
+
     var localizedString: String {
         NSLocalizedString(rawValue, comment: "")
     }
@@ -246,7 +246,7 @@ class ReorderButton: ObservableObject {
     @Published var isHidden = false
     // We only want to show the button for more than one session
     @Published var sessionsCountThresholdExceeded = false
-    
+
     func setHidden(if isActive: Bool) {
         if isActive {
             isHidden = true
@@ -261,7 +261,7 @@ class ReorderButton: ObservableObject {
 class SearchAndFollowButton: ObservableObject {
      @Published var searchIsOn = false
      @Published var isHidden = false
-    
+
     func setHidden(if isActive: Bool) {
         if isActive {
             isHidden = true
@@ -277,7 +277,7 @@ extension MainTabBarView {
     enum HomeIcon {
         case selected
         case unselected
-        
+
         var string: String {
             switch self {
             case .selected: return Strings.MainTabBarView.homeBlueIcon
@@ -285,11 +285,11 @@ extension MainTabBarView {
             }
         }
     }
-    
+
     enum PlusIcon {
         case selected
         case unselected
-        
+
         var string: String {
             switch self {
             case .selected: return Strings.MainTabBarView.plusBlueIcon
@@ -297,11 +297,11 @@ extension MainTabBarView {
             }
         }
     }
-    
+
     enum SettingsIcon {
         case selected
         case unselected
-        
+
         var string: String {
             switch self {
             case .selected: return Strings.MainTabBarView.settingsBlueIcon
