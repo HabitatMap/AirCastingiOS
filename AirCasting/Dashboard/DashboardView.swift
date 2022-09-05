@@ -70,18 +70,6 @@ struct DashboardView: View {
             }
             sessionSynchronizer.triggerSynchronization() { isRefreshing = false }
         })
-        .onAppear() {
-            Log.info("APPEARED")
-        }
-        .onDisappear() {
-            Log.info("DISAPPEARED")
-        }
-//        .onAppear() {
-//            try! coreDataHook.setup(selectedSection: self.selectedSection.section)
-//        }
-//        .onChange(of: selectedSection.section) { newValue in
-//            try! coreDataHook.setup(selectedSection: newValue)
-//        }
     }
     
     private var customNavigationBar: some View {

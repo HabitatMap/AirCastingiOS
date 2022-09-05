@@ -81,6 +81,7 @@ class ReorderingDashboardViewModel: ObservableObject {
                 completion(allSessions)
             } catch {
                 Log.error("Failed to fetched sessions for reordering")
+                completion([])
             }
         }
     }
