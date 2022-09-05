@@ -24,13 +24,13 @@ struct MainTabBarView: View {
     @StateObject var finishAndSyncButtonTapped = FinishAndSyncButtonTapped()
     @StateObject var exploreSessionsButton = ExploreSessionsButton()
     @StateObject var sessionContext: CreateSessionContext
-    @StateObject var coreDataHook: CoreDataHook
+//    @StateObject var coreDataHook: CoreDataHook
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     @Environment(\.colorScheme) var colorScheme
     
-    private var sessions: [Sessionable] {
-        coreDataHook.sessions
-    }
+//    private var sessions: [Sessionable] {
+//        coreDataHook.sessions
+//    }
     
     var body: some View {
         ZStack(alignment: .bottomLeading) {
@@ -40,14 +40,16 @@ struct MainTabBarView: View {
                 settingsTab
             }
             Button {
+                //TODO: Add logic for going to either following or active when home button is pressed
                 tabSelection.selection = .dashboard
-                try! coreDataHook.setup(selectedSection: .mobileActive)
-                if sessions.contains(where: { $0.isActive }) {
-                    selectedSection.section = .mobileActive
-                } else {
-                    selectedSection.section = .following
-                }
-                try! coreDataHook.setup(selectedSection: selectedSection.section)
+                selectedSection.section = .following
+//                try! coreDataHook.setup(selectedSection: .mobileActive)
+//                if sessions.contains(where: { $0.isActive }) {
+//                    selectedSection.section = .mobileActive
+//                } else {
+//                    selectedSection.section = .following
+//                }
+//                try! coreDataHook.setup(selectedSection: selectedSection.section)
             } label: {
                 Rectangle()
                     .fill(Color.clear)
@@ -92,7 +94,7 @@ private extension MainTabBarView {
     // Tab Bar views
     private var dashboardTab: some View {
         NavigationView {
-            DashboardView(coreDataHook: coreDataHook)
+            DashboardView()
         }.navigationViewStyle(StackNavigationViewStyle())
             .tabItem {
                 createTabBarImage(homeImage)
@@ -104,7 +106,7 @@ private extension MainTabBarView {
                         if !searchAndFollow.isHidden && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) && selectedSection.section == .following {
                             searchAndFollowButton
                         }
-                        if !reorderButton.isHidden && sessions.count > 1 && selectedSection.section == .following {
+                        if !reorderButton.isHidden && reorderButton.sessionsCountThresholdExceeded && selectedSection.section == .following {
                             reorderingButton
                         }
                     }
@@ -229,6 +231,8 @@ class FinishAndSyncButtonTapped: ObservableObject {
 class ReorderButton: ObservableObject {
     @Published var reorderIsOn = false
     @Published var isHidden = false
+    // We only want to show the button for more than one session
+    @Published var sessionsCountThresholdExceeded = false
     
     func setHidden(if isActive: Bool) {
         if isActive {

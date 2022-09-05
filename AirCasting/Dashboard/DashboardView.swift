@@ -12,7 +12,7 @@ import Combine
 import Resolver
 
 struct DashboardView: View {
-    @StateObject var coreDataHook: CoreDataHook
+//    @StateObject var coreDataHook: CoreDataHook
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     @EnvironmentObject var selectedSection: SelectedSection
     @EnvironmentObject var reorderButton: ReorderButton
@@ -24,14 +24,14 @@ struct DashboardView: View {
     @Injected private var sessionSynchronizer: SessionSynchronizer
     @Injected private var persistenceController: PersistenceController
 
-    private var sessions: [Sessionable] {
-        coreDataHook.sessions
-    }
+//    private var sessions: [Sessionable] {
+//        coreDataHook.sessions
+//    }
 
-    init(coreDataHook: CoreDataHook) {
+    init() {
         let navBarAppearance = UINavigationBar.appearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
-        _coreDataHook = StateObject(wrappedValue: coreDataHook)
+//        _coreDataHook = StateObject(wrappedValue: coreDataHook)
     }
 
     var body: some View {
@@ -40,8 +40,7 @@ struct DashboardView: View {
                 .alert(item: $alert, content: { $0.makeAlert() })
             if reorderButton.reorderIsOn {
                 followingReorderTab
-                ReorderingDashboard(sessions: sessions,
-                                    thresholds: Array(self.thresholds))
+                ReorderingDashboard(thresholds: Array(self.thresholds), context: persistenceController.viewContext)
             } else {
                 sessionTypePicker
                 TabView(selection: $selectedSection.section) {
@@ -78,11 +77,17 @@ struct DashboardView: View {
             sessionSynchronizer.triggerSynchronization() { isRefreshing = false }
         })
         .onAppear() {
-            try! coreDataHook.setup(selectedSection: self.selectedSection.section)
+            Log.info("APPEARED")
         }
-        .onChange(of: selectedSection.section) { newValue in
-            try! coreDataHook.setup(selectedSection: newValue)
+        .onDisappear() {
+            Log.info("DISAPPEARED")
         }
+//        .onAppear() {
+//            try! coreDataHook.setup(selectedSection: self.selectedSection.section)
+//        }
+//        .onChange(of: selectedSection.section) { newValue in
+//            try! coreDataHook.setup(selectedSection: newValue)
+//        }
     }
     
     private var customNavigationBar: some View {

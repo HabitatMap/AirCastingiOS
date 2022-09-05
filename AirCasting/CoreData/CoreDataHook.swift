@@ -6,6 +6,7 @@ import CoreData
 
 final class CoreDataHook: NSObject, ObservableObject {
     @Published private(set) var sessions: [Sessionable] = []
+    @Published private(set) var sessionsCount = 0
     private var selectedSection: DashboardSection?
     private var observerToken: AnyObject?
 
@@ -80,7 +81,7 @@ final class CoreDataHook: NSObject, ObservableObject {
         refreshSessions()
     }
 
-    func refreshSessions() {
+    private func refreshSessions() {
         let sessionEntities = fetchedResultsController.fetchedObjects ?? []
         let externalSessionEntities = externalSessionsFetchedResultsController.fetchedObjects ?? []
         sessions = sessionEntities + externalSessionEntities
@@ -88,6 +89,7 @@ final class CoreDataHook: NSObject, ObservableObject {
         sessions = sessions.sorted {
             ($0.userInterface?.rowOrder ?? 0) > ($1.userInterface?.rowOrder ?? 0)
         }
+        sessionsCount = sessions.count
     }
 }
 

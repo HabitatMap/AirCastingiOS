@@ -15,6 +15,7 @@ struct SessionsListView: View {
     @StateObject private var coreDataHook: CoreDataHook
     @Binding var isRefreshing: Bool
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
+    @EnvironmentObject var reorderButton: ReorderButton
     
     private let listCoordinateSpaceName = "listCoordinateSpace"
     private let selectedSection: DashboardSection
@@ -33,7 +34,10 @@ struct SessionsListView: View {
                 sessionListView
             }
         }
-        .onAppear { try! coreDataHook.setup(selectedSection: selectedSection) }
+        .onAppear {
+            try! coreDataHook.setup(selectedSection: selectedSection)
+        }
+        .onChange(of: coreDataHook.sessionsCount, perform: { reorderButton.sessionsCountThresholdExceeded = $0 > 1 })
     }
     
     private var sessionListView: some View {

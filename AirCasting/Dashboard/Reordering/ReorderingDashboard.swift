@@ -2,6 +2,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct ReorderingDashboard: View {
     
@@ -9,27 +10,29 @@ struct ReorderingDashboard: View {
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     @State private var changedView: Bool = false
     
-    init(sessions: [Sessionable], thresholds: [SensorThreshold]) {
-        _viewModel = .init(wrappedValue: ReorderingDashboardViewModel(sessions: sessions, thresholds: thresholds))
+    init(thresholds: [SensorThreshold], context: NSManagedObjectContext) {
+        _viewModel = .init(wrappedValue: ReorderingDashboardViewModel(thresholds: thresholds, context: context))
     }
     
     private let columns = [GridItem(.flexible())]
     
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: columns) {
-                ForEach(viewModel.sessions, id: \.uuid) { session in
-                    ReoredringSessionCard(session: session, thresholds: viewModel.thresholds)
-                        .overlay(viewModel.currentlyDraggedSession?.uuid == session.uuid && changedView ? Color.white.opacity(0.8) : Color.clear)
-                        .onDrag({
-                            viewModel.currentlyDraggedSession = session
-                            changedView = false
-                            return NSItemProvider(object: String(describing: session.uuid) as NSString)
-                        })
-                        .onDrop(of: [.text], delegate: DropViewDelegate(sessionAtDropDestination: session, currentlyDraggedSession: $viewModel.currentlyDraggedSession, sessions: $viewModel.sessions, changedView: $changedView))
+            LoadingView(isShowing: $viewModel.isLoading) {
+                LazyVGrid(columns: columns) {
+                    ForEach(viewModel.sessions, id: \.uuid) { session in
+                        ReoredringSessionCard(session: session, thresholds: viewModel.thresholds)
+                            .overlay(viewModel.currentlyDraggedSession?.uuid == session.uuid && changedView ? Color.white.opacity(0.8) : Color.clear)
+                            .onDrag({
+                                viewModel.currentlyDraggedSession = session
+                                changedView = false
+                                return NSItemProvider(object: String(describing: session.uuid) as NSString)
+                            })
+                            .onDrop(of: [.text], delegate: DropViewDelegate(sessionAtDropDestination: session, currentlyDraggedSession: $viewModel.currentlyDraggedSession, sessions: $viewModel.sessions, changedView: $changedView))
+                    }
                 }
+                .padding()
             }
-            .padding()
         }
         .onAppear(perform: {
             searchAndFollowButton.isHidden = true

@@ -54,8 +54,7 @@ struct MainAppView: View {
     var body: some View {
         let shouldPresentLoading = Binding<Bool>(get: { user.currentState == .deletingAccount } , set: { _ in assertionFailure("Unexpected binding setting") })
         LoadingView(isShowing: shouldPresentLoading, activityIndicatorText: Strings.MainTabBarView.deletingAccount) {
-            MainTabBarView(sessionContext: CreateSessionContext(),
-                           coreDataHook: CoreDataHook(context: persistenceController.viewContext))
+            MainTabBarView(sessionContext: CreateSessionContext())
         }
     }
 }
