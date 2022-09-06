@@ -73,3 +73,9 @@ extension Date {
         return Double(self.millisecondsSinceReferenceDate - twentyFourHours)/1000
     }
 }
+
+extension Date {
+    func adding(seconds: Int) -> Date {
+        return Calendar.current.date(byAdding: .second, value: seconds, to: self)!
+    }
+}

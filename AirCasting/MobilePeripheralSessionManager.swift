@@ -6,12 +6,6 @@ import CoreBluetooth
 import CoreLocation
 import Resolver
 
-extension Date {
-    func adding(minutes: Int) -> Date {
-        return Calendar.current.date(byAdding: .second, value: minutes, to: self)!
-    }
-}
-
 class MobilePeripheralSessionManager {
     
     class PeripheralMeasurementTimeLocationManager {
@@ -23,7 +17,7 @@ class MobilePeripheralSessionManager {
         
         func startNewValuesRound(locationless: Bool) {
             currentLocation = !locationless ? locationTracker.location.value?.coordinate : .undefined
-            currentTime = currentTime.adding(minutes: 1)
+            currentTime = currentTime.adding(seconds: 1)
             collectedValuesCount = 0
         }
         
