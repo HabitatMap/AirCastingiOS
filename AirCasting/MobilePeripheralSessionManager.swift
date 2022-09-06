@@ -67,22 +67,20 @@ class MobilePeripheralSessionManager {
     }
 
     func handlePeripheralMeasurement(_ measurement: PeripheralMeasurement) {
-        DispatchQueue.main.async { [self] in
-            if self.activeMobileSession == nil {
-                return
+        if self.activeMobileSession == nil {
+            return
+        }
+        Log.info("## WAS HERE AS I SHOULD: \(self.activeMobileSession?.peripheral == measurement.peripheral)")
+        if self.activeMobileSession?.peripheral == measurement.peripheral {
+            if self.peripheralMeasurementManager.collectedValuesCount == 5 { peripheralMeasurementManager.startNewValuesRound(locationless: self.activeMobileSession!.session.locationless) }
+            Log.info("## peripheralMeasurementManager current time: \(self.peripheralMeasurementManager.currentTime)")
+            do {
+                try self.updateStreams(stream: measurement.measurementStream, sessionUUID: self.activeMobileSession!.session.uuid, location: self.peripheralMeasurementManager.currentLocation, time: peripheralMeasurementManager.currentTime)
+            } catch {
+                Log.error("Unable to save measurement from airbeam to database because of an error: \(error)")
             }
-            Log.info("## WAS HERE AS I SHOULD: \(self.activeMobileSession?.peripheral == measurement.peripheral)")
-            if self.activeMobileSession?.peripheral == measurement.peripheral {
-                if self.peripheralMeasurementManager.collectedValuesCount == 5 { peripheralMeasurementManager.startNewValuesRound(locationless: self.activeMobileSession!.session.locationless) }
-                Log.info("## peripheralMeasurementManager current time: \(self.peripheralMeasurementManager.currentTime)")
-                do {
-                    try self.updateStreams(stream: measurement.measurementStream, sessionUUID: self.activeMobileSession!.session.uuid, location: self.peripheralMeasurementManager.currentLocation, time: peripheralMeasurementManager.currentTime)
-                } catch {
-                    Log.error("Unable to save measurement from airbeam to database because of an error: \(error)")
-                }
-                
-                self.peripheralMeasurementManager.incrementCounter()
-            }
+            
+            self.peripheralMeasurementManager.incrementCounter()
         }
     }
     
