@@ -2,6 +2,8 @@
 //
 
 import Foundation
+import Resolver
+import Combine
 
 enum ShareSessionError: Error {
     case noSessionURL
@@ -21,12 +23,14 @@ protocol ShareSessionViewModel: ObservableObject {
     var showInvalidEmailError: Bool { get set }
     var sharingLink: URL? { get set }
     var email: String { get set }
+    var isLoading: Bool { get }
     func didSelect(option: ShareSessionStreamOptionViewModel)
     func shareLinkTapped()
     func shareEmailTapped()
     func cancelTapped()
     func sharingFinished()
     func getSharePage() -> ActivityViewController?
+    func didAppear()
 }
 
 class DefaultShareSessionViewModel: ShareSessionViewModel {
@@ -35,10 +39,12 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     @Published var showInvalidEmailError: Bool = false
     @Published var sharingLink: URL?
     @Published var email: String = ""
+    @Published private(set) var isLoading = false
     private let exitRoute: (ShareSessionResult) -> Void
     private var session: SessionEntity
     private lazy var selectedStream = streamOptions.first
     private let apiClient: ShareSessionAPIServices
+    @Injected private var sessionSynchronizer: SessionSynchronizer
     
     var streamOptions: [ShareSessionStreamOptionViewModel] {
         willSet {
@@ -90,6 +96,30 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     func sharingFinished() {
         showShareSheet = false // this is kind of redundant, but also necessary for the shareSessionModal to disappear
         exitRoute(.linkShared)
+    }
+    
+    func didAppear() {
+        isLoading = true
+        do {
+            try fireUploadingSession { self.isLoading = false }
+        } catch {
+            Log.error("Error when uploading sessions before session share: \(error.localizedDescription)")
+        }
+    }
+    
+    private func fireUploadingSession(onEnd: @escaping () -> Void) throws {
+        if sessionSynchronizer.syncInProgress.value {
+            var subscription: AnyCancellable?
+            subscription = sessionSynchronizer.syncInProgress.receive(on: DispatchQueue.main).sink { value in
+                guard value == false else { return }
+                subscription?.cancel()
+                onEnd()
+            }
+            return
+        }
+        sessionSynchronizer.triggerSynchronization(options: [.upload], completion: {
+            DispatchQueue.main.async { onEnd() }
+        })
     }
     
     private func isEmailValid() -> Bool {
@@ -181,6 +211,8 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
 }
 
 class DummyShareSessionViewModel: ShareSessionViewModel {
+    var isLoading: Bool { false }
+    func didAppear() { }
     func getSharePage() -> ActivityViewController? { return nil }
     var showInvalidEmailError: Bool = false
     var email: String = "a@test.com"
