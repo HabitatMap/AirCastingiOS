@@ -182,7 +182,7 @@ struct Strings {
                                                                  comment: "")
         static let sharedEmailText: String = NSLocalizedString("View my AirCasting session", comment: "")
         
-        static let upToDateSessions = NSLocalizedString("Ensuring that all sessions are up to date.", comment: "")
+        static let syncInProgress = NSLocalizedString("Sync in progress...", comment: "")
     }
     
     enum LoadingSession {
