@@ -263,17 +263,9 @@ extension Resolver: ResolverRegistering {
         main.register { FoundationTimerScheduler() as TimerScheduler }
             .scope(.unique)
         
-        main.register { MicrophoneCalibrator(microphone: try! AVMicrophone(),
-                                             dateProvider: DateBuilder.getRawDate,
-                                             minimalMeasurementsCount: 12,
-                                             calibrationDuration: 5.0,
-                                             timeBetweenMeasurements: 0.25) as MicrophoneCalibration }
-        
         main.register { UserDefaultsMicrophoneCalibraionValueProvider() }
             .implements(MicrophoneCalibraionValueProvider.self)
             .implements(MicrophoneCalibrationValueWritable.self)
-        
-        main.register { DefaultCalibrationDurationDecider() as CalibrationDurationDecider }
         
         // MARK: Alerts
         

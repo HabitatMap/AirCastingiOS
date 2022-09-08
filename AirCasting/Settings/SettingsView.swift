@@ -157,10 +157,7 @@ struct SettingsView: View {
                 if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
                     clearSDCard
                 }
-                if featureFlagsViewModel.enabledFeatures.contains(.microphoneCalibrationWizard) {
-                    autoCalibrateMicrophone
-                }
-                if featureFlagsViewModel.enabledFeatures.contains(.microphoneCalibrationWizard) {
+                if featureFlagsViewModel.enabledFeatures.contains(.microphoneCalibration) {
                     calibrateMicrophone
                 }
             }
@@ -319,21 +316,6 @@ struct SettingsView: View {
         .sheet(isPresented: $viewModel.showMicrophoneManualCalibation, content: {
             MicrophoneManualCalibrationView { viewModel.showMicrophoneManualCalibation = false }
         })
-    }
-    
-    private var autoCalibrateMicrophone: some View {
-        VStack(alignment: .leading) {
-            NavigationLink(Strings.MicrophoneCalibration.Wizard.settingsItemTitle) {
-                MicrophoneAutoCalibrationView(onFinish: { } )
-            }
-            .font(Fonts.muliBoldHeading1)
-            .accentColor(.primary)
-            Spacer()
-            Text(Strings.MicrophoneCalibration.Wizard.settingsItemDescription)
-                .font(Fonts.muliRegularHeading3)
-                .foregroundColor(.aircastingGray)
-                .multilineTextAlignment(.leading)
-        }
     }
 
     #if DEBUG || BETA
