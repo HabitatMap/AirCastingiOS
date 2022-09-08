@@ -49,6 +49,8 @@ class FirebaseFeatureFlagProvider: FeatureFlagProvider {
         case .locationlessSessions: return "locationless_sessions"
         case .searchAndFollow: return "search_and_follow"
         case .deleteAccount: return "delete_account"
+        case .microphoneCalibration: return "microphone_calibration"
+        case .microphoneCalibrationWizard: return "microphone_calibration_wizard"
         }
     }
     
