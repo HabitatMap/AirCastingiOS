@@ -5,6 +5,7 @@ import Resolver
 
 class AddNoteViewModel: ObservableObject {
     @Published var noteText = ""
+    @Published var shouldShowError = false
     
     private let notesHandler: NotesHandler
     private let exitRoute: () -> Void
@@ -17,6 +18,10 @@ class AddNoteViewModel: ObservableObject {
     }
     
     func continueTapped(selectedPictureURL: URL?) {
+        guard !noteText.isEmpty else {
+            shouldShowError = true
+            return
+        }
         notesHandler.addNote(noteText: noteText, photo: selectedPictureURL, withLocation: trackLocation)
         exitRoute()
     }
