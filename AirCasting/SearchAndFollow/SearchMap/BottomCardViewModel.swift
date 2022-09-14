@@ -16,6 +16,7 @@ class BottomCardViewModel: ObservableObject {
     }
     
     func getIsModalScreenPresented() -> Bool { isModalScreenPresented }
+    //TODO: Fix warning - Publishing changes from within view updates is not allowed, this will cause undefined behavior.
     func setIsModalScreenPresented(using v: Bool) { isModalScreenPresented = v }
     
     func sessionCardTapped() {

@@ -19,6 +19,7 @@ final class StatisticsContainerViewModel: StatisticsContainerViewModelable, Meas
     }
     
     func statisticsDidChange(to newStats: [MeasurementStatistics.StatisticItem]) {
+        //TODO: Fix warning - Publishing changes from within view updates is not allowed, this will cause undefined behavior.
         stats = newStats.map {
             SingleStatViewModel(id: getIdentifier(for: $0.stat),
                                 title: getUILabel(for: $0.stat),

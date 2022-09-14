@@ -42,6 +42,7 @@ class ChooseSessionTypeViewModel: ObservableObject {
     func setPowerABLink(using new: Bool) { isPowerABLinkActive = new }
     func setBluetoothLink(using new: Bool) { isTurnBluetoothOnLinkActive = new }
     func setMobileLink(using new: Bool) { isMobileLinkActive = new }
+    //TODO: Fix warning - Publishing changes from within view updates is not allowed, this will cause undefined behavior.
     func setLocationLink(using new: Bool) { isTurnLocationOnLinkActive = new }
     
     func handleMobileSessionState() {
