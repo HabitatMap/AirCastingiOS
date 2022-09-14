@@ -61,7 +61,7 @@ Use the `release_update` lane when you need to add some changes to the release c
 4. run `fastlane release_update` 
 
 ### Release hotfix
-Use the release hotfix lane when you need to add quick changes to the app that is already in the appstore:
+Use the release hotfix lane when you need to add quick changes to the app that is already in the App Store:
 1. `cd` into top project directory
 2. `git checkout` to the main branch
 3. run `fastlane hotfix_init`. After that you should be checked out to the hotfix branch
