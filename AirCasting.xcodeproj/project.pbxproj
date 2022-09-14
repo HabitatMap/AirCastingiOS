@@ -242,9 +242,7 @@
 		ACF77DFB25A8888700BB85B7 /* SessionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DFA25A8888700BB85B7 /* SessionCardView.swift */; };
 		ACF7C05F260CC9FF007C24AE /* DownloadMeasurmentsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF7C05E260CC9FF007C24AE /* DownloadMeasurmentsService.swift */; };
 		ACFC708925C1A36A00D609D9 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACFC708825C1A36A00D609D9 /* UIColor.swift */; };
-		B308DC0528ABA31F004FC3EB /* MicrophoneCalibratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B308DC0428ABA31F004FC3EB /* MicrophoneCalibratorTests.swift */; };
 		B308DC0728ABA3C7004FC3EB /* CommonTestDoubles.swift in Sources */ = {isa = PBXBuildFile; fileRef = B308DC0628ABA3C7004FC3EB /* CommonTestDoubles.swift */; };
-		B308DC0E28ABC9B7004FC3EB /* CalibratableMicrophoneDecoratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B308DC0D28ABC9B7004FC3EB /* CalibratableMicrophoneDecoratorTests.swift */; };
 		B308DC1028ABCB08004FC3EB /* Numeric+ArrayCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B308DC0F28ABCB08004FC3EB /* Numeric+ArrayCreation.swift */; };
 		B308DC1228ABCB2B004FC3EB /* MicrophoneCalibraionValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B308DC1128ABCB2B004FC3EB /* MicrophoneCalibraionValueProvider.swift */; };
 		B30BABFB2693509D00AE0476 /* StandardStatisticsCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BABFA2693509D00AE0476 /* StandardStatisticsCalculatorTests.swift */; };
@@ -311,7 +309,6 @@
 		B34BB2E628ACFC86009E5927 /* MicrophoneManualCalibrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34BB2E528ACFC86009E5927 /* MicrophoneManualCalibrationView.swift */; };
 		B34BB2E828AD07BA009E5927 /* MicrophoneManualCalibrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34BB2E728AD07BA009E5927 /* MicrophoneManualCalibrationViewModel.swift */; };
 		B34BB2EB28AD0BCE009E5927 /* MicrophoneManualCalibrationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34BB2EA28AD0BCE009E5927 /* MicrophoneManualCalibrationViewModelTests.swift */; };
-		B34BB2ED28AD0F29009E5927 /* MicrophoneAutoCalibrationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34BB2EC28AD0F29009E5927 /* MicrophoneAutoCalibrationViewModelTests.swift */; };
 		B34BB2EF28AD200D009E5927 /* AlertInfo+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34BB2EE28AD200D009E5927 /* AlertInfo+Equatable.swift */; };
 		B34D4648275B12A000194E51 /* CrashlyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34D4647275B12A000194E51 /* CrashlyticsLogger.swift */; };
 		B35A09A12845615F00F9837B /* UnitFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B35A09A02845615F00F9837B /* UnitFormatter.swift */; };
@@ -801,9 +798,7 @@
 		ACF77DFA25A8888700BB85B7 /* SessionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCardView.swift; sourceTree = "<group>"; };
 		ACF7C05E260CC9FF007C24AE /* DownloadMeasurmentsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadMeasurmentsService.swift; sourceTree = "<group>"; };
 		ACFC708825C1A36A00D609D9 /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
-		B308DC0428ABA31F004FC3EB /* MicrophoneCalibratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneCalibratorTests.swift; sourceTree = "<group>"; };
 		B308DC0628ABA3C7004FC3EB /* CommonTestDoubles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonTestDoubles.swift; sourceTree = "<group>"; };
-		B308DC0D28ABC9B7004FC3EB /* CalibratableMicrophoneDecoratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibratableMicrophoneDecoratorTests.swift; sourceTree = "<group>"; };
 		B308DC0F28ABCB08004FC3EB /* Numeric+ArrayCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Numeric+ArrayCreation.swift"; sourceTree = "<group>"; };
 		B308DC1128ABCB2B004FC3EB /* MicrophoneCalibraionValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneCalibraionValueProvider.swift; sourceTree = "<group>"; };
 		B30BABFA2693509D00AE0476 /* StandardStatisticsCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardStatisticsCalculatorTests.swift; sourceTree = "<group>"; };
@@ -870,7 +865,6 @@
 		B34BB2E528ACFC86009E5927 /* MicrophoneManualCalibrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManualCalibrationView.swift; sourceTree = "<group>"; };
 		B34BB2E728AD07BA009E5927 /* MicrophoneManualCalibrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManualCalibrationViewModel.swift; sourceTree = "<group>"; };
 		B34BB2EA28AD0BCE009E5927 /* MicrophoneManualCalibrationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManualCalibrationViewModelTests.swift; sourceTree = "<group>"; };
-		B34BB2EC28AD0F29009E5927 /* MicrophoneAutoCalibrationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneAutoCalibrationViewModelTests.swift; sourceTree = "<group>"; };
 		B34BB2EE28AD200D009E5927 /* AlertInfo+Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlertInfo+Equatable.swift"; sourceTree = "<group>"; };
 		B34D4647275B12A000194E51 /* CrashlyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashlyticsLogger.swift; sourceTree = "<group>"; };
 		B35A09A02845615F00F9837B /* UnitFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitFormatter.swift; sourceTree = "<group>"; };
@@ -1941,7 +1935,6 @@
 		B308DC0328ABA30A004FC3EB /* Mic Calibration */ = {
 			isa = PBXGroup;
 			children = (
-				B34BB2E928AD096F009E5927 /* Auto */,
 				B34BB2EA28AD0BCE009E5927 /* MicrophoneManualCalibrationViewModelTests.swift */,
 			);
 			path = "Mic Calibration";
@@ -2114,16 +2107,6 @@
 				B33B15FD27AEE6E900138FFA /* DisposableDataHolder.swift */,
 			);
 			path = GarbageCollector;
-			sourceTree = "<group>";
-		};
-		B34BB2E928AD096F009E5927 /* Auto */ = {
-			isa = PBXGroup;
-			children = (
-				B34BB2EC28AD0F29009E5927 /* MicrophoneAutoCalibrationViewModelTests.swift */,
-				B308DC0428ABA31F004FC3EB /* MicrophoneCalibratorTests.swift */,
-				B308DC0D28ABC9B7004FC3EB /* CalibratableMicrophoneDecoratorTests.swift */,
-			);
-			path = Auto;
 			sourceTree = "<group>";
 		};
 		B367A587274E9E05004C605B /* FeatureFlags */ = {
@@ -3079,7 +3062,6 @@
 				DD2E8BE92685E12000439F8B /* URLValidatorTests.swift in Sources */,
 				4FB39E362621B77D00E5E564 /* APIClientMock.swift in Sources */,
 				B3E26A092676DA55001A8E4C /* TestDefaultProviding.swift in Sources */,
-				B34BB2ED28AD0F29009E5927 /* MicrophoneAutoCalibrationViewModelTests.swift in Sources */,
 				B33B161227AF0B3600138FFA /* CompositeLoggerTests.swift in Sources */,
 				B3EFAB1C26EFEA8B00E88141 /* AppBootstrapTests.swift in Sources */,
 				B30BAC1F2694AE9E00AE0476 /* MapStatsDataSourceTests.swift in Sources */,
@@ -3115,7 +3097,6 @@
 				B30BABFF26935C2B00AE0476 /* TimeInterval+Helpers.swift in Sources */,
 				B3AA784927D4D22A003B39F6 /* Resolver+XCTest.swift in Sources */,
 				B3AAACF7286DD91700DFBD36 /* DecibelSamplerTests.swift in Sources */,
-				B308DC0528ABA31F004FC3EB /* MicrophoneCalibratorTests.swift in Sources */,
 				B3E2B65F27506EA000019167 /* FileLineReaderTests.swift in Sources */,
 				B33DB5722686013400ED1344 /* XCTestCase+AwaitPublisher.swift in Sources */,
 				FA94089A2886D3FE0022E1A5 /* BluetoothProtectorTests.swift in Sources */,
@@ -3127,7 +3108,6 @@
 				B33B161127AF0B3600138FFA /* TextFileTrimmerTests.swift in Sources */,
 				B31B7ECF267E83F6002DAC18 /* SyncUpstreamServiceTests.swift in Sources */,
 				B3E26A062676DA23001A8E4C /* ArrayExtensionsTests.swift in Sources */,
-				B308DC0E28ABC9B7004FC3EB /* CalibratableMicrophoneDecoratorTests.swift in Sources */,
 				B3E26A0D2676DAD2001A8E4C /* SynchronizationTestDoubles.swift in Sources */,
 				B308DC0728ABA3C7004FC3EB /* CommonTestDoubles.swift in Sources */,
 				B308DC1028ABCB08004FC3EB /* Numeric+ArrayCreation.swift in Sources */,
