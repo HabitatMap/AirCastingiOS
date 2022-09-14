@@ -23,7 +23,6 @@ struct ReorderingDashboard: View {
                         .overlay(viewModel.currentlyDraggedSession?.uuid == session.uuid && changedView ? Color.aircastingWhite.opacity(0.8) : Color.clear)
                         .onDrag({
                             viewModel.currentlyDraggedSession = session
-                            changedView = false
                             return NSItemProvider(object: String(describing: session.uuid) as NSString)
                         })
                         .onDrop(of: [.text], delegate: DropViewDelegate(sessionAtDropDestination: session, currentlyDraggedSession: $viewModel.currentlyDraggedSession, sessions: $viewModel.sessions, changedView: $changedView))
