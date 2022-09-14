@@ -84,6 +84,13 @@ class PersistenceController: ObservableObject {
         return ctx
     }()
     
+    func createContext() -> NSManagedObjectContext {
+        let ctx = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        ctx.parent = sourceOfTruthContext
+        ctx.automaticallyMergesChangesFromParent = true
+        return ctx
+    }
+    
     func performBackgroundTask(_ block: @escaping (NSManagedObjectContext) -> Void) {
         let context = editContext
         context.perform {

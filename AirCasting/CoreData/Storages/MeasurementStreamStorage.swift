@@ -235,13 +235,6 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         return newStream.localID
     }
 
-    func setStatusToFinishedAndUpdateEndTime(for sessionUUID: SessionUUID, endTime: Date?) throws {
-        let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        sessionEntity.status = .FINISHED
-        guard endTime != nil else { return }
-        sessionEntity.endTime = endTime
-    }
-
     func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         sessionEntity.status = sessionStatus

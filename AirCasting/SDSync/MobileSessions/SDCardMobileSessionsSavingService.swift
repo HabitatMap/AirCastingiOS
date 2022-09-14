@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import CoreData
 import CoreLocation
 import Combine
 import Resolver
@@ -13,7 +14,13 @@ protocol SDCardMobileSessionssSaver {
 class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     @Injected private var fileLineReader: FileLineReader
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var persistenceController: PersistenceController
+    @Injected private var updateSessionParamsService: UpdateSessionParamsService
     private let parser = SDCardMeasurementsParser()
+    
+    private lazy var context: NSManagedObjectContext = persistenceController.createContext()
+    
+    var createdSessions: [SessionEntity] = []
     
     func saveDataToDb(fileURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
         var processedSessions = Set<SDSession>()
@@ -24,49 +31,63 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         var sessionsToCreate: [SessionUUID] = []
         var sessionsToIgnore: [SessionUUID] = []
         
-        measurementStreamStorage.accessStorage { storage in
+        var i = 0
+
+        
+//        measurementStreamStorage.accessStorage { storage in
             do {
                 try self.fileLineReader.readLines(of: fileURL, progress: { line in
                     switch line {
                     case .line(let content):
-                        let measurementsRow = self.parser.parseMeasurement(lineString: content)
-                        guard let measurements = measurementsRow, !sessionsToIgnore.contains(measurements.sessionUUID) else {
-                            return
+                        context.perform {
+                            Log.info("[SD sync] \(i)")
+                            i += 1
+                            let measurementsRow = self.parser.parseMeasurement(lineString: content)
+                            guard let measurements = measurementsRow, !sessionsToIgnore.contains(measurements.sessionUUID) else {
+                                return
+                            }
+                            
+                            var session = processedSessions.first(where: { $0.uuid == measurements.sessionUUID })
+                            if session == nil {
+                                session = self.processSession(sessionUUID: measurements.sessionUUID, deviceID: deviceID, sessionsToIgnore: &sessionsToIgnore, sessionsToCreate: &sessionsToCreate)
+                                guard let createdSession = session else { return }
+                                processedSessions.insert(createdSession)
+                            }
+                            
+                            guard session!.lastMeasurementTime == nil || measurements.date > session!.lastMeasurementTime! else { return }
+                            
+                            self.enqueueForSaving(measurements: measurements, buffer: &streamsWithMeasurements)
                         }
-                        
-                        var session = processedSessions.first(where: { $0.uuid == measurements.sessionUUID })
-                        if session == nil {
-                            session = self.processSession(storage: storage, sessionUUID: measurements.sessionUUID, deviceID: deviceID, sessionsToIgnore: &sessionsToIgnore, sessionsToCreate: &sessionsToCreate)
-                            guard let createdSession = session else { return }
-                            processedSessions.insert(createdSession)
-                        }
-                        
-                        guard session!.lastMeasurementTime == nil || measurements.date > session!.lastMeasurementTime! else { return }
-                        
-                        self.enqueueForSaving(measurements: measurements, buffer: &streamsWithMeasurements)
                     case .endOfFile:
                         Log.info("Reached end of csv file")
                     }
                 })
                 
-                self.saveData(streamsWithMeasurements, to: storage, with: deviceID, sessionsToCreate: &sessionsToCreate)
-                completion(.success(Array(Set(streamsWithMeasurements.keys.map(\.sessionUUID)))))
+                context.perform {
+                    do {
+                        self.saveData(streamsWithMeasurements, with: deviceID, sessionsToCreate: &sessionsToCreate)
+                        try self.context.save()
+                        completion(.success(Array(Set(streamsWithMeasurements.keys.map(\.sessionUUID)))))
+                    } catch {
+                        completion(.failure(error))
+                    }
+                }
             } catch {
                 completion(.failure(error))
             }
-        }
+//        }
     }
     
-    private func saveData(_ streamsWithMeasurements: [SDStream: [Measurement]], to storage: HiddenCoreDataMeasurementStreamStorage, with deviceID: String, sessionsToCreate: inout [SessionUUID]) {
+    private func saveData(_ streamsWithMeasurements: [SDStream: [Measurement]], with deviceID: String, sessionsToCreate: inout [SessionUUID]) {
         Log.info("[SD Sync] Saving data: \(streamsWithMeasurements.count)")
         streamsWithMeasurements.forEach { (sdStream: SDStream, measurements: [Measurement]) in
             if sessionsToCreate.contains(sdStream.sessionUUID) {
-                createSession(storage: storage, sdStream: sdStream, location: measurements.first?.location, time: measurements.first?.time, sessionsToCreate: &sessionsToCreate)
-                saveMeasurements(measurements: measurements, storage: storage, sdStream: sdStream, deviceID: deviceID)
+                createSession(sdStream: sdStream, location: measurements.first?.location, time: measurements.first?.time, sessionsToCreate: &sessionsToCreate)
+                saveMeasurements(measurements: measurements, sdStream: sdStream, deviceID: deviceID)
             } else {
-                saveMeasurements(measurements: measurements, storage: storage, sdStream: sdStream, deviceID: deviceID)
+                saveMeasurements(measurements: measurements, sdStream: sdStream, deviceID: deviceID)
                 do {
-                    try storage.setStatusToFinishedAndUpdateEndTime(for: sdStream.sessionUUID, endTime: measurements.last?.time)
+                    try setStatusToFinishedAndUpdateEndTime(for: sdStream.sessionUUID, endTime: measurements.last?.time)
                 } catch {
                     Log.info("Error setting status to finished and updating end time: \(error)")
                 }
@@ -74,31 +95,30 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         }
     }
     
-    private func createSession(storage: HiddenCoreDataMeasurementStreamStorage, sdStream: SDStream, location: CLLocationCoordinate2D?, time: Date?, sessionsToCreate: inout [SessionUUID]) {
-        do {
-            try storage.createSession(Session(uuid: sdStream.sessionUUID, type: .mobile, name: "Imported from SD card", deviceType: .AIRBEAM3, location: location, startTime: time))
-            sessionsToCreate.removeAll(where: { $0 == sdStream.sessionUUID })
-        } catch {
-            Log.error("Couldn't create session: \(error.localizedDescription)")
-        }
+    private func createSession(sdStream: SDStream, location: CLLocationCoordinate2D?, time: Date?, sessionsToCreate: inout [SessionUUID]) {
+        Log.info("[SD Sync] Creating session")
+        let session = createSessionInDatabase(Session(uuid: sdStream.sessionUUID, type: .mobile, name: "Imported from SD card", deviceType: .AIRBEAM3, location: location, startTime: time))
+        createdSessions.append(session)
+        sessionsToCreate.removeAll(where: { $0 == sdStream.sessionUUID })
     }
     
-    private func saveMeasurements(measurements: [Measurement], storage: HiddenCoreDataMeasurementStreamStorage, sdStream: SDStream, deviceID: String) {
+    private func saveMeasurements(measurements: [Measurement], sdStream: SDStream, deviceID: String) {
         Log.info("[SD Sync] Saving measurements")
         do {
-            var existingStreamID = try storage.existingMeasurementStream(sdStream.sessionUUID, name: sdStream.name.rawValue)
-            if existingStreamID == nil {
+            var existingStream = existingMeasurementStream(sdStream.sessionUUID, name: sdStream.name.rawValue)
+            if existingStream == nil {
                 let measurementStream = createMeasurementStream(for: sdStream.name, sensorPackageName: deviceID)
-                existingStreamID = try storage.saveMeasurementStream(measurementStream, for: sdStream.sessionUUID)
+                existingStream = try saveMeasurementStream(measurementStream, for: sdStream.sessionUUID)
             }
-            try storage.addMeasurements(measurements, toStreamWithID: existingStreamID!)
+            
+            addMeasurements(measurements, toStream: existingStream!)
         } catch {
             Log.info("Saving measurements failed: \(error)")
         }
     }
     
-    private func processSession(storage: HiddenCoreDataMeasurementStreamStorage, sessionUUID: SessionUUID, deviceID: String, sessionsToIgnore: inout [SessionUUID], sessionsToCreate: inout [SessionUUID]) -> SDSession? {
-        if let existingSession = try? storage.getExistingSession(with: sessionUUID) {
+    private func processSession(sessionUUID: SessionUUID, deviceID: String, sessionsToIgnore: inout [SessionUUID], sessionsToCreate: inout [SessionUUID]) -> SDSession? {
+        if let existingSession = try? context.existingSession(uuid: sessionUUID) {
             guard existingSession.isInStandaloneMode && existingSession.sensorPackageName == deviceID else {
                 Log.info("[SD SYNC] Ignoring session \(existingSession.name ?? "none")")
                 sessionsToIgnore.append(sessionUUID)
@@ -122,5 +142,98 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     
     private func createMeasurementStream(for sensorName: MeasurementStreamSensorName, sensorPackageName: String) -> MeasurementStream {
         MeasurementStream(sensorName: sensorName, sensorPackageName: sensorPackageName)
+    }
+    
+    //MARK: - Storage stuff
+    
+    private func getSession(with sessionUUID: SessionUUID) throws -> SessionEntity {
+        if let session = createdSessions.first(where: { $0.uuid == sessionUUID}) {
+            return session
+        }
+        
+        if let session = try? context.existingSession(uuid: sessionUUID) {
+            return session
+        }
+        
+        throw SDSyncMobileDataSavingError.noSession
+    }
+    
+    private func createSessionInDatabase(_ session: Session) -> SessionEntity {
+        let sessionEntity = newSessionEntity()
+        updateSessionParamsService.updateSessionsParams(sessionEntity, session: session)
+        return sessionEntity
+    }
+    
+    private func newSessionEntity() -> SessionEntity {
+        let sessionEntity = SessionEntity(context: context)
+        let uiState = UIStateEntity(context: context)
+        uiState.session = sessionEntity
+        return sessionEntity
+    }
+    
+    private func existingMeasurementStream(_ sessionUUID: SessionUUID, name: String) -> MeasurementStreamEntity? {
+        let session = try? context.existingSession(uuid: sessionUUID)
+        let stream = session?.streamWith(sensorName: name)
+        return stream
+    }
+    
+    enum SDSyncMobileDataSavingError: Error {
+        case missingSensorName
+        case noSession
+    }
+    
+    private func saveMeasurementStream(_ measurementStream: MeasurementStream, for sessionUUID: SessionUUID) throws -> MeasurementStreamEntity {
+        return try createMeasurementStream(for: getSession(with: sessionUUID), measurementStream)
+    }
+    
+    private func createMeasurementStream(for session: SessionEntity, _ stream: MeasurementStream) throws -> MeasurementStreamEntity {
+        guard let sensorName = stream.sensorName else {
+            throw SDSyncMobileDataSavingError.missingSensorName
+        }
+        
+        let newStream = MeasurementStreamEntity(context: context)
+        newStream.sensorName = stream.sensorName
+        newStream.sensorPackageName = stream.sensorPackageName
+        newStream.measurementType = stream.measurementType
+        newStream.measurementShortType = stream.measurementShortType
+        newStream.unitName = stream.unitName
+        newStream.unitSymbol = stream.unitSymbol
+        newStream.thresholdVeryLow = stream.thresholdVeryLow
+        newStream.thresholdLow = stream.thresholdLow
+        newStream.thresholdMedium = stream.thresholdMedium
+        newStream.thresholdHigh = stream.thresholdHigh
+        newStream.thresholdVeryHigh = stream.thresholdVeryHigh
+        newStream.gotDeleted = false
+        
+        session.addToMeasurementStreams(newStream)
+        
+        let existingThreshold: SensorThreshold? = try context.existingObject(sensorName: sensorName)
+        if existingThreshold == nil {
+            let threshold: SensorThreshold = try context.newOrExisting(sensorName: sensorName)
+            threshold.thresholdVeryLow = stream.thresholdVeryLow
+            threshold.thresholdLow = stream.thresholdLow
+            threshold.thresholdMedium = stream.thresholdMedium
+            threshold.thresholdHigh = stream.thresholdHigh
+            threshold.thresholdVeryHigh = stream.thresholdVeryHigh
+        }
+        
+        return newStream
+    }
+    
+    func addMeasurements(_ measurements: [Measurement], toStream stream: MeasurementStreamEntity) {
+        measurements.forEach { measurement in
+            let newMeasurement = MeasurementEntity(context: context)
+            newMeasurement.location = measurement.location
+            newMeasurement.time = measurement.time
+            newMeasurement.value = measurement.value
+            stream.addToMeasurements(newMeasurement)
+        }
+    }
+    
+    private func setStatusToFinishedAndUpdateEndTime(for sessionUUID: SessionUUID, endTime: Date?) throws {
+        let sessionEntity = try getSession(with: sessionUUID)
+        sessionEntity.status = .FINISHED
+        guard endTime != nil else { return }
+        sessionEntity.endTime = endTime
     }
 }
