@@ -6,18 +6,17 @@ import SwiftUI
 
 /// Adds custom swipe action to a given view
 struct SwipeActionView: ViewModifier {
-    let trailingAction: () -> Void
+    let action: () -> Void
     
     @State private var offset: CGFloat = 0
-    @State private var prevOffset: CGFloat = 0
     
-    init(trailingAction: @escaping () -> Void) {
-        self.trailingAction = trailingAction
+    init(action: @escaping () -> Void) {
+        self.action = action
     }
     
     func body(content: Content) -> some View {
         content
-            .offset(x: (offset > 0) ? 0 : offset)
+            .offset(x: offset)
         // animate the view as `offset` changes
             .animation(.spring(), value: offset)
         // allows the DragGesture to work even if there are now interactable
@@ -31,8 +30,11 @@ struct SwipeActionView: ViewModifier {
                     offset = gesture.translation.width
                 }
                 .onEnded { _ in
-                    checkAndHandleFullSwipe(for: trailingAction, edge: .trailing, width: -UIScreen.main.bounds.size.width)
-                    prevOffset = offset
+                    if offset < 0 {
+                        checkAndHandleFullSwipe(for: action, edge: .trailing, width: -UIScreen.main.bounds.size.width)
+                    } else {
+                        checkAndHandleFullSwipe(for: action, edge: .leading, width: UIScreen.main.bounds.size.width)
+                    }
                 })
     }
     
@@ -66,7 +68,7 @@ struct SwipeActionView: ViewModifier {
 }
 
 extension View {
-    func trailingSwipeAction(action: @escaping () -> Void) -> some View {
-        modifier(SwipeActionView(trailingAction: action))
+    func swipeAction(action: @escaping () -> Void) -> some View {
+        modifier(SwipeActionView(action: action))
     }
 }
