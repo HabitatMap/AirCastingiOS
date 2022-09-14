@@ -27,7 +27,7 @@ struct ReorderingDashboard: View {
                             return NSItemProvider(object: String(describing: session.uuid) as NSString)
                         })
                         .onDrop(of: [.text], delegate: DropViewDelegate(sessionAtDropDestination: session, currentlyDraggedSession: $viewModel.currentlyDraggedSession, sessions: $viewModel.sessions, changedView: $changedView))
-                        .trailingSwipeAction {
+                        .swipeAction {
                             withAnimation(.easeOut(duration: 0.5)) {
                                 viewModel.clear(session: session)
                             }
