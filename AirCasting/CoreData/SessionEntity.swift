@@ -18,7 +18,9 @@ public class SessionEntity: NSManagedObject, Identifiable {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<SessionEntity> {
         return NSFetchRequest<SessionEntity>(entityName: "SessionEntity")
     }
-
+    
+    @NSManaged public var bluetoothConnection: BluetoothConnectionEntity?
+    
     @NSManaged public var contribute: Bool
     @NSManaged public var deviceId: String?
 
@@ -69,8 +71,8 @@ public class SessionEntity: NSManagedObject, Identifiable {
     }
     #warning("Handle logging out crash")
     // ! other then giving default value as an empty string ! 🔽
-    public var uuid: SessionUUID! {
-        get { SessionUUID(rawValue: value(forKey: "uuid") as? String ?? "") }
+    public var uuid: SessionUUID {
+        get { SessionUUID(rawValue: value(forKey: "uuid") as? String ?? "")! }
         set { setValue(newValue.rawValue, forKey: "uuid") }
     }
 

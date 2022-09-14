@@ -19,22 +19,22 @@ struct CreateSessionDetailsView: View {
     var body: some View {
         GeometryReader { geometry in
             ScrollView(.vertical) {
-                    VStack(alignment: .leading, spacing: 25) {
-                        ProgressView(value: 0.75)
-                        titleLabel
-                        VStack(alignment: .leading) {
-                            sessionNameField
-                            if viewModel.shouldShowError { errorMessage(text: Strings.EditSession.erorr) }
-                            sessionTagsField
-                                .padding(.top, 20)
-                        }
-                        if sessionContext.sessionType == SessionType.fixed { fixedSessionDetails }
-                        Spacer()
-                        continueButton
-                            .onTapGesture {
-                                viewModel.areCredentialsEmpty() ? (viewModel.showAlertAboutEmptyCredentials = true) : nil
-                            }
+                VStack(alignment: .leading, spacing: 25) {
+                    ProgressView(value: 0.75)
+                    titleLabel
+                    VStack(alignment: .leading) {
+                        sessionNameField
+                        if viewModel.shouldShowError { errorMessage(text: Strings.EditSession.erorr) }
+                        sessionTagsField
+                            .padding(.top, 20)
                     }
+                    if sessionContext.sessionType == SessionType.fixed { fixedSessionDetails }
+                    Spacer()
+                    continueButton
+                        .onTapGesture {
+                            viewModel.areCredentialsEmpty() ? (viewModel.showAlertAboutEmptyCredentials = true) : nil
+                        }
+                }
                 .padding()
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
             }
@@ -44,6 +44,7 @@ struct CreateSessionDetailsView: View {
                       dismissButton: .default(Text(Strings.Commons.continue)))
             })
             .background(navigation)
+            .background(Color.aircastingBackground.ignoresSafeArea())
         }
         .onAppear {
             viewModel.onScreenEnter()
@@ -71,16 +72,16 @@ private extension CreateSessionDetailsView {
             placementPicker
             transmissionTypePicker
             if viewModel.shouldShowCompleteCredentials() {
-                passwordEntry
+                wifiNameAndPasswordEntry
             } else if viewModel.isWiFi {
-               nameAndPasswordEntry
+               wifiPasswordEntry
             }
         }
     }
     
-    var passwordEntry: some View {
+    var wifiNameAndPasswordEntry: some View {
         VStack(alignment: .leading, spacing: 25) {
-            providePasswordTitle
+            provideNameAndPasswordTitle
             if #available(iOS 15.0, *) {
                wifiSSIDField
                     .onSubmit { viewModel.isSSIDTextfieldDisplayed = false }
@@ -91,15 +92,22 @@ private extension CreateSessionDetailsView {
         }
     }
     
-    var nameAndPasswordEntry: some View {
-        VStack(alignment: .leading, spacing: 25) {
-            provideNameAndPasswordTitle
-            wifiPasswordField
-            HStack {
-                Spacer()
-                connectToDifferentWifi
-                Spacer()
+    var wifiPasswordEntry: some View {
+        VStack(alignment: .leading, spacing: 15) {
+            if viewModel.showWifiPasswordField {
+                providePasswordTitle
+                wifiPasswordField
+            } else {
+                connectedWifiLabel
+                updatePasswordButton
             }
+            connectToDifferentWifi
+        }
+    }
+    
+    private var updatePasswordButton: some View {
+        Button(Strings.WifiPopupView.updatePassword) {
+            viewModel.updatePasswordTapped()
         }
     }
     
@@ -209,13 +217,19 @@ private extension CreateSessionDetailsView {
     }
     
     var providePasswordTitle: some View {
-        Text(Strings.WifiPopupView.passwordTitle)
+        Text(String(format: Strings.WifiPopupView.passwordTitle, arguments: [viewModel.wifiSSID]))
             .font(Fonts.muliBoldHeading1)
             .foregroundColor(.aircastingDarkGray)
     }
     
     var provideNameAndPasswordTitle: some View {
-        Text(String(format: Strings.WifiPopupView.nameAndPasswordTitle, arguments: [viewModel.wifiSSID]))
+        Text(Strings.WifiPopupView.nameAndPasswordTitle)
+            .font(Fonts.muliBoldHeading1)
+            .foregroundColor(.aircastingDarkGray)
+    }
+    
+    var connectedWifiLabel: some View {
+        Text(String(format: Strings.WifiPopupView.connectedNetworkTitle, arguments: [viewModel.wifiSSID]))
             .font(Fonts.muliBoldHeading1)
             .foregroundColor(.aircastingDarkGray)
     }

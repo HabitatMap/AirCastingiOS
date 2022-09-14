@@ -10,7 +10,6 @@ import CoreLocation
 import Resolver
 
 struct RootAppView: View {
-
     @InjectedObject private var userAuthenticationSession: UserAuthenticationSession
     @InjectedObject private var lifeTimeEventsProvider: LifeTimeEventsProvider
     @InjectedObject private var userState: UserState
@@ -46,7 +45,6 @@ struct RootAppView: View {
             signInPersistanceObserved.clearSavedStatesWithCredentials()
         }
     }
-    
 }
 
 struct MainAppView: View {

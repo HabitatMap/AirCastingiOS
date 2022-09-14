@@ -5,23 +5,27 @@ import Foundation
 import Resolver
 
 class SettingsViewModel: ObservableObject {
-    
     @Published var showBackendSettings = false
     @Published var startSDClear = false
     @Published var BTScreenGo = false
     @Published var locationScreenGo = false
+    @Published var alert: AlertInfo?
+    @Published var dormantAlert = false
     
     var SDClearingRouteProcess = true
     let username = "\(KeychainStorage(service: Bundle.main.bundleIdentifier!).getProfileData(for: .username))"
     
-    @Injected private var urlProvider: URLProvider
     @Injected private var locationAuthorization: LocationAuthorization
     @Injected private var bluetoothHandler: BluetoothHandler
+    @Injected private var controller: SettingsController
+    @Injected private var userSettings: UserSettings
+    @Injected private var networkChecker: NetworkChecker
     let sessionContext: CreateSessionContext
 
 
     init(sessionContext: CreateSessionContext) {
         self.sessionContext = sessionContext
+        dormantAlert = userSettings.dormantSessionsAlert
     }
     
     func navigateToBackendButtonTapped() {
@@ -39,6 +43,29 @@ class SettingsViewModel: ObservableObject {
         case .bluetooth: BTScreenGo.toggle()
         case .location: locationScreenGo.toggle()
         case .airBeam, .mobile: startSDClear.toggle()
+        }
+    }
+    
+    func dormantStreamAlertSettingChanged(to value: Bool) {
+        guard networkChecker.connectionAvailable else {
+            self.alert = InAppAlerts.noInternetConnection()
+            return
+        }
+        dormantAlert = value
+        controller.changeDormantAlertSettings(to: value) { result in
+            switch result {
+            case .success():
+                DispatchQueue.main.async {
+                    self.userSettings.dormantSessionsAlert = value
+                }
+            case .failure(let error):
+                Log.error("Failed to change dormant alert settings: \(error)")
+                DispatchQueue.main.async {
+                    self.userSettings.dormantSessionsAlert = !value
+                    self.dormantAlert = !value
+                    self.alert = InAppAlerts.failedDormantStreamSettingAlert()
+                }
+            }
         }
     }
 }

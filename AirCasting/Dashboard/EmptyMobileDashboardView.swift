@@ -11,10 +11,10 @@ import Resolver
 
 struct EmptyMobileDashboardViewMobile: View {
     @StateObject private var defaultSessionSynchronizerViewModel = SessionSynchronizationViewModel()
-    @EnvironmentObject var selectedSection: SelectSection
+    @EnvironmentObject var selectedSection: SelectedSection
     
     var shouldSessionFetch: Bool {
-        (selectedSection.selectedSection == .mobileDormant || selectedSection.selectedSection == .fixed) && defaultSessionSynchronizerViewModel.syncInProgress
+        (selectedSection.section == .mobileDormant || selectedSection.section == .fixed) && defaultSessionSynchronizerViewModel.syncInProgress
     }
     
     var body: some View {

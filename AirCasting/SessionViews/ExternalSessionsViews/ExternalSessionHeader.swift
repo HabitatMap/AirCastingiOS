@@ -10,7 +10,9 @@ struct ExternalSessionHeader: View {
     @Binding var selectedStream: MeasurementStreamEntity?
     @Binding var isCollapsed: Bool
     let expandingAction: (() -> Void)?
-    @State var chevronIndicator = "chevron.down"
+    var chevronIndicator: String {
+        isCollapsed ? "chevron.down" : "chevron.up"
+    }
 
     var streams: [MeasurementStreamEntity] {
         session.sortedStreams
@@ -21,9 +23,6 @@ struct ExternalSessionHeader: View {
             sessionHeader
             measurements
         }
-        .onChange(of: isCollapsed, perform: { _ in
-            isCollapsed ? (chevronIndicator = "chevron.down") :  (chevronIndicator = "chevron.up")
-        })
     }
 }
 
@@ -57,6 +56,9 @@ private extension ExternalSessionHeader {
                     }) {
                         Image(systemName: chevronIndicator)
                             .renderingMode(.original)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 15, height: 15)
                     }
                 }
             }
@@ -85,6 +87,7 @@ private extension ExternalSessionHeader {
         VStack(alignment: .leading, spacing: 5) {
             Text(Strings.SessionCart.lastMinuteMeasurement)
                 .font(Fonts.moderateRegularHeading4)
+                .foregroundColor(.aircastingGray)
                 .padding(.bottom, 3)
             HStack {
                 streams.count != 1 ? Spacer() : nil

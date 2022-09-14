@@ -45,7 +45,7 @@ struct _ABMeasurementsView: View {
     @ObservedObject var thresholds: ABMeasurementsViewThreshold
     let measurementPresentationStyle: MeasurementPresentationStyle
     
-    @EnvironmentObject var selectedSection: SelectSection
+    @EnvironmentObject var selectedSection: SelectedSection
     @EnvironmentObject var userSettings: UserSettings
     
     private var streamsToShow: [MeasurementStreamEntity] {
@@ -62,6 +62,7 @@ struct _ABMeasurementsView: View {
                 VStack(alignment: .leading, spacing: 5) {
                     measurementsTitle
                         .font(Fonts.moderateRegularHeading5)
+                        .foregroundColor(.aircastingGray)
                         .padding(.bottom, 3)
                     HStack {
                         streamsToShow.count != 1 ? Spacer() : nil
@@ -88,6 +89,7 @@ struct _ABMeasurementsView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         measurementsTitle
                             .font(Fonts.moderateRegularHeading5)
+                            .foregroundColor(.aircastingGray)
                         streamNames
                         if session.type == .mobile {
                             if measurementsViewModel.showLoadingIndicator {

@@ -6,7 +6,6 @@ import Resolver
 
 struct ExternalSessionMapView: View {
     @InjectedObject private var userSettings: UserSettings
-    
     @ObservedObject var session: ExternalSessionEntity
     @ObservedObject var thresholds: ABMeasurementsViewThreshold
     @Binding var selectedStream: MeasurementStreamEntity?
@@ -35,7 +34,7 @@ struct ExternalSessionMapView: View {
                                   noteNumber: Binding.constant(0),
                                   mapNotes: Binding.constant([]))
                     StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
-                                                threshold: threshold)
+                                            threshold: threshold)
                 }.padding(.bottom)
                 if let selectedStream = selectedStream {
                     NavigationLink(destination: ThresholdsSettingsView(thresholdValues: threshold.thresholdsBinding,
@@ -44,13 +43,14 @@ struct ExternalSessionMapView: View {
                     }.padding([.bottom, .leading, .trailing])
                 }
                 ThresholdsSliderView(threshold: threshold)
-                    // Fixes labels covered by tabbar
+                // Fixes labels covered by tabbar
                     .padding([.bottom, .leading, .trailing])
             }
             Spacer()
         }
         .navigationBarTitleDisplayMode(.inline)
         .padding(.bottom)
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
     
     private func getValue(of measurement: MeasurementEntity) -> Double {

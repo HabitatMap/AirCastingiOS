@@ -99,23 +99,30 @@ struct SettingsView: View {
 
     private var main: some View {
         Form {
-            Section() {
-                signOutLink
+            Group {
+                Section() {
+                    signOutLink
+                }
+                settingsSection
+                #if BETA || DEBUG
+                Section() {
+                    navigateToAppConfigurationButton
+                    shareLogsButton
+                    Text(Strings.Settings.crashlyticsSectionTitle)
+                    crashButton
+                    createErrorButton
+                }
+                #endif
+                appInfoSection
             }
-            settingsSection
-            #if BETA || DEBUG
-            Section() {
-                navigateToAppConfigurationButton
-                shareLogsButton
-                Text(Strings.Settings.crashlyticsSectionTitle)
-                crashButton
-                createErrorButton
-            }
-            #endif
-            appInfoSection
+            .listRowBackground(Color.listBackgroundColor)
+        }
+        .onAppear {
+            UITableView.appearance().backgroundColor = UIColor(Color.formBackgroundColor)
         }
         .listStyle(GroupedListStyle())
         .navigationBarTitle(Strings.Settings.title)
+        .alert(item: $viewModel.alert, content: { $0.makeAlert() })
     }
 
     private var settingsSection: some View {
@@ -132,9 +139,15 @@ struct SettingsView: View {
                     disableMappingDescription
                 }
             }
+            VStack(alignment: .leading) {
+                dormantSessionsAlertSwitch
+                Spacer()
+                dormantSessionsAlertDescription
+            }
             keepScreenOnSwitch
             satelliteMapSwitch
             twentyFourHourFormatSwitch
+            syncOnlyThroughWifiSwitch
             VStack(alignment: .leading) {
                 temperatureSwitch
                 Spacer()
@@ -189,6 +202,11 @@ struct SettingsView: View {
         settingSwitch(toogle: $userSettings.twentyFourHour,
                       label: Strings.Settings.twentyFourHourFormat)
     }
+    
+    private var syncOnlyThroughWifiSwitch: some View {
+        settingSwitch(toogle: $userSettings.syncOnlyThroughWifi,
+                      label: Strings.Settings.syncOnlyThroughWifi)
+    }
 
     private var keepScreenOnSwitch: some View {
         settingSwitch(toogle: $userSettings.keepScreenOn,
@@ -217,6 +235,19 @@ struct SettingsView: View {
             .foregroundColor(.aircastingGray)
     }
     
+    
+    private var dormantSessionsAlertSwitch: some View {
+        settingSwitch(toogle: .init(get: { viewModel.dormantAlert },
+                                    set: { viewModel.dormantStreamAlertSettingChanged(to: $0) }),
+                      label: Strings.Settings.dormantSessionsAlert)
+    }
+    
+    private var dormantSessionsAlertDescription: some View {
+        Text(Strings.Settings.dormantSessionsAlertDescription)
+            .font(Fonts.muliRegularHeading3)
+            .foregroundColor(.aircastingGray)
+    }
+    
     private var temperatureSwitch: some View {
         settingSwitch(toogle: $userSettings.convertToCelsius,
                       label: Strings.Settings.temperature)
@@ -236,7 +267,7 @@ struct SettingsView: View {
                 HStack {
                     Text(Strings.Settings.backendSettings)
                         .font(Fonts.muliBoldHeading1)
-                        .accentColor(.black)
+                        .accentColor(.primary)
                     Spacer()
                     Image(systemName: "control")
                         .accentColor(.gray).opacity(0.6)
@@ -255,7 +286,7 @@ struct SettingsView: View {
                  HStack {
                      Text(Strings.Settings.clearSDTitle)
                          .font(Fonts.muliBoldHeading1)
-                         .accentColor(.black)
+                         .accentColor(.primary)
                      Spacer()
                      Image(systemName: "chevron.right")
                          .accentColor(.gray).opacity(0.6)

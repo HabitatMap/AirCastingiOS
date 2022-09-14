@@ -30,7 +30,9 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                     switch line {
                     case .line(let content):
                         let measurementsRow = self.parser.parseMeasurement(lineString: content)
-                        guard let measurements = measurementsRow, !sessionsToIgnore.contains(measurements.sessionUUID) else { return }
+                        guard let measurements = measurementsRow, !sessionsToIgnore.contains(measurements.sessionUUID) else {
+                            return
+                        }
                         
                         var session = processedSessions.first(where: { $0.uuid == measurements.sessionUUID })
                         if session == nil {
@@ -56,6 +58,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     }
     
     private func saveData(_ streamsWithMeasurements: [SDStream: [Measurement]], to storage: HiddenCoreDataMeasurementStreamStorage, with deviceID: String, sessionsToCreate: inout [SessionUUID]) {
+        Log.info("[SD Sync] Saving data: \(streamsWithMeasurements.count)")
         streamsWithMeasurements.forEach { (sdStream: SDStream, measurements: [Measurement]) in
             if sessionsToCreate.contains(sdStream.sessionUUID) {
                 createSession(storage: storage, sdStream: sdStream, location: measurements.first?.location, time: measurements.first?.time, sessionsToCreate: &sessionsToCreate)
@@ -81,6 +84,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     }
     
     private func saveMeasurements(measurements: [Measurement], storage: HiddenCoreDataMeasurementStreamStorage, sdStream: SDStream, deviceID: String) {
+        Log.info("[SD Sync] Saving measurements")
         do {
             var existingStreamID = try storage.existingMeasurementStream(sdStream.sessionUUID, name: sdStream.name.rawValue)
             if existingStreamID == nil {

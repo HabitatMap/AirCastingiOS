@@ -35,6 +35,12 @@ struct Strings {
                                                               comment: "")
         static let disableMappingDescription: String = NSLocalizedString("Turns off GPS tracking & session syncing. Use \"Share file\" to retrieve your measurements via email.",
                                                                          comment: "")
+        static let dormantSessionsAlert: String = NSLocalizedString("Dormant stream alert",
+                                                                    comment: "")
+        static let dormantSessionsAlertDescription: String = NSLocalizedString("Send email when active fixed sessions go dormant for >30 minutes",
+                                                                         comment: "")
+        static let failedDormantStreamAlertTitle: String = NSLocalizedString("Sorry, something went wrong", comment: "")
+        static let failedDormantStreamAlertMessage: String = NSLocalizedString("We couldn't change the alert settings on the server. Please try again later.", comment: "")
         static let temperature = NSLocalizedString("Temperature Units",
                                                    comment: "")
         static let celsiusDescription = NSLocalizedString("Use Celsius",
@@ -59,6 +65,7 @@ struct Strings {
                                                        comment: "")
         static let twentyFourHourFormat = NSLocalizedString("Use 24-hour format",
                                                        comment: "")
+        static let syncOnlyThroughWifi = NSLocalizedString("Sync only through Wi-Fi", comment: "")
         static let crashlyticsSectionTitle = "Crashlytics integration testing:"
         
         static let appConfig = "App config"
@@ -135,10 +142,6 @@ struct Strings {
                                                       comment: "It consists of few parts. Please consider them together. Whole text is following: First time here? Create an account")
         static let signUpButton_2 = NSLocalizedString("Create an account",
                                                       comment: "")
-        static let alertTitle = NSLocalizedString("Login Error",
-                                                  comment: "")
-        static let alertComment = NSLocalizedString("Login Error alert title",
-                                                    comment: "")
         static let InvalidCredentialText = NSLocalizedString("The profile name or password is incorrect. Please try again. ",
                                                              comment: "")
         static let noConnectionTitle = NSLocalizedString("No Internet Connection",
@@ -270,11 +273,15 @@ struct Strings {
                                                                    comment: "")
         static let connectButton: String = NSLocalizedString("Connect",
                                                              comment: "")
-        static let passwordTitle: String = NSLocalizedString("WiFi network name & password:",
+        static let passwordTitle: String = NSLocalizedString("Password for %@ network",
                                                              comment: "")
-        static let nameAndPasswordTitle: String = NSLocalizedString("Password for %@ network",
+        static let nameAndPasswordTitle: String = NSLocalizedString("WiFi network name & password:",
+                                                                    comment: "")
+        static let connectedNetworkTitle: String = NSLocalizedString("Connected to %@ network",
                                                                       comment: "")
-        static let differentNetwork: String = NSLocalizedString("Connect to a different WiFi network.",
+        static let differentNetwork: String = NSLocalizedString("Connect to a different WiFi network",
+                                                                comment: "")
+        static let updatePassword: String = NSLocalizedString("Update password",
                                                                 comment: "")
     }
     
@@ -821,13 +828,25 @@ struct Strings {
     enum SyncingABView {
         static let message: String = NSLocalizedString("Keep your AirBeam unplugged and close to your iPhone",
                                                        comment: "")
-        static let alertTitle: String = NSLocalizedString("SD card sync failed",
-                                                          comment: "")
-        static let alertMessage: String = NSLocalizedString("We're sorry, something unexpected caused the SD card sync to fail. Please try again", comment: "")
         static let startingSyncTitle: String = NSLocalizedString("Syncing...",
                                                                  comment: "")
         static let finishingSyncTitle: String = NSLocalizedString("Finalizing...",
                                                                   comment: "")
+    }
+    
+    enum SDSyncAlerts {
+        static let clearFailTitle: String = NSLocalizedString("Clearing SD card failed",
+                                                          comment: "")
+        static let clearFailMessage: String = NSLocalizedString("We're sorry, something unexpected caused clearing SD card to fail. You can try to clear the card again from settings view.", comment: "")
+        static let genericFailTitle: String = NSLocalizedString("SD card sync failed",
+                                                          comment: "")
+        static let genericFailMessage: String = NSLocalizedString("We're sorry, something unexpected caused the SD card sync to fail. Please try again", comment: "")
+        static let unidetifiableDeviceMessage: String = NSLocalizedString("Unable to identify the device", comment: "")
+        static let readingFilesFailMessage: String = NSLocalizedString("Data on SD card seems to be corrupted.", comment: "")
+        static let readingDataFailMessage: String = NSLocalizedString("Something interrupted connection with the AirBeam. Please try again.", comment: "")
+        static let processingFixedFailMessage: String = NSLocalizedString("Something went wrong when sending fixed sessions data to the server. Please try again later.", comment: "")
+        static let processingMobileFailMessage: String = NSLocalizedString("Something went wrong when saving mobile sessions data to the database. Please try again.", comment: "")
+        
     }
     
     enum SDSyncCompleteView {
@@ -871,6 +890,11 @@ struct Strings {
                                                             comment: "")
     }
     
+    enum NetworkAuthorizationAlert {
+        static let alertMessage: String = NSLocalizedString("Connect to the internet to create a profile or sign in.",
+                                                            comment: "")
+    }
+    
     enum MicrophoneAlert {
         static let title: String = NSLocalizedString("Allow AirCasting to record audio",
                                                      comment: "")
@@ -885,11 +909,26 @@ struct Strings {
                                                        comment: "")
     }
     
+    enum BluetoothSessionAlreadyRecordingAlert {
+        static let title: String = NSLocalizedString("There is already a mobile AirBeam session in progress",
+                                                     comment: "")
+        static let message: String = NSLocalizedString("A device can record only one session at a time.",
+                                                       comment: "")
+    }
+    
     enum InAppAlerts {
         static let noInternetConnectionTitle: String = NSLocalizedString("No internet connection",
                                                                    comment: "")
-        static let noInternetConnectionMessage: String = NSLocalizedString("To sign out, you must be connected to the Internet.",
+        static let noWifiConnectionTitle: String = NSLocalizedString("No Wi-Fi connection",
+                                                                   comment: "")
+        static let noInternetConnectionSignOutMessage: String = NSLocalizedString("To sign out, you must be connected to the Internet.",
                                                                      comment: "")
+        static let noInternetConnectionSyncMessage: String = NSLocalizedString("Connect device to the Internet to sync sessions.",
+                                                                     comment: "")
+        static let noInternetConnectionEditMessage: String = NSLocalizedString("Connect device to the Internet to edit sessions.",
+                                                                     comment: "")
+        static let noWifiConnectionSyncMessage: String = NSLocalizedString("Connect device to Wi-Fi network to sync sessions or turn off \"sync only through Wi-Fi\" setting.",
+                                                                   comment: "")
         static let noInternetConnectionButton: String = NSLocalizedString("Got it!",
                                                                     comment: "")
         static let failedTitle: String = NSLocalizedString("Failed",
@@ -939,6 +978,8 @@ struct Strings {
         static let logoutWarningConfirmButton: String = NSLocalizedString("Confirm",
                                                                           comment: "")
         static let fetchingDataFailedMessage: String = NSLocalizedString("Something went wrong. Please try again later.", comment: "")
+        static let signInErrorTitle: String = NSLocalizedString("Cannot sign in",
+                                                                          comment:  "")
     }
     
     enum AddNoteView {
@@ -1046,6 +1087,13 @@ struct Strings {
                                                                , comment:  "")
         static let loggingOutInBackground: String = NSLocalizedString("Currently logging out in the background. You can fill out credentials.", comment:  "")
         
+    }
+    
+    enum ConnectionAlerts {
+        static let noInternetTitle: String = NSLocalizedString("No Internet Connection"
+                                                               , comment:  "")
+        static let noInternetMessage: String = NSLocalizedString("Please, make sure your device is connected to the internet."
+                                                               , comment:  "")
     }
     
     enum AuthErrors {

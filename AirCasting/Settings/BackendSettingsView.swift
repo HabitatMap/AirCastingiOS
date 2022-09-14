@@ -12,11 +12,13 @@ struct BackendSettingsView: View {
     @State private var pathText: String = ""
     @State private var portText: String = ""
     @State private var url: URL?
-    @State private var alertPresented = false
+    @State private var alert: AlertInfo?
     
     @InjectedObject private var userState: UserState
     @Injected private var logoutController: LogoutController
     @Injected private var urlProvider: URLProvider
+    @InjectedObject private var userSettings: UserSettings
+    @Injected private var networkChecker: NetworkChecker
     
     private var urlWithoutPort: String? {
         let components = URLComponents(url: urlProvider.baseAppURL, resolvingAgainstBaseURL: false)!
@@ -32,6 +34,8 @@ struct BackendSettingsView: View {
     
     var body: some View {
         ZStack {
+            Color.aircastingBackground
+                .ignoresSafeArea()
             XMarkButton()
             VStack(alignment: .leading) {
                 title
@@ -48,12 +52,9 @@ struct BackendSettingsView: View {
                 oKButton
                 cancelButton
             }
-            .alert(isPresented: $alertPresented, content: {
-                Alert(title: Text(Strings.BackendSettings.alertTitle), message: Text(Strings.BackendSettings.alertMessage),  dismissButton: .default(Text(Strings.Commons.ok)))
-            })
+            .alert(item: $alert, content: { $0.makeAlert() })
             .padding()
         }
-        
     }
     
     private var title: some View {
@@ -64,6 +65,16 @@ struct BackendSettingsView: View {
     
     private var oKButton: some View {
         Button {
+            guard networkChecker.connectionAvailable else {
+                alert = InAppAlerts.noNetworkAlert()
+                return
+            }
+            
+            guard !userSettings.syncOnlyThroughWifi || networkChecker.isUsingWifi else {
+                alert = InAppAlerts.noWifiNetworkSyncAlert()
+                return
+            }
+            
             urlProvider.baseAppURL = url ?? URL(string: "http://aircasting.org/")!
             presentationMode.wrappedValue.dismiss()
             do {
@@ -72,7 +83,7 @@ struct BackendSettingsView: View {
                     userState.currentState = .idle
                 }
             } catch {
-                alertPresented = true
+                alert = InAppAlerts.backendSettingsLogoutAlert()
                 userState.currentState = .idle
                 Log.info("Error when logging out - \(error)")
             }

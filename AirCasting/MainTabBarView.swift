@@ -17,7 +17,7 @@ struct MainTabBarView: View {
     @State var plusImage: String = PlusIcon.unselected.string
     @InjectedObject private var bluetoothManager: BluetoothManager
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
-    @StateObject var selectedSection = SelectSection()
+    @StateObject var selectedSection = SelectedSection()
     @StateObject var reorderButton = ReorderButton()
     @StateObject var searchAndFollow = SearchAndFollowButton()
     @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
@@ -26,6 +26,7 @@ struct MainTabBarView: View {
     @StateObject var sessionContext: CreateSessionContext
     @StateObject var coreDataHook: CoreDataHook
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
+    @Environment(\.colorScheme) var colorScheme
     
     private var sessions: [Sessionable] {
         coreDataHook.sessions
@@ -42,11 +43,11 @@ struct MainTabBarView: View {
                 tabSelection.selection = .dashboard
                 try! coreDataHook.setup(selectedSection: .mobileActive)
                 if sessions.contains(where: { $0.isActive }) {
-                    selectedSection.selectedSection = .mobileActive
+                    selectedSection.section = .mobileActive
                 } else {
-                    selectedSection.selectedSection = .following
+                    selectedSection.section = .following
                 }
-                try! coreDataHook.setup(selectedSection: selectedSection.selectedSection)
+                try! coreDataHook.setup(selectedSection: selectedSection.section)
             } label: {
                 Rectangle()
                     .fill(Color.clear)
@@ -58,10 +59,7 @@ struct MainTabBarView: View {
             measurementUpdatingService.updateAllSessionsMeasurements()
         }
         .onAppear {
-            let navBarAppearance = UINavigationBar.appearance()
-            navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue),
-                                                         .font: Fonts.systemFontBoldTitle1]
-            UITabBar.appearance().backgroundColor = .systemBackground
+            UITabBar.appearance().backgroundColor = .aircastingBackground
             let appearance = UITabBarAppearance()
             appearance.backgroundImage = UIImage()
             appearance.shadowImage = UIImage.mainTabBarShadow
@@ -97,16 +95,16 @@ private extension MainTabBarView {
             DashboardView(coreDataHook: coreDataHook)
         }.navigationViewStyle(StackNavigationViewStyle())
             .tabItem {
-                Image(homeImage)
+                createTabBarImage(homeImage)
             }
             .tag(TabBarSelection.Tab.dashboard)
             .overlay(
                 Group{
                     HStack {
-                        if !searchAndFollow.isHidden && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) && selectedSection.selectedSection == .following {
+                        if !searchAndFollow.isHidden && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) && selectedSection.section == .following {
                             searchAndFollowButton
                         }
-                        if !reorderButton.isHidden && sessions.count > 1 && selectedSection.selectedSection == .following {
+                        if !reorderButton.isHidden && sessions.count > 1 && selectedSection.section == .following {
                             reorderingButton
                         }
                     }
@@ -118,7 +116,7 @@ private extension MainTabBarView {
     private var createSessionTab: some View {
         ChooseSessionTypeView(sessionContext: sessionContext)
             .tabItem {
-                Image(plusImage)
+                createTabBarImage(plusImage)
             }
             .tag(TabBarSelection.Tab.createSession)
     }
@@ -126,7 +124,7 @@ private extension MainTabBarView {
     private var settingsTab: some View {
         SettingsView(sessionContext: sessionContext)
             .tabItem {
-                Image(settingsImage)
+                createTabBarImage(settingsImage)
             }
             .tag(TabBarSelection.Tab.settings)
     }
@@ -138,6 +136,8 @@ private extension MainTabBarView {
                     reorderButton.reorderIsOn = true
                 } label: {
                     Image("draggable-icon")
+                        .renderingMode(.template)
+                        .foregroundColor(colorScheme == .light ? .black : .aircastingGray)
                         .frame(width: 60, height: 60)
                         .imageScale(.large)
                 }
@@ -175,6 +175,18 @@ private extension MainTabBarView {
             .offset(CGSize(width: 0.0, height: 40.0))
         }
     }
+    
+    private func createTabBarImage(_ imageName: String) -> some View {
+        Group {
+            if colorScheme == .light {
+                Image(imageName)
+            } else {
+                Image(imageName)
+                    .renderingMode(.template)
+                    .foregroundColor(.white)
+            }
+        }
+    }
 }
 
 class TabBarSelection: ObservableObject {
@@ -187,8 +199,19 @@ class TabBarSelection: ObservableObject {
     }
 }
 
-class SelectSection: ObservableObject {
-    @Published var selectedSection = SelectedSection.following
+class SelectedSection: ObservableObject {
+    @Published var section = DashboardSection.following
+}
+
+enum DashboardSection: String, CaseIterable {
+    case following = "Following"
+    case mobileActive = "Mobile active"
+    case mobileDormant = "Mobile dormant"
+    case fixed = "Fixed"
+    
+    var localizedString: String {
+        NSLocalizedString(rawValue, comment: "")
+    }
 }
 
 class EmptyDashboardButtonTapped: ObservableObject {

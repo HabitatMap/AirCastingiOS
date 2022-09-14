@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct SyncingABView<VM: SDSyncViewModel>: View {
-    @Environment(\.presentationMode) var presentationMode
     @StateObject var viewModel: VM
     @State var progressTitle: String?
     @State var progressCount: String?
@@ -31,15 +30,17 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
             }
             Spacer()
         }
+        .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+        .onChange(of: viewModel.shouldDismiss, perform: { $0 ? creatingSessionFlowContinues = false : nil })
         .padding()
         .background(navigationLink)
+        .background(Color.aircastingBackground.ignoresSafeArea())
         .onReceive(viewModel.progress, perform: { newProgress in
             if let progress = newProgress {
                 self.progressTitle = progress.title
                 self.progressCount = "\(progress.current)/\(progress.total)"
             }
         })
-        .alert(isPresented: $viewModel.presentFailedSyncAlert, content: { connectionTimeOutAlert })
         .onAppear(perform: {
             /* App is pushing the next view before this view is fully loaded.
              It resulted with showing next view and going back to this one.
@@ -86,14 +87,6 @@ extension SyncingABView {
                 .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
                 .scaleEffect(2)
         }
-    }
-
-    var connectionTimeOutAlert: Alert {
-        Alert(title: Text(Strings.SyncingABView.alertTitle),
-              message: Text(Strings.SyncingABView.alertMessage),
-              dismissButton: .default(Text(Strings.Commons.gotIt), action: {
-            presentationMode.wrappedValue.dismiss()
-        }))
     }
 
     var navigationLink: some View {
