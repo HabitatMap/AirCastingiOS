@@ -21,9 +21,9 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     private lazy var context: NSManagedObjectContext = persistenceController.createContext()
     
     var createdSessions: [SessionEntity] = []
+    var processedSessions = Set<SDSession>()
     
     func saveDataToDb(fileURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
-        var processedSessions = Set<SDSession>()
         var streamsWithMeasurements: [SDStream: [Measurement]] = [:]
         
         // We don't want to save data for session which have already been finished.
@@ -32,40 +32,65 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         var sessionsToIgnore: [SessionUUID] = []
         
         var i = 0
-
+        let bufferThreshold = 5000
+        var readLines = 0
+        var uploadFailed = false
         
 //        measurementStreamStorage.accessStorage { storage in
             do {
                 try self.fileLineReader.readLines(of: fileURL, progress: { line in
+                    guard !uploadFailed else { return }
                     switch line {
                     case .line(let content):
                         context.perform {
-                            Log.info("[SD sync] \(i)")
-                            i += 1
+                            readLines += 1
                             let measurementsRow = self.parser.parseMeasurement(lineString: content)
+                            Log.info("[SD sync] \(i): \(measurementsRow!)")
+                            
+                            i += 1
                             guard let measurements = measurementsRow, !sessionsToIgnore.contains(measurements.sessionUUID) else {
                                 return
                             }
                             
-                            var session = processedSessions.first(where: { $0.uuid == measurements.sessionUUID })
+                            var session = self.processedSessions.first(where: { $0.uuid == measurements.sessionUUID })
                             if session == nil {
                                 session = self.processSession(sessionUUID: measurements.sessionUUID, deviceID: deviceID, sessionsToIgnore: &sessionsToIgnore, sessionsToCreate: &sessionsToCreate)
                                 guard let createdSession = session else { return }
-                                processedSessions.insert(createdSession)
+                                self.processedSessions.insert(createdSession)
                             }
                             
                             guard session!.lastMeasurementTime == nil || measurements.date > session!.lastMeasurementTime! else { return }
                             
                             self.enqueueForSaving(measurements: measurements, buffer: &streamsWithMeasurements)
+                            
+                            guard readLines == bufferThreshold else { return }
+                            
+                            do {
+                                try self.saveData(streamsWithMeasurements, with: deviceID, sessionsToCreate: &sessionsToCreate)
+                                streamsWithMeasurements = [:]
+                                readLines = 0
+                            } catch {
+                                Log.error("Saving measurements failed")
+                                uploadFailed = true
+                                return
+                            }
                         }
                     case .endOfFile:
                         Log.info("Reached end of csv file")
                     }
                 })
                 
+                guard !uploadFailed else {
+                    completion(.failure(UploadingError.uploadError))
+                    return
+                }
+                
                 context.perform {
                     do {
-                        self.saveData(streamsWithMeasurements, with: deviceID, sessionsToCreate: &sessionsToCreate)
+                        try self.saveData(streamsWithMeasurements, with: deviceID, sessionsToCreate: &sessionsToCreate)
+                        try self.processedSessions.forEach { session in
+                            try self.setStatusToFinishedAndUpdateEndTime(for: session.uuid)
+                        }
                         try self.context.save()
                         completion(.success(Array(Set(streamsWithMeasurements.keys.map(\.sessionUUID)))))
                     } catch {
@@ -78,19 +103,22 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
 //        }
     }
     
-    private func saveData(_ streamsWithMeasurements: [SDStream: [Measurement]], with deviceID: String, sessionsToCreate: inout [SessionUUID]) {
+    private func saveData(_ streamsWithMeasurements: [SDStream: [Measurement]], with deviceID: String, sessionsToCreate: inout [SessionUUID]) throws {
         Log.info("[SD Sync] Saving data: \(streamsWithMeasurements.count)")
-        streamsWithMeasurements.forEach { (sdStream: SDStream, measurements: [Measurement]) in
+        try streamsWithMeasurements.forEach { (sdStream: SDStream, measurements: [Measurement]) in
+            Log.info("[SD Sync] Saving \(measurements.count) measurements")
             if sessionsToCreate.contains(sdStream.sessionUUID) {
                 createSession(sdStream: sdStream, location: measurements.first?.location, time: measurements.first?.time, sessionsToCreate: &sessionsToCreate)
                 saveMeasurements(measurements: measurements, sdStream: sdStream, deviceID: deviceID)
             } else {
                 saveMeasurements(measurements: measurements, sdStream: sdStream, deviceID: deviceID)
-                do {
-                    try setStatusToFinishedAndUpdateEndTime(for: sdStream.sessionUUID, endTime: measurements.last?.time)
-                } catch {
-                    Log.info("Error setting status to finished and updating end time: \(error)")
-                }
+            }
+            do {
+                Log.info("[SD Sync] Saving context")
+                try self.context.save()
+            } catch {
+                Log.error("[SD Sync] context save failed")
+                throw error
             }
         }
     }
@@ -144,7 +172,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         MeasurementStream(sensorName: sensorName, sensorPackageName: sensorPackageName)
     }
     
-    //MARK: - Storage stuff
+    // MARK: - Storage stuff
     
     private func getSession(with sessionUUID: SessionUUID) throws -> SessionEntity {
         if let session = createdSessions.first(where: { $0.uuid == sessionUUID}) {
@@ -230,10 +258,11 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         }
     }
     
-    private func setStatusToFinishedAndUpdateEndTime(for sessionUUID: SessionUUID, endTime: Date?) throws {
+    private func setStatusToFinishedAndUpdateEndTime(for sessionUUID: SessionUUID) throws {
         let sessionEntity = try getSession(with: sessionUUID)
         sessionEntity.status = .FINISHED
-        guard endTime != nil else { return }
+        guard let endTime = sessionEntity.lastMeasurementTime else { return }
+        Log.info("SD Sync end time for session \(sessionEntity.uuid) \(sessionEntity.name ?? ""): \(endTime)")
         sessionEntity.endTime = endTime
     }
 }

@@ -5,5 +5,5 @@ import Foundation
 
 struct SDSession: Hashable {
     let uuid: SessionUUID
-    let lastMeasurementTime: Date?
+    var lastMeasurementTime: Date?
 }
