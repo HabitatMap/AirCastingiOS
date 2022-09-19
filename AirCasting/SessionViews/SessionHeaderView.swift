@@ -181,7 +181,7 @@ private extension SessionHeaderView {
             session.editable ? actionsMenuEditButton : nil
             session.shareable ? actionsMenuShareButton : nil
             session.deletable ? actionsMenuDeleteButton : nil
-            session.isFixed ? actionsMenuThresholdAlertButton : nil
+            session.isFixed && featureFlagsViewModel.enabledFeatures.contains(.thresholdAlerts) ? actionsMenuThresholdAlertButton : nil
             if session.deviceType == .AIRBEAM3 && session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
                 actionsMenuMobileEnterStandaloneMode
             }
