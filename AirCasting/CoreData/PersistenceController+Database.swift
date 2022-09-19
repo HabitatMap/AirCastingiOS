@@ -58,6 +58,7 @@ extension PersistenceController: SessionInsertable {
                         noteEntity.lat = $0.latitude
                         noteEntity.long = $0.longitude
                         noteEntity.number = Int64($0.number)
+                        noteEntity.photoLocation = $0.photoLocation
                         noteEntity.session = sessionEntity
                     }
                     $0.measurementStreams?.forEach {
