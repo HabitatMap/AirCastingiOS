@@ -57,7 +57,6 @@ class SDSyncController {
         airbeamServices.downloadData(from: airbeamConnection, progress: { [weak self] chunk in
             // Filesystem write
             self?.writingQueue.async {
-                self?.fileWriter.writeToFile(data: chunk.payload, sessionType: chunk.sessionType)
                 progress(.inProgress(.init(sessionType: chunk.sessionType, progress: chunk.progress)))
             }
         }, completion: { [weak self] result in
@@ -71,6 +70,7 @@ class SDSyncController {
                     Log.info("[SD SYNC] Files: \(files)")
                     guard !files.isEmpty else {
                         Log.info("[SD SYNC] No files. Finishing sd sync")
+                        Log.info("### completion success called in line 75")
                         completion(.success(()))
                         return
                     }
@@ -104,6 +104,7 @@ class SDSyncController {
                 switch result {
                 case .success(let fixedSessionsUUIDs):
                     self.measurementsDownloader.download(sessionsUUIDs: fixedSessionsUUIDs)
+                    Log.info("### completion success called in line 111")
                     completion(.success(()))
                 case .failure:
                     completion(.failure(.fixedSessionsProcessingFailure))
@@ -121,12 +122,14 @@ class SDSyncController {
                 if let fixedFileURL = fixedFileURL {
                     handleFixedFile(fixedFileURL: fixedFileURL)
                 } else {
+                    Log.info("### completion success called in line 129")
                     completion(.success(()))
                 }
             }
         } else if let fixedFileURL = fixedFileURL {
             handleFixedFile(fixedFileURL: fixedFileURL)
         } else {
+            Log.info("### completion success called in line 135")
             completion(.success(()))
         }
     }
@@ -137,6 +140,7 @@ class SDSyncController {
             switch result {
             case .success(let sessions):
                 Log.info("[SD Sync] Finished processing fixed file with success")
+                Log.info("### completion success called in line 147")
                 completion(.success(sessions))
             case .failure(let error):
                 Log.error("[SD Sync] Failed to upload sessions to backend: \(error.localizedDescription)")
@@ -164,15 +168,18 @@ class SDSyncController {
     }
     
     func clearSDCard(_ airbeamConnection: CBPeripheral, completion: @escaping (Bool) -> Void) {
-        airbeamServices.clearSDCard(of: airbeamConnection) { result in
-            switch result {
-            case .success():
-                completion(true)
-            case .failure(let error):
-                Log.error("Failed to clear SD card: \(error.localizedDescription)")
-                completion(false)
-            }
-        }
+        completion(true)
+        return
+        
+//        airbeamServices.clearSDCard(of: airbeamConnection) { result in
+//            switch result {
+//            case .success():
+//                completion(true)
+//            case .failure(let error):
+//                Log.error("Failed to clear SD card: \(error.localizedDescription)")
+//                completion(false)
+//            }
+//        }
     }
     
     private func startBackendSync() {

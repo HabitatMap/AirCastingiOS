@@ -33,8 +33,10 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         
         var i = 0
         let bufferThreshold = 5000
-        var readLines = 0
+        var savedLines = 0
         var uploadFailed = false
+        
+        var prevDate: Date?
         
 //        measurementStreamStorage.accessStorage { storage in
             do {
@@ -43,14 +45,22 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                     switch line {
                     case .line(let content):
                         context.perform {
-                            readLines += 1
                             let measurementsRow = self.parser.parseMeasurement(lineString: content)
-                            Log.info("[SD sync] \(i): \(measurementsRow!)")
+                            Log.info("[SD sync] \(i) - \(savedLines): \(measurementsRow!.sessionUUID) \(measurementsRow!.date)")
                             
                             i += 1
                             guard let measurements = measurementsRow, !sessionsToIgnore.contains(measurements.sessionUUID) else {
+                                Log.info("[SD sync Ignoring]")
                                 return
                             }
+                            
+                            if prevDate != nil {
+                                if measurementsRow!.date.timeIntervalSince(prevDate!) > 1 {
+                                    Log.info("### time difference was: \(measurementsRow!.date.timeIntervalSince(prevDate!))")
+                                }
+                            }
+                            
+                            prevDate = measurementsRow!.date
                             
                             var session = self.processedSessions.first(where: { $0.uuid == measurements.sessionUUID })
                             if session == nil {
@@ -63,12 +73,13 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                             
                             self.enqueueForSaving(measurements: measurements, buffer: &streamsWithMeasurements)
                             
-                            guard readLines == bufferThreshold else { return }
+                            savedLines += 1
+                            guard savedLines == bufferThreshold else { return }
                             
                             do {
                                 try self.saveData(streamsWithMeasurements, with: deviceID, sessionsToCreate: &sessionsToCreate)
                                 streamsWithMeasurements = [:]
-                                readLines = 0
+                                savedLines = 0
                             } catch {
                                 Log.error("Saving measurements failed")
                                 uploadFailed = true
@@ -80,24 +91,28 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                     }
                 })
                 
-                guard !uploadFailed else {
-                    completion(.failure(UploadingError.uploadError))
-                    return
-                }
-                
                 context.perform {
+                    guard !uploadFailed else {
+                        Log.info("##### completion called in line 85")
+                        completion(.failure(UploadingError.uploadError))
+                        return
+                    }
+                    
                     do {
                         try self.saveData(streamsWithMeasurements, with: deviceID, sessionsToCreate: &sessionsToCreate)
                         try self.processedSessions.forEach { session in
                             try self.setStatusToFinishedAndUpdateEndTime(for: session.uuid)
                         }
                         try self.context.save()
-                        completion(.success(Array(Set(streamsWithMeasurements.keys.map(\.sessionUUID)))))
+                        Log.info("##### completion called in line 98")
+                        completion(.success(self.processedSessions.map(\.uuid)))
                     } catch {
+                        Log.info("##### completion called in line 101")
                         completion(.failure(error))
                     }
                 }
             } catch {
+                Log.info("##### completion called in line 105")
                 completion(.failure(error))
             }
 //        }
@@ -109,8 +124,10 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
             Log.info("[SD Sync] Saving \(measurements.count) measurements")
             if sessionsToCreate.contains(sdStream.sessionUUID) {
                 createSession(sdStream: sdStream, location: measurements.first?.location, time: measurements.first?.time, sessionsToCreate: &sessionsToCreate)
+                Log.info("[SD Sync] saving measurements for created session \(sdStream.sessionUUID)")
                 saveMeasurements(measurements: measurements, sdStream: sdStream, deviceID: deviceID)
             } else {
+                Log.info("[SD Sync] saving measurements for existing session \(sdStream.sessionUUID)")
                 saveMeasurements(measurements: measurements, sdStream: sdStream, deviceID: deviceID)
             }
             do {
@@ -249,6 +266,17 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     }
     
     func addMeasurements(_ measurements: [Measurement], toStream stream: MeasurementStreamEntity) {
+        guard let sessionStratTime = stream.session?.startTime else {
+            Log.error("No session start time")
+            return
+        }
+        
+        guard let lastMeasurementTime = measurements.last?.time else { return }
+        
+        if lastMeasurementTime.timeIntervalSince(sessionStratTime) >= 60*60*2  {
+            
+        }
+        
         measurements.forEach { measurement in
             let newMeasurement = MeasurementEntity(context: context)
             newMeasurement.location = measurement.location
@@ -264,5 +292,9 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         guard let endTime = sessionEntity.lastMeasurementTime else { return }
         Log.info("SD Sync end time for session \(sessionEntity.uuid) \(sessionEntity.name ?? ""): \(endTime)")
         sessionEntity.endTime = endTime
+    }
+    
+    private func averageMeasurements(_ measurements: [Measurement]) {
+        
     }
 }
