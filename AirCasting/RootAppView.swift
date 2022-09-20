@@ -17,28 +17,31 @@ struct RootAppView: View {
     
     var body: some View {
         ZStack {
-            if userAuthenticationSession.isLoggedIn && userState.currentState != .loggingOut {
-                MainAppView()
-                    .onAppear {
-                        signInPersistanceObserved.clearSavedStatesWithCredentials()
-                    }
-            } else if !lifeTimeEventsProvider.hasEverPassedOnBoarding {
-                NavigationView {
-                    GetStarted(completion: {
-                        self.lifeTimeEventsProvider.hasEverPassedOnBoarding = true
-                    })
-                }
-                .navigationViewStyle(.stack)
-            } else {
-                NavigationView {
-                    if signInPersistanceObserved.credentialsScreen == .signIn {
-                        SignInView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }).environmentObject(lifeTimeEventsProvider)
-                    } else {
-                        CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }).environmentObject(lifeTimeEventsProvider)
-                    }
-                }
-                .navigationViewStyle(.stack)
-            }
+            _MapView(type: .terrain, trackingStyle: .user)
+            
+            
+//            if userAuthenticationSession.isLoggedIn && userState.currentState != .loggingOut {
+//                MainAppView()
+//                    .onAppear {
+//                        signInPersistanceObserved.clearSavedStatesWithCredentials()
+//                    }
+//            } else if !lifeTimeEventsProvider.hasEverPassedOnBoarding {
+//                NavigationView {
+//                    GetStarted(completion: {
+//                        self.lifeTimeEventsProvider.hasEverPassedOnBoarding = true
+//                    })
+//                }
+//                .navigationViewStyle(.stack)
+//            } else {
+//                NavigationView {
+//                    if signInPersistanceObserved.credentialsScreen == .signIn {
+//                        SignInView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }).environmentObject(lifeTimeEventsProvider)
+//                    } else {
+//                        CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }).environmentObject(lifeTimeEventsProvider)
+//                    }
+//                }
+//                .navigationViewStyle(.stack)
+//            }
         }
         .environment(\.managedObjectContext, Resolver.resolve(PersistenceController.self).viewContext) //TODO: Where is this used??
         .onAppWentToBackground {

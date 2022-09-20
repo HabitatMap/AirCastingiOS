@@ -357,6 +357,8 @@
 		B3AAACF5286DC07600DFBD36 /* LevelMeasurementControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AAACF4286DC07600DFBD36 /* LevelMeasurementControllerTests.swift */; };
 		B3AAACF7286DD91700DFBD36 /* DecibelSamplerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AAACF6286DD91700DFBD36 /* DecibelSamplerTests.swift */; };
 		B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */; };
+		B3BDD35C28CB684200913622 /* _MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BDD35B28CB684200913622 /* _MapView.swift */; };
+		B3BDD35D28CB6C5B00913622 /* CLLocation+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C6D07F289062E100A25F5F /* CLLocation+Helpers.swift */; };
 		B3C3F8B92695A295003E2CB4 /* StatisticsContainerViewModelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C3F8B82695A295003E2CB4 /* StatisticsContainerViewModelable.swift */; };
 		B3C6D07E28905FCC00A25F5F /* LocationServiceAdapterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C6D07D28905FCC00A25F5F /* LocationServiceAdapterTests.swift */; };
 		B3C6D080289062E100A25F5F /* CLLocation+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C6D07F289062E100A25F5F /* CLLocation+Helpers.swift */; };
@@ -920,6 +922,7 @@
 		B3AAACF4286DC07600DFBD36 /* LevelMeasurementControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelMeasurementControllerTests.swift; sourceTree = "<group>"; };
 		B3AAACF6286DD91700DFBD36 /* DecibelSamplerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecibelSamplerTests.swift; sourceTree = "<group>"; };
 		B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+MeasurementStatistics.swift"; sourceTree = "<group>"; };
+		B3BDD35B28CB684200913622 /* _MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _MapView.swift; sourceTree = "<group>"; };
 		B3C3F8B82695A295003E2CB4 /* StatisticsContainerViewModelable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsContainerViewModelable.swift; sourceTree = "<group>"; };
 		B3C6D07D28905FCC00A25F5F /* LocationServiceAdapterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationServiceAdapterTests.swift; sourceTree = "<group>"; };
 		B3C6D07F289062E100A25F5F /* CLLocation+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Helpers.swift"; sourceTree = "<group>"; };
@@ -1740,6 +1743,7 @@
 		AC8D6C6825C049C200ED74D1 /* Map */ = {
 			isa = PBXGroup;
 			children = (
+				B3BDD35A28CB67D600913622 /* _Map */,
 				DD7B74AA278C63F80072DDF1 /* style.json */,
 				AC986BE42886F4EB00E736B0 /* darkStyle.json */,
 				750A51D62754D3E800D6F4E7 /* Heatmap */,
@@ -2226,6 +2230,14 @@
 				B3AAACF6286DD91700DFBD36 /* DecibelSamplerTests.swift */,
 			);
 			path = MicrophoneSessions;
+			sourceTree = "<group>";
+		};
+		B3BDD35A28CB67D600913622 /* _Map */ = {
+			isa = PBXGroup;
+			children = (
+				B3BDD35B28CB684200913622 /* _MapView.swift */,
+			);
+			path = _Map;
 			sourceTree = "<group>";
 		};
 		B3C6D0812890630900A25F5F /* Adapters */ = {
@@ -3237,6 +3249,7 @@
 				AC32041F25CC485E00A68520 /* ConnectingABView.swift in Sources */,
 				ACD32A4F2600A8DD00818946 /* SettingsView.swift in Sources */,
 				4F8CDBD4265F8EE000976B25 /* SessionDataEraser.swift in Sources */,
+				B3BDD35D28CB6C5B00913622 /* CLLocation+Helpers.swift in Sources */,
 				AC006D29275F52CB00E99019 /* CSVMeasurementStream.swift in Sources */,
 				B3C6D0832890631900A25F5F /* LocationServiceAdapter.swift in Sources */,
 				FA396CA128A246BA00F8067C /* SessionStorage.swift in Sources */,
@@ -3469,6 +3482,7 @@
 				AC8CFF7725ECF8B100FB2918 /* HexMessagesBuilder.swift in Sources */,
 				FA4F1B732817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift in Sources */,
 				336A909527A48CA400851100 /* ReorderingSessionHeader.swift in Sources */,
+				B3BDD35C28CB684200913622 /* _MapView.swift in Sources */,
 				33FD502227A144B300162384 /* SingleMeasurementView.swift in Sources */,
 				338C30E225F1044B00E0305C /* PersistenceController.swift in Sources */,
 				B3FD77C2267C94AF00E97CC2 /* SessionSynchronizationContextProvidable.swift in Sources */,

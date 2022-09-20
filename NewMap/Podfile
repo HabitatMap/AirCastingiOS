@@ -1,0 +1,4 @@
+target 'NewMap' do
+  use_frameworks!
+  pod 'GoogleMaps', '~>4.0'
+end

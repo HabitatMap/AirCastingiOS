@@ -27,15 +27,20 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
     // when no object really needs location. This is why we're using this counter
     private var locationStartReference: Int = 0
     private let referenceLock = NSRecursiveLock()
-    private(set) var locationState: LocationState = .denied
+    private(set) var locationState: LocationState = .denied {
+        didSet {
+            guard locationState != oldValue, locationState == .granted else { return }
+            self.locationManager.requestLocation()
+        }
+    }
     
     var location: CurrentValueSubject<CLLocation?, Never> = .init(nil)
     
     init(locationManager: CLLocationManager) {
         self.locationManager = locationManager
         super.init()
-        self.updateAuthorizationState()
         self.locationManager.delegate = self
+        self.updateAuthorizationState()
     }
     
     func start() {
@@ -89,5 +94,32 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
         @unknown default:
             fatalError()
         }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        Log.warning("Location fetch failed with error: \(error.localizedDescription)")
+    }
+}
+
+class UserTrackerAdapter: UserTracker {
+    private let locationTracker: LocationTracker
+    private var locationCancellable: AnyCancellable?
+    
+    init(_ locationTracker: LocationTracker) {
+        self.locationTracker = locationTracker
+    }
+    
+    func startTrackingUserPosision(_ newPos: @escaping (CLLocation) -> Void) {
+        Log.verbose("## Starting tracking location")
+        locationTracker.start()
+        locationCancellable = locationTracker.location.sink {
+            Log.verbose("## New location")
+            newPos($0 ?? .applePark)
+        }
+    }
+    
+    deinit {
+        Log.verbose("## Stopping tracking location")
+        locationTracker.stop()
     }
 }

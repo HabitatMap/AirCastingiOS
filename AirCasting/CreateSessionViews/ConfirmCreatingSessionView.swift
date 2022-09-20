@@ -108,11 +108,25 @@ struct ConfirmCreatingSessionView: View {
                 ZStack {
                     if sessionContext.sessionType == .mobile {
                         if !sessionContext.locationless {
-                            CreatingSessionMapView(isMyLocationEnabled: true)
+                            _MapView(path: [],
+                                     type: .normal,
+                                     trackingStyle: .user,
+                                     userIndicatorStyle: .standard,
+                                     userTracker: UserTrackerAdapter(locationTracker),
+                                     markers: [])
+//                            CreatingSessionMapView(isMyLocationEnabled: true)
                         }
                     } else if !(sessionContext.isIndoor ?? false) {
-                        CreatingSessionMapView(isMyLocationEnabled: false, startingLocation: sessionContext.startingLocation)
-                            .disabled(true)
+                        _MapView(path: [],
+                                 type: .normal,
+                                 trackingStyle: .none,
+                                 userIndicatorStyle: .none,
+                                 userTracker: UserTrackerAdapter(locationTracker),
+                                 markers: [])
+                        .disabled(true)
+                        
+//                        CreatingSessionMapView(isMyLocationEnabled: false, startingLocation: sessionContext.startingLocation)
+//                            .disabled(true)
                         // It needs to be disabled to prevent user interaction (swiping map) because it is only conformation screen
                         dot
                     }
