@@ -48,6 +48,16 @@ class SDCardMeasurementsParser {
                                      pm2_5: pm2_5,
                                      pm10: pm10)
     }
+    
+    func getUUID(lineString: String) -> String? {
+        let measurementInfo = lineString.split(separator: ",")
+        guard measurementInfo.count == 13 else {
+            Log.warning("Line corrupted: \(lineString)")
+            return nil
+        }
+        
+        return String(measurementInfo[SDCardCSVFileFactory.Header.uuid.rawValue])
+    }
 }
 
 class SDParsingUtils {

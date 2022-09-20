@@ -18,7 +18,11 @@ class SDCardFixedSessionsUploadingService {
     
     private let bufferThreshold = 50
     
-    func processAndUpload(fileURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
+    func processAndUpload(filesDirectoryURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
+        // iterate over files
+    }
+    
+    private func processAndUpload(fileURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
         DispatchQueue.global().async {
             var sessionsForUpload = Set<SessionUUID>()
             var streamsWithMeasurements: [SDStream: [Measurement]] = [:]
@@ -104,7 +108,7 @@ class SDCardFixedSessionsUploadingService {
         return doesSessionExist
     }
     
-    func processAndSync(streamsWithMeasurements: [SDStream: [Measurement]], deviceID: String) -> Bool {
+    private func processAndSync(streamsWithMeasurements: [SDStream: [Measurement]], deviceID: String) -> Bool {
         assert(!Thread.isMainThread)
         Log.info("Starting streams upload")
         let uploadParams = getSyncParams(streamsWithMeasurements: streamsWithMeasurements, deviceID: deviceID)

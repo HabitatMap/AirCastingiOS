@@ -42,7 +42,7 @@ struct SDSyncFileValidationService: SDSyncFileValidator {
         var allCount = 0
         var corruptedCount = 0
         do {
-            try self.fileLineReader.readLines(of: file.url, progress: { line in
+            try self.provideLines(url: file.url, progress: { line in
                 switch line {
                 case .line(let content):
                     if (lineIsCorrupted(content)) {
@@ -59,6 +59,28 @@ struct SDSyncFileValidationService: SDSyncFileValidator {
         } catch {
             Log.error(error.localizedDescription)
             return nil
+        }
+    }
+    
+    private func provideLines(url: URL, progress: (FileLineReaderProgress) -> Void) throws {
+        var isDirectory: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: url.absoluteString, isDirectory: &isDirectory) else { progress(.endOfFile); return }
+        
+        if !isDirectory.boolValue {
+            try self.fileLineReader.readLines(of: url, progress: progress)
+        } else {
+            let files = try FileManager.default.contentsOfDirectory(atPath: url.absoluteString).compactMap(URL.init(string:))
+            try files.forEach { file in
+                try self.fileLineReader.readLines(of: file, progress: { line in
+                    switch line {
+                    case .line(let content):
+                        progress(.line(content))
+                    case .endOfFile:
+                        break
+                    }
+                })
+            }
+            progress(.endOfFile)
         }
     }
     
