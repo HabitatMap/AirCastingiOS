@@ -169,18 +169,18 @@ class SDSyncController {
     }
     
     func clearSDCard(_ airbeamConnection: CBPeripheral, completion: @escaping (Bool) -> Void) {
-        completion(true)
-        return
-        
-//        airbeamServices.clearSDCard(of: airbeamConnection) { result in
-//            switch result {
-//            case .success():
-//                completion(true)
-//            case .failure(let error):
-//                Log.error("Failed to clear SD card: \(error.localizedDescription)")
-//                completion(false)
-//            }
-//        }
+//        completion(true)
+//        return
+//        
+        airbeamServices.clearSDCard(of: airbeamConnection) { result in
+            switch result {
+            case .success():
+                completion(true)
+            case .failure(let error):
+                Log.error("Failed to clear SD card: \(error.localizedDescription)")
+                completion(false)
+            }
+        }
     }
     
     private func startBackendSync() {

@@ -23,6 +23,10 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     var createdSessions: [SessionEntity] = []
     var processedSessions = Set<SDSession>()
     
+    func saveDataToDb(filesDirectoryURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
+        completion(.failure(UploadingError.uploadError))
+    }
+    
     func saveDataToDb(fileURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
         var streamsWithMeasurements: [SDStream: [Measurement]] = [:]
         

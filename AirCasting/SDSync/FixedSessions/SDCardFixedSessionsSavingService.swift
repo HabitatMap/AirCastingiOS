@@ -20,6 +20,7 @@ class SDCardFixedSessionsUploadingService {
     
     func processAndUpload(filesDirectoryURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
         // iterate over files
+        completion(.success([]))
     }
     
     private func processAndUpload(fileURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {

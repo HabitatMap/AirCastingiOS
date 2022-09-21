@@ -23,6 +23,7 @@ struct SDSyncFileValidationService: SDSyncFileValidator {
         
         for file in files {
             if !check(file) {
+                Log.info("Check failed for directory \(file)")
                 result = false
                 break
             }
@@ -46,9 +47,9 @@ struct SDSyncFileValidationService: SDSyncFileValidator {
                 switch line {
                 case .line(let content):
                     if (lineIsCorrupted(content)) {
+                        Log.info("Line corrupted: \(content)")
                         corruptedCount += 1
                     }
-                    
                     allCount += 1
                 case .endOfFile:
                     Log.info("Reached end of csv file")
@@ -64,13 +65,15 @@ struct SDSyncFileValidationService: SDSyncFileValidator {
     
     private func provideLines(url: URL, progress: (FileLineReaderProgress) -> Void) throws {
         var isDirectory: ObjCBool = false
-        guard FileManager.default.fileExists(atPath: url.absoluteString, isDirectory: &isDirectory) else { progress(.endOfFile); return }
+        guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) else { progress(.endOfFile); return }
         
         if !isDirectory.boolValue {
             try self.fileLineReader.readLines(of: url, progress: progress)
         } else {
-            let files = try FileManager.default.contentsOfDirectory(atPath: url.absoluteString).compactMap(URL.init(string:))
+            let files = try FileManager.default.contentsOfDirectory(atPath: url.path).compactMap({ url.path + "/" + $0 }).compactMap(URL.init(string:))
+            Log.info("Files: \(files)")
             try files.forEach { file in
+                Log.info("Reading file: \(file)")
                 try self.fileLineReader.readLines(of: file, progress: { line in
                     switch line {
                     case .line(let content):
