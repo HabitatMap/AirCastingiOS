@@ -19,11 +19,6 @@ class SDCardFixedSessionsUploadingService {
     private let bufferThreshold = 50
     
     func processAndUpload(filesDirectoryURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
-        // iterate over files
-        completion(.success([]))
-    }
-    
-    private func processAndUpload(fileURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
         DispatchQueue.global().async {
             var sessionsForUpload = Set<SessionUUID>()
             var streamsWithMeasurements: [SDStream: [Measurement]] = [:]
@@ -34,7 +29,7 @@ class SDCardFixedSessionsUploadingService {
             
             var readLines = 0
             do {
-                try self.fileLineReader.readLines(of: fileURL, progress: { line in
+                try self.provideLines(of: filesDirectoryURL, progress: { line in
                     guard !uploadFailed else { return }
                     switch line {
                     case .line(let content):
@@ -48,7 +43,7 @@ class SDCardFixedSessionsUploadingService {
                         sessionsForUpload.insert(measurements.sessionUUID)
                         
                         Log.info("Enqueueing session: \(measurements.sessionUUID)")
-                        self.enqueueForUploading(measurements: measurements, buffer: &streamsWithMeasurements)
+                        self.enqueueForUploading(measurements: measurements, buffer: &streamsWithMeasurements, deviceID: deviceID)
                         
                         guard readLines == self.bufferThreshold else { return }
                         
@@ -80,20 +75,44 @@ class SDCardFixedSessionsUploadingService {
         }
     }
     
-    private func enqueueForUploading(measurements: SDCardMeasurementsRow, buffer streamsWithMeasurements: inout [SDStream: [Measurement]]) {
+    private func provideLines(of url: URL, progress: (FileLineReaderProgress) -> Void) throws {
+        var isDirectory: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) else { progress(.endOfFile); return }
+        
+        if !isDirectory.boolValue {
+            try self.fileLineReader.readLines(of: url, progress: progress)
+        } else {
+            let files = try FileManager.default.contentsOfDirectory(atPath: url.path).compactMap({ url.path + "/" + $0 }).compactMap(URL.init(string:))
+            Log.info("Files: \(files)")
+            try files.forEach { file in
+                Log.info("Reading file: \(file)")
+                try self.fileLineReader.readLines(of: file, progress: { line in
+                    switch line {
+                    case .line(let content):
+                        progress(.line(content))
+                    case .endOfFile:
+                        break
+                    }
+                })
+            }
+            progress(.endOfFile)
+        }
+    }
+    
+    private func enqueueForUploading(measurements: SDCardMeasurementsRow, buffer streamsWithMeasurements: inout [SDStream: [Measurement]], deviceID: String) {
         let location = CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)
         let date = measurements.date
         
-//        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .f, header: .f), default: []]
-//            .append(Measurement(time: date, value: measurements.f, location: location))
-//        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .rh, header: .rh), default: []]
-//            .append(Measurement(time: date, value: measurements.rh, location: location))
-//        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm1, header: .pm1), default: []]
-//            .append(Measurement(time: date, value: measurements.pm1, location: location))
-//        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm2_5, header: .pm2_5), default: []]
-//            .append(Measurement(time: date, value: measurements.pm2_5, location: location))
-//        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm10, header: .pm10), default: []]
-//            .append(Measurement(time: date, value: measurements.pm10, location: location))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .f, header: .f), default: []]
+            .append(Measurement(time: date, value: measurements.f, location: location))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .rh, header: .rh), default: []]
+            .append(Measurement(time: date, value: measurements.rh, location: location))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm1, header: .pm1), default: []]
+            .append(Measurement(time: date, value: measurements.pm1, location: location))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm2_5, header: .pm2_5), default: []]
+            .append(Measurement(time: date, value: measurements.pm2_5, location: location))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm10, header: .pm10), default: []]
+            .append(Measurement(time: date, value: measurements.pm10, location: location))
     }
     
     private func checkIfSessionExistis(sessionUUID: SessionUUID, sessionsToIgnore: inout [SessionUUID]) -> Bool {
