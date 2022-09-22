@@ -134,28 +134,28 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                         }
                     }
                 case .endOfFile:
-                    Log.info("Reached end of csv file")
-                }
-                
-                context.perform {
-                    guard !savingFailed else {
-                        Log.info("##### completion called in line 85")
-                        completion(.failure(UploadingError.uploadError))
-                        return
-                    }
-                    
-                    do {
-                        try self.saveData(streamsWithMeasurements, session: &sessionData)
-                        try self.setStatusToFinishedAndUpdateEndTime(for: sessionData.uuid)
-                        try self.context.save()
-                        Log.info("##### completion called in line 98")
-                        completion(.success(()))
-                    } catch {
-                        Log.info("##### completion called in line 101")
-                        completion(.failure(error))
-                    }
+                    Log.info("Reached end of csv file for session \(sessionData.uuid)")
                 }
             })
+            
+            context.perform {
+                guard !savingFailed else {
+                    Log.info("##### completion called in line 85")
+                    completion(.failure(UploadingError.uploadError))
+                    return
+                }
+                
+                do {
+                    try self.saveData(streamsWithMeasurements, session: &sessionData)
+                    try self.setStatusToFinishedAndUpdateEndTime(for: sessionData.uuid)
+                    try self.context.save()
+                    Log.info("##### completion called in line 98")
+                    completion(.success(()))
+                } catch {
+                    Log.info("##### completion called in line 101")
+                    completion(.failure(error))
+                }
+            }
         } catch {
             // ERRORR
         }

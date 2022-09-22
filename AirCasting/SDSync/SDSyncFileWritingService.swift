@@ -45,6 +45,7 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
         }
         
         let lines = data.components(separatedBy: "\r\n").filter { !$0.trimmingCharacters(in: ["\n"]).isEmpty }
+        Log.debug("## \(data)")
         
         lines.forEach { line in
             guard let uuid = parser.getUUID(lineString: line) else { return }
@@ -118,6 +119,7 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
     }
     
     private func flushBuffer(for url: URL) {
+        Log.debug("## Flashing buffer")
         do {
             let file = try getFileHandle(for: url)
             try file.seekToEnd()
