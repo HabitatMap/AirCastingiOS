@@ -158,6 +158,6 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
     }
     
     private func fileURL(for sessionType: SDCardSessionType, with uuid: String) -> URL {
-        directoryURL(for: sessionType).appendingPathComponent("\(uuid).csv")
+        directoryURL(for: sessionType).appendingPathComponent("\(uuid)")
     }
 }

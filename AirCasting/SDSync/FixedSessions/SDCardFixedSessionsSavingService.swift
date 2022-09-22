@@ -84,16 +84,16 @@ class SDCardFixedSessionsUploadingService {
         let location = CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)
         let date = measurements.date
         
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .f, header: .f), default: []]
-            .append(Measurement(time: date, value: measurements.f, location: location))
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .rh, header: .rh), default: []]
-            .append(Measurement(time: date, value: measurements.rh, location: location))
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm1, header: .pm1), default: []]
-            .append(Measurement(time: date, value: measurements.pm1, location: location))
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm2_5, header: .pm2_5), default: []]
-            .append(Measurement(time: date, value: measurements.pm2_5, location: location))
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm10, header: .pm10), default: []]
-            .append(Measurement(time: date, value: measurements.pm10, location: location))
+//        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .f, header: .f), default: []]
+//            .append(Measurement(time: date, value: measurements.f, location: location))
+//        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .rh, header: .rh), default: []]
+//            .append(Measurement(time: date, value: measurements.rh, location: location))
+//        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm1, header: .pm1), default: []]
+//            .append(Measurement(time: date, value: measurements.pm1, location: location))
+//        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm2_5, header: .pm2_5), default: []]
+//            .append(Measurement(time: date, value: measurements.pm2_5, location: location))
+//        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm10, header: .pm10), default: []]
+//            .append(Measurement(time: date, value: measurements.pm10, location: location))
     }
     
     private func checkIfSessionExistis(sessionUUID: SessionUUID, sessionsToIgnore: inout [SessionUUID]) -> Bool {

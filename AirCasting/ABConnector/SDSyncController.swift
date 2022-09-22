@@ -152,14 +152,11 @@ class SDSyncController {
     
     private func process(mobileSessionFilesDirectory: URL, deviceID: String, completion: @escaping (Bool) -> Void) {
         Log.info("[SD Sync] Processing mobile file")
-        self.mobileSessionsSaver.saveDataToDb(fileURL: mobileSessionFilesDirectory, deviceID: deviceID) { result in
+        self.mobileSessionsSaver.saveDataToDb(filesDirectoryURL: mobileSessionFilesDirectory, deviceID: deviceID) { result in
             switch result {
-            case .success(let sessions):
+            case .success():
                 Log.info("[SD Sync] Saved mobile data with success")
-                self.averagingService.averageMeasurements(for: sessions) {
-                    Log.info("[SD Sync] Averaging done")
-                    self.onCurrentSyncEnd { self.startBackendSync() }
-                }
+                self.onCurrentSyncEnd { self.startBackendSync() }
                 completion(true)
             case .failure(let error):
                 Log.error("[SD Sync] Failed to save sessions to database: \(error.localizedDescription)")
@@ -171,7 +168,7 @@ class SDSyncController {
     func clearSDCard(_ airbeamConnection: CBPeripheral, completion: @escaping (Bool) -> Void) {
 //        completion(true)
 //        return
-//        
+//
         airbeamServices.clearSDCard(of: airbeamConnection) { result in
             switch result {
             case .success():
