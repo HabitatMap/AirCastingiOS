@@ -58,6 +58,16 @@ class SDCardMeasurementsParser {
         
         return String(measurementInfo[SDCardCSVFileFactory.Header.uuid.rawValue])
     }
+    
+    func getMeasurementTime(lineString: String) -> Date? {
+        let measurementInfo = lineString.split(separator: ",")
+        guard measurementInfo.count == 13 else {
+            Log.warning("Line corrupted: \(lineString)")
+            return nil
+        }
+        return SDParsingUtils.dateFrom(date: measurementInfo[SDCardCSVFileFactory.Header.date.rawValue],
+                                           time: measurementInfo[SDCardCSVFileFactory.Header.time.rawValue])
+    }
 }
 
 class SDParsingUtils {

@@ -146,9 +146,7 @@ final class AveragingService: NSObject {
     }
     
     private func averagedMeasurementFrom(chunk: ArraySlice<MeasurementEntity>, window: AveragingWindow, measurementCount: Int) -> [MeasurementEntity] {
-        Log.info("## Averaging measurements: \(chunk)")
         guard chunk.count == measurementCount else { return Array(chunk) }
-        Log.info("## averaging")
         /// https://github.com/apple/swift-algorithms/blob/main/Guides/Chunked.md
         /// For integer types, any remainder of the division is discarded so we need to add 1 to elementsInChunk/2 to get the middle value.
         let middleIndex = chunk.middleItemIndex

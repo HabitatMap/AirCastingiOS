@@ -27,6 +27,18 @@ class LineFileReaderTests: ACTestCase {
         }
     }
     
+    func test_lastLineReading_oneLineFile() {
+        createFile(lineCount: 1)
+        let line = try! sut.readLastLine(of: fileURL)
+        XCTAssertEqual(line, "Line number 0")
+    }
+    
+    func test_lastLineReading_longFile() {
+        createFile(lineCount: 100)
+        let line = try! sut.readLastLine(of: fileURL)
+        XCTAssertEqual(line, "Line number 99")
+    }
+    
     func test_throwsWhenNoFile() {
         XCTAssertThrowsError(try sut.readLines(of: URL(fileURLWithPath: "/chyba/ty.bat"), progress: { _ in }))
     }

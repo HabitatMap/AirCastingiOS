@@ -59,6 +59,7 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
     }
     
     func finishAndSave() -> [(URL, SDCardSessionType)] {
+        flushBuffers()
         guard fileHandles.count > 0 else {
             do {
                 try removeFiles()
@@ -70,7 +71,6 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
         }
         
         let toReturn = [(directoryURL(for: .mobile), SDCardSessionType.mobile), (directoryURL(for: .fixed), SDCardSessionType.fixed)]
-        flushBuffers()
         do {
             try closeFiles()
         } catch {
@@ -80,6 +80,7 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
     }
     
     func finishAndRemoveFiles() {
+        Log.info("## Finish and remove called")
         buffers = [:]
         do {
             try closeFiles()

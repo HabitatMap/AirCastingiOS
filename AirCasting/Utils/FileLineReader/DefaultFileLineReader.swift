@@ -22,4 +22,22 @@ class DefaultFileLineReader: FileLineReader {
         fclose(file)
         progress(.endOfFile)
     }
+    
+    func readLastLine(of fileURL: URL) throws -> String {
+//        assert(!Thread.isMainThread)
+        guard let file: UnsafeMutablePointer<FILE> = fopen(fileURL.path, "r") else { throw FileLineReaderError.cannotOpenFile }
+        
+        var lineRead: UnsafeMutablePointer<CChar>?
+        var bufsize: Int = 0
+        var lineString = ""
+        fseek(file, -200, SEEK_END)
+        while getline(&lineRead, &bufsize, file) != eofMarker {
+            lineString = String(cString: lineRead!).trimmingCharacters(in: .newlines)
+        }
+        free(lineRead)
+        fseek(file, 0, SEEK_SET)
+        fclose(file)
+        return lineString
+    }
 }
+
