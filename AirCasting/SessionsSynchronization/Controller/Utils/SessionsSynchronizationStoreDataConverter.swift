@@ -31,7 +31,8 @@ struct SynchronizationDataConverter {
                 text: note.text,
                 latitude: note.latitude,
                 longitude: note.longitude,
-                number: note.number)
+                number: note.number,
+                photoLocation: note.photoLocation != nil ? URL(string: note.photoLocation!) : nil)
         }
         return .init(uuid: download.uuid,
                      contribute: download.contribute,
@@ -142,7 +143,8 @@ struct SynchronizationDataConverter {
                          text: note.text,
                          latitude: note.latitude,
                          longitude: note.longitude,
-                         number: note.number)
+                         number: note.number,
+                         photoLocation: note.photoLocation)
         }
         
         return SessionsSynchronization.SessionStoreSessionData(uuid: entity.uuid,

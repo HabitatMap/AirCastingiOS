@@ -50,7 +50,6 @@ class FirebaseFeatureFlagProvider: FeatureFlagProvider {
         case .searchAndFollow: return "search_and_follow"
         case .deleteAccount: return "delete_account"
         case .microphoneCalibration: return "microphone_calibration"
-        case .microphoneCalibrationWizard: return "microphone_calibration_wizard"
         }
     }
     

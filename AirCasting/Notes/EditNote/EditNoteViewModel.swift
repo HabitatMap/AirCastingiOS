@@ -6,6 +6,7 @@ import Resolver
 protocol EditNoteViewModel: ObservableObject {
     var noteText: String { get set }
     var notePhoto: URL? { get set }
+    var shouldShowError: Bool { get set }
     func saveTapped()
     func deleteTapped()
     func cancelTapped()
@@ -14,6 +15,7 @@ protocol EditNoteViewModel: ObservableObject {
 class EditNoteViewModelDefault: EditNoteViewModel, ObservableObject {
     @Published var noteText = ""
     @Published var notePhoto: URL? = nil
+    @Published var shouldShowError = false
     private var note: Note!
     private let notesHandler: NotesHandler
     private let exitRoute: () -> Void
@@ -33,6 +35,10 @@ class EditNoteViewModelDefault: EditNoteViewModel, ObservableObject {
     }
     
     func saveTapped() {
+        guard !noteText.isEmpty else {
+            shouldShowError = true
+            return
+        }
         notesHandler.updateNote(note: note, newText: noteText, completion: {
             self.exitRoute()
         })

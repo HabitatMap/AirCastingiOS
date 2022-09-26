@@ -1006,6 +1006,8 @@ struct Strings {
                                                      comment: "")
         static let description: String = NSLocalizedString("Your note will be timestamped and displayed on the AirCasting map",
                                                            comment: "")
+        static let error: String = NSLocalizedString("Text can't be blank",
+                                                     comment: "")
         static let photoButton = NSLocalizedString("Tap to add picture", comment: "")
         static let retakePhotoButton = NSLocalizedString("Retake a picture", comment: "")
         static let placeholder: String = NSLocalizedString("Note",
@@ -1155,17 +1157,5 @@ struct Strings {
         static let title = NSLocalizedString("Microphone calibration", comment: "")
         static let settingsItemTitle = NSLocalizedString("Phone microphone calibration", comment: "")
         static let settingsItemDescription = NSLocalizedString("Adjust via trial & error until the measurements in the app match your reference sound level meter. For most phones it's between 80 and 100.", comment: "")
-        enum Wizard {
-            static let title = NSLocalizedString("Microphone calibration", comment: "")
-            static let subtitle = NSLocalizedString("Please put your phone in a quiet space and press \"Start\", the calibration will take aprox. 5sec", comment: "")
-            static let keepSilence = NSLocalizedString("Microphone is calibrating. Please try to keep silence.", comment: "")
-            static let success = NSLocalizedString("Microphone is calibrated", comment: "")
-            
-            static let microphoneUnavailableAlertTitle = NSLocalizedString("Microphone not available", comment: "")
-            static let microphoneUnavailableAlertBody = NSLocalizedString("Cannot calibrate - the microphone is busy", comment: "")
-            static let calibrationFailedAlertTitle = NSLocalizedString("Calibration failed", comment: "")
-            static let settingsItemTitle = NSLocalizedString("Microphone calibration wizard", comment: "")
-            static let settingsItemDescription = NSLocalizedString("Experimental feature, available only for BETA builds.", comment: "")
-        }
     }
 }
