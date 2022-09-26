@@ -42,10 +42,12 @@ class ThresholdSettingsViewModel: ObservableObject {
             .sorted { $0 < $1 }
         
         // Prevents us from the situation when the user could change thresholds to have the same values
-        newValues = newValues.reversed().mapWithNext { lowerThreshold, higherThreshold in
-            guard lowerThreshold != higherThreshold else { return lowerThreshold - 1 }
-            return lowerThreshold
-        }.sorted { $0 < $1 }
+        while Set(newValues.map { $0 }).count != newValues.count {
+            newValues = newValues.reversed().mapWithNext { lowerThreshold, higherThreshold in
+                guard lowerThreshold != higherThreshold else { return lowerThreshold - 1 }
+                return lowerThreshold
+            }.sorted { $0 < $1 }
+        }
         
         return completion(.success(ThresholdsValue(veryLow: newValues[0],
                                                    low: newValues[1],
