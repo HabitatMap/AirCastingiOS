@@ -16,12 +16,6 @@ enum SDMobileSavingErrors: Error {
     case noLastMeasurementTime
 }
 
-enum AveragingOption {
-    case none
-    case firstThreshold
-    case secondThreshold
-}
-
 struct SDSession2: Hashable {
     let uuid: SessionUUID
     var startTime: Date?
@@ -29,6 +23,12 @@ struct SDSession2: Hashable {
     var needsToBeCreated: Bool
     var averaging: AveragingWindow?
 }
+
+protocol AverageableMeasurement {
+    var time: Date! { get }
+}
+
+extension MeasurementEntity: AverageableMeasurement { }
 
 class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     @Injected private var fileLineReader: FileLineReader
@@ -52,21 +52,26 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
             do {
                 let files = try FileManager.default.contentsOfDirectory(atPath: filesDirectoryURL.path).compactMap({ filesDirectoryURL.path + "/" + $0 }).compactMap(URL.init(string:))
                 Log.info("Files: \(files)")
-                
+                var error: Error?
+                let group = DispatchGroup()
                 for file in files {
+                    group.enter()
                     saveDataToDb(fileURL: file, deviceID: deviceID) { result in
                         switch result {
                         case .success():
                             Log.info("Successfully saved session: \(file.path.split(separator: "/").last ?? "na")")
-                        case .failure(let error):
+                            group.leave()
+                        case .failure(let failureError):
                             Log.info("## Failure for session: \(file.path.split(separator: "/").last ?? "na")")
-                            completion(.failure(error))
+                            error = failureError
+                            group.leave()
                             return
                         }
                     }
                 }
-                Log.info("## Success")
-                completion(.success(()))
+                group.notify(queue: DispatchQueue.global()) {
+                    error != nil ? completion(.failure(error!)) : completion(.success(()))
+                }
             } catch {
                 completion(.failure(error))
             }
@@ -165,6 +170,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                 
                 do {
                     try self.saveData(streamsWithMeasurements, session: &sessionData)
+                    try self.averageUnaveragedMeasurements(sessionUUID: sessionData.uuid, averagingWindow: sessionData.averaging ?? .zeroWindow)
                     try self.setStatusToFinishedAndUpdateEndTime(for: sessionData.uuid)
                     try self.context.save()
                     Log.info("##### completion called in line 98")
@@ -249,7 +255,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     private func createStreamWithMeasurements(stream: SDStream, measurements: [Measurement], session: SessionEntity, averagingWindow: AveragingWindow) throws {
         let measurementStream = MeasurementStream(sensorName: stream.name, sensorPackageName: stream.deviceID)
         let streamEntity = try createMeasurementStream(for: session, measurementStream)
-        addMeasurements(measurements, toStream: streamEntity, averaging: averagingWindow) // CHANGE THIS
+        addMeasurements(measurements, toStream: streamEntity, averaging: averagingWindow)
     }
     
     private func createSessionInDatabase(_ session: Session) -> SessionEntity {
@@ -317,6 +323,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     }
     
     private func addMeasurements(_ measurements: [Measurement], toStream stream: MeasurementStreamEntity, averaging: AveragingWindow) {
+        Log.info("####### SAVING MEASUREMENTS WITH AVERAGING")
         guard averaging != .zeroWindow else {
             measurements.forEach( { addMeasurement(to: stream, measurement: $0, averagingWindow: .zeroWindow) })
             return
@@ -336,11 +343,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         
         var intervalStart: Date
         
-        if secondsFromTheStartOfLastAveragingWindow > 0 {
-            intervalStart = firstMeasurementTime.addingTimeInterval(TimeInterval(averaging.rawValue - secondsFromTheStartOfLastAveragingWindow))
-        } else {
-            intervalStart = firstMeasurementTime
-        }
+        intervalStart = firstMeasurementTime.addingTimeInterval(TimeInterval(averaging.rawValue - secondsFromTheStartOfLastAveragingWindow))
         
         var intervalEnd = intervalStart.addingTimeInterval(TimeInterval(averaging.rawValue))
         Log.info("## session start: \(sessionStartTime)\n measurement time: \(firstMeasurementTime)\n \(intervalStart) - \(intervalEnd)")
@@ -355,21 +358,31 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
             }
             
             guard measurement.time < intervalEnd else {
-                Log.info("## AVERAGING: \(measurementsBuffer)")
-                guard let newMeasurement = averageMeasurements(measurementsBuffer) else { return }
+                guard !measurementsBuffer.isEmpty else {
+                    while measurement.time > intervalEnd {
+                        Log.info("## \(measurement.time), interval end: \(intervalEnd) NEXT INTERVAL")
+                        intervalStart = intervalEnd
+                        intervalEnd = intervalEnd.addingTimeInterval(TimeInterval(averaging.rawValue))
+                    }
+                    Log.info("## \(measurement.time), interval end: \(intervalEnd) APPENDING")
+                    measurementsBuffer.append(measurement)
+                    return
+                }
+                
+                Log.info("## AVERAGING \(measurementsBuffer.count): \(measurementsBuffer.first?.time) - \(measurementsBuffer.last?.time)")
+                guard let newMeasurement = averageMeasurements(measurementsBuffer, time: intervalStart + TimeInterval(averaging.rawValue/2)) else { return }
                 addMeasurement(to: stream, measurement: newMeasurement, averagingWindow: averaging)
-                measurementsBuffer = []
+                measurementsBuffer = [measurement]
                 intervalStart = intervalEnd
                 intervalEnd = intervalEnd.addingTimeInterval(TimeInterval(averaging.rawValue))
                 return
             }
-            Log.debug("## Buffer count is \(measurementsBuffer.count) appending measurement")
+            
             measurementsBuffer.append(measurement)
         }
         
-        Log.info("## AVERAGING: \(measurementsBuffer)")
-        guard let newMeasurement = averageMeasurements(measurementsBuffer) else { return }
-        addMeasurement(to: stream, measurement: newMeasurement, averagingWindow: averaging)
+        Log.info("## SAVING REST: \(measurementsBuffer.first) - \(measurementsBuffer.last)")
+        measurementsBuffer.forEach({ addMeasurement(to: stream, measurement: $0, averagingWindow: .zeroWindow) })
     }
     
     private func addMeasurement(to stream: MeasurementStreamEntity, measurement: Measurement, averagingWindow: AveragingWindow) {
@@ -394,12 +407,12 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         guard !measurements.isEmpty else { return nil }
         let average = measurements.map({ $0.value }).reduce(0.0, +) / Double(measurements.count)
         let middleIndex = measurements.count/2
-        Log.info("## middle index \(middleIndex)")
         let middleMeasurement = measurements[middleIndex]
         let newMeasurement = MeasurementEntity(context: context)
         newMeasurement.time = time
         newMeasurement.location = middleMeasurement.location
         newMeasurement.value = average
+        Log.info("## averaged to \(newMeasurement)")
         return newMeasurement
     }
 
@@ -411,74 +424,91 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         sessionEntity.endTime = endTime
     }
     
-    func avaregeUnaveragedMeasurements(stream: MeasurementStreamEntity, averagingWindow: AveragingWindow) {
-        Log.info("## Averaging unaveraged measurements")
+    private func averageUnaveragedMeasurements(sessionUUID: SessionUUID, averagingWindow: AveragingWindow) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        try sessionEntity.allStreams.forEach({
+            try averageUnaveragedMeasurements(stream: $0, averagingWindow: averagingWindow)
+            try orderAllMeasurements(stream: $0)
+        })
+    }
+    
+    private func averageUnaveragedMeasurements(stream: MeasurementStreamEntity, averagingWindow: AveragingWindow) throws {
+        Log.info("#### Averaging unaveraged measurements for stream \(stream.sensorName)")
         guard averagingWindow != .zeroWindow else {
             return
         }
         
         let fetchRequest = MeasurementEntity.fetchRequest()
-        let predicate = NSPredicate(format: "averagingWindow != %@ AND measurementStream == %@", averagingWindow.rawValue, stream)
-        do {
-            let measurements = try context.fetch(fetchRequest)
-            Log.debug("## measurements: \(measurements)")
-            
-            guard let sessionStartTime = stream.session?.startTime else {
-                Log.error("No session start time!")
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "time", ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "averagingWindow != %d AND measurementStream == %@", averagingWindow.rawValue, stream)
+        let measurements = try context.fetch(fetchRequest)
+        Log.debug("## measurements: \(measurements)")
+        
+        guard let sessionStartTime = stream.session?.startTime else {
+            Log.error("No session start time!")
+            return
+        }
+        
+        guard let firstMeasurementTime = measurements.first?.time else {
+            Log.info("No measurements")
+            return
+        }
+        
+        var intervalStart = sessionStartTime
+        var intervalEnd = intervalStart.addingTimeInterval(TimeInterval(averagingWindow.rawValue))
+        Log.info("## session start: \(sessionStartTime)\n measurement time: \(firstMeasurementTime)\n \(intervalStart) - \(intervalEnd)")
+        
+        var measurementsBuffer = [MeasurementEntity]()
+        
+        try measurements.forEach { measurement in
+            guard measurement.time >= intervalStart else {
+                Log.error("## \(measurement.time) WRONG STARTING TIME \(intervalStart)")
+                // This shouldn't happen
                 return
             }
             
-            guard let firstMeasurementTime = measurements.first?.time else {
-                Log.info("No measurements")
-                return
-            }
-            
-            let secondsFromTheStartOfLastAveragingWindow = Int(firstMeasurementTime.timeIntervalSince(sessionStartTime)) % averagingWindow.rawValue
-            
-            var intervalStart: Date
-            
-            if secondsFromTheStartOfLastAveragingWindow > 0 {
-                intervalStart = firstMeasurementTime.addingTimeInterval(TimeInterval(averagingWindow.rawValue - secondsFromTheStartOfLastAveragingWindow))
-            } else {
-                intervalStart = firstMeasurementTime
-            }
-            
-            var intervalEnd = intervalStart.addingTimeInterval(TimeInterval(averagingWindow.rawValue))
-            Log.info("## session start: \(sessionStartTime)\n measurement time: \(firstMeasurementTime)\n \(intervalStart) - \(intervalEnd)")
-            
-            var measurementsBuffer = [MeasurementEntity]()
-            
-            measurements.forEach { measurement in
-                guard measurement.time >= intervalStart else {
-                    Log.error("## WRONG STARTING TIME")
-                    // This shouldn't happen
+            guard measurement.time < intervalEnd else {
+                guard !measurementsBuffer.isEmpty else {
+                    while measurement.time > intervalEnd {
+                        Log.info("## \(measurement.time), interval end: \(intervalEnd) NEXT INTERVAL")
+                        intervalStart = intervalEnd
+                        intervalEnd = intervalEnd.addingTimeInterval(TimeInterval(averagingWindow.rawValue))
+                    }
+                    Log.info("## \(measurement.time), interval end: \(intervalEnd) APPENDING")
+                    measurementsBuffer.append(measurement)
                     return
                 }
                 
-                guard measurement.time < intervalEnd else {
-                    Log.info("## AVERAGING: \(measurementsBuffer)")
-                    guard let newMeasurement = averageMeasurements(measurementsBuffer) else { return }
-                    
-                    measurementsBuffer.forEach(context.delete(_:))
-                    newMeasurement.averagingWindow = averagingWindow
-                    context.save()
-                    
-                    measurementsBuffer = []
-                    intervalStart = intervalEnd
-                    intervalEnd = intervalEnd.addingTimeInterval(TimeInterval(averaging.rawValue))
+                Log.info("## AVERAGING \(measurementsBuffer.count): \(measurementsBuffer.first?.time) - \(measurementsBuffer.last?.time)")
+                guard let newMeasurement = averageMeasurements(measurementsBuffer, time: intervalStart + TimeInterval((averagingWindow.rawValue/2))) else {
                     return
                 }
-                Log.debug("## Buffer count is \(measurementsBuffer.count) appending measurement")
-                measurementsBuffer.append(measurement)
+                
+                measurementsBuffer.forEach(context.delete(_:))
+                newMeasurement.averagingWindow = averagingWindow.rawValue
+                stream.addToMeasurements(newMeasurement)
+                try context.save()
+                
+                measurementsBuffer = []
+                intervalStart = intervalEnd
+                intervalEnd = intervalEnd.addingTimeInterval(TimeInterval(averagingWindow.rawValue))
+                return
             }
-            
-            Log.info("## AVERAGING: \(measurementsBuffer)")
-            guard let newMeasurement = averageMeasurements(measurementsBuffer) else { return }
-            addMeasurement(to: stream, measurement: newMeasurement, averagingWindow: averaging)
-            
-            
-        } catch {
-            Log.error("\(error)")
+            Log.debug("## Buffer count is \(measurementsBuffer.count) appending measurement \(measurement.time)")
+            measurementsBuffer.append(measurement)
         }
+        
+        Log.info("## REMOVING: \(measurementsBuffer)")
+        measurementsBuffer.forEach(context.delete(_:))
+        try context.save()
+    }
+    
+    private func orderAllMeasurements(stream: MeasurementStreamEntity) throws {
+        let fetchRequest = MeasurementEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "time", ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "measurementStream == %@", stream)
+        let measurements = try context.fetch(fetchRequest)
+        stream.measurements = NSOrderedSet(array: measurements)
+        try context.save()
     }
 }
