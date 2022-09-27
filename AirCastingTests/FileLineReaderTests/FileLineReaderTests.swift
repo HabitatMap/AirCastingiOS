@@ -29,13 +29,19 @@ class LineFileReaderTests: ACTestCase {
     
     func test_lastLineReading_oneLineFile() {
         createFile(lineCount: 1)
-        let line = try! sut.readLastLine(of: fileURL)
+        let line = try! sut.readLastNonEmptyLine(of: fileURL)
         XCTAssertEqual(line, "Line number 0")
     }
     
     func test_lastLineReading_longFile() {
         createFile(lineCount: 100)
-        let line = try! sut.readLastLine(of: fileURL)
+        let line = try! sut.readLastNonEmptyLine(of: fileURL)
+        XCTAssertEqual(line, "Line number 99")
+    }
+    
+    func test_lastLineReading_longFileWithEmpyFinalLine() {
+        createFileWithEmptyFinalLine(lineCount: 100)
+        let line = try! sut.readLastNonEmptyLine(of: fileURL)
         XCTAssertEqual(line, "Line number 99")
     }
     
@@ -45,6 +51,11 @@ class LineFileReaderTests: ACTestCase {
     
     private func createFile(lineCount: Int) {
         let content = (0..<lineCount).map { "Line number \($0)" }.joined(separator: "\n")
+        try! content.write(to: fileURL, atomically: true, encoding: .utf8)
+    }
+    
+    private func createFileWithEmptyFinalLine(lineCount: Int) {
+        let content = (0..<lineCount).map { "Line number \($0)" }.joined(separator: "\n") + "\n\n"
         try! content.write(to: fileURL, atomically: true, encoding: .utf8)
     }
     

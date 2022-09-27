@@ -72,7 +72,7 @@ class FileLineReaderStub: FileLineReader {
         }
     }
     
-    func readLastLine(of fileURL: URL) throws -> String {
-        ""
+    func readLastNonEmptyLine(of fileURL: URL) throws -> String? {
+        "Line"
     }
 }
