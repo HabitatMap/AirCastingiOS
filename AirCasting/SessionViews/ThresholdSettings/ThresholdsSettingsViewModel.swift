@@ -41,7 +41,7 @@ class ThresholdSettingsViewModel: ObservableObject {
             .map { formatter.value(from: $0) ?? 0 }
         
         // Prevents us from the situation when the user could change thresholds to have the same values
-        newValues = newValues.byRemovingDuplicates(strategy: .decrementation).sorted { $0 < $1 }
+        newValues = newValues.eliminateDuplicates(using: { $0.decrement() }).sorted { $0 < $1 }
         
         return completion(.success(ThresholdsValue(veryLow: newValues[0],
                                                    low: newValues[1],
