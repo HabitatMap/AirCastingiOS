@@ -158,7 +158,6 @@ private extension SessionCardView {
     private var graphButton: some View {
         Button {
             isGraphButtonActive = true
-            Log.info("\(reorderButton)")
         } label: {
             Text(Strings.SessionCartView.graph)
                 .font(Fonts.muliSemiboldHeading2)

@@ -5,42 +5,50 @@ import AirCastingStyling
 import MessageUI
 import SwiftUI
 
-
 struct ShareSessionView<VM: ShareSessionViewModel>: View {
-    @ObservedObject var viewModel: VM
+    @StateObject var viewModel: VM
     
     var body: some View {
         ZStack {
-            XMarkButton()
-            VStack(alignment: .leading, spacing: 20) {
-                VStack(alignment: .leading, spacing: 5) {
-                    title
-                    description
+            if viewModel.isLoading {
+                VStack {
+                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                        .padding(.bottom, 10)
+                    Text(Strings.SessionShare.upToDateSessions)
                 }
-                chooseStream
-                shareButton
-                descriptionMail
-                VStack(alignment: .leading, spacing: -5.0) {
-                    createTextfield(placeholder: Strings.SessionShare.emailPlaceholder, binding: $viewModel.email)
-                        .font(Fonts.moderateRegularHeading2)
-                        .padding(.vertical)
-                        .disableAutocorrection(true)
-                        .autocapitalization(.none)
-                    if viewModel.showInvalidEmailError {
-                        emailErrorLabel
+            } else {
+                XMarkButton()
+                VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading, spacing: 5) {
+                        title
+                        description
+                    }
+                    chooseStream
+                    shareButton
+                    descriptionMail
+                    VStack(alignment: .leading, spacing: -5.0) {
+                        createTextfield(placeholder: Strings.SessionShare.emailPlaceholder, binding: $viewModel.email)
+                            .font(Fonts.moderateRegularHeading2)
+                            .padding(.vertical)
+                            .disableAutocorrection(true)
+                            .autocapitalization(.none)
+                        if viewModel.showInvalidEmailError {
+                            emailErrorLabel
+                        }
+                    }
+                    .padding(.vertical)
+                    VStack(alignment: .leading, spacing: 5) {
+                        oKButton
+                        cancelButton
                     }
                 }
-                .padding(.vertical)
-                VStack(alignment: .leading, spacing: 5) {
-                    oKButton
-                    cancelButton
-                }
+                .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+                .sheet(isPresented: $viewModel.showShareSheet, content: { viewModel.getSharePage() })
+                .padding()
             }
-            .alert(item: $viewModel.alert, content: { $0.makeAlert() })
-            .sheet(isPresented: $viewModel.showShareSheet, content: { viewModel.getSharePage() })
-            .padding()
         }
         .background(Color.aircastingBackground.ignoresSafeArea())
+        .onAppear { viewModel.didAppear() }
     }
     
     private var title: some View {

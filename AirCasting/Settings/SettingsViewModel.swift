@@ -6,6 +6,7 @@ import Resolver
 
 class SettingsViewModel: ObservableObject {
     @Published var showBackendSettings = false
+    @Published var showMicrophoneManualCalibation = false
     @Published var startSDClear = false
     @Published var BTScreenGo = false
     @Published var locationScreenGo = false
@@ -30,6 +31,10 @@ class SettingsViewModel: ObservableObject {
     
     func navigateToBackendButtonTapped() {
         showBackendSettings.toggle()
+    }
+    
+    func manualMicrophoneCalibrationTapped() {
+        showMicrophoneManualCalibation = true
     }
 
     func nextStep() -> ProceedToView {

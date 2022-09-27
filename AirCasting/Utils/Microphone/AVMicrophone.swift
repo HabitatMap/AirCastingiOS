@@ -3,6 +3,7 @@
 
 import Foundation
 import AVFoundation
+import Resolver
 import UIKit
 
 final class AVMicrophone: Microphone {
@@ -21,6 +22,8 @@ final class AVMicrophone: Microphone {
     private let audioSession = AVAudioSession.sharedInstance()
     private var interruptionHandler: AVSessionInterruptionHandler!
     
+    @Injected private var alertPresenter: GlobalAlertPresenter
+    
     init() throws {
         self.recorder = try AVAudioRecorder(url: URL(fileURLWithPath: "/dev/null", isDirectory: true), settings: AVMicrophone.recordSettings)
         self.interruptionHandler = .init(observer: self, audioSession: audioSession)
@@ -30,9 +33,7 @@ final class AVMicrophone: Microphone {
         guard state == .recording else { return nil }
         recorder.updateMeters()
         let power = recorder.averagePower(forChannel: 0)
-        var decibels = Double(power + 90.0)
-        (decibels < 0) ? decibels = 0 : nil
-        return decibels
+        return Double(power)
     }
     
     func startRecording() throws {
@@ -97,6 +98,23 @@ extension AVMicrophone: AVSessionInterruptionObserver {
 extension AVMicrophone: MicrophonePermissions {
     var permissionGranted: Bool { AVAudioSession.sharedInstance().recordPermission == .granted }
     func requestRecordPermission(_ response: @escaping (Bool) -> Void) {
-        AVAudioSession.sharedInstance().requestRecordPermission(response)
+        // If already granted just return `true`
+        guard AVAudioSession.sharedInstance().recordPermission != .granted else { response(true); return }
+        // If already declined show our "go to settings" alert
+        guard AVAudioSession.sharedInstance().recordPermission == .undetermined else {
+            alertPresenter.present(alert: InAppAlerts.microphonePermissionAlert())
+            // If we wanted to get fancy in here we could try to make a listener
+            // for changing permissions in order to call `response` after the user
+            // takes some finishing action, but I think it's not worth the effort
+            // *at all*.
+            response(false)
+            return
+        }
+        // If it's the first time deciding, request the system
+        AVAudioSession.sharedInstance().requestRecordPermission { answer in
+            DispatchQueue.main.async {
+                response(answer)
+            }
+        }
     }
 }

@@ -64,7 +64,8 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
                                       text: $0.text,
                                       latitude: $0.latitude,
                                       longitude: $0.longitude,
-                                      number: $0.number)
+                                      number: $0.number,
+                                      photoLocation: $0.photoLocation)
                     }
                     let location: CLLocationCoordinate2D? = {
                         guard let latitude = sessionData.latitude,
