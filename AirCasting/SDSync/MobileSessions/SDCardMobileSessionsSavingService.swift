@@ -489,7 +489,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                 stream.addToMeasurements(newMeasurement)
                 try context.save()
                 
-                measurementsBuffer = []
+                measurementsBuffer = [measurement]
                 intervalStart = intervalEnd
                 intervalEnd = intervalEnd.addingTimeInterval(TimeInterval(averagingWindow.rawValue))
                 return

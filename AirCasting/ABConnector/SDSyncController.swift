@@ -166,9 +166,6 @@ class SDSyncController {
     }
     
     func clearSDCard(_ airbeamConnection: CBPeripheral, completion: @escaping (Bool) -> Void) {
-//        completion(true)
-//        return
-//
         airbeamServices.clearSDCard(of: airbeamConnection) { result in
             switch result {
             case .success():
