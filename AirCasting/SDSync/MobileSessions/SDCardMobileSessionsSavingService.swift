@@ -109,7 +109,15 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         
         var sessionData = session
         
-        guard let lastMeasurementTime = parser.getMeasurementTime(lineString: (try? fileLineReader.readLastLine(of: fileURL)) ?? "") else {
+        guard let lastLineInFile = try? fileLineReader.readLastLine(of: fileURL) else {
+            Log.error("Failed to get last line from file for session \(session.uuid)")
+            completion(.failure(SDMobileSavingErrors.noLastMeasurementTime))
+            return
+        }
+        
+        Log.info("## LAST LINE: \(lastLineInFile)")
+        
+        guard let lastMeasurementTime = parser.getMeasurementTime(lineString: lastLineInFile) else {
             Log.error("Failed to read last measurement time from file")
             completion(.failure(SDMobileSavingErrors.noLastMeasurementTime))
             return
