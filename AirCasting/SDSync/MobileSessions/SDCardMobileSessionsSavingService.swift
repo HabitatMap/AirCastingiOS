@@ -367,7 +367,16 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
             
             guard measurement.time < intervalEnd else {
                 Log.info("## AVERAGING \(measurementsBuffer.count): \(measurementsBuffer.first?.time) - \(measurementsBuffer.last?.time)")
-                guard let newMeasurement = averageMeasurements(measurementsBuffer, time: intervalEnd) else { return }
+                guard let newMeasurement = averageMeasurements(measurementsBuffer, time: intervalEnd-1) else {
+                    while measurement.time >= intervalEnd {
+                        Log.info("## \(measurement.time), interval end: \(intervalEnd) NEXT INTERVAL")
+                        intervalStart = intervalEnd
+                        intervalEnd = intervalEnd.addingTimeInterval(TimeInterval(averaging.rawValue))
+                    }
+                    Log.info("## \(measurement.time), interval end: \(intervalEnd) APPENDING")
+                    measurementsBuffer = [measurement]
+                    return
+                }
                 addMeasurement(to: stream, measurement: newMeasurement, averagingWindow: averaging)
                 
                 
@@ -472,7 +481,14 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
             
             guard measurement.time < intervalEnd else {
                 Log.info("## AVERAGING \(measurementsBuffer.count): \(measurementsBuffer.first?.time) - \(measurementsBuffer.last?.time)")
-                guard let newMeasurement = averageMeasurements(measurementsBuffer, time: intervalEnd) else {
+                guard let newMeasurement = averageMeasurements(measurementsBuffer, time: intervalEnd-1) else {
+                    while measurement.time >= intervalEnd {
+                        Log.info("## \(measurement.time), interval end: \(intervalEnd) NEXT INTERVAL")
+                        intervalStart = intervalEnd
+                        intervalEnd = intervalEnd.addingTimeInterval(TimeInterval(averagingWindow.rawValue))
+                    }
+                    Log.info("## \(measurement.time), interval end: \(intervalEnd) APPENDING")
+                    measurementsBuffer = [measurement]
                     return
                 }
                 
