@@ -39,15 +39,9 @@ class ThresholdSettingsViewModel: ObservableObject {
         
         var newValues: [Int32] = [thresholdVeryHigh, thresholdHigh, thresholdMedium, thresholdLow, thresholdVeryLow]
             .map { formatter.value(from: $0) ?? 0 }
-            .sorted { $0 < $1 }
         
         // Prevents us from the situation when the user could change thresholds to have the same values
-        while Set(newValues.map { $0 }).count != newValues.count {
-            newValues = newValues.reversed().mapWithNext { lowerThreshold, higherThreshold in
-                guard lowerThreshold != higherThreshold else { return lowerThreshold - 1 }
-                return lowerThreshold
-            }.sorted { $0 < $1 }
-        }
+        newValues = newValues.byRemovingDuplicates(strategy: .decrementation).sorted { $0 < $1 }
         
         return completion(.success(ThresholdsValue(veryLow: newValues[0],
                                                    low: newValues[1],
