@@ -366,23 +366,18 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
             }
             
             guard measurement.time < intervalEnd else {
-                guard !measurementsBuffer.isEmpty else {
-                    while measurement.time > intervalEnd {
-                        Log.info("## \(measurement.time), interval end: \(intervalEnd) NEXT INTERVAL")
-                        intervalStart = intervalEnd
-                        intervalEnd = intervalEnd.addingTimeInterval(TimeInterval(averaging.rawValue))
-                    }
-                    Log.info("## \(measurement.time), interval end: \(intervalEnd) APPENDING")
-                    measurementsBuffer.append(measurement)
-                    return
-                }
-                
                 Log.info("## AVERAGING \(measurementsBuffer.count): \(measurementsBuffer.first?.time) - \(measurementsBuffer.last?.time)")
-                guard let newMeasurement = averageMeasurements(measurementsBuffer, time: intervalStart + TimeInterval(averaging.rawValue/2)) else { return }
+                guard let newMeasurement = averageMeasurements(measurementsBuffer, time: intervalEnd) else { return }
                 addMeasurement(to: stream, measurement: newMeasurement, averagingWindow: averaging)
+                
+                
+                while measurement.time >= intervalEnd {
+                    Log.info("## \(measurement.time), interval end: \(intervalEnd) NEXT INTERVAL")
+                    intervalStart = intervalEnd
+                    intervalEnd = intervalEnd.addingTimeInterval(TimeInterval(averaging.rawValue))
+                }
+                Log.info("## \(measurement.time), interval end: \(intervalEnd) APPENDING")
                 measurementsBuffer = [measurement]
-                intervalStart = intervalEnd
-                intervalEnd = intervalEnd.addingTimeInterval(TimeInterval(averaging.rawValue))
                 return
             }
             
@@ -476,19 +471,8 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
             }
             
             guard measurement.time < intervalEnd else {
-                guard !measurementsBuffer.isEmpty else {
-                    while measurement.time > intervalEnd {
-                        Log.info("## \(measurement.time), interval end: \(intervalEnd) NEXT INTERVAL")
-                        intervalStart = intervalEnd
-                        intervalEnd = intervalEnd.addingTimeInterval(TimeInterval(averagingWindow.rawValue))
-                    }
-                    Log.info("## \(measurement.time), interval end: \(intervalEnd) APPENDING")
-                    measurementsBuffer.append(measurement)
-                    return
-                }
-                
                 Log.info("## AVERAGING \(measurementsBuffer.count): \(measurementsBuffer.first?.time) - \(measurementsBuffer.last?.time)")
-                guard let newMeasurement = averageMeasurements(measurementsBuffer, time: intervalStart + TimeInterval((averagingWindow.rawValue/2))) else {
+                guard let newMeasurement = averageMeasurements(measurementsBuffer, time: intervalEnd) else {
                     return
                 }
                 
@@ -497,9 +481,13 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                 stream.addToMeasurements(newMeasurement)
                 try context.save()
                 
+                while measurement.time >= intervalEnd {
+                    Log.info("## \(measurement.time), interval end: \(intervalEnd) NEXT INTERVAL")
+                    intervalStart = intervalEnd
+                    intervalEnd = intervalEnd.addingTimeInterval(TimeInterval(averagingWindow.rawValue))
+                }
+                Log.info("## \(measurement.time), interval end: \(intervalEnd) APPENDING")
                 measurementsBuffer = [measurement]
-                intervalStart = intervalEnd
-                intervalEnd = intervalEnd.addingTimeInterval(TimeInterval(averagingWindow.rawValue))
                 return
             }
             Log.debug("## Buffer count is \(measurementsBuffer.count) appending measurement \(measurement.time)")
