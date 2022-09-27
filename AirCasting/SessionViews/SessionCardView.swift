@@ -11,7 +11,9 @@ import Resolver
 
 struct SessionCardView: View {
     @State private var isCollapsed: Bool
+    // We are using two variables to distinguish between user selection and default selection.
     @State private var selectedStream: MeasurementStreamEntity?
+    @State private var userSelection: MeasurementStreamEntity?
     @State private var isMapButtonActive = false
     @State private var isGraphButtonActive = false
     @State private var showLoadingIndicator = false
@@ -87,7 +89,10 @@ struct SessionCardView: View {
             graphStatsDataSource?.dataSource.stream = newStream
             mapStatsDataSource?.stream = newStream
             mapStatsDataSource?.dataSource.stream = newStream
-            uiState.changeSelectedStream(sessionUUID: session.uuid, newStream: newStream?.sensorName ?? "")
+        })
+        .onChange(of: userSelection, perform: { selection in
+            selectedStream = selection
+            uiState.changeSelectedStream(sessionUUID: session.uuid, newStream: selection?.sensorName ?? "")
         })
         .onChange(of: isMapButtonActive) { _ in
             reorderButton.setHidden(if: isMapButtonActive)
@@ -117,11 +122,12 @@ struct SessionCardView: View {
     }
 
     private func selectDefaultStreamIfNeeded(streams: [MeasurementStreamEntity]) {
-        if selectedStream == nil {
-            if let newStream = session.streamWith(sensorName: session.userInterface?.sensorName ?? "") {
-                return selectedStream = newStream
-            }
-            selectedStream = session.defaultStreamSelection() ?? streams.first
+        if let stream = streams.first(where: { $0.sensorName == session.userInterface?.sensorName }) {
+            selectedStream = stream
+        } else if let defaultStream = session.defaultStreamSelection(), let stream = streams.first(where: { $0.sensorName == defaultStream.sensorName }) {
+            selectedStream = stream
+        } else {
+            selectedStream = streams.first
         }
     }
 }
@@ -147,7 +153,8 @@ private extension SessionCardView {
         _ABMeasurementsView(measurementsViewModel: DefaultSyncingMeasurementsViewModel(sessionDownloader: SessionDownloadService(), session: session),
                             session: session,
                             isCollapsed: $isCollapsed,
-                            selectedStream: $selectedStream,
+                            selectedStream: .init( get: { selectedStream },
+                                                   set: { userSelection = $0 }),
                             thresholds: .init(value: thresholds),
                             measurementPresentationStyle: shouldShowValues)
     }
