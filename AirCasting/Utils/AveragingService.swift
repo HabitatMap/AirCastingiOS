@@ -43,9 +43,9 @@ enum AveragingWindow: Int {
 
 enum TimeThreshold: Int {
     // Two hours: 60 * 60 * 2 = 7200
-    case firstThreshold = 7200 //TODO: change back
+    case firstThreshold = 120 //TODO: change back
     // Nine hours: 60 * 60 * 9 = 32400
-    case secondThreshold = 32400 //TODO: change back
+    case secondThreshold = 32400
 }
 
 final class AveragingService: NSObject {
