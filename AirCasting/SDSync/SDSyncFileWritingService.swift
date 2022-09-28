@@ -79,7 +79,7 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
     }
     
     func finishAndRemoveFiles() {
-        Log.info("## Finish and remove called")
+        Log.debug("## Finish and remove called")
         buffers = [:]
         do {
             try closeFiles()
