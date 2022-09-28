@@ -2,7 +2,7 @@
 //
 import Foundation
 
-extension Array where Element: Equatable & Numeric {
+extension Array where Element: Equatable {
     /// Iterates all elements and gets rid of the duplicates using provided strategy
     /// - Parameter strategy: a block invoked when conflict appears. It an `Element` that causes collision as a parameter.
     /// If this block returns `nil`, the new element won't be added to the resulting array.
