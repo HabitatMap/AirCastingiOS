@@ -34,238 +34,247 @@ struct ChooseSessionTypeView: View {
     
     var body: some View {
         if #available(iOS 15, *) {
-            NavigationView {
-                mainContent
-                    .fullScreenCover(isPresented: .init(get: {
-                        viewModel.isPowerABLinkActive
-                    }, set: { new in
-                        viewModel.setPowerABLink(using: new)
-                    })) {
-                        CreatingSessionFlowRootView {
-                            PowerABView(creatingSessionFlowContinues: .init(get: {
+            mainContent
+                .fullScreenCover(isPresented: .init(get: {
+                    viewModel.isPowerABLinkActive
+                }, set: { new in
+                    viewModel.setPowerABLink(using: new)
+                })) {
+                    CreatingSessionFlowRootView {
+                        PowerABView(creatingSessionFlowContinues: .init(get: {
+                            viewModel.isPowerABLinkActive
+                        }, set: { new in
+                            viewModel.setPowerABLink(using: new)
+                        }))
+                    }
+                }
+                .fullScreenCover(isPresented: .init(get: {
+                    viewModel.isTurnLocationOnLinkActive
+                }, set: { new in
+                    viewModel.setLocationLink(using: new)
+                })) {
+                    CreatingSessionFlowRootView {
+                        TurnOnLocationView(creatingSessionFlowContinues: .init(get: {
+                            viewModel.isTurnLocationOnLinkActive
+                        }, set: { new in
+                            viewModel.setLocationLink(using: new)
+                        }),
+                                           viewModel: TurnOnLocationViewModel(sessionContext: viewModel.passSessionContext,
+                                                                              isSDClearProcess: false))
+                    }
+                }
+                .fullScreenCover(isPresented: .init(get: {
+                    viewModel.isTurnBluetoothOnLinkActive
+                }, set: { new in
+                    viewModel.setBluetoothLink(using: new)
+                })) {
+                    CreatingSessionFlowRootView {
+                        TurnOnBluetoothView(creatingSessionFlowContinues: .init(get: {
+                            viewModel.isTurnBluetoothOnLinkActive
+                        }, set: { new in
+                            viewModel.setBluetoothLink(using: new)
+                        }),
+                                            sdSyncContinues: .constant(false))
+                    }
+                }
+                .fullScreenCover(isPresented: .init(get: {
+                    viewModel.isMobileLinkActive
+                }, set: { new in
+                    viewModel.setMobileLink(using: new)
+                })) {
+                    CreatingSessionFlowRootView {
+                        SelectDeviceView(creatingSessionFlowContinues: .init(get: {
+                            viewModel.isMobileLinkActive
+                        }, set: { new in
+                            viewModel.setMobileLink(using: new)
+                        }),
+                                         sdSyncContinues: .constant(false))
+                    }
+                }
+                .fullScreenCover(isPresented: .init(get: {
+                    viewModel.isSearchAndFollowLinkActive
+                }, set: { new in
+                    viewModel.setSearchAndFollow(using: new)
+                })) {
+                    CreatingSessionFlowRootView {
+                        SearchView(isSearchAndFollowLinkActive: .init(get: {
+                            viewModel.isSearchAndFollowLinkActive
+                        }, set: { new in
+                            viewModel.setSearchAndFollow(using: new)
+                        }))
+                    }
+                }
+                .fullScreenCover(isPresented: .init(get: {
+                    viewModel.startSync
+                }, set: { new in
+                    viewModel.setStartSync(using: new)
+                })) {
+                    CreatingSessionFlowRootView {
+                        SDSyncRootView(creatingSessionFlowContinues: .init(get: {
+                            viewModel.startSync
+                        }, set: { new in
+                            viewModel.setStartSync(using: new)
+                        }))
+                    }
+                }
+                .onAppear { defineNextMove() }
+                .onChange(of: tabSelection.selection, perform: { _ in defineNextMove() })
+                .environmentObject(viewModel.passSessionContext)
+        } else {
+            mainContent
+                .background(
+                    Group {
+                        EmptyView()
+                            .fullScreenCover(isPresented: .init(get: {
                                 viewModel.isPowerABLinkActive
                             }, set: { new in
                                 viewModel.setPowerABLink(using: new)
-                            }))
-                        }
-                    }
-                    .fullScreenCover(isPresented: .init(get: {
-                        viewModel.isTurnLocationOnLinkActive
-                    }, set: { new in
-                        viewModel.setLocationLink(using: new)
-                    })) {
-                        CreatingSessionFlowRootView {
-                            TurnOnLocationView(creatingSessionFlowContinues: .init(get: {
+                            })) {
+                                CreatingSessionFlowRootView {
+                                    PowerABView(creatingSessionFlowContinues: .init(get: {
+                                        viewModel.isPowerABLinkActive
+                                    }, set: { new in
+                                        viewModel.setPowerABLink(using: new)
+                                    }))
+                                }
+                            }
+                        EmptyView()
+                            .fullScreenCover(isPresented: .init(get: {
                                 viewModel.isTurnLocationOnLinkActive
                             }, set: { new in
                                 viewModel.setLocationLink(using: new)
-                            }),
-                                               viewModel: TurnOnLocationViewModel(sessionContext: viewModel.passSessionContext,
-                                                                                  isSDClearProcess: false))
-                        }
-                    }
-                    .fullScreenCover(isPresented: .init(get: {
-                        viewModel.isTurnBluetoothOnLinkActive
-                    }, set: { new in
-                        viewModel.setBluetoothLink(using: new)
-                    })) {
-                        CreatingSessionFlowRootView {
-                            TurnOnBluetoothView(creatingSessionFlowContinues: .init(get: {
+                            })) {
+                                CreatingSessionFlowRootView {
+                                    TurnOnLocationView(creatingSessionFlowContinues: .init(get: {
+                                        viewModel.isTurnLocationOnLinkActive
+                                    }, set: { new in
+                                        viewModel.setLocationLink(using: new)
+                                    }),
+                                                       viewModel: TurnOnLocationViewModel(sessionContext: viewModel.passSessionContext,
+                                                                                          isSDClearProcess: false))
+                                }
+                            }
+                        EmptyView()
+                            .fullScreenCover(isPresented: .init(get: {
                                 viewModel.isTurnBluetoothOnLinkActive
                             }, set: { new in
                                 viewModel.setBluetoothLink(using: new)
-                            }),
-                                                sdSyncContinues: .constant(false))
-                        }
-                    }
-                    .fullScreenCover(isPresented: .init(get: {
-                        viewModel.isMobileLinkActive
-                    }, set: { new in
-                        viewModel.setMobileLink(using: new)
-                    })) {
-                        CreatingSessionFlowRootView {
-                            SelectDeviceView(creatingSessionFlowContinues: .init(get: {
+                            })) {
+                                CreatingSessionFlowRootView {
+                                    TurnOnBluetoothView(creatingSessionFlowContinues: .init(get: {
+                                        viewModel.isTurnBluetoothOnLinkActive
+                                    }, set: { new in
+                                        viewModel.setBluetoothLink(using: new)
+                                    }),
+                                                        sdSyncContinues: .constant(false))
+                                }
+                            }
+                        EmptyView()
+                            .fullScreenCover(isPresented: .init(get: {
                                 viewModel.isMobileLinkActive
                             }, set: { new in
                                 viewModel.setMobileLink(using: new)
-                            }),
-                                             sdSyncContinues: .constant(false))
-                        }
-                    }
-                    .fullScreenCover(isPresented: .init(get: {
-                        viewModel.isSearchAndFollowLinkActive
-                    }, set: { new in
-                        viewModel.setSearchAndFollow(using: new)
-                    })) {
-                        CreatingSessionFlowRootView {
-                            SearchView(isSearchAndFollowLinkActive: .init(get: {
-                                viewModel.isSearchAndFollowLinkActive
-                            }, set: { new in
-                                viewModel.setSearchAndFollow(using: new)
-                            }))
-                        }
-                    }
-                    .fullScreenCover(isPresented: .init(get: {
-                        viewModel.startSync
-                    }, set: { new in
-                        viewModel.setStartSync(using: new)
-                    })) {
-                        CreatingSessionFlowRootView {
-                            SDSyncRootView(creatingSessionFlowContinues: .init(get: {
+                            })) {
+                                CreatingSessionFlowRootView {
+                                    SelectDeviceView(creatingSessionFlowContinues: .init(get: {
+                                        viewModel.isMobileLinkActive
+                                    }, set: { new in
+                                        viewModel.setMobileLink(using: new)
+                                    }),
+                                                     sdSyncContinues: .constant(false))
+                                }
+                            }
+                        EmptyView()
+                            .fullScreenCover(isPresented: .init(get: {
                                 viewModel.startSync
                             }, set: { new in
                                 viewModel.setStartSync(using: new)
-                            }))
-                        }
+                            })) {
+                                CreatingSessionFlowRootView {
+                                    SDSyncRootView(creatingSessionFlowContinues: .init(get: {
+                                        viewModel.startSync
+                                    }, set: { new in
+                                        viewModel.setStartSync(using: new)
+                                    }))
+                                }
+                            }
+                        EmptyView()
+                            .fullScreenCover(isPresented: .init(get: {
+                                viewModel.isSearchAndFollowLinkActive
+                            }, set: { new in
+                                viewModel.setSearchAndFollow(using: new)
+                            })) {
+                                CreatingSessionFlowRootView {
+                                    SearchView(isSearchAndFollowLinkActive: .init(get: {
+                                        viewModel.isSearchAndFollowLinkActive
+                                    }, set: { new in
+                                        viewModel.setSearchAndFollow(using: new)
+                                    }))
+                                }
+                            }
                     }
-            }
-            .navigationViewStyle(.stack)
-            .onAppear { defineNextMove() }
-            .onChange(of: tabSelection.selection, perform: { _ in defineNextMove() })
-            .environmentObject(viewModel.passSessionContext)
-        } else {
-            NavigationView {
-                mainContent
-                    .background(
-                        Group {
-                            EmptyView()
-                                .fullScreenCover(isPresented: .init(get: {
-                                    viewModel.isPowerABLinkActive
-                                }, set: { new in
-                                    viewModel.setPowerABLink(using: new)
-                                })) {
-                                    CreatingSessionFlowRootView {
-                                        PowerABView(creatingSessionFlowContinues: .init(get: {
-                                            viewModel.isPowerABLinkActive
-                                        }, set: { new in
-                                            viewModel.setPowerABLink(using: new)
-                                        }))
-                                    }
-                                }
-                            EmptyView()
-                                .fullScreenCover(isPresented: .init(get: {
-                                    viewModel.isTurnLocationOnLinkActive
-                                }, set: { new in
-                                    viewModel.setLocationLink(using: new)
-                                })) {
-                                    CreatingSessionFlowRootView {
-                                        TurnOnLocationView(creatingSessionFlowContinues: .init(get: {
-                                            viewModel.isTurnLocationOnLinkActive
-                                        }, set: { new in
-                                            viewModel.setLocationLink(using: new)
-                                        }),
-                                                           viewModel: TurnOnLocationViewModel(sessionContext: viewModel.passSessionContext,
-                                                                                              isSDClearProcess: false))
-                                    }
-                                }
-                            EmptyView()
-                                .fullScreenCover(isPresented: .init(get: {
-                                    viewModel.isTurnBluetoothOnLinkActive
-                                }, set: { new in
-                                    viewModel.setBluetoothLink(using: new)
-                                })) {
-                                    CreatingSessionFlowRootView {
-                                        TurnOnBluetoothView(creatingSessionFlowContinues: .init(get: {
-                                            viewModel.isTurnBluetoothOnLinkActive
-                                        }, set: { new in
-                                            viewModel.setBluetoothLink(using: new)
-                                        }),
-                                                            sdSyncContinues: .constant(false))
-                                    }
-                                }
-                            EmptyView()
-                                .fullScreenCover(isPresented: .init(get: {
-                                    viewModel.isMobileLinkActive
-                                }, set: { new in
-                                    viewModel.setMobileLink(using: new)
-                                })) {
-                                    CreatingSessionFlowRootView {
-                                        SelectDeviceView(creatingSessionFlowContinues: .init(get: {
-                                            viewModel.isMobileLinkActive
-                                        }, set: { new in
-                                            viewModel.setMobileLink(using: new)
-                                        }),
-                                                         sdSyncContinues: .constant(false))
-                                    }
-                                }
-                            EmptyView()
-                                .fullScreenCover(isPresented: .init(get: {
-                                    viewModel.startSync
-                                }, set: { new in
-                                    viewModel.setStartSync(using: new)
-                                })) {
-                                    CreatingSessionFlowRootView {
-                                        SDSyncRootView(creatingSessionFlowContinues: .init(get: {
-                                            viewModel.startSync
-                                        }, set: { new in
-                                            viewModel.setStartSync(using: new)
-                                        }))
-                                    }
-                                }
-                            EmptyView()
-                                .fullScreenCover(isPresented: .init(get: {
-                                    viewModel.isSearchAndFollowLinkActive
-                                }, set: { new in
-                                    viewModel.setSearchAndFollow(using: new)
-                                })) {
-                                    CreatingSessionFlowRootView {
-                                        SearchView(isSearchAndFollowLinkActive: .init(get: {
-                                            viewModel.isSearchAndFollowLinkActive
-                                        }, set: { new in
-                                            viewModel.setSearchAndFollow(using: new)
-                                        }))
-                                    }
-                                }
-                        }
-                    )
-            }
-            .onAppear { defineNextMove() }
-            .onChange(of: tabSelection.selection, perform: { _ in defineNextMove() })
-            .environmentObject(viewModel.passSessionContext)
+                )
+                .onAppear { defineNextMove() }
+                .onChange(of: tabSelection.selection, perform: { _ in defineNextMove() })
+                .environmentObject(viewModel.passSessionContext)
         }
     }
     
-    
+    @State private var labelHeight = CGFloat.zero
     private var mainContent: some View {
-        VStack(spacing: 50) {
-            VStack(alignment: .leading, spacing: 10) {
-                titleLabel
-                messageLabel
-            }
-            .padding(.horizontal)
+        GeometryReader { geometry in
+            let minimalRequiredHeight = 499.0
+            let height = geometry.frame(in: .local).height
+            let additionalSpace = max(height - minimalRequiredHeight, 0)
+            let spacerHeight = min(additionalSpace / 2.0, 60)
             
-            VStack(alignment: .leading, spacing: 15) {
-                HStack {
-                    recordNewLabel
-                    Spacer()
-                    moreInfo
+            VStack() {
+                Spacer().frame(height: spacerHeight)
+                VStack(alignment: .leading, spacing: 10) {
+                    titleLabel
+                    messageLabel
                 }
-                HStack {
-                    fixedSessionButton
-                    Spacer()
-                    mobileSessionButton
-                }
-                Spacer()
-                if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) || featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
-                    orLabel
-                }
-                HStack {
-                    if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
-                        sdSyncButton
+                .padding(.horizontal)
+                Spacer().frame(height: spacerHeight)
+                VStack(alignment: .leading, spacing: 15) {
+                    let horizontalSpacerRatio = 10.5
+                    HStack {
+                        recordNewLabel
+                        Spacer()
+                        moreInfo
                     }
-                    Spacer()
-                    if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
-                        followSessionButton
+                    HStack {
+                        fixedSessionButton
+                        Spacer(minLength: geometry.size.width / horizontalSpacerRatio)
+                        mobileSessionButton
                     }
+                    let leftoverSpace = (additionalSpace - (spacerHeight * 2))
+                    let innerSpacerHeight = min(leftoverSpace / 2, 25.0)
+                    Spacer().frame(height: innerSpacerHeight)
+                    if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) || featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                        orLabel
+                    }
+                    HStack {
+                        if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
+                            sdSyncButton
+                        }
+                        Spacer(minLength: geometry.size.width / horizontalSpacerRatio)
+                        if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                            followSessionButton
+                        }
+                    }
+                    Spacer().frame(height: innerSpacerHeight)
                 }
-                Spacer()
+                .padding([.bottom, .vertical])
+                .padding(.horizontal, 30)
+                .background(Color.aircastingSecondaryBackground.ignoresSafeArea())
+                .alert(item: $viewModel.alert, content: { $0.makeAlert() })
             }
-            .padding([.bottom, .vertical])
-            .padding(.horizontal, 30)
-            .background(Color.aircastingSecondaryBackground.ignoresSafeArea())
-            .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+            .onPreferenceChange(ViewHeightKey.self) {
+                self.labelHeight = $0
+            }
+            .background(Color.aircastingBackground.ignoresSafeArea())
         }
-        .background(Color.aircastingBackground.ignoresSafeArea())
     }
 }
 
@@ -326,66 +335,73 @@ private extension ChooseSessionTypeView {
     }
     
     var fixedSessionButton: some View {
-        Button(action: {
+        createButton(action: {
             viewModel.fixedSessionButtonTapped()
-        }) {
-            fixedSessionLabel
-        }
+        }, label: fixedSessionLabel)
     }
     
     var mobileSessionButton: some View {
-        Button(action: {
+        createButton(action: {
             viewModel.mobileSessionButtonTapped()
-        }) {
-            mobileSessionLabel
-        }
+        }, label: mobileSessionLabel)
     }
     
     var sdSyncButton: some View {
-        Button(action: {
+        createButton(action: {
             viewModel.syncButtonTapped()
-        }) {
-            syncButtonLabel
-        }
+        }, label: syncButtonLabel)
     }
     
     var followSessionButton: some View {
-        Button(action: {
+        createButton(action: {
             viewModel.searchAndFollowTapped()
-        }) {
-            followButtonLabel
-        }
+        }, label: followButtonLabel)
+    }
+    
+    private func createButton<T: View>(action: @escaping () -> Void, label: T) -> some View {
+        Button(action: action) {
+            label
+        }.background(GeometryReader {
+            Color.clear
+                .preference(
+                    key: ViewHeightKey.self,
+                    value: $0.frame(in: .local).size.height
+                )
+        })
     }
     
     var fixedSessionLabel: some View {
         chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.fixedLabel,
-                                                                     using: [Strings.ChooseSessionTypeView.fixedSession],
-                                                                     color: .accentColor,
-                                                                     font: Fonts.muliBoldHeading1))
+                                                                    using: [Strings.ChooseSessionTypeView.fixedSession],
+                                                                    color: .accentColor,
+                                                                    font: Fonts.muliBoldHeading1,
+                                                                    makeNewLineAfterCustomized: true))
     }
     
     var mobileSessionLabel: some View {
         chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.mobileLabel,
                                                                     using: [Strings.ChooseSessionTypeView.mobileSession],
                                                                     color: .accentColor,
-                                                                    font: Fonts.muliBoldHeading1))
+                                                                    font: Fonts.muliBoldHeading1,
+                                                                    makeNewLineAfterCustomized: true))
     }
     
     var syncButtonLabel: some View {
         chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.syncTitle,
-                                                                     using: [Strings.ChooseSessionTypeView.syncData],
-                                                                     font: Fonts.muliBoldHeading1,
-                                                                     makeNewLineAfterCustomized: true))
+                                                                    using: [Strings.ChooseSessionTypeView.syncData],
+                                                                    font: Fonts.muliBoldHeading1,
+                                                                    makeNewLineAfterCustomized: true))
     }
     
     var followButtonLabel: some View {
         chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.followButtonTitle,
                                                                     using: [Strings.ChooseSessionTypeView.followSession],
-                                                                    font: Fonts.muliBoldHeading1))
+                                                                    font: Fonts.muliBoldHeading1,
+                                                                    makeNewLineAfterCustomized: true))
     }
 }
 
-extension View {
+extension ChooseSessionTypeView {
     func chooseSessionButton(title: Text) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             title
@@ -394,14 +410,16 @@ extension View {
         }
         .multilineTextAlignment(.leading)
         .padding(15)
-        .frame(minWidth: (UIScreen.main.bounds.width / 2.5) < 147 ? (UIScreen.main.bounds.width / 2.5) : 147,
-               maxWidth: 147,
-               minHeight: (UIScreen.main.bounds.height) / 4.5 < 145 ? (UIScreen.main.bounds.height) : 145,
-               maxHeight: 145,
-               alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: labelHeight, maxHeight: .infinity, alignment: .leading)
         .background(Color.aircastingBackground)
         .cornerRadius(8)
         .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
     }
 }
 
+struct ViewHeightKey: PreferenceKey {
+    static var defaultValue: CGFloat { 0 }
+    static func reduce(value: inout Value, nextValue: () -> Value) {
+        value = max(value, nextValue())
+    }
+}
