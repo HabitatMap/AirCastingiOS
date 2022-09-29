@@ -7,10 +7,12 @@ import Resolver
 class SessionForLocationDownloaderTests: ACTestCase {
     lazy var sut = SessionsForLocationDownloaderDefault()
     let clientSpy = APIClientMock()
+    let authorizationMock = RequestAuthorizationServiceMock()
     
     override func setUp() {
         super.setUp()
         Resolver.test.register { self.clientSpy as APIClient }
+        Resolver.test.register { self.authorizationMock as RequestAuthorisationService }
     }
     
     func test_requestingDataFromServer_usesGetMethod() throws {
