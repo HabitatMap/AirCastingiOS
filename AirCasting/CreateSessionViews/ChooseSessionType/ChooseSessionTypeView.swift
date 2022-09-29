@@ -15,6 +15,7 @@ struct ChooseSessionTypeView: View {
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
     @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton
     @StateObject var viewModel: ChooseSessionTypeViewModel
+    @State private var buttonHeight = CGFloat.zero
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
     var shouldGoToChooseSessionScreen: Bool {
@@ -220,9 +221,10 @@ struct ChooseSessionTypeView: View {
         }
     }
     
-    @State private var labelHeight = CGFloat.zero
     private var mainContent: some View {
         GeometryReader { geometry in
+            // Minimum height is based on the iPhone SE (1st gen) screen size
+            // which is currently the smallest supported screen size.
             let minimalRequiredHeight = 499.0
             let height = geometry.frame(in: .local).height
             let additionalSpace = max(height - minimalRequiredHeight, 0)
@@ -271,7 +273,7 @@ struct ChooseSessionTypeView: View {
                 .alert(item: $viewModel.alert, content: { $0.makeAlert() })
             }
             .onPreferenceChange(ViewHeightKey.self) {
-                self.labelHeight = $0
+                self.buttonHeight = $0
             }
             .background(Color.aircastingBackground.ignoresSafeArea())
         }
@@ -410,7 +412,7 @@ extension ChooseSessionTypeView {
         }
         .multilineTextAlignment(.leading)
         .padding(15)
-        .frame(maxWidth: .infinity, minHeight: labelHeight, maxHeight: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: buttonHeight, maxHeight: .infinity, alignment: .leading)
         .background(Color.aircastingBackground)
         .cornerRadius(8)
         .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
