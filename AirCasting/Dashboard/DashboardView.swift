@@ -17,12 +17,12 @@ struct DashboardView: View {
     @EnvironmentObject var selectedSection: SelectedSection
     @EnvironmentObject var reorderButton: ReorderButton
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
-    @State var isRefreshing: Bool = false
+    @State var isRefreshing: Bool
     @State private var alert: AlertInfo?
     @InjectedObject private var userSettings: UserSettings
     @Injected private var networkChecker: NetworkChecker
-    @Injected private var sessionSynchronizer: SessionSynchronizer
     @Injected private var persistenceController: PersistenceController
+    private let sessionSynchronizer: SessionSynchronizer
 
     private var sessions: [Sessionable] {
         coreDataHook.sessions
@@ -32,6 +32,8 @@ struct DashboardView: View {
         let navBarAppearance = UINavigationBar.appearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
         _coreDataHook = StateObject(wrappedValue: coreDataHook)
+        self.sessionSynchronizer = Resolver.resolve(SessionSynchronizer.self)
+        _isRefreshing = .init(wrappedValue: sessionSynchronizer.syncInProgress.value)
     }
 
     var body: some View {
@@ -46,7 +48,7 @@ struct DashboardView: View {
                 sessionTypePicker
                 TabView(selection: $selectedSection.section) {
                     ForEach(DashboardSection.allCases, id: \.self) {
-                        SessionsListView(selectedSection: $0, isRefreshing: $isRefreshing, context: persistenceController.viewContext)
+                        SessionsListView(selectedSection: $0, isRefreshing: $0.allowsRefreshing ? $isRefreshing : nil, context: persistenceController.viewContext)
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
@@ -82,6 +84,10 @@ struct DashboardView: View {
         }
         .onChange(of: selectedSection.section) { newValue in
             try! coreDataHook.setup(selectedSection: newValue)
+        }
+        .onReceive(sessionSynchronizer.syncInProgress) { isInProgress in
+            guard isInProgress == false else { return }
+            isRefreshing = false
         }
     }
     

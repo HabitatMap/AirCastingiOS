@@ -13,15 +13,19 @@ import CoreData
 struct SessionsListView: View {
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) private var thresholds
     @StateObject private var coreDataHook: CoreDataHook
-    @Binding var isRefreshing: Bool
+    private var isRefreshing: Binding<Bool>?
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
     private let listCoordinateSpaceName = "listCoordinateSpace"
     private let selectedSection: DashboardSection
 
-    init(selectedSection: DashboardSection, isRefreshing: Binding<Bool>, context: NSManagedObjectContext) {
+    init(selectedSection: DashboardSection, isRefreshing: Binding<Bool>?, context: NSManagedObjectContext) {
         self.selectedSection = selectedSection
-        _isRefreshing = .init(projectedValue: isRefreshing)
+        if let isRefreshing = isRefreshing {
+            self.isRefreshing = .init(projectedValue: isRefreshing)
+        } else {
+            self.isRefreshing = nil
+        }
         _coreDataHook = .init(wrappedValue: .init(context: context))
     }
     
@@ -41,7 +45,9 @@ struct SessionsListView: View {
             Image("dashboard-background-thing")
             let thresholds = Array(self.thresholds)
             ScrollView {
-                RefreshControl(coordinateSpace: .named(listCoordinateSpaceName), isRefreshing: $isRefreshing)
+                if let isRefreshing = isRefreshing {
+                    RefreshControl(coordinateSpace: .named(listCoordinateSpaceName), isRefreshing: isRefreshing)
+                }
                 LazyVStack(spacing: 8) {
                     ForEach(coreDataHook.sessions.filter { $0.uuid != "" && !$0.gotDeleted }, id: \.uuid) { session in
                         if session.isExternal && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
@@ -72,7 +78,9 @@ struct SessionsListView: View {
         GeometryReader { geometry in
             ScrollView(.vertical, showsIndicators: false) {
                 VStack {
-                    RefreshControl(coordinateSpace: .named(listCoordinateSpaceName), isRefreshing: $isRefreshing)
+                    if let isRefreshing = isRefreshing {
+                        RefreshControl(coordinateSpace: .named(listCoordinateSpaceName), isRefreshing: isRefreshing)
+                    }
                     if selectedSection == .mobileActive || selectedSection == .mobileDormant {
                         EmptyMobileDashboardViewMobile()
                             .frame(height: geometry.size.height)

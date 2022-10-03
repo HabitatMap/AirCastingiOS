@@ -483,7 +483,6 @@ struct Strings {
                                                                       comment: "")
         static let airBeamDescriptionDescription: String = NSLocalizedString("AirBeam3 is weather resistant. To keep tabs on your outdoor air quality 24/7, hang one outside your home and record a fixed session.",
                                                                              comment: "")
-        static let fetchingText: String = NSLocalizedString("Fetching...", comment: "")
     }
     
     enum EmptyDashboardFixed {
@@ -495,8 +494,6 @@ struct Strings {
                                                                           comment: "")
         static let newSession: String = NSLocalizedString("Record new session",
                                                           comment: "")
-        static let fetchingText: String = NSLocalizedString("Fetching...",
-                                                            comment: "")
         static let exploreSessionsButton = NSLocalizedString("Explore existing sessions", comment: "")
     }
 
