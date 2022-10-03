@@ -6,18 +6,21 @@ import SwiftUI
 struct RefreshControl: View {
     let coordinateSpace: CoordinateSpace
     @Binding var isRefreshing: Bool
+    @Binding var isBlocked: Bool
     
     private let pullToRefreshThreshold: CGFloat = 50
     
     var body: some View {
         GeometryReader { geometry in
-            if shouldStartRefreshing(using: geometry) {
-                startRefreshing()
+            if !isBlocked {
+                if shouldStartRefreshing(using: geometry) {
+                    startRefreshing()
+                }
+                ZStack(alignment: .center) {
+                    if isRefreshing { ProgressView(Strings.RefreshControl.progressViewTest) } else { mimicPullToRefreshAnimation(with: geometry) }
+                }
+                .frame(width: geometry.size.width)
             }
-            ZStack(alignment: .center) {
-                if isRefreshing { ProgressView(Strings.RefreshControl.progressViewTest) } else { mimicPullToRefreshAnimation(with: geometry) }
-            }
-            .frame(width: geometry.size.width)
         }
         // paddings: for non-refreshing state we need negative top padding to hide
         // the refresh control correctly under the top part of a parent view.

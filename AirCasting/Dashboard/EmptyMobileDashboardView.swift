@@ -14,7 +14,7 @@ struct EmptyMobileDashboardViewMobile: View {
     @EnvironmentObject var selectedSection: SelectedSection
     
     var shouldSessionFetch: Bool {
-        (selectedSection.section == .mobileDormant || selectedSection.section == .fixed) && defaultSessionSynchronizerViewModel.syncInProgress
+        selectedSection.section == .mobileDormant && defaultSessionSynchronizerViewModel.syncInProgress
     }
     
     var body: some View {

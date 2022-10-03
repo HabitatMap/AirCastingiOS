@@ -16,6 +16,10 @@ struct SessionsListView: View {
     @Binding var isRefreshing: Bool
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
+    // This prevents the scenario, when pulled-down-sync could happen along with fetching (which occurs after first log in).
+    @Injected private var sessionSynchronizer: SessionSynchronizer
+    @State private var blockRefreshControl: Bool = false
+    
     private let listCoordinateSpaceName = "listCoordinateSpace"
     private let selectedSection: DashboardSection
 
@@ -33,7 +37,11 @@ struct SessionsListView: View {
                 sessionListView
             }
         }
-        .onAppear { try! coreDataHook.setup(selectedSection: selectedSection) }
+        .onAppear {
+            try! coreDataHook.setup(selectedSection: selectedSection)
+            blockRefreshControl = sessionSynchronizer.syncInProgress.value
+        }
+        .onChange(of: sessionSynchronizer.syncInProgress.value) { blockRefreshControl = $0 }
     }
     
     private var sessionListView: some View {
@@ -41,7 +49,9 @@ struct SessionsListView: View {
             Image("dashboard-background-thing")
             let thresholds = Array(self.thresholds)
             ScrollView {
-                RefreshControl(coordinateSpace: .named(listCoordinateSpaceName), isRefreshing: $isRefreshing)
+                RefreshControl(coordinateSpace: .named(listCoordinateSpaceName),
+                               isRefreshing: $isRefreshing,
+                               isBlocked: .constant(false))
                 LazyVStack(spacing: 8) {
                     ForEach(coreDataHook.sessions.filter { $0.uuid != "" && !$0.gotDeleted }, id: \.uuid) { session in
                         if session.isExternal && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
@@ -72,7 +82,9 @@ struct SessionsListView: View {
         GeometryReader { geometry in
             ScrollView(.vertical, showsIndicators: false) {
                 VStack {
-                    RefreshControl(coordinateSpace: .named(listCoordinateSpaceName), isRefreshing: $isRefreshing)
+                    RefreshControl(coordinateSpace: .named(listCoordinateSpaceName),
+                                   isRefreshing: $isRefreshing,
+                                   isBlocked: $blockRefreshControl)
                     if selectedSection == .mobileActive || selectedSection == .mobileDormant {
                         EmptyMobileDashboardViewMobile()
                             .frame(height: geometry.size.height)

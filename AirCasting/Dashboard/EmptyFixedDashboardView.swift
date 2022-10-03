@@ -12,7 +12,7 @@ struct EmptyFixedDashboardView: View {
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
     var shouldSessionFetch: Bool {
-        (selectedSection.section == .mobileDormant || selectedSection.section == .fixed) && defaultSessionSynchronizerViewModel.syncInProgress
+        selectedSection.section == .fixed && defaultSessionSynchronizerViewModel.syncInProgress
     }
     
     var body: some View {
