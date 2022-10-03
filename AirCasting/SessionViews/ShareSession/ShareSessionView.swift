@@ -10,42 +10,38 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
     
     var body: some View {
         ZStack {
-            if viewModel.isLoading {
-                VStack {
-                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                        .padding(.bottom, 10)
-                    Text(Strings.SessionShare.upToDateSessions)
+            XMarkButton()
+            VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 5) {
+                    title
+                    description
                 }
-            } else {
-                XMarkButton()
-                VStack(alignment: .leading, spacing: 20) {
-                    VStack(alignment: .leading, spacing: 5) {
-                        title
-                        description
+                chooseStream
+                shareButton
+                descriptionMail
+                VStack(alignment: .leading, spacing: -5.0) {
+                    createTextfield(placeholder: Strings.SessionShare.emailPlaceholder, binding: $viewModel.email)
+                        .font(Fonts.moderateRegularHeading2)
+                        .padding(.vertical)
+                        .disableAutocorrection(true)
+                        .autocapitalization(.none)
+                    if viewModel.showInvalidEmailError {
+                        emailErrorLabel
                     }
-                    chooseStream
-                    shareButton
-                    descriptionMail
-                    VStack(alignment: .leading, spacing: -5.0) {
-                        createTextfield(placeholder: Strings.SessionShare.emailPlaceholder, binding: $viewModel.email)
-                            .font(Fonts.moderateRegularHeading2)
-                            .padding(.vertical)
-                            .disableAutocorrection(true)
-                            .autocapitalization(.none)
-                        if viewModel.showInvalidEmailError {
-                            emailErrorLabel
-                        }
-                    }
-                    .padding(.vertical)
-                    VStack(alignment: .leading, spacing: 5) {
+                }
+                .padding(.vertical)
+                VStack(alignment: .leading, spacing: 5) {
+                    if viewModel.isLoading {
+                        syncButton
+                    } else {
                         oKButton
-                        cancelButton
                     }
+                    cancelButton
                 }
-                .alert(item: $viewModel.alert, content: { $0.makeAlert() })
-                .sheet(isPresented: $viewModel.showShareSheet, content: { viewModel.getSharePage() })
-                .padding()
             }
+            .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+            .sheet(isPresented: $viewModel.showShareSheet, content: { viewModel.getSharePage() })
+            .padding()
         }
         .background(Color.aircastingBackground.ignoresSafeArea())
         .onAppear { viewModel.didAppear() }
@@ -105,6 +101,22 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
         }
         .font(Fonts.muliBoldHeading1)
         .buttonStyle(BlueButtonStyle())
+    }
+    
+    private var syncButton: some View {
+        Button {
+            // no action here - that's ok.
+        } label: {
+            HStack(spacing: 5) {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                Text(Strings.SessionShare.syncInProgress)
+                    .foregroundColor(.white)
+            }
+        }
+        .font(Fonts.muliBoldHeading1)
+        .buttonStyle(BlueButtonStyle())
+        .disabled(true)
     }
     
     private var cancelButton: some View {

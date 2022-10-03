@@ -14,6 +14,9 @@ struct EditNoteView<VM: EditNoteViewModel>: View {
                     title
                     description
                     noteField
+                    if viewModel.shouldShowError {
+                        errorMessage(text: Strings.AddNoteView.error)
+                    }
                     photo
                     continueButton
                     deleteButton

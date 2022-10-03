@@ -182,7 +182,7 @@ struct Strings {
                                                                  comment: "")
         static let sharedEmailText: String = NSLocalizedString("View my AirCasting session", comment: "")
         
-        static let upToDateSessions = NSLocalizedString("Ensuring that all sessions are up to date.", comment: "")
+        static let syncInProgress = NSLocalizedString("Sync in progress...", comment: "")
     }
     
     enum LoadingSession {
@@ -1006,6 +1006,8 @@ struct Strings {
                                                      comment: "")
         static let description: String = NSLocalizedString("Your note will be timestamped and displayed on the AirCasting map",
                                                            comment: "")
+        static let error: String = NSLocalizedString("Text can't be blank",
+                                                     comment: "")
         static let photoButton = NSLocalizedString("Tap to add picture", comment: "")
         static let retakePhotoButton = NSLocalizedString("Retake a picture", comment: "")
         static let placeholder: String = NSLocalizedString("Note",
