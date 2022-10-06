@@ -48,7 +48,7 @@ struct DashboardView: View {
                 sessionTypePicker
                 TabView(selection: $selectedSection.section) {
                     ForEach(DashboardSection.allCases, id: \.self) {
-                        SessionsListView(selectedSection: $0, isRefreshing: $0.allowsRefreshing ? $isRefreshing : nil, context: persistenceController.viewContext)
+                        SessionsListView(selectedSection: $0, isRefreshing: $isRefreshing, context: persistenceController.viewContext)
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
