@@ -302,7 +302,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         try sessionEntity.allStreams.forEach({
             try averageUnaveragedMeasurements(stream: $0, averagingWindow: averagingWindow)
-            try databaseStorage.orderAllMeasurements(stream: $0, context: context)
+            try databaseStorage.sortAllMeasurements(stream: $0, context: context)
         })
     }
     

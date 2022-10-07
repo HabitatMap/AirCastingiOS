@@ -5,6 +5,7 @@ import Foundation
 import CoreLocation
 
 protocol SDSyncAveragingService {
+    /// `averagingAction` parameter, is a completion block which will be execute after we get averaged measurements
     func averageMeasurementsWithReminder<T: AverageableMeasurement>(measurements: [T], startTime: Date, averagingWindow: AveragingWindow, averagingAction: (T, [T]) -> Void) -> [T]
 }
 
@@ -26,7 +27,7 @@ class DefaultSDSyncAveragingService: SDSyncAveragingService {
             guard measurement.time >= intervalStart else { return }
             
             guard measurement.time < intervalEnd else {
-                Log.info("## AVERAGING \(measurementsBuffer.count): \(measurementsBuffer.first?.time) - \(measurementsBuffer.last?.time)")
+                Log.info("Averaging happening. count: \(measurementsBuffer.count), first meas. time: \(measurementsBuffer.first?.time), last meas. time:\(measurementsBuffer.last?.time)")
                 // If there are any measurements in the buffer we should average them
                 if let newMeasurement = averageMeasurements(measurementsBuffer, time: intervalEnd-1) {
                     averagingAction(newMeasurement, measurementsBuffer)
@@ -34,17 +35,15 @@ class DefaultSDSyncAveragingService: SDSyncAveragingService {
                 
                 // There can be a long break between measurements. If the current measurement fall outside of the interval we should find the next interval that contains the measurement
                 findNextTimeInterval(measurement: measurement, intervalStart: &intervalStart, intervalEnd: &intervalEnd, averagingWindow: averagingWindow)
-                Log.info("## \(measurement.time!), interval end: \(intervalEnd) APPENDING")
                 measurementsBuffer = [measurement]
                 return
             }
             
-            Log.debug("## Buffer count is \(measurementsBuffer.count) appending measurement \(measurement.time!)")
             measurementsBuffer.append(measurement)
         }
         
         if measurementsBuffer.last?.time == intervalEnd - 1 {
-            Log.info("## averaging reminder with last at: \(measurementsBuffer.last?.time) end time: \(intervalEnd)")
+            Log.info("Averaging reminder with last at: \(measurementsBuffer.last?.time) end time: \(intervalEnd)")
             if let newMeasurement = (averageMeasurements(measurementsBuffer, time: intervalEnd-1) as? T) {
                 averagingAction(newMeasurement, measurementsBuffer)
             }
@@ -57,9 +56,9 @@ class DefaultSDSyncAveragingService: SDSyncAveragingService {
     private func findNextTimeInterval(measurement: AverageableMeasurement, intervalStart: inout Date, intervalEnd: inout Date, averagingWindow: AveragingWindow) {
         while measurement.time >= intervalEnd {
             // Helper variables for debugging
-            let logMeasurementTime = measurement.time!
+            let logMeasurementTime = measurement.time
             let logIntervalEnd = intervalEnd
-            Log.info("## \(logMeasurementTime), interval end: \(logIntervalEnd) NEXT INTERVAL")
+            Log.info("Measurement time: \(logMeasurementTime), interval end: \(logIntervalEnd)")
             intervalStart = intervalEnd
             intervalEnd = intervalEnd.addingTimeInterval(TimeInterval(averagingWindow.rawValue))
         }

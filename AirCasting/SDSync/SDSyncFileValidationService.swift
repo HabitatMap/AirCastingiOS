@@ -66,25 +66,21 @@ struct SDSyncFileValidationService: SDSyncFileValidator {
     private func provideLines(url: URL, progress: (FileLineReaderProgress) -> Void) throws {
         var isDirectory: ObjCBool = false
         guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) else { progress(.endOfFile); return }
-        
-        if !isDirectory.boolValue {
-            try self.fileLineReader.readLines(of: url, progress: progress)
-        } else {
-            let files = try FileManager.default.contentsOfDirectory(atPath: url.path).compactMap({ url.path + "/" + $0 }).compactMap(URL.init(string:))
-            Log.info("Files: \(files)")
-            try files.forEach { file in
-                Log.info("Reading file: \(file)")
-                try self.fileLineReader.readLines(of: file, progress: { line in
-                    switch line {
-                    case .line(let content):
-                        progress(.line(content))
-                    case .endOfFile:
-                        break
-                    }
-                })
-            }
-            progress(.endOfFile)
+        guard isDirectory.boolValue else { try self.fileLineReader.readLines(of: url, progress: progress); return }
+        let files = try FileManager.default.contentsOfDirectory(atPath: url.path).compactMap({ url.path + "/" + $0 }).compactMap(URL.init(string:))
+        Log.info("Files: \(files)")
+        try files.forEach { file in
+            Log.info("Reading file: \(file)")
+            try self.fileLineReader.readLines(of: file, progress: { line in
+                switch line {
+                case .line(let content):
+                    progress(.line(content))
+                case .endOfFile:
+                    break
+                }
+            })
         }
+        progress(.endOfFile)
     }
     
     private func lineIsCorrupted(_ line: String) -> Bool {

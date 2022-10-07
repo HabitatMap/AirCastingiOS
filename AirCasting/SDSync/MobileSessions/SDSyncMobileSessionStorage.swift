@@ -22,7 +22,7 @@ struct SDSyncMobileSessionsDatabaseStorage {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         sessionEntity.status = .FINISHED
         guard let endTime = sessionEntity.lastMeasurementTime else { return }
-        Log.info("## SD Sync end time for session \(sessionEntity.uuid) \(sessionEntity.name ?? ""): \(endTime)")
+        Log.info("SD Sync end time for session (UUID | name) \(sessionEntity.uuid) \(sessionEntity.name ?? ""): \(endTime)")
         sessionEntity.endTime = endTime
     }
     
@@ -38,7 +38,7 @@ struct SDSyncMobileSessionsDatabaseStorage {
         return fetchRequest
     }
     
-    func orderAllMeasurements(stream: MeasurementStreamEntity, context: NSManagedObjectContext) throws {
+    func sortAllMeasurements(stream: MeasurementStreamEntity, context: NSManagedObjectContext) throws {
         let fetchRequest = MeasurementEntity.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "time", ascending: true)]
         fetchRequest.predicate = NSPredicate(format: "measurementStream == %@", stream)

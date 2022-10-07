@@ -71,13 +71,12 @@ class SDSyncController {
                     Log.info("[SD SYNC] Files: \(directories)")
                     guard !directories.isEmpty else {
                         Log.info("[SD SYNC] No files. Finishing sd sync")
-                        Log.info("### completion success called in line 75")
                         completion(.success(()))
                         return
                     }
                     
                     // MARK: checking if files have the right number of rows and if rows have the right values
-                    self.checkFilesForCorruption(directories, expectedMeasurementsCount: metadata.expectedMeasurementsCount) { fileValidationResult in
+                    self.checkDirectoriesForCorruption(directories, expectedMeasurementsCount: metadata.expectedMeasurementsCount) { fileValidationResult in
                         switch fileValidationResult {
                         case .success(let verifiedFiles):
                             Log.info("[SD SYNC] Check for corruption passed")
@@ -123,14 +122,14 @@ class SDSyncController {
                 if let fixedFilesDirectoryURL = fixedFilesDirectoryURL {
                     handleFixedFiles(at: fixedFilesDirectoryURL)
                 } else {
-                    Log.info("### completion success called in line 129")
+                    Log.info("Completion succeed after handling mobile, no fixed")
                     completion(.success(()))
                 }
             }
         } else if let fixedFilesDirectoryURL = fixedFilesDirectoryURL {
             handleFixedFiles(at: fixedFilesDirectoryURL)
         } else {
-            Log.info("### completion success called in line 135")
+            Log.info("Completion succeed after no handling fixed, nor mobile")
             completion(.success(()))
         }
     }
@@ -141,7 +140,6 @@ class SDSyncController {
             switch result {
             case .success(let sessions):
                 Log.info("[SD Sync] Finished processing fixed file with success")
-                Log.info("### completion success called in line 147")
                 completion(.success(sessions))
             case .failure(let error):
                 Log.error("[SD Sync] Failed to upload sessions to backend: \(error.localizedDescription)")
@@ -191,7 +189,7 @@ class SDSyncController {
         }
     }
     
-    private func checkFilesForCorruption(_ directories: [(URL, SDCardSessionType)], expectedMeasurementsCount: [SDCardSessionType: Int], completion: (Result<[(URL, SDCardSessionType)], Error>) -> Void) {
+    private func checkDirectoriesForCorruption(_ directories: [(URL, SDCardSessionType)], expectedMeasurementsCount: [SDCardSessionType: Int], completion: (Result<[(URL, SDCardSessionType)], Error>) -> Void) {
         let toValidate = directories.compactMap { file -> SDCardCSVFile in
             let fileURL = file.0
             let sessionType = file.1
