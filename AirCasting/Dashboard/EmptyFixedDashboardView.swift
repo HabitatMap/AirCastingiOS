@@ -5,15 +5,9 @@ import SwiftUI
 import Resolver
 
 struct EmptyFixedDashboardView: View {
-    @StateObject private var defaultSessionSynchronizerViewModel = SessionSynchronizationViewModel()
-    @EnvironmentObject var selectedSection: SelectedSection
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
-    
-    var shouldSessionFetch: Bool {
-        (selectedSection.section == .mobileDormant || selectedSection.section == .fixed) && defaultSessionSynchronizerViewModel.syncInProgress
-    }
     
     var body: some View {
         emptyState
@@ -24,11 +18,6 @@ struct EmptyFixedDashboardView: View {
             Image("dashboard-background-thing")
             
             VStack() {
-                if shouldSessionFetch {
-                    ProgressView(Strings.EmptyDashboardFixed.fetchingText)
-                        .progressViewStyle(CircularProgressViewStyle())
-                        .padding(.top)
-                }
                 Spacer()
                 VStack(spacing: 20) {
                     emptyFixedDashboardText
