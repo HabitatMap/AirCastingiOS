@@ -36,18 +36,18 @@ class SDSyncFileWritingServiceTests: ACTestCase {
         XCTAssertEqual(directories.first?.1, .mobile)
         XCTAssertEqual(directories.last?.1, .fixed)
         
-        let session1MobileFile = mobileFileURL.appendingPathComponent(uuid + ".csv")
-        let session2MobileFile = mobileFileURL.appendingPathComponent(uuid2 + ".csv")
+        let session1MobileFile = mobileFileURL.appendingPathComponent(uuid)
+        let session2MobileFile = mobileFileURL.appendingPathComponent(uuid2)
         XCTAssertTrue(FileManager.default.fileExists(atPath: session1MobileFile.path))
         XCTAssertTrue(FileManager.default.fileExists(atPath: session2MobileFile.path))
         
-        let session1FixedFile = fixedFileURL.appendingPathComponent(uuid + "23" + ".csv")
-        let session2FixedFile = fixedFileURL.appendingPathComponent(uuid2 + "23" + ".csv")
+        let session1FixedFile = fixedFileURL.appendingPathComponent(uuid + "23")
+        let session2FixedFile = fixedFileURL.appendingPathComponent(uuid2 + "23")
         XCTAssertTrue(FileManager.default.fileExists(atPath: session1FixedFile.path))
         XCTAssertTrue(FileManager.default.fileExists(atPath: session2FixedFile.path))
         
-        let session1CellularFile = fixedFileURL.appendingPathComponent(uuid + ".csv")
-        let session2CellularFile = fixedFileURL.appendingPathComponent(uuid2 + ".csv")
+        let session1CellularFile = fixedFileURL.appendingPathComponent(uuid)
+        let session2CellularFile = fixedFileURL.appendingPathComponent(uuid2)
         XCTAssertTrue(FileManager.default.fileExists(atPath: session1CellularFile.path))
         XCTAssertTrue(FileManager.default.fileExists(atPath: session2CellularFile.path))
         
