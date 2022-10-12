@@ -81,24 +81,6 @@ final class AveragingService: NSObject {
         }
     }
     
-    func averageMeasurements(for sessions: [SessionUUID], completion: @escaping () -> Void) {
-        self.measurementStreamStorage.accessStorage { storage in
-            sessions.forEach { uuid in
-                guard let session = try? storage.getExistingSession(with: uuid) else {
-                    Log.info("Couldnt get session with uuid:\(uuid) from db to perform averaging")
-                    return }
-                guard let checkWindow = self.averagingWindowFor(startTime: session.startTime) else { return }
-                guard checkWindow != .zeroWindow else { return }
-                
-                self.perform(storage: storage,
-                             session: session,
-                             averagingWindow: checkWindow,
-                             windowDidChange: false)
-            }
-            completion()
-        }
-    }
-    
     private func perform(storage: HiddenCoreDataMeasurementStreamStorage, session: SessionEntity, averagingWindow: AveragingWindow, windowDidChange: Bool) {
         Log.info("Performing averaging for \(session.uuid ?? "N/A") [\(session.name ?? "unnamed")]")
         session.allStreams.forEach { stream in
@@ -147,7 +129,6 @@ final class AveragingService: NSObject {
     
     private func averagedMeasurementFrom(chunk: ArraySlice<MeasurementEntity>, window: AveragingWindow, measurementCount: Int) -> [MeasurementEntity] {
         guard chunk.count == measurementCount else { return Array(chunk) }
-        
         /// https://github.com/apple/swift-algorithms/blob/main/Guides/Chunked.md
         /// For integer types, any remainder of the division is discarded so we need to add 1 to elementsInChunk/2 to get the middle value.
         let middleIndex = chunk.middleItemIndex

@@ -23,6 +23,7 @@ struct SDSyncFileValidationService: SDSyncFileValidator {
         
         for file in files {
             if !check(file) {
+                Log.info("Check failed for directory \(file)")
                 result = false
                 break
             }
@@ -42,13 +43,13 @@ struct SDSyncFileValidationService: SDSyncFileValidator {
         var allCount = 0
         var corruptedCount = 0
         do {
-            try self.fileLineReader.readLines(of: file.url, progress: { line in
+            try self.provideLines(url: file.url, progress: { line in
                 switch line {
                 case .line(let content):
                     if (lineIsCorrupted(content)) {
+                        Log.info("Line corrupted: \(content)")
                         corruptedCount += 1
                     }
-                    
                     allCount += 1
                 case .endOfFile:
                     Log.info("Reached end of csv file")
@@ -60,6 +61,26 @@ struct SDSyncFileValidationService: SDSyncFileValidator {
             Log.error(error.localizedDescription)
             return nil
         }
+    }
+    
+    private func provideLines(url: URL, progress: (FileLineReaderProgress) -> Void) throws {
+        var isDirectory: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) else { progress(.endOfFile); return }
+        guard isDirectory.boolValue else { try self.fileLineReader.readLines(of: url, progress: progress); return }
+        let files = try FileManager.default.contentsOfDirectory(atPath: url.path).compactMap({ url.path + "/" + $0 }).compactMap(URL.init(string:))
+        Log.info("Files: \(files)")
+        try files.forEach { file in
+            Log.info("Reading file: \(file)")
+            try self.fileLineReader.readLines(of: file, progress: { line in
+                switch line {
+                case .line(let content):
+                    progress(.line(content))
+                case .endOfFile:
+                    break
+                }
+            })
+        }
+        progress(.endOfFile)
     }
     
     private func lineIsCorrupted(_ line: String) -> Bool {

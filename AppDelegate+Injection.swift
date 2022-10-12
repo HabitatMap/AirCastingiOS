@@ -224,6 +224,7 @@ extension Resolver: ResolverRegistering {
         main.register { SDSyncFileValidationService() as SDSyncFileValidator }
         main.register { SDSyncFileWritingService(bufferThreshold: 1000) as SDSyncFileWriter }
         main.register { BluetoothSDCardAirBeamServices() as SDCardAirBeamServices }
+        main.register { DefaultSDSyncAveragingService() as SDSyncAveragingService }
         
         main.register { SessionCardUIStateHandlerDefault() as SessionCardUIStateHandler }.scope(.cached)
         
