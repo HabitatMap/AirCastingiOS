@@ -321,7 +321,6 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
             measurements: measurements,
             startTime: intervalStart,
             averagingWindow: averagingWindow) { averagedMeasurement, sourceMeasurements in
-                Log.info("## averaged to \(averagedMeasurement)")
                 databaseStorage.addMeasurement(to: stream, measurement: averagedMeasurement, averagingWindow: averagingWindow, context: context)
                 sourceMeasurements.forEach(context.delete(_:))
                 try? context.save()
