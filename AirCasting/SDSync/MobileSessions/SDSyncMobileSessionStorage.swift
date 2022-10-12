@@ -12,7 +12,7 @@ struct SDSyncMobileSessionsDatabaseStorage {
     func addMeasurement(to stream: MeasurementStreamEntity, measurement: AverageableMeasurement, averagingWindow: AveragingWindow, context: NSManagedObjectContext) {
         let newMeasurement = MeasurementEntity(context: context)
         newMeasurement.location = measurement.location
-        newMeasurement.time = measurement.time
+        newMeasurement.time = measurement.measuredAt
         newMeasurement.value = measurement.value
         newMeasurement.averagingWindow = averagingWindow.rawValue
         stream.addToMeasurements(newMeasurement)

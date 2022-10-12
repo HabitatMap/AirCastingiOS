@@ -10,9 +10,6 @@ protocol SDSyncFileWriter {
 }
 
 final class SDSyncFileWritingService: SDSyncFileWriter {
-//    var mobileFileURL: URL?
-//    var fixedFileURL: URL?
-    
     private var path: URL {
         FileManager.default.urls(for: .documentDirectory, in: .allDomainsMask)[0]
     }
@@ -25,7 +22,6 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
     private var currentURL: URL? {
         didSet {
             guard currentURL != oldValue, let oldValue else { return }
-            Log.debug("## New session, flashing buffer")
             flushBuffer(for: oldValue)
         }
     }
@@ -79,7 +75,7 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
     }
     
     func finishAndRemoveFiles() {
-        Log.debug("## Finish and remove called")
+        Log.info("Finish and remove called")
         buffers = [:]
         do {
             try closeFiles()
@@ -114,12 +110,10 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
             let directoryURL = directoryURL(for: $0)
             guard FileManager.default.fileExists(atPath: directoryURL.path) else { return }
             try FileManager.default.removeItem(at: directoryURL)
-            Log.debug("## Removed files")
         }
     }
     
     private func flushBuffer(for url: URL) {
-        Log.debug("## Flashing buffer")
         do {
             let file = try getFileHandle(for: url)
             try file.seekToEnd()

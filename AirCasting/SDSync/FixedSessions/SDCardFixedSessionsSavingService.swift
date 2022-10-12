@@ -79,7 +79,11 @@ class SDCardFixedSessionsUploadingService {
         var isDirectory: ObjCBool = false
         guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) else { progress(.endOfFile); return }
         
-        guard isDirectory.boolValue else { try self.fileLineReader.readLines(of: url, progress: progress); return }
+        guard isDirectory.boolValue else {
+            try self.fileLineReader.readLines(of: url, progress: progress)
+            return
+        }
+        
         let files = try FileManager.default.contentsOfDirectory(atPath: url.path).compactMap({ url.path + "/" + $0 }).compactMap(URL.init(string:))
         Log.info("Reading all file lines from directory at \(url.path). Files count: \(files.count)")
         try files.forEach { file in

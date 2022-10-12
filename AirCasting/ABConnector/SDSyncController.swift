@@ -78,9 +78,9 @@ class SDSyncController {
                     // MARK: checking if files have the right number of rows and if rows have the right values
                     self.checkDirectoriesForCorruption(directories, expectedMeasurementsCount: metadata.expectedMeasurementsCount) { fileValidationResult in
                         switch fileValidationResult {
-                        case .success(let verifiedFiles):
+                        case .success(let verifiedDirectories):
                             Log.info("[SD SYNC] Check for corruption passed")
-                            self.handle(filesDirectories: verifiedFiles, sensorName: sensorName, completion: completion)
+                            self.handle(filesDirectories: verifiedDirectories, sensorName: sensorName, completion: completion)
                         case .failure(let error):
                             Log.error(error.localizedDescription)
                             completion(.failure(.filesCorrupted))
@@ -122,14 +122,14 @@ class SDSyncController {
                 if let fixedFilesDirectoryURL = fixedFilesDirectoryURL {
                     handleFixedFiles(at: fixedFilesDirectoryURL)
                 } else {
-                    Log.info("Completion succeed after handling mobile, no fixed")
+                    Log.info("[SD Sync] Completion success. There was no fixed directory.")
                     completion(.success(()))
                 }
             }
         } else if let fixedFilesDirectoryURL = fixedFilesDirectoryURL {
             handleFixedFiles(at: fixedFilesDirectoryURL)
         } else {
-            Log.info("Completion succeed after no handling fixed, nor mobile")
+            Log.info("[SD Sync] Completion success. There were no directories.")
             completion(.success(()))
         }
     }

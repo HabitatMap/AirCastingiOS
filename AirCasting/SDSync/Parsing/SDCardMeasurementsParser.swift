@@ -17,9 +17,11 @@ struct SDCardMeasurementsRow {
 }
 
 class SDCardMeasurementsParser {
+    let numberOfColumnsInTheFile = 13
+    
     func parseMeasurement(lineString: String) -> SDCardMeasurementsRow? {
         let measurementInfo = lineString.split(separator: ",")
-        guard measurementInfo.count == 13 else {
+        guard measurementInfo.count == numberOfColumnsInTheFile else {
             Log.warning("Line corrupted: \(lineString)")
             return nil
         }
@@ -51,7 +53,7 @@ class SDCardMeasurementsParser {
     
     func getUUID(lineString: String) -> String? {
         let measurementInfo = lineString.split(separator: ",")
-        guard measurementInfo.count == 13 else {
+        guard measurementInfo.count == numberOfColumnsInTheFile else {
             Log.warning("Line corrupted: \(lineString)")
             return nil
         }
@@ -61,7 +63,7 @@ class SDCardMeasurementsParser {
     
     func getMeasurementTime(lineString: String) -> Date? {
         let measurementInfo = lineString.split(separator: ",")
-        guard measurementInfo.count == 13 else {
+        guard measurementInfo.count == numberOfColumnsInTheFile else {
             Log.warning("Line corrupted: \(lineString)")
             return nil
         }

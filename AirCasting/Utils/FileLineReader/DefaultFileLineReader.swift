@@ -24,7 +24,6 @@ class DefaultFileLineReader: FileLineReader {
     }
     
     func readLastNonEmptyLine(of fileURL: URL) throws -> String? {
-//        assert(!Thread.isMainThread)
         guard let file: UnsafeMutablePointer<FILE> = fopen(fileURL.path, "r") else { throw FileLineReaderError.cannotOpenFile }
         
         var lineRead: UnsafeMutablePointer<CChar>?

@@ -25,7 +25,7 @@ struct SDSessionData: Hashable {
 }
 
 struct SDSyncMeasurement: AverageableMeasurement {
-    var time: Date!
+    var measuredAt: Date
     var value: Double
     var location: CLLocationCoordinate2D?
 }
@@ -216,11 +216,11 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     }
     
     private func enqueueForSaving(measurements: SDCardMeasurementsRow, buffer streamsWithMeasurements: inout [SDStream: [SDSyncMeasurement]], deviceID: String) {
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .f, header: .f), default: []].append(SDSyncMeasurement(time: measurements.date, value: measurements.f, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .rh, header: .rh), default: []].append(SDSyncMeasurement(time: measurements.date, value: measurements.rh, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm1, header: .pm1), default: []].append(SDSyncMeasurement(time: measurements.date, value: measurements.pm1, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm2_5, header: .pm2_5), default: []].append(SDSyncMeasurement(time: measurements.date, value: measurements.pm2_5, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm10, header: .pm10), default: []].append(SDSyncMeasurement(time: measurements.date, value: measurements.pm10, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .f, header: .f), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.f, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .rh, header: .rh), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.rh, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm1, header: .pm1), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.pm1, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm2_5, header: .pm2_5), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.pm2_5, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm10, header: .pm10), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.pm10, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
     }
     
     
@@ -243,7 +243,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     }
     
     private func saveNewSessionWithStreams(streamsWithMeasurements: [SDStream: [SDSyncMeasurement]], sessionData: inout SDSessionData) throws {
-        guard let location = streamsWithMeasurements.values.first?.first?.location, let time = streamsWithMeasurements.values.first?.first?.time else {
+        guard let location = streamsWithMeasurements.values.first?.first?.location, let time = streamsWithMeasurements.values.first?.first?.measuredAt else {
             Log.error("[SD Sync] No location and time")
             return
         }
@@ -281,7 +281,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
             return
         }
         
-        guard let sessionStartTime = stream.session?.startTime, let firstMeasurementTime = measurements.first?.time else {
+        guard let sessionStartTime = stream.session?.startTime, let firstMeasurementTime = measurements.first?.measuredAt else {
             Log.error("No session start time or last measurement time")
             return
         }
