@@ -5,7 +5,6 @@ import AirCastingStyling
 import MessageUI
 import SwiftUI
 
-
 struct ShareSessionView<VM: ShareSessionViewModel>: View {
     @StateObject var viewModel: VM
     
@@ -32,7 +31,11 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
                 }
                 .padding(.vertical)
                 VStack(alignment: .leading, spacing: 5) {
-                    oKButton
+                    if viewModel.isLoading {
+                        syncButton
+                    } else {
+                        oKButton
+                    }
                     cancelButton
                 }
             }
@@ -41,6 +44,7 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
             .padding()
         }
         .background(Color.aircastingBackground.ignoresSafeArea())
+        .onAppear { viewModel.didAppear() }
     }
     
     private var title: some View {
@@ -97,6 +101,22 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
         }
         .font(Fonts.muliBoldHeading1)
         .buttonStyle(BlueButtonStyle())
+    }
+    
+    private var syncButton: some View {
+        Button {
+            // no action here - that's ok.
+        } label: {
+            HStack(spacing: 5) {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                Text(Strings.SessionShare.syncInProgress)
+                    .foregroundColor(.white)
+            }
+        }
+        .font(Fonts.muliBoldHeading1)
+        .buttonStyle(BlueButtonStyle())
+        .disabled(true)
     }
     
     private var cancelButton: some View {

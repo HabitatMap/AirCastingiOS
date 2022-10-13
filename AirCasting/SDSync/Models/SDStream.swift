@@ -5,6 +5,7 @@ import Foundation
 
 struct SDStream: Hashable {
     let sessionUUID: SessionUUID
+    let deviceID: String
     let name: MeasurementStreamSensorName
     let header: SDCardCSVFileFactory.Header
 }

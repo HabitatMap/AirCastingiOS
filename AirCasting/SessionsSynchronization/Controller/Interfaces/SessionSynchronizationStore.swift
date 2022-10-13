@@ -90,6 +90,7 @@ extension SessionsSynchronization {
         let latitude: Double
         let longitude: Double
         let number: Int
+        let photoLocation: URL?
     }
     
     struct NotesResultData {

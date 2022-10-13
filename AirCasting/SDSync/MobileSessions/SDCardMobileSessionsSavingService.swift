@@ -2,125 +2,331 @@
 //
 
 import Foundation
+import CoreData
 import CoreLocation
 import Combine
 import Resolver
 
 protocol SDCardMobileSessionssSaver {
-    func saveDataToDb(fileURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void)
+    func saveDataToDb(filesDirectoryURL: URL, deviceID: String, completion: @escaping (Result<Void, Error>) -> Void)
+}
+
+enum SDMobileSavingErrors: Error {
+    case noUUID
+    case noLastMeasurementTime
+}
+
+struct SDSessionData: Hashable {
+    let uuid: SessionUUID
+    var startTime: Date?
+    var lastMeasurementTime: Date?
+    var needsToBeCreated: Bool
+    var averaging: AveragingWindow?
+}
+
+struct SDSyncMeasurement: AverageableMeasurement {
+    var measuredAt: Date
+    var value: Double
+    var location: CLLocationCoordinate2D?
 }
 
 class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     @Injected private var fileLineReader: FileLineReader
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var averagingService: SDSyncAveragingService
+    @Injected private var persistenceController: PersistenceController
+    private var databaseStorage = SDSyncMobileSessionsDatabaseStorage()
+    private lazy var context: NSManagedObjectContext = persistenceController.createContext()
     private let parser = SDCardMeasurementsParser()
     
-    func saveDataToDb(fileURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
-        var processedSessions = Set<SDSession>()
-        var streamsWithMeasurements: [SDStream: [Measurement]] = [:]
+    func saveDataToDb(filesDirectoryURL: URL, deviceID: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        var isDirectory: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: filesDirectoryURL.path, isDirectory: &isDirectory) else { completion(.success(())); return }
         
-        // We don't want to save data for session which have already been finished.
-        // We only want to save measurements of new sessions or for sessions in standalone mode recorded with the syncing device
-        var sessionsToCreate: [SessionUUID] = []
-        var sessionsToIgnore: [SessionUUID] = []
+        guard isDirectory.boolValue else {
+            process(fileURL: filesDirectoryURL, deviceID: deviceID, completion: completion)
+            return
+        }
+        do {
+            let files = try FileManager.default.contentsOfDirectory(atPath: filesDirectoryURL.path).compactMap({ filesDirectoryURL.path + "/" + $0 }).compactMap(URL.init(string:))
+            Log.info("Files: \(files)")
+            var error: Error?
+            let group = DispatchGroup()
+            for file in files {
+                group.enter()
+                process(fileURL: file, deviceID: deviceID) { result in
+                    switch result {
+                    case .success():
+                        Log.info("Successfully saved session: \(file.path.split(separator: "/").last ?? "na")")
+                        group.leave()
+                    case .failure(let failureError):
+                        Log.info("## Failure for session: \(file.path.split(separator: "/").last ?? "na")")
+                        error = failureError
+                        group.leave()
+                        return
+                    }
+                }
+            }
+            group.notify(queue: DispatchQueue.global()) {
+                error != nil ? completion(.failure(error!)) : completion(.success(()))
+            }
+        } catch {
+            completion(.failure(error))
+        }
+    }
+    
+    private func process(fileURL: URL, deviceID: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let sessionUUIDString = fileURL.path.split(separator: "/").last else {
+            completion(.failure(SDMobileSavingErrors.noUUID))
+            return
+        }
         
-        measurementStreamStorage.accessStorage { storage in
-            do {
-                try self.fileLineReader.readLines(of: fileURL, progress: { line in
-                    switch line {
-                    case .line(let content):
-                        let measurementsRow = self.parser.parseMeasurement(lineString: content)
-                        guard let measurements = measurementsRow, !sessionsToIgnore.contains(measurements.sessionUUID) else {
+        let sessionUUID = SessionUUID(stringLiteral: String(sessionUUIDString))
+        
+        Log.info("## Processing mobile session: \(sessionUUID)")
+        
+        guard let processedSession = getSessionData(sessionUUID: sessionUUID, deviceID: deviceID) else {
+            Log.info("## Ignoring session \(sessionUUID). Moving forward.")
+            completion(.success(()))
+            return
+        }
+        
+        Log.info("## processed session: \(processedSession)")
+        processFile(fileURL: fileURL, session: processedSession, deviceID: deviceID, completion: completion)
+    }
+    
+    private func processFile(fileURL: URL, session: SDSessionData, deviceID: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        var streamsWithMeasurements: [SDStream: [SDSyncMeasurement]] = [:]
+        let bufferThreshold = 5000
+        var savingFailed = false
+        var sessionData = session
+        
+        // Helper variables for debugging
+        var i = 0
+        var savedLines = 0
+        
+        guard let lastLineInFile = try? fileLineReader.readLastNonEmptyLine(of: fileURL) else {
+            Log.error("Failed to get last line from file for session \(session.uuid)")
+            completion(.failure(SDMobileSavingErrors.noLastMeasurementTime))
+            return
+        }
+        
+        Log.info("## LAST LINE: \(lastLineInFile)")
+        
+        guard let lastMeasurementTime = parser.getMeasurementTime(lineString: lastLineInFile) else {
+            Log.error("Failed to read last measurement time from file")
+            completion(.failure(SDMobileSavingErrors.noLastMeasurementTime))
+            return
+        }
+        
+        do {
+            try self.fileLineReader.readLines(of: fileURL, progress: { line in
+                guard !savingFailed else { return }
+                switch line {
+                case .line(let content):
+                    context.perform {
+                        guard let measurements = self.parser.parseMeasurement(lineString: content) else {
+                            Log.error("## Failed to parse content: \(content)")
                             return
                         }
                         
-                        var session = processedSessions.first(where: { $0.uuid == measurements.sessionUUID })
-                        if session == nil {
-                            session = self.processSession(storage: storage, sessionUUID: measurements.sessionUUID, deviceID: deviceID, sessionsToIgnore: &sessionsToIgnore, sessionsToCreate: &sessionsToCreate)
-                            guard let createdSession = session else { return }
-                            processedSessions.insert(createdSession)
+                        // This happens only with the first line
+                        if sessionData.averaging == nil {
+                            sessionData.averaging = self.calculateAveragingWindow(startTime: sessionData.startTime ?? measurements.date, lastMeasurement: lastMeasurementTime)
+                            Log.info("## Set averaging window to \(sessionData.averaging)")
                         }
                         
-                        guard session!.lastMeasurementTime == nil || measurements.date > session!.lastMeasurementTime! else { return }
+                        Log.info("[SD sync] \(i) - \(savedLines): \(measurements.date)")
+                        i += 1
                         
-                        self.enqueueForSaving(measurements: measurements, buffer: &streamsWithMeasurements)
-                    case .endOfFile:
-                        Log.info("Reached end of csv file")
+                        guard sessionData.lastMeasurementTime == nil || measurements.date > sessionData.lastMeasurementTime! else {
+                            Log.info("## Ignoring measurement")
+                            return
+                        }
+                        
+                        self.enqueueForSaving(measurements: measurements, buffer: &streamsWithMeasurements, deviceID: deviceID)
+                        
+                        savedLines += 1
+                        guard savedLines == bufferThreshold else { return }
+                        
+                        do {
+                            Log.info("## Threshold exceeded, saving data")
+                            try self.saveData(streamsWithMeasurements, session: &sessionData)
+                            streamsWithMeasurements = [:]
+                            savedLines = 0
+                        } catch {
+                            Log.error("Saving measurements failed")
+                            savingFailed = true
+                            return
+                        }
                     }
-                })
+                case .endOfFile:
+                    Log.info("Reached end of csv file for session \(sessionData.uuid)")
+                }
+            })
+            
+            context.perform {
+                guard !savingFailed else {
+                    Log.info("##### completion called in line 85")
+                    completion(.failure(UploadingError.uploadError))
+                    return
+                }
                 
-                self.saveData(streamsWithMeasurements, to: storage, with: deviceID, sessionsToCreate: &sessionsToCreate)
-                completion(.success(Array(Set(streamsWithMeasurements.keys.map(\.sessionUUID)))))
-            } catch {
-                completion(.failure(error))
-            }
-        }
-    }
-    
-    private func saveData(_ streamsWithMeasurements: [SDStream: [Measurement]], to storage: HiddenCoreDataMeasurementStreamStorage, with deviceID: String, sessionsToCreate: inout [SessionUUID]) {
-        Log.info("[SD Sync] Saving data: \(streamsWithMeasurements.count)")
-        streamsWithMeasurements.forEach { (sdStream: SDStream, measurements: [Measurement]) in
-            if sessionsToCreate.contains(sdStream.sessionUUID) {
-                createSession(storage: storage, sdStream: sdStream, location: measurements.first?.location, time: measurements.first?.time, sessionsToCreate: &sessionsToCreate)
-                saveMeasurements(measurements: measurements, storage: storage, sdStream: sdStream, deviceID: deviceID)
-            } else {
-                saveMeasurements(measurements: measurements, storage: storage, sdStream: sdStream, deviceID: deviceID)
                 do {
-                    try storage.setStatusToFinishedAndUpdateEndTime(for: sdStream.sessionUUID, endTime: measurements.last?.time)
+                    try self.saveData(streamsWithMeasurements, session: &sessionData)
+                    try self.averageUnaveragedMeasurements(sessionUUID: sessionData.uuid, averagingWindow: sessionData.averaging ?? .zeroWindow)
+                    try self.databaseStorage.setStatusToFinishedAndUpdateEndTime(for: sessionData.uuid, context: self.context)
+                    try self.context.save()
+                    Log.info("##### completion called in line 98")
+                    completion(.success(()))
                 } catch {
-                    Log.info("Error setting status to finished and updating end time: \(error)")
+                    Log.info("##### completion called in line 101")
+                    completion(.failure(error))
                 }
             }
-        }
-    }
-    
-    private func createSession(storage: HiddenCoreDataMeasurementStreamStorage, sdStream: SDStream, location: CLLocationCoordinate2D?, time: Date?, sessionsToCreate: inout [SessionUUID]) {
-        do {
-            try storage.createSession(Session(uuid: sdStream.sessionUUID, type: .mobile, name: "Imported from SD card", deviceType: .AIRBEAM3, location: location, startTime: time))
-            sessionsToCreate.removeAll(where: { $0 == sdStream.sessionUUID })
         } catch {
-            Log.error("Couldn't create session: \(error.localizedDescription)")
+            // ERRORR
         }
     }
     
-    private func saveMeasurements(measurements: [Measurement], storage: HiddenCoreDataMeasurementStreamStorage, sdStream: SDStream, deviceID: String) {
-        Log.info("[SD Sync] Saving measurements")
-        do {
-            var existingStreamID = try storage.existingMeasurementStream(sdStream.sessionUUID, name: sdStream.name.rawValue)
-            if existingStreamID == nil {
-                let measurementStream = createMeasurementStream(for: sdStream.name, sensorPackageName: deviceID)
-                existingStreamID = try storage.saveMeasurementStream(measurementStream, for: sdStream.sessionUUID)
-            }
-            try storage.addMeasurements(measurements, toStreamWithID: existingStreamID!)
-        } catch {
-            Log.info("Saving measurements failed: \(error)")
+    private func calculateAveragingWindow(startTime: Date, lastMeasurement: Date) -> AveragingWindow {
+        let sessionDuration = abs(lastMeasurement.timeIntervalSince(startTime))
+        if sessionDuration <= TimeInterval(TimeThreshold.firstThreshold.rawValue) {
+            return .zeroWindow
+        } else if sessionDuration <= TimeInterval(TimeThreshold.secondThreshold.rawValue) {
+            return .firstThresholdWindow
         }
+        return .secondThresholdWindow
     }
     
-    private func processSession(storage: HiddenCoreDataMeasurementStreamStorage, sessionUUID: SessionUUID, deviceID: String, sessionsToIgnore: inout [SessionUUID], sessionsToCreate: inout [SessionUUID]) -> SDSession? {
-        if let existingSession = try? storage.getExistingSession(with: sessionUUID) {
-            guard existingSession.isInStandaloneMode && existingSession.sensorPackageName == deviceID else {
-                Log.info("[SD SYNC] Ignoring session \(existingSession.name ?? "none")")
-                sessionsToIgnore.append(sessionUUID)
-                return nil
+    private func getSessionData(sessionUUID: SessionUUID, deviceID: String) -> SDSessionData? {
+        var session: SDSessionData? = nil
+        context.performAndWait {
+            if let existingSession = try? context.existingSession(uuid: sessionUUID) {
+                guard existingSession.isInStandaloneMode && existingSession.sensorPackageName == deviceID else {
+                    Log.info("[SD SYNC] Ignoring session \(existingSession.name ?? "none")")
+                    return
+                }
+                
+                session = SDSessionData(uuid: sessionUUID, startTime: existingSession.startTime, lastMeasurementTime: existingSession.lastMeasurementTime, needsToBeCreated: false)
+            } else {
+                session = SDSessionData(uuid: sessionUUID, needsToBeCreated: true)
             }
-            
-            return SDSession(uuid: sessionUUID, lastMeasurementTime: existingSession.lastMeasurementTime)
+        }
+        return session
+    }
+    
+    private func enqueueForSaving(measurements: SDCardMeasurementsRow, buffer streamsWithMeasurements: inout [SDStream: [SDSyncMeasurement]], deviceID: String) {
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .f, header: .f), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.f, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .rh, header: .rh), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.rh, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm1, header: .pm1), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.pm1, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm2_5, header: .pm2_5), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.pm2_5, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm10, header: .pm10), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.pm10, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+    }
+    
+    
+    private func saveData(_ streamsWithMeasurements: [SDStream: [SDSyncMeasurement]], session: inout SDSessionData) throws {
+        Log.info("[SD Sync] Saving data: \(streamsWithMeasurements.count)")
+        if session.needsToBeCreated {
+            try saveNewSessionWithStreams(streamsWithMeasurements: streamsWithMeasurements, sessionData: &session)
         } else {
-            sessionsToCreate.append(sessionUUID)
-            return SDSession(uuid: sessionUUID, lastMeasurementTime: nil)
+            Log.info("[SD Sync] saving measurements for existing session")
+            try saveMeasurementsForExistingSession(streamsWithMeasurements: streamsWithMeasurements, sessionData: session)
+        }
+        
+        do {
+            Log.info("[SD Sync] Saving context")
+            try self.context.save()
+        } catch {
+            Log.error("[SD Sync] context save failed")
+            throw error
         }
     }
     
-    private func enqueueForSaving(measurements: SDCardMeasurementsRow, buffer streamsWithMeasurements: inout [SDStream: [Measurement]]) {
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .f, header: .f), default: []].append(Measurement(time: measurements.date, value: measurements.f, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .rh, header: .rh), default: []].append(Measurement(time: measurements.date, value: measurements.rh, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm1, header: .pm1), default: []].append(Measurement(time: measurements.date, value: measurements.pm1, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm2_5, header: .pm2_5), default: []].append(Measurement(time: measurements.date, value: measurements.pm2_5, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm10, header: .pm10), default: []].append(Measurement(time: measurements.date, value: measurements.pm10, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+    private func saveNewSessionWithStreams(streamsWithMeasurements: [SDStream: [SDSyncMeasurement]], sessionData: inout SDSessionData) throws {
+        guard let location = streamsWithMeasurements.values.first?.first?.location, let time = streamsWithMeasurements.values.first?.first?.measuredAt else {
+            Log.error("[SD Sync] No location and time")
+            return
+        }
+        let sessionEntity = databaseStorage.createSession(uuid: sessionData.uuid, location: location, time: time, context: context)
+        Log.info("[SD Sync] saving measurements for created session")
+        try saveStreams(streamsWithMeasurements: streamsWithMeasurements, session: sessionEntity, averagingWindow: sessionData.averaging ?? .zeroWindow)
+        sessionData.needsToBeCreated = false
     }
     
-    private func createMeasurementStream(for sensorName: MeasurementStreamSensorName, sensorPackageName: String) -> MeasurementStream {
-        MeasurementStream(sensorName: sensorName, sensorPackageName: sensorPackageName)
+    private func saveMeasurementsForExistingSession(streamsWithMeasurements: [SDStream: [SDSyncMeasurement]], sessionData: SDSessionData) throws {
+        Log.info("[SD Sync] Saving measurements")
+        let session = try context.existingSession(uuid: sessionData.uuid)
+        try saveStreams(streamsWithMeasurements: streamsWithMeasurements, session: session, averagingWindow: sessionData.averaging ?? .zeroWindow)
+    }
+    
+    private func saveStreams(streamsWithMeasurements: [SDStream: [SDSyncMeasurement]], session: SessionEntity, averagingWindow: AveragingWindow) throws {
+        try streamsWithMeasurements.forEach { (sdStream: SDStream, measurements: [SDSyncMeasurement]) in
+            try saveStream(sdStream: sdStream, measurements: measurements, session: session, averagingWindow: averagingWindow)
+        }
+    }
+    
+    private func saveStream(sdStream: SDStream, measurements: [SDSyncMeasurement], session: SessionEntity, averagingWindow: AveragingWindow) throws {
+        var existingStream = session.streamWith(sensorName: sdStream.name.rawValue)
+        if existingStream == nil {
+            Log.info("## Creating stream: \(sdStream.name)")
+            existingStream = try databaseStorage.createMeasurementStream(for: session, sensorName: sdStream.name, deviceID: sdStream.deviceID, context: context)
+        }
+        addMeasurements(measurements, toStream: existingStream!, averaging: averagingWindow)
+    }
+    
+    private func addMeasurements(_ measurements: [SDSyncMeasurement], toStream stream: MeasurementStreamEntity, averaging: AveragingWindow) {
+        Log.info("####### SAVING MEASUREMENTS WITH AVERAGING")
+        guard averaging != .zeroWindow else {
+            measurements.forEach( { databaseStorage.addMeasurement(to: stream, measurement: $0, averagingWindow: .zeroWindow, context: context) })
+            return
+        }
+        
+        guard let sessionStartTime = stream.session?.startTime, let firstMeasurementTime = measurements.first?.measuredAt else {
+            Log.error("No session start time or last measurement time")
+            return
+        }
+        
+        let secondsFromTheStartOfLastAveragingWindow = Int(firstMeasurementTime.timeIntervalSince(sessionStartTime)) % averaging.rawValue
+        
+        var intervalStart  = firstMeasurementTime.addingTimeInterval(TimeInterval(averaging.rawValue - secondsFromTheStartOfLastAveragingWindow))
+        
+        let measurementsReminder = averagingService.averageMeasurementsWithReminder(measurements: measurements, startTime: intervalStart, averagingWindow: averaging) { measurement, _ in
+            databaseStorage.addMeasurement(to: stream, measurement: measurement, averagingWindow: averaging, context: context)
+        }
+        
+        Log.info("## SAVING REST: \(measurementsReminder.first) - \(measurementsReminder.last)")
+        measurementsReminder.forEach({ databaseStorage.addMeasurement(to: stream, measurement: $0, averagingWindow: .zeroWindow, context: context) })
+    }
+    
+    private func averageUnaveragedMeasurements(sessionUUID: SessionUUID, averagingWindow: AveragingWindow) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        try sessionEntity.allStreams.forEach({
+            try averageUnaveragedMeasurements(stream: $0, averagingWindow: averagingWindow)
+            try databaseStorage.sortAllMeasurements(stream: $0, context: context)
+        })
+    }
+    
+    private func averageUnaveragedMeasurements(stream: MeasurementStreamEntity, averagingWindow: AveragingWindow) throws {
+        Log.info("#### Averaging unaveraged measurements for stream \(stream.sensorName)")
+        guard averagingWindow != .zeroWindow else {
+            return
+        }
+        
+        let measurements = try databaseStorage.fetchUnaveragedMeasurements(currentWindow: averagingWindow, stream: stream, context: context)
+        Log.debug("## measurements: \(measurements)")
+        
+        guard let intervalStart = stream.session?.startTime else { Log.error("No session start time!"); return }
+        
+        let reminderMeasurements = averagingService.averageMeasurementsWithReminder(
+            measurements: measurements,
+            startTime: intervalStart,
+            averagingWindow: averagingWindow) { averagedMeasurement, sourceMeasurements in
+                databaseStorage.addMeasurement(to: stream, measurement: averagedMeasurement, averagingWindow: averagingWindow, context: context)
+                sourceMeasurements.forEach(context.delete(_:))
+                try? context.save()
+            }
+        
+        reminderMeasurements.forEach(context.delete(_:))
+        try context.save()
     }
 }
