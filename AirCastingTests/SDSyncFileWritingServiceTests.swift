@@ -4,26 +4,39 @@
 import XCTest
 @testable import AirCasting
 
+fileprivate extension SDCardSessionType {
+    var name: String {
+        switch self {
+        case .mobile: return "MOBILE"
+        case .fixed: return "FIXED"
+        case .cellular: return "CELLULAR"
+        }
+    }
+}
+
 class SDSyncFileWritingServiceTests: ACTestCase {
+    let service = SDSyncFileWritingService(bufferThreshold: 3)
+    let measurementsCountSession1 = 100
+    let measurementsCountSession2 = 80
+    let uuid = "123"
+    let uuid2 = "456"
     
-    func test_integration() {
-        let threshold = 3
-        let service = SDSyncFileWritingService(bufferThreshold: threshold)
-        let testWritesCount = 110
-        let uuid = "123"
-        let uuid2 = "456"
-        for i in 0...testWritesCount {
-            service.writeToFile(data: "1,\(i < testWritesCount/2 ? uuid : uuid2),1,1,1,1,1,1,1,1,1,1,\(i)_MOBILE", sessionType: .mobile)
+    override func setUp() {
+        super.setUp()
+        SDCardSessionType.allCases.forEach { type in
+            for i in 0...measurementsCountSession1 {
+                let line = createFileLine(uuid: uuid + type.name, lineNumber: i, sessionType: type)
+                service.writeToFile(data: line, sessionType: type)
+            }
+            
+            for i in 0...measurementsCountSession2 {
+                let line = createFileLine(uuid: uuid2 + type.name, lineNumber: i, sessionType: type)
+                service.writeToFile(data: line, sessionType: type)
+            }
         }
-        
-        for i in 0...testWritesCount {
-            service.writeToFile(data: "1,\(i < testWritesCount/2 ? uuid : uuid2)23,1,1,1,1,1,1,1,1,1,1,\(i)_FIXED", sessionType: .fixed)
-        }
-        
-        for i in 0...testWritesCount {
-            service.writeToFile(data: "1,\(i < testWritesCount/2 ? uuid : uuid2),1,1,1,1,1,1,1,1,1,1,\(i)_CELLULAR", sessionType: .cellular)
-        }
-        
+    }
+    
+    func test_createsMobileAndFixedDirectories() {
         let directories = service.finishAndSave()
         
         let documents = FileManager.default.urls(for: .documentDirectory, in: .allDomainsMask)[0]
@@ -35,34 +48,34 @@ class SDSyncFileWritingServiceTests: ACTestCase {
         XCTAssertEqual(directories.last?.0, fixedFileURL)
         XCTAssertEqual(directories.first?.1, .mobile)
         XCTAssertEqual(directories.last?.1, .fixed)
+    }
+    
+    func test_savesSessionsDataToSeparateFiles() throws {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .allDomainsMask)[0]
         
-        let session1MobileFile = mobileFileURL.appendingPathComponent(uuid)
-        let session2MobileFile = mobileFileURL.appendingPathComponent(uuid2)
-        XCTAssertTrue(FileManager.default.fileExists(atPath: session1MobileFile.path))
-        XCTAssertTrue(FileManager.default.fileExists(atPath: session2MobileFile.path))
-        
-        let session1FixedFile = fixedFileURL.appendingPathComponent(uuid + "23")
-        let session2FixedFile = fixedFileURL.appendingPathComponent(uuid2 + "23")
-        XCTAssertTrue(FileManager.default.fileExists(atPath: session1FixedFile.path))
-        XCTAssertTrue(FileManager.default.fileExists(atPath: session2FixedFile.path))
-        
-        let session1CellularFile = fixedFileURL.appendingPathComponent(uuid)
-        let session2CellularFile = fixedFileURL.appendingPathComponent(uuid2)
-        XCTAssertTrue(FileManager.default.fileExists(atPath: session1CellularFile.path))
-        XCTAssertTrue(FileManager.default.fileExists(atPath: session2CellularFile.path))
-        
-        let session1MobileFileContent = try! String(contentsOf: session1MobileFile)
-//        let mobileFileContent = try! String(contentsOf: mobileFileURL)
-        
-        let expectedFixedFileContent = (0...testWritesCount).map {
-            "\($0)_CELLULAR\n\($0)_FIXED"
-        }.joined(separator: "\n")
-        
-        let expectedMobileFileContent = (0..<testWritesCount/2).map {
-            "1,\(uuid),1,1,1,1,1,1,1,1,1,1,\($0)_MOBILE"
-        }.joined(separator: "\n")
-        
-//        XCTAssertEqual(fixedFileContent.trimmingCharacters(in: .newlines), expectedFixedFileContent)
-        XCTAssertEqual(session1MobileFileContent.trimmingCharacters(in: .newlines), expectedMobileFileContent)
+        try SDCardSessionType.allCases.forEach { type in
+            let session1File = documents.appendingPathComponent(type == .mobile ? "mobile" : "fixed").appendingPathComponent(uuid + type.name)
+            let session2File = documents.appendingPathComponent(type == .mobile ? "mobile" : "fixed").appendingPathComponent(uuid2 + type.name)
+            XCTAssertTrue(FileManager.default.fileExists(atPath: session1File.path))
+            XCTAssertTrue(FileManager.default.fileExists(atPath: session2File.path))
+            
+            let session1FileContent = try XCTUnwrap(try? String(contentsOf: session1File))
+            let expectedSession1FileContent = (0...measurementsCountSession1).map {
+                createFileLine(uuid: uuid + type.name, lineNumber: $0, sessionType: type)
+            }.joined(separator: "\n")
+            
+            XCTAssertEqual(session1FileContent.trimmingCharacters(in: .newlines), expectedSession1FileContent)
+            
+            let session2FileContent = try XCTUnwrap(try? String(contentsOf: session2File))
+            let expectedSession2FileContent = (0...measurementsCountSession2).map {
+                createFileLine(uuid: uuid2 + type.name, lineNumber: $0, sessionType: type)
+            }.joined(separator: "\n")
+            
+            XCTAssertEqual(session2FileContent.trimmingCharacters(in: .newlines), expectedSession2FileContent)
+        }
+    }
+    
+    private func createFileLine(uuid: String, lineNumber: Int, sessionType: SDCardSessionType) -> String {
+        "\(lineNumber),\(uuid),1,1,1,1,1,1,1,1,1,1,\(lineNumber)_\(sessionType.name)"
     }
 }
