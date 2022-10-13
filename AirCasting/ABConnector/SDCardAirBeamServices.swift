@@ -48,6 +48,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     private var receivedMeasurementsCount: [SDCardSessionType: Int] = [:]
     private var timerToken: AnyObject?
     private let timer: TimerScheduler = FoundationTimerScheduler()
+    private let queue: DispatchQueue = .init(label: "SDSyncAirBeamServices")
     
     func downloadData(from peripheral: CBPeripheral, progress: @escaping (SDCardDataChunk) -> Void, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void) {
         var currentSessionType: SDCardSessionType?
@@ -58,63 +59,29 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         metadataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
             switch result {
             case .success(let data):
-                guard let data = data, let payload = String(data: data, encoding: .utf8) else {
-                    self.finishSync { completion(.failure(SDCardSyncError.cantDecodePayload)) }
-                    return
+                self.queue.async { [weak self] in
+                    currentSessionType = currentSessionType.next
+                    self?.handleMetadata(data, currentSessionType: currentSessionType!, completion: completion)
                 }
-                currentSessionType = currentSessionType.next
-                Log.info("[SD CARD SYNC] " + payload)
-                if payload == "SD_SYNC_FINISH" {
-                    // It is possible that when Airbeam is pluged in and the data is sent faster than iPhone can process, we receive this SD_SYNC_FINISH message before all of the payload is sent.
-                    // That's why we have to add the monitoring which checks if any new data is still being send, and if not, then we are letting the called know that Airbeam finished sending data.
-                    Log.info("[SD Sync] Received SD_SYNC_FINISH message. Monitoring for end of payload.")
-                    self.startMonitoringForEnd {
-                        self.finishSync { completion(.success(.init(expectedMeasurementsCount: self.expectedMeasurementsCount))) }
-                        Log.info("[SD CARD SYNC] Sync finished.")
-                    }
-                    return
-                }
-                
-                // This will be needed when we will want to show progress in the view
-                // Payload format is ` Some string: ${number_of_entries_expected} `
-                guard let measurementsCountSting = payload.split(separator: ":").last?.trimmingCharacters(in: .whitespaces) else {
-                          Log.warning("Unexpected metadata format: (\(payload))")
-                          self.finishSync { completion(.failure(SDCardSyncError.unexpectedMetadataFormat)) }
-                          return
-                      }
-                let measurementsCount = Int(measurementsCountSting)
-                
-                /* It can happen, that in the given airbeam some type of session was never recorded. In that case, metadata format will be different
-                 and in that case we want to set currentSessionTypeExpected to 0 */
-                self.expectedMeasurementsCount[currentSessionType!] = measurementsCount ?? 0
             case .failure(let error):
-                Log.warning("[SD SYNC]  Error while receiving metadata from SD card: \(error.localizedDescription)")
-                self.finishSync { completion(.failure(error)) }
+                self.queue.async { [weak self] in
+                    Log.warning("[SD SYNC]  Error while receiving metadata from SD card: \(error.localizedDescription)")
+                    self?.finishSync { completion(.failure(error)) }
+                }
             }
         }
         
         dataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
             switch result {
             case .success(let data):
-                guard let data = data, let payload = String(data: data, encoding: .utf8) else { return }
-                guard let sessionType = currentSessionType else {
-                    Log.error("[SD SYNC] Received data before first metadata payload!")
-                    self.finishSync { completion(.failure(SDCardSyncError.wrongOrderOfReceivedPayload)) }
-                    return
+                self.queue.async { [weak self] in
+                    self?.handlePayload(data: data, currentSessionType: currentSessionType, progress: progress, completion: completion)
                 }
-                self.receivedMeasurementsCount[sessionType, default: 0] += Constants.SDCardSync.numberOfMeasurementsInDataChunk
-                
-                guard let expectedMeasurementsCount = self.expectedMeasurementsCount[sessionType], expectedMeasurementsCount != 0 else {
-                    Log.error("[SD SYNC] Received data for session type which should have 0 measurements")
-                    return
-                }
-                
-                let receivedMeasurementsNumber = self.receivedMeasurementsCount[sessionType]! < expectedMeasurementsCount ? self.receivedMeasurementsCount[sessionType]! : expectedMeasurementsCount
-                let progressFraction = SDCardProgress(received: receivedMeasurementsNumber, expected: expectedMeasurementsCount)
-                progress(SDCardDataChunk(payload: payload, sessionType: sessionType, progress: progressFraction))
             case .failure(let error):
-                Log.warning("Error while receiving data from SD card: \(error.localizedDescription)")
-                self.finishSync { completion(.failure(error)) }
+                self.queue.async { [weak self] in
+                    Log.warning("Error while receiving data from SD card: \(error.localizedDescription)")
+                    self?.finishSync { completion(.failure(error)) }
+                }
             }
         }
     }
@@ -147,6 +114,57 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         }
     }
     
+    private func handleMetadata(_ data: Data?, currentSessionType: SDCardSessionType, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void) {
+        guard let data = data, let payload = String(data: data, encoding: .utf8) else {
+            self.finishSync { completion(.failure(SDCardSyncError.cantDecodePayload)) }
+            return
+        }
+        
+        Log.info("[SD CARD SYNC] " + payload)
+        if payload == "SD_SYNC_FINISH" {
+            // It is possible that when Airbeam is pluged in and the data is sent faster than iPhone can process, we receive this SD_SYNC_FINISH message before all of the payload is sent.
+            // That's why we have to add the monitoring which checks if any new data is still being send, and if not, then we are letting the called know that Airbeam finished sending data.
+            Log.info("[SD Sync] Received SD_SYNC_FINISH message. Monitoring for end of payload.")
+            self.startMonitoringForEnd {
+                self.finishSync { completion(.success(.init(expectedMeasurementsCount: self.expectedMeasurementsCount))) }
+                Log.info("[SD CARD SYNC] Sync finished.")
+            }
+            return
+        }
+        
+        // This will be needed when we will want to show progress in the view
+        // Payload format is ` Some string: ${number_of_entries_expected} `
+        guard let measurementsCountSting = payload.split(separator: ":").last?.trimmingCharacters(in: .whitespaces) else {
+            Log.warning("Unexpected metadata format: (\(payload))")
+            self.finishSync { completion(.failure(SDCardSyncError.unexpectedMetadataFormat)) }
+            return
+        }
+        let measurementsCount = Int(measurementsCountSting)
+        
+        /* It can happen, that in the given airbeam some type of session was never recorded. In that case, metadata format will be different
+         and in that case we want to set currentSessionTypeExpected to 0 */
+        self.expectedMeasurementsCount[currentSessionType] = measurementsCount ?? 0
+    }
+    
+    private func handlePayload(data: Data?, currentSessionType: SDCardSessionType?, progress: @escaping (SDCardDataChunk) -> Void, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void) {
+        guard let data = data, let payload = String(data: data, encoding: .utf8) else { return }
+        guard let sessionType = currentSessionType else {
+            Log.error("[SD SYNC] Received data before first metadata payload!")
+            self.finishSync { completion(.failure(SDCardSyncError.wrongOrderOfReceivedPayload)) }
+            return
+        }
+        self.receivedMeasurementsCount[sessionType, default: 0] += Constants.SDCardSync.numberOfMeasurementsInDataChunk
+        
+        guard let expectedMeasurementsCount = self.expectedMeasurementsCount[sessionType], expectedMeasurementsCount != 0 else {
+            Log.error("[SD SYNC] Received data for session type which should have 0 measurements")
+            return
+        }
+        
+        let receivedMeasurementsNumber = self.receivedMeasurementsCount[sessionType]! < expectedMeasurementsCount ? self.receivedMeasurementsCount[sessionType]! : expectedMeasurementsCount
+        let progressFraction = SDCardProgress(received: receivedMeasurementsNumber, expected: expectedMeasurementsCount)
+        progress(SDCardDataChunk(payload: payload, sessionType: sessionType, progress: progressFraction))
+    }
+    
     private func configureABforSync(peripheral: CBPeripheral) {
         let configurator = AirBeam3Configurator(peripheral: peripheral)
         configurator.configureSDSync()
@@ -171,18 +189,20 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     private func startMonitoringForEnd(completion: @escaping () -> Void) -> Void {
         var checkedMeasurementsCount: [SDCardSessionType: Int] = [:]
         timerToken = timer.schedule(every: 1) { [weak self] in
-            guard let self = self else { return }
-            Log.debug("Checking with:\n expected \(self.expectedMeasurementsCount)\n received \(self.receivedMeasurementsCount)\n checked \(checkedMeasurementsCount)")
-            guard checkedMeasurementsCount != self.receivedMeasurementsCount else {
-                Log.debug("NO NEW MEASUREMENT IN 1 SEC")
-                completion()
-                return
-            }
-            checkedMeasurementsCount = self.receivedMeasurementsCount
-            for temp in self.receivedMeasurementsCount {
-                if self.expectedMeasurementsCount[temp.key] ?? 0 < temp.value {
-                    Log.info("All measurements downloaded")
-                    completion(); return
+            self?.queue.async { [weak self] in
+                guard let self = self else { return }
+                Log.debug("Checking with:\n expected \(self.expectedMeasurementsCount)\n received \(self.receivedMeasurementsCount)\n checked \(checkedMeasurementsCount)")
+                guard checkedMeasurementsCount != self.receivedMeasurementsCount else {
+                    Log.debug("NO NEW MEASUREMENT IN 1 SEC")
+                    completion()
+                    return
+                }
+                checkedMeasurementsCount = self.receivedMeasurementsCount
+                for temp in self.receivedMeasurementsCount {
+                    if self.expectedMeasurementsCount[temp.key] ?? 0 < temp.value {
+                        Log.info("All measurements downloaded")
+                        completion(); return
+                    }
                 }
             }
         }
