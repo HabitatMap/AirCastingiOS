@@ -73,6 +73,7 @@
 		33BA336A266E4D1000899343 /* MobileSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BA3369266E4D1000899343 /* MobileSession.swift */; };
 		33D07A252825963000F25B4C /* ExternalSessionEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D07A232825963000F25B4C /* ExternalSessionEntity+CoreDataClass.swift */; };
 		33D07A262825963000F25B4C /* ExternalSessionEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D07A242825963000F25B4C /* ExternalSessionEntity+CoreDataProperties.swift */; };
+		33D8031628F84050004A4CFA /* SdSyncAveragingServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D8031528F84050004A4CFA /* SdSyncAveragingServiceTests.swift */; };
 		33D92F5F27EB742800252F3B /* Loadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D92F5E27EB742800252F3B /* Loadable.swift */; };
 		33E56F3D27F3498A0032117E /* StreamDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33E56F3C27F3498A0032117E /* StreamDownloader.swift */; };
 		33E63A86288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33E63A85288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift */; };
@@ -624,6 +625,7 @@
 		33BA3369266E4D1000899343 /* MobileSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSession.swift; sourceTree = "<group>"; };
 		33D07A232825963000F25B4C /* ExternalSessionEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
 		33D07A242825963000F25B4C /* ExternalSessionEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		33D8031528F84050004A4CFA /* SdSyncAveragingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SdSyncAveragingServiceTests.swift; sourceTree = "<group>"; };
 		33D92F5E27EB742800252F3B /* Loadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loadable.swift; sourceTree = "<group>"; };
 		33E56F3C27F3498A0032117E /* StreamDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDownloader.swift; sourceTree = "<group>"; };
 		33E63A85288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WiFiAwareSessionSynchronizerProxy.swift; sourceTree = "<group>"; };
@@ -1272,6 +1274,15 @@
 			name = MobileSession;
 			sourceTree = "<group>";
 		};
+		33D8031428F84021004A4CFA /* SDSync */ = {
+			isa = PBXGroup;
+			children = (
+				B37E1C932748208C0020A281 /* SDSyncFileWritingServiceTests.swift */,
+				33D8031528F84050004A4CFA /* SdSyncAveragingServiceTests.swift */,
+			);
+			path = SDSync;
+			sourceTree = "<group>";
+		};
 		33D92F5B27EB6D2000252F3B /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -1340,7 +1351,6 @@
 			isa = PBXGroup;
 			children = (
 				FA5F782B289A8BDD0016DF79 /* SearchAndFollowTests */,
-				B37E1C932748208C0020A281 /* SDSyncFileWritingServiceTests.swift */,
 				DDDCEC3727D0C89F00B3757C /* DateBuilderTests */,
 				B3AA784827D4D22A003B39F6 /* Resolver+XCTest.swift */,
 				B33B157D27AE854B00138FFA /* LoggerTests */,
@@ -2225,6 +2235,7 @@
 		B3E26A0A2676DAB0001A8E4C /* Logic */ = {
 			isa = PBXGroup;
 			children = (
+				33D8031428F84021004A4CFA /* SDSync */,
 				B308DC0328ABA30A004FC3EB /* Mic Calibration */,
 				B3AAACF3286DC05C00DFBD36 /* MicrophoneSessions */,
 				B3EFAB1A26EFEA8100E88141 /* Bootstrap */,
@@ -3087,6 +3098,7 @@
 				B30BAC232694B3DA00AE0476 /* XCTest+Persistence.swift in Sources */,
 				B33B161527AF0B3600138FFA /* FileLoggerTests.swift in Sources */,
 				B3AA784B27D4D7EF003B39F6 /* APIServiceTestCase.swift in Sources */,
+				33D8031628F84050004A4CFA /* SdSyncAveragingServiceTests.swift in Sources */,
 				332066A42891730E00798AC1 /* ShareSessionFileTest.swift in Sources */,
 				B33DB5702685FCFB00ED1344 /* SynchronizationTestMocks.swift in Sources */,
 				B3E26A2A26780D96001A8E4C /* SynchronizationControllerTestHelpers.swift in Sources */,
