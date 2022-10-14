@@ -257,7 +257,7 @@ struct ChooseSessionTypeView: View {
                         orLabel
                     }
                     HStack {
-                        if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
+                        if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) && checkDeviceSupportFor(feature: .sync) {
                             sdSyncButton
                         }
                         Spacer(minLength: geometry.size.width / horizontalSpacerRatio)

@@ -182,7 +182,7 @@ private extension SessionHeaderView {
             session.shareable ? actionsMenuShareButton : nil
             session.deletable ? actionsMenuDeleteButton : nil
             session.isFixed && featureFlagsViewModel.enabledFeatures.contains(.thresholdAlerts) ? actionsMenuThresholdAlertButton : nil
-            if session.deviceType == .AIRBEAM3 && session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
+            if checkStandaloneActionAvaibility() {
                 actionsMenuMobileEnterStandaloneMode
             }
             if session.isActive && featureFlagsViewModel.enabledFeatures.contains(.notes) {
@@ -284,5 +284,16 @@ private extension SessionHeaderView {
         } catch {
             Log.info("error when stpoing session - \(error)")
         }
+    }
+}
+
+private extension SessionHeaderView {
+    func checkStandaloneActionAvaibility() -> Bool {
+        if session.deviceType == .AIRBEAM3 &&
+            session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) &&
+            checkDeviceSupportFor(feature: .standalone) {
+            return true
+        }
+        return false
     }
 }

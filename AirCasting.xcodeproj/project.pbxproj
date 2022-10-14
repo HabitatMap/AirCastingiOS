@@ -505,6 +505,10 @@
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
 		FA0A582528E3545F003AAC70 /* Numeric+Decrement.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0A582428E3545F003AAC70 /* Numeric+Decrement.swift */; };
 		FA1C30BD2861BA5F0034C1C9 /* SignInPersistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1C30BC2861BA5F0034C1C9 /* SignInPersistance.swift */; };
+		FA2438EF28F98EA40028B126 /* DeviceKit in Frameworks */ = {isa = PBXBuildFile; productRef = FA2438EE28F98EA40028B126 /* DeviceKit */; };
+		FA2438F128F990260028B126 /* DeviceKit+checkDeviceSupportFor.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2438F028F990260028B126 /* DeviceKit+checkDeviceSupportFor.swift */; };
+		FA2438F428F996820028B126 /* Features.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2438F328F996820028B126 /* Features.swift */; };
+		FA2438F628F996A00028B126 /* Device+excluded.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2438F528F996A00028B126 /* Device+excluded.swift */; };
 		FA26E9E928107150008EE514 /* SearchParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA26E9E828107150008EE514 /* SearchParameter.swift */; };
 		FA396CA128A246BA00F8067C /* SessionStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA396CA028A246BA00F8067C /* SessionStorage.swift */; };
 		FA3AB51428853FBF00DB9A2B /* ConnectionProtectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3AB51328853FBF00DB9A2B /* ConnectionProtectable.swift */; };
@@ -1061,6 +1065,9 @@
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 		FA0A582428E3545F003AAC70 /* Numeric+Decrement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Numeric+Decrement.swift"; sourceTree = "<group>"; };
 		FA1C30BC2861BA5F0034C1C9 /* SignInPersistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInPersistance.swift; sourceTree = "<group>"; };
+		FA2438F028F990260028B126 /* DeviceKit+checkDeviceSupportFor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeviceKit+checkDeviceSupportFor.swift"; sourceTree = "<group>"; };
+		FA2438F328F996820028B126 /* Features.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features.swift; sourceTree = "<group>"; };
+		FA2438F528F996A00028B126 /* Device+excluded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Device+excluded.swift"; sourceTree = "<group>"; };
 		FA26E9E828107150008EE514 /* SearchParameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchParameter.swift; sourceTree = "<group>"; };
 		FA396CA028A246BA00F8067C /* SessionStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStorage.swift; sourceTree = "<group>"; };
 		FA3AB51328853FBF00DB9A2B /* ConnectionProtectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionProtectable.swift; sourceTree = "<group>"; };
@@ -1110,6 +1117,7 @@
 				ACF600BE2678D7F4005DD97C /* SwiftSimplify in Frameworks */,
 				AC5226C3270C50520048A585 /* Algorithms in Frameworks */,
 				B37DA29D283189DD002A9708 /* FirebaseRemoteConfigSwift in Frameworks */,
+				FA2438EF28F98EA40028B126 /* DeviceKit in Frameworks */,
 				FABFB85E28BE64A700C8B157 /* Charts in Frameworks */,
 				AC787D75267B41990034B222 /* AirCastingStyling in Frameworks */,
 				DDD951B427550C250063D43D /* Pods_AirCasting.framework in Frameworks */,
@@ -1924,6 +1932,7 @@
 				FAB34932281AB208001F6E58 /* URLRequest.swift */,
 				FAC2672B28BE3F3500D5C13A /* Array+ByRemovingDuplicates.swift */,
 				FA0A582428E3545F003AAC70 /* Numeric+Decrement.swift */,
+				FA2438F228F996600028B126 /* DeviceKitExtenions */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2713,6 +2722,16 @@
 			path = OldMeasurementRemovers;
 			sourceTree = "<group>";
 		};
+		FA2438F228F996600028B126 /* DeviceKitExtenions */ = {
+			isa = PBXGroup;
+			children = (
+				FA2438F328F996820028B126 /* Features.swift */,
+				FA2438F028F990260028B126 /* DeviceKit+checkDeviceSupportFor.swift */,
+				FA2438F528F996A00028B126 /* Device+excluded.swift */,
+			);
+			path = DeviceKitExtenions;
+			sourceTree = "<group>";
+		};
 		FA3AB51228853FA400DB9A2B /* Connection */ = {
 			isa = PBXGroup;
 			children = (
@@ -2814,6 +2833,7 @@
 				B37DA29A283189DD002A9708 /* FirebaseMessaging */,
 				B37DA29C283189DD002A9708 /* FirebaseRemoteConfigSwift */,
 				FABFB85D28BE64A700C8B157 /* Charts */,
+				FA2438EE28F98EA40028B126 /* DeviceKit */,
 			);
 			productName = AirCasting;
 			productReference = AC7EB37225A6FB3A00A7F2AF /* AirCasting.app */;
@@ -2876,6 +2896,7 @@
 				3375E8D02791E7100019A5DE /* XCRemoteSwiftPackageReference "ZipArchive" */,
 				B37DA295283189DD002A9708 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				FABFB85C28BE64A700C8B157 /* XCRemoteSwiftPackageReference "Charts" */,
+				FA2438ED28F98EA40028B126 /* XCRemoteSwiftPackageReference "DeviceKit" */,
 			);
 			productRefGroup = AC7EB37325A6FB3A00A7F2AF /* Products */;
 			projectDirPath = "";
@@ -3271,6 +3292,7 @@
 				3362B4ED25E69987008D61BA /* CreateSessionDetailsView.swift in Sources */,
 				B3EBB10626A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift in Sources */,
 				AC08A662266E2AEC0081697C /* ABMeasurementsView.swift in Sources */,
+				FA2438F128F990260028B126 /* DeviceKit+checkDeviceSupportFor.swift in Sources */,
 				335B54BF28BD01C300BA92D2 /* CustomSwipeAction.swift in Sources */,
 				FA4F1B75281809B2002711B4 /* AirBeamStreamSuffixes.swift in Sources */,
 				B3ED03C32729A8E300513522 /* AirCastingNotifications.swift in Sources */,
@@ -3479,6 +3501,7 @@
 				DDEE3A48269747250098CCA9 /* EditView.swift in Sources */,
 				AC8CFF3625E502DD00FB2918 /* CreateAccountView.swift in Sources */,
 				FAC2672C28BE3F3500D5C13A /* Array+ByRemovingDuplicates.swift in Sources */,
+				FA2438F628F996A00028B126 /* Device+excluded.swift in Sources */,
 				B35A09A12845615F00F9837B /* UnitFormatter.swift in Sources */,
 				3392B3F828A1522600432B92 /* CreateThresholdAlertService.swift in Sources */,
 				B369CF32275A7A1500B71D81 /* OverridingFeatureFlagProvider.swift in Sources */,
@@ -3492,6 +3515,7 @@
 				DD430B002670BC6F00F1BF2E /* GetStarted.swift in Sources */,
 				DD80AE2027BA470700D9B123 /* SearchViewModel.swift in Sources */,
 				AC8D6C6A25C049E300ED74D1 /* Environment.swift in Sources */,
+				FA2438F428F996820028B126 /* Features.swift in Sources */,
 				ACD01F4025F8C1F800B8F65F /* SessionContext.swift in Sources */,
 				336A909327A4553000851100 /* ReoredringSessionCard.swift in Sources */,
 				B33B161927AF26BC00138FFA /* DateFormatter+Extensions.swift in Sources */,
@@ -4063,6 +4087,14 @@
 				minimumVersion = 9.0.0;
 			};
 		};
+		FA2438ED28F98EA40028B126 /* XCRemoteSwiftPackageReference "DeviceKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/devicekit/DeviceKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
 		FABFB85C28BE64A700C8B157 /* XCRemoteSwiftPackageReference "Charts" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/jterhorst/Charts";
@@ -4117,6 +4149,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B37DA295283189DD002A9708 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseRemoteConfigSwift;
+		};
+		FA2438EE28F98EA40028B126 /* DeviceKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA2438ED28F98EA40028B126 /* XCRemoteSwiftPackageReference "DeviceKit" */;
+			productName = DeviceKit;
 		};
 		FABFB85D28BE64A700C8B157 /* Charts */ = {
 			isa = XCSwiftPackageProductDependency;
