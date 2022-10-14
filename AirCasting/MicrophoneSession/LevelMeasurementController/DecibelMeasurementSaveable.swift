@@ -8,6 +8,7 @@ final class DecibelMeasurementSaveable: MeasurementSaveable {
     private let session: Session
     private var databasePrepared: Bool = false
     @Injected private var persistence: MeasurementStreamStorage
+    @Injected private var uiStorage: UIStorage
     @Injected private var locationService: LocationService
     
     enum DecibelMeasurementSaveableError: Error {
@@ -73,7 +74,14 @@ final class DecibelMeasurementSaveable: MeasurementSaveable {
         persistence.accessStorage { [weak self] storage in
             do {
                 guard let self = self else { return }
-                _ = try storage.createSessionAndMeasurementStream(self.session, stream)
+                try storage.createSessionAndMeasurementStream(self.session, stream)
+                self.uiStorage.accessStorage { storage in
+                    do {
+                        try storage.switchCardExpanded(to: true, sessionUUID: self.session.uuid)
+                    } catch {
+                        completion(.failure(error))
+                    }
+                }
                 completion(.success(()))
             } catch {
                 completion(.failure(error))

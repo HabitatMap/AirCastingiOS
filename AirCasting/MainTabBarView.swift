@@ -104,7 +104,7 @@ private extension MainTabBarView {
                         if !searchAndFollow.isHidden && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) && selectedSection.section == .following {
                             searchAndFollowButton
                         }
-                        if !reorderButton.isHidden && sessions.count > 1 && selectedSection.section == .following {
+                        if reorderButton.reorderIsOn || (!reorderButton.isHidden && sessions.count > 1 && selectedSection.section == .following) {
                             reorderingButton
                         }
                     }
@@ -211,6 +211,13 @@ enum DashboardSection: String, CaseIterable {
     
     var localizedString: String {
         NSLocalizedString(rawValue, comment: "")
+    }
+    
+    var allowsRefreshing: Bool {
+        switch self {
+        case .fixed, .mobileDormant: return true
+        case .following, .mobileActive: return false
+        }
     }
 }
 

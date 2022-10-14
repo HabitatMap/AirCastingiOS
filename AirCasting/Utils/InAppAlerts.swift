@@ -84,6 +84,24 @@ struct InAppAlerts {
                   ])
     }
     
+    static func failedThresholdAlertsAlert(dismiss: @escaping () -> Void) -> AlertInfo {
+        AlertInfo(title: Strings.ThresholdAlertSheet.failureAlertTitle,
+                  message: Strings.ThresholdAlertSheet.failureAlertMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss)
+                  ])
+    }
+    
+    static func failedThresholdAlertsFetchingAlert(dismiss: @escaping () -> Void) -> AlertInfo {
+        AlertInfo(title: Strings.ThresholdAlertSheet.failureAlertTitle,
+                  message: Strings.ThresholdAlertSheet.fetchingFailureAlertMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss)
+                  ])
+    }
+    
     static func failedSharingAlert() -> AlertInfo {
         AlertInfo(title: Strings.SessionShare.linkSharingAlertTitle,
                   message: Strings.SessionShare.linkSharingAlertMessage,
@@ -265,11 +283,11 @@ struct InAppAlerts {
         ])
     }
     
-    static func noInternetConnection() -> AlertInfo {
+    static func noInternetConnection(dismiss: (() -> Void)? = nil) -> AlertInfo {
         AlertInfo(title: Strings.ConnectionAlerts.noInternetTitle,
                   message: Strings.ConnectionAlerts.noInternetMessage,
                   buttons: [
-                    .default(title: Strings.Commons.ok, action: nil)
+                    .default(title: Strings.Commons.ok, action: dismiss)
                   ])
     }
     

@@ -27,12 +27,16 @@ extension Resolver: ResolverRegistering {
             composite.add(LoggerBuilder(type: .crashlytics)
                             .addMinimalLevel(.info)
                             .build())
+            composite.add(LoggerBuilder(type: .crashlyticsError)
+                            .addMinimalLevel(.error)
+                            .build())
 #endif
             return composite
         }.scope(.application)
         
         main.register { PrintLogger() }.scope(.application)
         main.register { FileLogger() }.scope(.application)
+        main.register { CrashlyticsErrorLogger() }.scope(.application)
         main.register { CrashlyticsLogger() }.scope(.application)
         
         main.register {
@@ -98,7 +102,7 @@ extension Resolver: ResolverRegistering {
         main.register { UserDefaultsURLProvider() as URLProvider }
         main.register { DefaultNetworkChecker() as NetworkChecker }.scope(.application)
         main.register { DefaultSingleSessionDownloader() as SingleSessionDownloader }
-        main.register { DefaultDormantStreamAlertAPI() as DormantStreamAlertAPI }
+        main.register { DefaultDormantStreamAlertAPI() as DormantStreamAlertService }
         
         // MARK: - Feature flags
         main.register { DefaultRemoteNotificationRouter() }
@@ -146,11 +150,6 @@ extension Resolver: ResolverRegistering {
         }.scope(.application)
             .implements(SessionSynchronizer.self)
         
-        // MARK: - Session recording
-        main.register { try! AVMicrophone() as Microphone }
-            .scope(.application)
-            .implements(MicrophonePermissions.self)
-        
         // MARK: - Location handling
         main.register { _ -> LocationTracker in
             let manager = CLLocationManager()
@@ -188,6 +187,7 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultLogoutController() as LogoutController }
         main.register { DefaultDeleteAccountController() as DeleteAccountController }
         main.register { DefaultRemoveDataController() as RemoveDataController }
+        main.register { DefaultThresholdAlertsController() as ThresholdAlertsController }
         main.register { BluetoothConnectionProtector() as ConnectionProtectable }
         
         // MARK: - Session stopping
@@ -251,6 +251,26 @@ extension Resolver: ResolverRegistering {
     
         // MARK: - Old measurements remover
         main.register { DefaultRemoveOldMeasurementsService() as RemoveOldMeasurements }
+        
+        // MARK: - Microphone
+        main.register { CalibratableMicrophoneDecorator(microphone: resolve(AVMicrophone.self)) as Microphone }
+            .scope(.application)
+            
+        main.register { try! AVMicrophone() }
+            .implements(MicrophonePermissions.self)
+            .scope(.application)
+        
+        main.register { FoundationTimerScheduler() as TimerScheduler }
+            .scope(.unique)
+        
+        main.register { UserDefaultsMicrophoneCalibraionValueProvider() }
+            .implements(MicrophoneCalibraionValueProvider.self)
+            .implements(MicrophoneCalibrationValueWritable.self)
+        
+        // MARK: Alerts
+        
+        main.register { WindowAlertPresenter() as GlobalAlertPresenter }
+            .scope(.application)
     }
     
     // MARK: - Composition helpers

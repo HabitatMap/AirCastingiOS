@@ -21,8 +21,8 @@ struct ThresholdsSliderView: View {
     
     private var thresholdButtonValues: [Float] {
         get {
-            let v =  Array(thresholds.dropFirst())
-            return  Array(v.dropLast())
+            let v = Array(thresholds.dropFirst())
+            return Array(v.dropLast())
         }
         nonmutating set {
             thresholds = [thresholdVeryLow] + newValue + [thresholdVeryHigh]
@@ -82,14 +82,13 @@ struct ThresholdsSliderView: View {
             .onChanged { (dragValue) in
                 let newX = dragValue.location.x
                 let frameWidth = Float(geometry.frame(in: .local).size.width)
-                var newValue = Float(newX) * (thresholdVeryHigh - thresholdVeryLow) / frameWidth + thresholdVeryLow
+                let newValue = Float(newX) * (thresholdVeryHigh - thresholdVeryLow) / frameWidth + thresholdVeryLow
                 let previousValue = index > 0 ? thresholdButtonValues[index-1] : thresholdVeryLow
                 let nextValue = index == thresholdButtonValues.count-1 ? thresholdVeryHigh : thresholdButtonValues[index+1]
                 
-                newValue = min(nextValue,  newValue)
-                newValue = max(previousValue, newValue)
-
-                thresholdButtonValues.replaceSubrange(index...index, with: [Float(newValue)])
+                if Int(newValue) < Int(nextValue) && Int(newValue) > Int(previousValue) {
+                    thresholdButtonValues.replaceSubrange(index...index, with: [newValue])
+                }
             }
     }
     

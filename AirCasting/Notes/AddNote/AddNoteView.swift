@@ -17,6 +17,9 @@ struct AddNoteView<VM: AddNoteViewModel>: View {
                     description
                     addPhotoButton
                     noteField
+                    if viewModel.shouldShowError {
+                        errorMessage(text: Strings.AddNoteView.error)
+                    }
                     photo
                     continueButton
                     cancelButton

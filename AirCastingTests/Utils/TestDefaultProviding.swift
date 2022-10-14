@@ -38,3 +38,7 @@ extension Array: TestDefaultProviding where Element: TestDefaultProviding {
 extension Dictionary: TestDefaultProviding where Key: TestDefaultProviding, Value: TestDefaultProviding {
     static var `default`: Dictionary<Key, Value> { [Key.default : Value.default] }
 }
+
+extension Data: TestDefaultProviding {
+    static var `default`: Data { .init() }
+}

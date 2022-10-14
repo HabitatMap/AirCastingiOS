@@ -34,6 +34,10 @@ struct DropViewDelegate: DropDelegate {
         currentlyDraggedSession = nil
         return true
     }
+    
+    func dropExited(info: DropInfo) {
+        changedView = false
+    }
 }
 
 struct DropOutsideOfGridDelegate: DropDelegate {

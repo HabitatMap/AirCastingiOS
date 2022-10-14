@@ -10,13 +10,6 @@ import SwiftUI
 import Resolver
 
 struct EmptyMobileDashboardViewMobile: View {
-    @StateObject private var defaultSessionSynchronizerViewModel = SessionSynchronizationViewModel()
-    @EnvironmentObject var selectedSection: SelectedSection
-    
-    var shouldSessionFetch: Bool {
-        (selectedSection.section == .mobileDormant || selectedSection.section == .fixed) && defaultSessionSynchronizerViewModel.syncInProgress
-    }
-    
     var body: some View {
         emptyState
     }
@@ -28,11 +21,6 @@ struct EmptyMobileDashboardViewMobile: View {
             
             VStack(spacing: 45) {
                 VStack {
-                    if shouldSessionFetch {
-                        ProgressView(Strings.EmptyDashboardFixed.fetchingText)
-                            .progressViewStyle(CircularProgressViewStyle())
-                            .padding(.top)
-                    }
                     Spacer()
                     emptyMobileDashboardText
                     EmptyDashboardButtonView(isFixed: false)

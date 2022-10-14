@@ -56,6 +56,7 @@ private extension ReoredringSessionCard {
                                               selectedStream: .constant(nil),
                                               isCollapsed: .constant(true),
                                               measurementPresentationStyle: .showValues,
+                                              buttonDisabled: true,
                                               isDormant: false)
                     }
                     Spacer()

@@ -61,6 +61,7 @@ class CompleteScreenViewModel: ObservableObject {
     @Injected private var service: SearchAndFollowCompleteScreenService
     @Injected private var streamsDownloader: AirBeamMeasurementsDownloader
     @Injected private var userAuthenticationSession: UserAuthenticationSession
+    @Injected private var userSettings: UserSettings
     
     init(session: PartialExternalSession, exitRoute: @escaping () -> Void) {
         self.session = session
@@ -189,8 +190,11 @@ class CompleteScreenViewModel: ObservableObject {
                 let sensors = AirBeamStreamSuffixes.allCases.map({ $0.capitalizedName })
                 var sortedStreams = [MeasurementsDownloaderResultModel.Stream]()
                 sensors.forEach { sensorSorted in
-                    guard let matchingStream = downloadedSessionWithAllStreams.streams.first(where: { Self.getSensorName($0.sensorName) == sensorSorted }) else { Log.error("No stream found with matching sensor name"); return }
-                    sortedStreams.append(matchingStream)
+                    if let matchingStream = downloadedSessionWithAllStreams.streams.first(where: { self.getShortSensorName($0.sensorName) == sensorSorted }) {
+                        sortedStreams.append(matchingStream)
+                    } else if let matchingStream = downloadedSessionWithAllStreams.streams.first(where: { self.getShortSensorName($0.sensorName) == "C" }) {
+                        sortedStreams.append(matchingStream)
+                    }
                 }
                 
                 self.createExternalSessionAndLoadData(with: sortedStreams)
@@ -210,9 +214,9 @@ class CompleteScreenViewModel: ObservableObject {
             
             self.sessionStreams = .ready(self.externalSessionWithStreams!.streams.map {
                 .init(id: $0.id,
-                      sensorName: Self.getSensorName($0.sensorName),
+                      sensorName: self.getShortSensorName($0.sensorName),
                       sensorUnit: $0.unitSymbol,
-                      lastMeasurementValue: $0.measurements.last?.value,
+                      lastMeasurementValue: $0.measurements.last?.value != nil ? self.showConvertedValue($0.measurements.last!.value, sensorName: $0.sensorName) : $0.measurements.last?.value,
                       color: $0.thresholdsValues.colorFor(value: $0.measurements.last?.value ?? 0),
                       measurements: $0.measurements.map({.init(value: $0.value,
                                                                time: $0.time,
@@ -244,7 +248,7 @@ class CompleteScreenViewModel: ObservableObject {
             Log.error("No sensor name can be extracted from current stream.sensorName")
             return
         }
-        (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ SearchAndFollowChartViewModel.ChartMeasurement(value: $0.value, time: $0.time) }), thresholds: stream.thresholdsValues, using: ChartMeasurementsFilterDefault(name: separatedSensorName))
+        (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ SearchAndFollowChartViewModel.ChartMeasurement(value: showConvertedValue($0.value, sensorName: stream.sensorName), time: $0.time) }), thresholds: thresholds(for: stream), using: ChartMeasurementsFilterDefault(name: separatedSensorName))
     }
     
     private func showAlert() {
@@ -253,11 +257,12 @@ class CompleteScreenViewModel: ObservableObject {
         }
     }
     
-    private static func getSensorName(_ streamName: String) -> String {
-        streamName
+    private func getShortSensorName(_ streamName: String) -> String {
+        let shortName = streamName
             .replacingOccurrences(of: ":", with: "-")
             .drop { $0 != "-" }
             .replacingOccurrences(of: "-", with: "")
+        return userSettings.convertToCelsius && shortName == Strings.SingleMeasurementView.fahrenheitUnit ? Strings.SingleMeasurementView.celsiusUnit : shortName
     }
     
     private func componentsSeparation(name: String) -> String? {
@@ -267,6 +272,16 @@ class CompleteScreenViewModel: ObservableObject {
         }
         let value = name.components(separatedBy: "-").first!
         return value.components(separatedBy: CharacterSet.decimalDigits).joined()
+    }
+    
+    private func showConvertedValue(_ value: Double, sensorName: String) -> Double {
+        getShortSensorName(sensorName) == Strings.SingleMeasurementView.celsiusUnit ? TemperatureConverter.calculateCelsius(fahrenheit: value) : value
+    }
+    
+    private func thresholds(for stream: ExternalSessionWithStreamsAndMeasurements.Stream) -> ThresholdsValue {
+        guard stream.sensorName.last == "F" && userSettings.convertToCelsius else {
+            return stream.thresholdsValues }
+        return stream.thresholdsValues.convertedToCelsius()
     }
 }
 

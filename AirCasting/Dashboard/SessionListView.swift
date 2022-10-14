@@ -13,7 +13,7 @@ import CoreData
 struct SessionsListView: View {
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) private var thresholds
     @StateObject private var coreDataHook: CoreDataHook
-    @Binding var isRefreshing: Bool
+    @Binding private var isRefreshing: Bool
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
     private let listCoordinateSpaceName = "listCoordinateSpace"
@@ -41,7 +41,9 @@ struct SessionsListView: View {
             Image("dashboard-background-thing")
             let thresholds = Array(self.thresholds)
             ScrollView {
-                RefreshControl(coordinateSpace: .named(listCoordinateSpaceName), isRefreshing: $isRefreshing)
+                if selectedSection.allowsRefreshing {
+                    RefreshControl(coordinateSpace: .named(listCoordinateSpaceName), isRefreshing: $isRefreshing)
+                }
                 LazyVStack(spacing: 8) {
                     ForEach(coreDataHook.sessions.filter { $0.uuid != "" && !$0.gotDeleted }, id: \.uuid) { session in
                         if session.isExternal && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
@@ -60,6 +62,7 @@ struct SessionsListView: View {
                         }
                     }
                 }
+                .padding(.top, selectedSection.allowsRefreshing ? 0 : 9)
                 .padding(.horizontal)
             }
             .coordinateSpace(name: listCoordinateSpaceName)
@@ -72,7 +75,9 @@ struct SessionsListView: View {
         GeometryReader { geometry in
             ScrollView(.vertical, showsIndicators: false) {
                 VStack {
-                    RefreshControl(coordinateSpace: .named(listCoordinateSpaceName), isRefreshing: $isRefreshing)
+                    if selectedSection.allowsRefreshing {
+                        RefreshControl(coordinateSpace: .named(listCoordinateSpaceName), isRefreshing: $isRefreshing)
+                    }
                     if selectedSection == .mobileActive || selectedSection == .mobileDormant {
                         EmptyMobileDashboardViewMobile()
                             .frame(height: geometry.size.height)

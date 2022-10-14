@@ -4,6 +4,7 @@
 import Foundation
 import Combine
 import Resolver
+import FirebaseCrashlytics
 
 struct User: Hashable {
     let id: Int
@@ -54,6 +55,7 @@ final class UserAuthenticationSession: Deauthorizable, ObservableObject {
     func authorise(_ user: User) throws {
         let jsonEncoder = JSONEncoder()
         let codableUser = CodableUser(id: user.id, username: user.username, token: user.token, email: user.email)
+        Crashlytics.crashlytics().setUserID(String(user.id))
         try keychainStorage.setValue(value: try jsonEncoder.encode(codableUser), forKey: Self.userProfileKey)
         self.user = user
     }
