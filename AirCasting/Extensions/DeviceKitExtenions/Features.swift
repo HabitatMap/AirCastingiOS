@@ -5,19 +5,21 @@ import Foundation
 import DeviceKit
 
 protocol FeaturesProtocol {
-    func getDevicesList() -> [Device]
+    func getExcludedDevicesList() -> [Device]
 }
 
 enum Features: FeaturesProtocol {
     case sync
     case standalone
     
-    func getDevicesList() -> [Device] {
+    func getExcludedDevicesList() -> [Device] {
         switch self {
         case .sync:
-            return [.iPhoneSE]
+            return [.iPhoneSE,
+                    .simulator(.iPhoneSE)]
         case .standalone:
-            return [.iPhoneSE]
+            return [.iPhoneSE,
+                    .simulator(.iPhoneSE)]
         }
     }
 }

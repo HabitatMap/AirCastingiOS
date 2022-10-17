@@ -6,6 +6,6 @@ import DeviceKit
 
 extension Device {
     static func excludedDevices(for feature: FeaturesProtocol) -> [Device] {
-        feature.getDevicesList()
+        feature.getExcludedDevicesList()
     }
 }
