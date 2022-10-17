@@ -59,7 +59,7 @@ final class TemperatureThresholdFormatter: ThresholdFormatter {
         case .fahrenheit:
             return threshold.colorFor(value: Int32(value))
         case .celsius:
-           return threshold.colorForCelsius(value: Int32(value))
+           return threshold.colorForCelsius(value: value)
         }
     }
     

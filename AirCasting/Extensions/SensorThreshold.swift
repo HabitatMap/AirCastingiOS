@@ -114,15 +114,15 @@ extension SensorThreshold {
         }
     }
     
-    func colorForCelsius(value: Int32) -> Color {
+    func colorForCelsius(value: Double) -> Color {
         switch value {
-        case Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdVeryLow))) ... Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdLow))):
+        case Double(thresholdCelsiusValues.veryLow) ... Double(thresholdCelsiusValues.low):
             return .aircastingGreen
-        case Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdLow))) + 1 ... Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdMedium))):
+        case Double(thresholdCelsiusValues.low).nextUp ..< Double(thresholdCelsiusValues.medium).nextUp:
             return .aircastingYellow
-        case Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdMedium))) + 1 ... Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdHigh))):
+        case Double(thresholdCelsiusValues.medium).nextUp ..< Double(thresholdCelsiusValues.high).nextUp:
             return .aircastingOrange
-        case Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdHigh))) + 1 ... Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdVeryHigh))):
+        case Double(thresholdCelsiusValues.high).nextUp ..< Double(thresholdCelsiusValues.veryHigh).nextUp:
             return .aircastingRed
         default:
             return .aircastingGray
