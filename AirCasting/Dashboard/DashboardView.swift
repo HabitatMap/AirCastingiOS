@@ -85,12 +85,12 @@ struct DashboardView: View {
         .onChange(of: selectedSection.section) { newValue in
             try! coreDataHook.setup(selectedSection: newValue)
         }
-        .onChange(of: selectedSection.mobileActiveSessionWasFinished) { newValue in
+        .onChange(of: selectedSection.mobileSessionWasFinished) { newValue in
             if newValue &&
                 sessions.count == 1 {
                 selectedSection.section = .mobileDormant
             }
-            selectedSection.mobileActiveSessionWasFinished = false
+            selectedSection.mobileSessionWasFinished = false
         }
         .onReceive(sessionSynchronizer.syncInProgress) { isInProgress in
             guard isInProgress == false else { return }

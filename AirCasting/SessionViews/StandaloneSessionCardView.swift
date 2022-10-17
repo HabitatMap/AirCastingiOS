@@ -88,6 +88,7 @@ struct StandaloneSessionCardView: View {
     func finishSessionAndSyncAlertAction() {
         finishAndSyncButtonTapped.finishAndSyncButtonWasTapped = true
         tabSelection.selection = .createSession
+        selectedSection.mobileSessionWasFinished = true
     }
     
     func finishSessionAlertAction() {
