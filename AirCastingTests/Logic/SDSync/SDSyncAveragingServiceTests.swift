@@ -10,7 +10,7 @@ extension SDSyncMeasurement: Equatable {
     }
 }
 
-final class SdSyncAveragingServiceTests: XCTestCase {
+final class SDSyncAveragingServiceTests: XCTestCase {
     let service = DefaultSDSyncAveragingService()
 
     func test_averageMeasurementsWithReminderCalled_returnsUnaveragedMeasurementsAsReminder() throws {
@@ -27,14 +27,14 @@ final class SdSyncAveragingServiceTests: XCTestCase {
         let startDate = Date.init(timeInterval: TimeInterval(-thresholdWindow.rawValue * 5), since: Date())
         
         let measurements = [SDSyncMeasurement(measuredAt: startDate, value: 2),
-                            SDSyncMeasurement(measuredAt: startDate+1, value: 1),
-                            SDSyncMeasurement(measuredAt: startDate+TimeInterval(thresholdWindow.rawValue), value: 3)]
+                            SDSyncMeasurement(measuredAt: startDate + 1, value: 1),
+                            SDSyncMeasurement(measuredAt: startDate + TimeInterval(thresholdWindow.rawValue), value: 3)]
         
         var averagedMeasurement: SDSyncMeasurement?
         
         let reminder = service.averageMeasurementsWithReminder(measurements: measurements, startTime: startDate, averagingWindow: .firstThresholdWindow, action: { measurement, _ in averagedMeasurement = measurement })
         
-        XCTAssertEqual(reminder, [SDSyncMeasurement(measuredAt: startDate+TimeInterval(thresholdWindow.rawValue), value: 3)])
+        XCTAssertEqual(reminder, [SDSyncMeasurement(measuredAt: startDate + TimeInterval(thresholdWindow.rawValue), value: 3)])
         XCTAssertEqual(averagedMeasurement, SDSyncMeasurement(measuredAt: startDate + TimeInterval(thresholdWindow.rawValue) - 1, value: 1.5))
     }
     
