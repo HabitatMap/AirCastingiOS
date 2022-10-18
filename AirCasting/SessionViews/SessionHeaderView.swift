@@ -283,6 +283,7 @@ private extension SessionHeaderView {
         let sessionStopper = Resolver.resolve(SessionStoppable.self, args: self.session)
         do {
             try sessionStopper.stopSession()
+            selectedSection.mobileSessionWasFinished = true
         } catch {
             Log.info("error when stpoing session - \(error)")
         }

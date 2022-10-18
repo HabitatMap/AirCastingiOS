@@ -9,6 +9,7 @@ struct StandaloneSessionCardView: View {
     let session: SessionEntity
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
+    @EnvironmentObject var selectedSection: SelectedSection
     @Injected private var networkChecker: NetworkChecker
     @InjectedObject private var userSettings: UserSettings
     @State private var alert: AlertInfo?
@@ -87,12 +88,14 @@ struct StandaloneSessionCardView: View {
     func finishSessionAndSyncAlertAction() {
         finishAndSyncButtonTapped.finishAndSyncButtonWasTapped = true
         tabSelection.selection = .createSession
+        selectedSection.mobileSessionWasFinished = true
     }
     
     func finishSessionAlertAction() {
         let sessionStopper = Resolver.resolve(SessionStoppable.self, args: self.session)
         do {
             try sessionStopper.stopSession()
+            selectedSection.mobileSessionWasFinished = true
         } catch {
             Log.info("error when stpoing session - \(error)")
         }
