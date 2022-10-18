@@ -54,7 +54,6 @@ class DefaultCreateThresholdAlertAPI: CreateThresholdAlertService {
         
         let timezoneOffset = TimeZone.current.secondsFromGMT()
         
-        Log.info("## \(timezoneOffset)")
         let params = Params(sessionUUID: sessionUUID, sensorName: sensorName, thresholdValue: thresholdValue, frequency: frequency, timezoneOffset: timezoneOffset)
         
         do {
