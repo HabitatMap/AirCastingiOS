@@ -26,10 +26,11 @@ class DefaultCreateThresholdAlertAPI: CreateThresholdAlertService {
             let sessionUuid: String
             let thresholdValue: String
             let frequency: String
+            let timezoneOffset: String
         }
         
-        init(sessionUUID: SessionUUID, sensorName: String, thresholdValue: String, frequency: ThresholdAlertFrequency) {
-            self.data = Nested(sensorName: sensorName, sessionUuid: sessionUUID.rawValue, thresholdValue: thresholdValue, frequency: String(frequency.rawValue))
+        init(sessionUUID: SessionUUID, sensorName: String, thresholdValue: String, frequency: ThresholdAlertFrequency, timezoneOffset: Int) {
+            self.data = Nested(sensorName: sensorName, sessionUuid: sessionUUID.rawValue, thresholdValue: thresholdValue, frequency: String(frequency.rawValue), timezoneOffset: String(timezoneOffset))
         }
     }
     
@@ -51,7 +52,10 @@ class DefaultCreateThresholdAlertAPI: CreateThresholdAlertService {
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        let params = Params(sessionUUID: sessionUUID, sensorName: sensorName, thresholdValue: thresholdValue, frequency: frequency)
+        let timezoneOffset = TimeZone.current.secondsFromGMT()
+        
+        Log.info("## \(timezoneOffset)")
+        let params = Params(sessionUUID: sessionUUID, sensorName: sensorName, thresholdValue: thresholdValue, frequency: frequency, timezoneOffset: timezoneOffset)
         
         do {
             request.httpBody = try encoder.encode(params)
