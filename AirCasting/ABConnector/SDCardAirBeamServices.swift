@@ -3,6 +3,7 @@
 
 import CoreBluetooth
 import CoreMIDI
+import Combine
 import Resolver
 
 enum SDCardSyncError: Error {
@@ -46,8 +47,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     
     private var expectedMeasurementsCount: [SDCardSessionType: Int] = [:]
     private var receivedMeasurementsCount: [SDCardSessionType: Int] = [:]
-    private var timerToken: AnyObject?
-    private let timer: TimerScheduler = FoundationTimerScheduler()
+    private var monitoringForFinishedSendingToken: Cancellable?
     private let queue: DispatchQueue = .init(label: "SDSyncAirBeamServices")
     
     func downloadData(from peripheral: CBPeripheral, progress: @escaping (SDCardDataChunk) -> Void, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void) {
@@ -180,29 +180,27 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
         expectedMeasurementsCount = [:]
         receivedMeasurementsCount = [:]
-        if let timerToken = timerToken {
-            timer.stop(token: timerToken)
+        if let token = monitoringForFinishedSendingToken {
+            token.cancel()
         }
         completion()
     }
     
     private func startMonitoringForEnd(completion: @escaping () -> Void) -> Void {
         var checkedMeasurementsCount: [SDCardSessionType: Int] = [:]
-        timerToken = timer.schedule(every: 1) { [weak self] in
-            self?.queue.async { [weak self] in
-                guard let self = self else { return }
-                Log.debug("Checking with:\n expected \(self.expectedMeasurementsCount)\n received \(self.receivedMeasurementsCount)\n checked \(checkedMeasurementsCount)")
-                guard checkedMeasurementsCount != self.receivedMeasurementsCount else {
-                    Log.debug("NO NEW MEASUREMENT IN 1 SEC")
-                    completion()
-                    return
-                }
-                checkedMeasurementsCount = self.receivedMeasurementsCount
-                for temp in self.receivedMeasurementsCount {
-                    if self.expectedMeasurementsCount[temp.key] ?? 0 < temp.value {
-                        Log.info("All measurements downloaded")
-                        completion(); return
-                    }
+
+        monitoringForFinishedSendingToken = queue.schedule(after: queue.now, interval: .seconds(1)) {
+            Log.debug("Checking with:\n expected \(self.expectedMeasurementsCount)\n received \(self.receivedMeasurementsCount)\n checked \(checkedMeasurementsCount)")
+            guard checkedMeasurementsCount != self.receivedMeasurementsCount else {
+                Log.debug("NO NEW MEASUREMENT IN 1 SEC")
+                completion()
+                return
+            }
+            checkedMeasurementsCount = self.receivedMeasurementsCount
+            for receivedMeasurementsForSessionType in self.receivedMeasurementsCount {
+                if self.expectedMeasurementsCount[receivedMeasurementsForSessionType.key] ?? 0 < receivedMeasurementsForSessionType.value {
+                    Log.info("All measurements downloaded")
+                    completion(); return
                 }
             }
         }
