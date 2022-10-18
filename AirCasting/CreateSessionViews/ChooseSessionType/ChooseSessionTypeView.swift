@@ -267,9 +267,9 @@ struct ChooseSessionTypeView: View {
                     HStack {
                         switch (shouldShowSDSyncButton, shouldShowFollowSessionButton) {
                         case (false, true):
-                            shouldShowFollowSessionButton ? AnyView(followSessionButton) : AnyView(Color.clear)
+                            followSessionButton
                             Spacer(minLength: geometry.size.width / horizontalSpacerRatio)
-                            shouldShowSDSyncButton ? AnyView(sdSyncButton) : AnyView(Color.clear)
+                            Color.clear
                         default:
                             shouldShowSDSyncButton ? AnyView(sdSyncButton) : AnyView(Color.clear)
                             Spacer(minLength: geometry.size.width / horizontalSpacerRatio)
