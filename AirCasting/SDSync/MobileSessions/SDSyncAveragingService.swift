@@ -7,6 +7,7 @@ import CoreLocation
 protocol SDSyncAveragingService {
     /// `action` parameter, is a completion block which is executed each time when measurements in an interval get averaged. First argument is an averaged measurement, and second is an array of measurements from which the average was calculated.
     func averageMeasurementsWithReminder<T: AverageableMeasurement>(measurements: [T], startTime: Date, averagingWindow: AveragingWindow, action: (T, [T]) -> Void) -> [T]
+    func calculateAveragingWindow(startTime: Date, lastMeasurement: Date) -> AveragingWindow
 }
 
 protocol AverageableMeasurement {
@@ -44,19 +45,15 @@ class DefaultSDSyncAveragingService: SDSyncAveragingService {
                 
                 // There can be a long break between measurements. If the current measurement fall outside of the interval we should find the next interval that contains the measurement
                 findNextTimeInterval(measurement: measurement, intervalStart: &intervalStart, intervalEnd: &intervalEnd, averagingWindow: averagingWindow)
-                Log.info("Appending measurement from \(measurement.measuredAt), interval end: \(intervalEnd)")
                 measurementsBuffer = [measurement]
                 return
             }
-            
-            Log.info("Buffer count is \(measurementsBuffer.count), appending measurement \(measurement.measuredAt)")
             
             measurementsBuffer.append(measurement)
         }
         
         // If the last interval was full then we should average measurements contained in it as well
         if measurementsBuffer.last?.measuredAt == intervalEnd - 1 {
-            Log.info("Averaging reminder with last at: \(measurementsBuffer.last?.measuredAt); interval end time: \(intervalEnd)")
             if let newMeasurement = averageMeasurements(measurementsBuffer, time: intervalEnd-1) {
                 action(newMeasurement, measurementsBuffer)
             }
@@ -66,12 +63,21 @@ class DefaultSDSyncAveragingService: SDSyncAveragingService {
         return measurementsBuffer
     }
     
+    func calculateAveragingWindow(startTime: Date, lastMeasurement: Date) -> AveragingWindow {
+        let sessionDuration = abs(lastMeasurement.timeIntervalSince(startTime))
+        if sessionDuration <= TimeInterval(TimeThreshold.firstThreshold.rawValue) {
+            return .zeroWindow
+        } else if sessionDuration <= TimeInterval(TimeThreshold.secondThreshold.rawValue) {
+            return .firstThresholdWindow
+        }
+        return .secondThresholdWindow
+    }
+    
     private func findNextTimeInterval(measurement: AverageableMeasurement, intervalStart: inout Date, intervalEnd: inout Date, averagingWindow: AveragingWindow) {
         while measurement.measuredAt >= intervalEnd {
             // Helper variables for debugging
             let logMeasurementTime = measurement.measuredAt
             let logIntervalEnd = intervalEnd
-            Log.info("Measurement time: \(logMeasurementTime), interval end: \(logIntervalEnd). Changing interval.")
             intervalStart = intervalEnd
             intervalEnd = intervalEnd.addingTimeInterval(TimeInterval(averagingWindow.rawValue))
         }

@@ -26,7 +26,11 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
 
     @Published private var progressValue: SDSyncProgressViewModel?
     @Published var isDownloadingFinished: Bool = false
-    @Published var presentNextScreen: Bool = false
+    @Published var presentNextScreen: Bool = false {
+        didSet {
+            Log.info("### AAAAAAAAAAAA presentNextScreen: \(presentNextScreen)")
+        }
+    }
     @Published var shouldDismiss: Bool = false
     @Published var alert: AlertInfo?
 
@@ -46,7 +50,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
             Log.info("[SD SYNC] Completed connecting to AB")
             guard success else {
                 DispatchQueue.main.async {
-                    self.presentNextScreen = success
+                    self.presentNextScreen = false
                     self.alert = InAppAlerts.connectionTimeoutAlert {
                         self.shouldDismiss = true
                     }
