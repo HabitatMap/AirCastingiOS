@@ -134,7 +134,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                             sessionData.averaging = self.averagingService.calculateAveragingWindow(startTime: sessionData.startTime ?? measurements.date, lastMeasurement: lastMeasurementTime)
                         }
                         
-                        Log.info("[SD sync] \(i) - \(savedLines): \(measurements.date)") // TO DELETE
+                        Log.info("[SD sync] \(i) - \(savedLines): \(measurements.date)") // TO DELETE AFTER TESTING
                         i += 1
                         guard sessionData.lastMeasurementTime == nil || measurements.date > sessionData.lastMeasurementTime! else {
                             return
