@@ -52,8 +52,10 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
             let files = try FileManager.default.contentsOfDirectory(atPath: filesDirectoryURL.path).compactMap({ filesDirectoryURL.path + "/" + $0 }).compactMap(URL.init(string:))
             var error: Error?
             let group = DispatchGroup()
+            
+            files.forEach { _ in group.enter() }
+            
             for file in files {
-                group.enter()
                 process(fileURL: file, deviceID: deviceID) { result in
                     switch result {
                     case .success():
@@ -134,7 +136,6 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                         
                         Log.info("[SD sync] \(i) - \(savedLines): \(measurements.date)") // TO DELETE
                         i += 1
-                        sleep(50)
                         guard sessionData.lastMeasurementTime == nil || measurements.date > sessionData.lastMeasurementTime! else {
                             return
                         }
@@ -186,7 +187,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         context.performAndWait {
             if let existingSession = try? context.existingSession(uuid: sessionUUID) {
                 guard existingSession.isInStandaloneMode && existingSession.sensorPackageName == deviceID else {
-                    Log.info("[SD SYNC] Ignoring session \(existingSession.name ?? "none")")
+                    Log.info("[SD SYNC] Ignoring session \(existingSession.name ?? "none"), \(sessionUUID)")
                     return
                 }
                 

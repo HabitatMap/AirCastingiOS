@@ -37,7 +37,6 @@ class DefaultSDSyncAveragingService: SDSyncAveragingService {
             guard measurement.measuredAt >= intervalStart else { return }
             
             guard measurement.measuredAt < intervalEnd else {
-                Log.info("Averaging happening. count: \(measurementsBuffer.count), first meas. time: \(measurementsBuffer.first?.measuredAt), last meas. time:\(measurementsBuffer.last?.measuredAt)")
                 // If there are any measurements in the buffer we should average them
                 if let newMeasurement = averageMeasurements(measurementsBuffer, time: intervalEnd-1) {
                     action(newMeasurement, measurementsBuffer)
