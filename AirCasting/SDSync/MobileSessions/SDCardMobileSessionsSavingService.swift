@@ -32,7 +32,7 @@ struct SDSyncMeasurement: AverageableMeasurement {
 
 class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     @Injected private var fileLineReader: FileLineReader
-    @Injected private var averagingService: SDSyncAveragingService
+    @Injected private var averagingService: MeasurementsAveragingService
     @Injected private var persistenceController: PersistenceController
     private var databaseStorage = SDSyncMobileSessionsDatabaseStorage()
     private lazy var context: NSManagedObjectContext = persistenceController.createContext()

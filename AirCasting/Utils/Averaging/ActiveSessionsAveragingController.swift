@@ -45,9 +45,9 @@ enum TimeThreshold: Int {
     case secondThreshold = 32400
 }
 
-final class AveragingService: NSObject {
+final class ActiveSessionsAveragingController: NSObject {
     @Injected var storage: AveragingServiceStorage
-    @Injected private var averagingService: SDSyncAveragingService
+    @Injected private var averagingService: MeasurementsAveragingService
     private var timers: [SessionUUID : AnyCancellable] = [:]
     private var fetchedResultsController: NSFetchedResultsController<SessionEntity>?
     
@@ -144,7 +144,7 @@ final class AveragingService: NSObject {
     }
 }
 
-extension AveragingService: NSFetchedResultsControllerDelegate {
+extension ActiveSessionsAveragingController: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         guard let session = anObject as? SessionEntity else { return }

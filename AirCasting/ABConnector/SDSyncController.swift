@@ -40,7 +40,7 @@ class SDSyncController {
     @Injected private var fileLineReader: FileLineReader
     @Injected private var mobileSessionsSaver: SDCardMobileSessionssSaver
     @Injected private var fixedSessionsUploader: SDCardFixedSessionsUploadingService
-    @Injected private var averagingService: AveragingService
+    @Injected private var averagingService: ActiveSessionsAveragingController
     @Injected private var sessionSynchronizer: SessionSynchronizer
     @Injected private var measurementsDownloader: SyncedMeasurementsDownloader
     
