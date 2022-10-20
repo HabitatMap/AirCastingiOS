@@ -26,11 +26,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
 
     @Published private var progressValue: SDSyncProgressViewModel?
     @Published var isDownloadingFinished: Bool = false
-    @Published var presentNextScreen: Bool = false {
-        didSet {
-            Log.info("### AAAAAAAAAAAA presentNextScreen: \(presentNextScreen)")
-        }
-    }
+    @Published var presentNextScreen: Bool = false
     @Published var shouldDismiss: Bool = false
     @Published var alert: AlertInfo?
 
