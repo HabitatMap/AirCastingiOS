@@ -374,13 +374,6 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         try context.save()
         return sessionEntity
     }
-
-    func observerFor<T>(request: NSFetchRequest<T>) -> NSFetchedResultsController<T> {
-        let frc = NSFetchedResultsController(fetchRequest: request,
-                                             managedObjectContext: context,
-                                             sectionNameKeyPath: nil, cacheName: nil)
-        return frc
-    }
 }
 
 #if DEBUG

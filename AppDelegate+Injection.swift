@@ -89,6 +89,10 @@ extension Resolver: ResolverRegistering {
             let context = Resolver.resolve(PersistenceController.self).editContext
             return DefaultSessionEntityStore(context: context)
         }
+        main.register { (_, _) -> AveragingServiceStorage in
+            let context = Resolver.resolve(PersistenceController.self).editContext
+            return DefaultAveragingServiceStorage(context: context)
+        }.scope(.cached)
         main.register { DefaultFileLineReader() as FileLineReader }
         main.register { SessionDataEraser() as DataEraser }
         
@@ -173,7 +177,7 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultSettingsRedirection() as SettingsRedirection }.scope(.application)
         main.register { LifeTimeEventsProvider(userDefaults: .standard) }.implements(FirstRunInfoProvidable.self).scope(.application)
         main.register { MicrophoneManager() }.scope(.cached)
-        main.register { AveragingService(measurementStreamStorage: Resolver.resolve()) }.scope(.cached)
+        main.register { AveragingService() }.scope(.cached)
         main.register { MobilePeripheralSessionManager(measurementStreamStorage: Resolver.resolve()) }.scope(.cached)
         main.register { BluetoothManager(mobilePeripheralSessionManager: Resolver.resolve()) }
         .implements(BluetoothConnector.self)

@@ -67,13 +67,20 @@ class DefaultSDSyncAveragingService: SDSyncAveragingService {
     }
     
     private func findNextTimeInterval(measurement: AverageableMeasurement, intervalStart: inout Date, intervalEnd: inout Date, averagingWindow: AveragingWindow) {
-        while measurement.measuredAt >= intervalEnd {
+        if measurement.measuredAt >= intervalEnd {
             // Helper variables for debugging
             let logMeasurementTime = measurement.measuredAt
-            let logIntervalEnd = intervalEnd
-            Log.info("Measurement time: \(logMeasurementTime), interval end: \(logIntervalEnd). Changing interval.")
-            intervalStart = intervalEnd
-            intervalEnd = intervalEnd.addingTimeInterval(TimeInterval(averagingWindow.rawValue))
+            var logIntervalEnd = intervalEnd
+            var logStart = intervalStart
+            Log.info("Measurement time: \(logMeasurementTime), interval: \(logStart) - \(logIntervalEnd). Changing interval.")
+            var timeSinceSessionStart = measurement.measuredAt.timeIntervalSince(intervalStart)
+            var remainingSeconds = Int(timeSinceSessionStart) % averagingWindow.rawValue
+            intervalStart = measurement.measuredAt - TimeInterval(remainingSeconds)
+            intervalEnd = intervalStart.addingTimeInterval(TimeInterval(averagingWindow.rawValue))
+            
+            logIntervalEnd = intervalEnd
+            logStart = intervalStart
+            Log.info("## New interval: \(logStart) - \(logIntervalEnd)")
         }
     }
     

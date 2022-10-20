@@ -3,8 +3,8 @@
 
 import Foundation
 import Combine
+import Resolver
 import CoreData
-import Algorithms
 
 /**
   * Averaging for long mobile sessions
@@ -19,14 +19,11 @@ import Algorithms
  * - all of the data from the prior 2 hours is transformed into 5-second averages and the map and graph and stats are updated accordingly.
  *
  * Notes:
- * - averages should be attached to the middle value geocoordinates and timestamps,
+ * - averages should be attached to the middle value geocoordinates, and timestamp should be set to the interval end
  * i.e. if its a 5-second avg spanning the time frame 10:00:00 to 10:00:05,
- * the avg value gets pegged to the geocoordinates and timestamp from 10:00:03.
+ * the avg value gets pegged to the geocoordinates of middle measurement and timestamp from 10:00:05.
  * - thresholds are calculated based on ellapsed time of session, not based on actual measurements records
  * (pauses in sessions are not taken into account)
- * - if there are any final, unaveraged measurements on 2h+ or 9h+ session which would not fall into full averaging window
- * (5s or 60s) they should be deleted
- * - on threshold crossing (at 2h and at 9h into session) we also trim measurements that not fit into given window size
  *
  **/
 
@@ -43,32 +40,20 @@ enum AveragingWindow: Int {
 
 enum TimeThreshold: Int {
     // Two hours: 60 * 60 * 2 = 7200
-    case firstThreshold = 7200
+    case firstThreshold = 20
     // Nine hours: 60 * 60 * 9 = 32400
     case secondThreshold = 32400
 }
 
 final class AveragingService: NSObject {
-    
-    private var sessionEntity: SessionEntity?
-    private let measurementStreamStorage: MeasurementStreamStorage
+    @Injected var storage: AveragingServiceStorage
+    @Injected private var averagingService: SDSyncAveragingService
     private var timers: [SessionUUID : AnyCancellable] = [:]
     private var fetchedResultsController: NSFetchedResultsController<SessionEntity>?
     
-    init(measurementStreamStorage: MeasurementStreamStorage) {
-        self.measurementStreamStorage = measurementStreamStorage
-        super.init()
-    }
-    
     func start() {
-        measurementStreamStorage.accessStorage { [weak self] storage in
-            let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "type == %@ AND status == %i",
-                                            SessionType.mobile.rawValue,
-                                            SessionStatus.RECORDING.rawValue)
-            request.sortDescriptors = [NSSortDescriptor(key: "type", ascending: true)]
-            
-            let frc = storage.observerFor(request: request)
+        storage.accessStorage { storage in
+            let frc = storage.observerForMobileSessions()
             
             do {
                 try frc.performFetch()
@@ -76,66 +61,9 @@ final class AveragingService: NSObject {
                 Log.info("Couldn't perform a fetch and add observer")
             }
             frc.delegate = self
-            self?.fetchedResultsController = frc
+            self.fetchedResultsController = frc
             Log.info("Averaging service started")
         }
-    }
-    
-    private func perform(storage: HiddenCoreDataMeasurementStreamStorage, session: SessionEntity, averagingWindow: AveragingWindow, windowDidChange: Bool) {
-        Log.info("Performing averaging for \(session.uuid ?? "N/A") [\(session.name ?? "unnamed")]")
-        session.allStreams.forEach { stream in
-            var averagedMeasurements: [MeasurementEntity] = (stream.allMeasurements ?? []).filter {
-                $0.averagingWindow == averagingWindow.rawValue
-            }
-            
-            /// Step 1 - it'll be performed only once, after crossing the secondThresholdWindow
-            /// The measurements that were already averaged with firstThresholdWindow will be reaveraged with secondThresholdWindow
-            if windowDidChange && averagingWindow == .secondThresholdWindow {
-                Log.info("Averaging for second threshold window")
-                let averagedWithFirstThreshold = (stream.allMeasurements ?? []).filter {
-                    $0.averagingWindow == AveragingWindow.firstThresholdWindow.rawValue
-                }
-                
-                let chunkElementsCount = AveragingWindow.secondThresholdWindow.rawValue / AveragingWindow.firstThresholdWindow.rawValue
-                averagedWithFirstThreshold.chunks(ofCount: chunkElementsCount).forEach { measuremensInChunk in
-                    guard measuremensInChunk.count == chunkElementsCount else { return }
-                    let averaged = self.averagedMeasurementFrom(chunk: measuremensInChunk, window: averagingWindow, measurementCount: chunkElementsCount)
-                    averagedMeasurements.append(contentsOf: averaged)
-                }
-            }
-            
-            /// Step 2 - perform averaging on measurements that haven't been averaged
-            let unaveragedMeasurements: [MeasurementEntity] = (stream.allMeasurements ?? []).filter {
-                $0.averagingWindow == AveragingWindow.zeroWindow.rawValue
-            }
-
-            unaveragedMeasurements.chunks(ofCount: averagingWindow.rawValue).forEach( { measuremensInChunk in
-                let averaged = self.averagedMeasurementFrom(chunk: measuremensInChunk, window: averagingWindow, measurementCount: averagingWindow.rawValue)
-                averagedMeasurements.append(contentsOf: averaged)
-            })
-            
-            /// Step 3 - Update stream
-            if !averagedMeasurements.isEmpty {
-                storage.removeAllMeasurements(in: stream, except: averagedMeasurements)
-            } else {
-                Log.info("There were no averaged mesurements")
-            }
-        }
-    }
-    
-    private func calculateAvg(from values: ChunksOfCountCollection<[MeasurementEntity]>.Element) -> Double {
-       return values.map({ $0.value }).reduce(0.0, +) / Double(values.count)
-    }
-    
-    private func averagedMeasurementFrom(chunk: ArraySlice<MeasurementEntity>, window: AveragingWindow, measurementCount: Int) -> [MeasurementEntity] {
-        guard chunk.count == measurementCount else { return Array(chunk) }
-        /// https://github.com/apple/swift-algorithms/blob/main/Guides/Chunked.md
-        /// For integer types, any remainder of the division is discarded so we need to add 1 to elementsInChunk/2 to get the middle value.
-        let middleIndex = chunk.middleItemIndex
-        let middleMeasurement = chunk[middleIndex]
-        middleMeasurement.value = calculateAvg(from: chunk)
-        middleMeasurement.averagingWindow = window.rawValue
-        return [middleMeasurement]
     }
     
     private func scheduleAveraging(session: SessionEntity) {
@@ -159,7 +87,7 @@ final class AveragingService: NSObject {
             .autoconnect()
             .sink { [weak self] _ in
                 guard let self = self else { return }
-                self.measurementStreamStorage.accessStorage { storage in
+                self.storage.accessStorage { storage in
                     guard let session = try? storage.getExistingSession(with: uuid) else {
                         Log.info("Couldnt get session with uuid:\(uuid) from db to start periodic averaging")
                         return }
@@ -171,12 +99,34 @@ final class AveragingService: NSObject {
                     }
                     self.perform(storage: storage,
                                  session: session,
-                                 averagingWindow: checkWindow,
-                                 windowDidChange: windowDidChange)
-                    Log.info("Averaging performed for \(session.uuid) [\(session.name)]")
+                                 averagingWindow: checkWindow)
+                    Log.info("Averaging performed for \(session.uuid) [\(session.name ?? "N/A")]")
                 }
             }
         timers[uuid] = timer
+    }
+    
+    private func perform(storage: HiddenAveragingServiceStorage, session: SessionEntity, averagingWindow: AveragingWindow) {
+        Log.info("Performing averaging for \(session.uuid) [\(session.name ?? "unnamed")]")
+        session.allStreams.forEach { stream in
+            guard let measurements = try? storage.fetchUnaveragedMeasurements(currentWindow: averagingWindow, stream: stream) else { return }
+
+            guard let intervalStart = stream.session?.startTime else { Log.error("No session start time!"); return }
+
+            _ = averagingService.averageMeasurementsWithReminder(
+                measurements: measurements,
+                startTime: intervalStart,
+                averagingWindow: averagingWindow) { averagedMeasurement, sourceMeasurements in
+                    guard sourceMeasurements.count > 0 else { return }
+                    let lastMeasurementIndex = sourceMeasurements.endIndex-1
+                    sourceMeasurements[lastMeasurementIndex].value = averagedMeasurement.value
+                    sourceMeasurements[lastMeasurementIndex].time = averagedMeasurement.time
+                    sourceMeasurements[lastMeasurementIndex].averagingWindow = averagingWindow.rawValue
+                    
+                    guard sourceMeasurements.count > 1 else { return }
+                    storage.deleteMeasusrmeents(Array(sourceMeasurements[0...lastMeasurementIndex-1]))
+                }
+        }
     }
     
     private func averagingWindowFor(startTime: Date?) -> AveragingWindow? {
