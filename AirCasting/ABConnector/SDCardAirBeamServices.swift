@@ -206,13 +206,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     }
     
     private func allMeasurementsDownloaded() -> Bool {
-        var anyLeft = false
-        for receivedMeasurementsForSessionType in self.receivedMeasurementsCount {
-            if self.expectedMeasurementsCount[receivedMeasurementsForSessionType.key] ?? 0 > receivedMeasurementsForSessionType.value {
-                anyLeft = true
-            }
-        }
-        return !anyLeft
+        receivedMeasurementsCount.allSatisfy( { $1 >= expectedMeasurementsCount[$0] ?? 0 })
     }
 }
 
