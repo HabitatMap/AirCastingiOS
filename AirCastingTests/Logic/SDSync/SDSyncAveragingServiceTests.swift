@@ -11,7 +11,7 @@ extension SDSyncMeasurement: Equatable {
 }
 
 final class SDSyncAveragingServiceTests: XCTestCase {
-    let service = DefaultSDSyncAveragingService()
+    let service = DefaultMeasurementsAveragingService()
 
     func test_averageMeasurementsWithReminderCalled_returnsUnaveragedMeasurementsAsReminder() throws {
         let date = Date()

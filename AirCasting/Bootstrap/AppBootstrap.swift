@@ -10,7 +10,7 @@ import FirebaseCrashlytics
 class AppBootstrap {
     @Injected private var firstRunInfoProvider: FirstRunInfoProvidable
     @Injected private var deauthorizable: Deauthorizable
-    @Injected private var averagingService: AveragingService
+    @Injected private var averagingService: ActiveSessionsAveragingController
     
     func bootstrap() {
         if firstRunInfoProvider.isFirstAppLaunch {
