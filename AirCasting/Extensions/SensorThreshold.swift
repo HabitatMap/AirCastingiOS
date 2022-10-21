@@ -103,11 +103,11 @@ extension SensorThreshold {
         switch value {
         case thresholdVeryLow...thresholdLow:
             return .aircastingGreen
-        case thresholdLow + 1...thresholdMedium:
+        case thresholdLow...thresholdMedium:
             return .aircastingYellow
-        case thresholdMedium + 1...thresholdHigh:
+        case thresholdMedium...thresholdHigh:
             return .aircastingOrange
-        case thresholdHigh + 1...thresholdVeryHigh:
+        case thresholdHigh...thresholdVeryHigh:
             return .aircastingRed
         default:
             return .aircastingGray
@@ -116,13 +116,13 @@ extension SensorThreshold {
     
     func colorForCelsius(value: Int32) -> Color {
         switch value {
-        case Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdVeryLow))) ... Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdLow))):
+        case Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdVeryLow)))...Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdLow))):
             return .aircastingGreen
-        case Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdLow))) + 1 ... Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdMedium))):
+        case Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdLow)))...Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdMedium))):
             return .aircastingYellow
-        case Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdMedium))) + 1 ... Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdHigh))):
+        case Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdMedium)))...Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdHigh))):
             return .aircastingOrange
-        case Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdHigh))) + 1 ... Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdVeryHigh))):
+        case Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdHigh)))...Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholdVeryHigh))):
             return .aircastingRed
         default:
             return .aircastingGray
