@@ -187,8 +187,9 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     }
     
     private func startMonitoringForEnd(completion: @escaping () -> Void) -> Void {
+        guard !allMeasurementsDownloaded() else { completion(); return }
+        
         var checkedMeasurementsCount: [SDCardSessionType: Int] = [:]
-
         monitoringForFinishedSendingToken = queue.schedule(after: queue.now, interval: .seconds(1)) {
             Log.debug("Checking with:\n expected \(self.expectedMeasurementsCount)\n received \(self.receivedMeasurementsCount)\n checked \(checkedMeasurementsCount)")
             guard checkedMeasurementsCount != self.receivedMeasurementsCount else {
@@ -197,13 +198,21 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                 return
             }
             checkedMeasurementsCount = self.receivedMeasurementsCount
-            for receivedMeasurementsForSessionType in self.receivedMeasurementsCount {
-                if self.expectedMeasurementsCount[receivedMeasurementsForSessionType.key] ?? 0 < receivedMeasurementsForSessionType.value {
-                    Log.info("All measurements downloaded")
-                    completion(); return
-                }
+            guard !self.allMeasurementsDownloaded() else {
+                Log.info("All measurements downloaded")
+                completion(); return
             }
         }
+    }
+    
+    private func allMeasurementsDownloaded() -> Bool {
+        var anyLeft = false
+        for receivedMeasurementsForSessionType in self.receivedMeasurementsCount {
+            if self.expectedMeasurementsCount[receivedMeasurementsForSessionType.key] ?? 0 > receivedMeasurementsForSessionType.value {
+                anyLeft = true
+            }
+        }
+        return !anyLeft
     }
 }
 
