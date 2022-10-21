@@ -71,7 +71,7 @@ final class ActiveSessionsAveragingController: NSObject {
         guard let startTime = session.startTime else { return }
         
         let fromSessionStartToFirstThreshold = (startTime.timeIntervalSince(DateBuilder.getFakeUTCDate()) + Double(TimeThreshold.firstThreshold.rawValue) + Double(1))
-        Log.info("Scheduling periodic averaging start in \(fromSessionStartToFirstThreshold)s for \(session.uuid ?? "N/A") [\(session.name ?? "unnamed")]")
+        Log.info("Scheduling periodic averaging start in \(fromSessionStartToFirstThreshold)s for \(session.uuid) [\(session.name ?? "unnamed")]")
         let timer = Timer.publish(every: TimeInterval(fromSessionStartToFirstThreshold), on: .main, in: .common)
             .autoconnect()
             .first()
