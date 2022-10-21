@@ -124,7 +124,7 @@ final class ActiveSessionsAveragingController: NSObject {
                     sourceMeasurements[lastMeasurementIndex].averagingWindow = averagingWindow.rawValue
                     
                     guard sourceMeasurements.count > 1 else { return }
-                    storage.deleteMeasusrmeents(Array(sourceMeasurements[0...lastMeasurementIndex-1]))
+                    storage.deleteMeasurements(Array(sourceMeasurements[0...lastMeasurementIndex-1]))
                 }
         }
     }

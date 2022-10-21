@@ -12,7 +12,7 @@ protocol HiddenAveragingServiceStorage {
     func observerForMobileSessions() -> NSFetchedResultsController<SessionEntity>
     func getExistingSession(with sessionUUID: SessionUUID) throws -> SessionEntity
     func fetchUnaveragedMeasurements(currentWindow: AveragingWindow, stream: MeasurementStreamEntity) throws -> [MeasurementEntity]
-    func deleteMeasusrmeents(_ measurements: [MeasurementEntity])
+    func deleteMeasurements(_ measurements: [MeasurementEntity])
     func save() throws
 }
 
@@ -64,7 +64,7 @@ final class DefaultHiddenAveragingServiceStorage: HiddenAveragingServiceStorage 
         return try context.fetch(fetchRequest)
     }
     
-    func deleteMeasusrmeents(_ measurements: [MeasurementEntity]) {
+    func deleteMeasurements(_ measurements: [MeasurementEntity]) {
         measurements.forEach(context.delete(_:))
     }
     
