@@ -62,11 +62,11 @@ class SDSyncController {
             }
         }, completion: { [weak self] result in
             guard let self = self else { return }
+            progress(.finalizing)
             self.writingQueue.sync {
                 switch result {
                 case .success(let metadata):
                     Log.info("[SD SYNC] Finished reading data with success")
-                    progress(.finalizing)
                     let directories = self.fileWriter.finishAndSave()
                     Log.info("[SD SYNC] Files: \(directories)")
                     guard !directories.isEmpty else {
@@ -104,7 +104,7 @@ class SDSyncController {
                 switch result {
                 case .success(let fixedSessionsUUIDs):
                     self.measurementsDownloader.download(sessionsUUIDs: fixedSessionsUUIDs)
-                    Log.info("### completion success called in line 111")
+                    Log.info("Completion success. Fixed sessions upladed successfully.")
                     completion(.success(()))
                 case .failure:
                     completion(.failure(.fixedSessionsProcessingFailure))
