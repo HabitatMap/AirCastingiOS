@@ -19,6 +19,7 @@ struct SessionHeaderView: View {
     @Binding var isCollapsed: Bool
     @InjectedObject private var bluetoothManager: BluetoothManager
     @EnvironmentObject var selectedSection: SelectedSection
+    @Environment(\.colorScheme) var colorScheme
     @ObservedObject var session: SessionEntity
     @State private var showingNoConnectionAlert = false
     @State private var alert: AlertInfo?
@@ -212,7 +213,8 @@ private extension SessionHeaderView {
         Button {
             bluetoothManager.enterStandaloneMode(sessionUUID: session.uuid)
         } label: {
-            Label(Strings.SessionHeaderView.enterStandaloneModeButton, image: "standalone-icon")
+            Label(title: { Text(Strings.SessionHeaderView.enterStandaloneModeButton) }, icon: { Image("standalone-icon").renderingMode(.template) })
+                .foregroundColor(colorScheme == .light ? .black : .aircastingGray)
         }
     }
     
@@ -281,6 +283,7 @@ private extension SessionHeaderView {
         let sessionStopper = Resolver.resolve(SessionStoppable.self, args: self.session)
         do {
             try sessionStopper.stopSession()
+            selectedSection.mobileSessionWasFinished = true
         } catch {
             Log.info("error when stpoing session - \(error)")
         }

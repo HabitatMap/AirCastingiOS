@@ -18,6 +18,14 @@ struct ChooseSessionTypeView: View {
     @State private var buttonHeight = CGFloat.zero
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
+    var shouldShowSDSyncButton: Bool {
+        featureFlagsViewModel.enabledFeatures.contains(.sdCardSync)
+    }
+    
+    var shouldShowFollowSessionButton: Bool {
+        featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow)
+    }
+    
     var shouldGoToChooseSessionScreen: Bool {
         (tabSelection.selection == .createSession && emptyDashboardButtonTapped.mobileWasTapped) ? true : false
     }
@@ -239,7 +247,7 @@ struct ChooseSessionTypeView: View {
                 .padding(.horizontal)
                 Spacer().frame(height: spacerHeight)
                 VStack(alignment: .leading, spacing: 15) {
-                    let horizontalSpacerRatio = 10.5
+                    let horizontalSpacerRatio = 17.0
                     HStack {
                         recordNewLabel
                         Spacer()
@@ -257,12 +265,15 @@ struct ChooseSessionTypeView: View {
                         orLabel
                     }
                     HStack {
-                        if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) && checkDeviceSupportFor(feature: .sync) {
-                            sdSyncButton
-                        }
-                        Spacer(minLength: geometry.size.width / horizontalSpacerRatio)
-                        if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                        switch (shouldShowSDSyncButton, shouldShowFollowSessionButton) {
+                        case (false, true):
                             followSessionButton
+                            Spacer(minLength: geometry.size.width / horizontalSpacerRatio)
+                            Color.clear
+                        default:
+                            shouldShowSDSyncButton ? AnyView(sdSyncButton) : AnyView(Color.clear)
+                            Spacer(minLength: geometry.size.width / horizontalSpacerRatio)
+                            shouldShowFollowSessionButton ? AnyView(followSessionButton) : AnyView(Color.clear)
                         }
                     }
                     Spacer().frame(height: innerSpacerHeight)
