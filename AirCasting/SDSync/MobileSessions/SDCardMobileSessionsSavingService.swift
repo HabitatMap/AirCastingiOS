@@ -14,6 +14,8 @@ protocol SDCardMobileSessionssSaver {
 enum SDMobileSavingErrors: Error {
     case noUUID
     case noLastMeasurementTime
+    case savingFailed
+    case readingFileError
 }
 
 struct SDSessionData: Hashable {
@@ -48,18 +50,19 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         }
         do {
             let files = try FileManager.default.contentsOfDirectory(atPath: filesDirectoryURL.path).compactMap({ filesDirectoryURL.path + "/" + $0 }).compactMap(URL.init(string:))
-            Log.info("Files: \(files)")
             var error: Error?
             let group = DispatchGroup()
+            
+            files.forEach { _ in group.enter() }
+            
             for file in files {
-                group.enter()
                 process(fileURL: file, deviceID: deviceID) { result in
                     switch result {
                     case .success():
                         Log.info("Successfully saved session: \(file.path.split(separator: "/").last ?? "na")")
                         group.leave()
                     case .failure(let failureError):
-                        Log.info("## Failure for session: \(file.path.split(separator: "/").last ?? "na")")
+                        Log.info("Failure for session: \(file.path.split(separator: "/").last ?? "na")")
                         error = failureError
                         group.leave()
                         return
@@ -82,15 +85,14 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         
         let sessionUUID = SessionUUID(stringLiteral: String(sessionUUIDString))
         
-        Log.info("## Processing mobile session: \(sessionUUID)")
+        Log.info("Processing mobile session: \(sessionUUID)")
         
         guard let processedSession = getSessionData(sessionUUID: sessionUUID, deviceID: deviceID) else {
-            Log.info("## Ignoring session \(sessionUUID). Moving forward.")
+            Log.info("Ignoring session \(sessionUUID). Moving forward.")
             completion(.success(()))
             return
         }
         
-        Log.info("## processed session: \(processedSession)")
         processFile(fileURL: fileURL, session: processedSession, deviceID: deviceID, completion: completion)
     }
     
@@ -110,8 +112,6 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
             return
         }
         
-        Log.info("## LAST LINE: \(lastLineInFile)")
-        
         guard let lastMeasurementTime = parser.getMeasurementTime(lineString: lastLineInFile) else {
             Log.error("Failed to read last measurement time from file")
             completion(.failure(SDMobileSavingErrors.noLastMeasurementTime))
@@ -125,21 +125,18 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                 case .line(let content):
                     context.perform {
                         guard let measurements = self.parser.parseMeasurement(lineString: content) else {
-                            Log.error("## Failed to parse content: \(content)")
+                            Log.error("Failed to parse line from the file: \(content)")
                             return
                         }
                         
                         // This happens only with the first line
                         if sessionData.averaging == nil {
-                            sessionData.averaging = self.calculateAveragingWindow(startTime: sessionData.startTime ?? measurements.date, lastMeasurement: lastMeasurementTime)
-                            Log.info("## Set averaging window to \(sessionData.averaging)")
+                            sessionData.averaging = self.averagingService.calculateAveragingWindow(startTime: sessionData.startTime ?? measurements.date, lastMeasurement: lastMeasurementTime)
                         }
                         
-                        Log.info("[SD sync] \(i) - \(savedLines): \(measurements.date)")
+                        Log.info("[SD sync] \(i) - \(savedLines): \(measurements.date)") // TO DELETE AFTER TESTING
                         i += 1
-                        
                         guard sessionData.lastMeasurementTime == nil || measurements.date > sessionData.lastMeasurementTime! else {
-                            Log.info("## Ignoring measurement")
                             return
                         }
                         
@@ -149,7 +146,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                         guard savedLines == bufferThreshold else { return }
                         
                         do {
-                            Log.info("## Threshold exceeded, saving data")
+                            Log.info("Threshold exceeded, saving data")
                             try self.saveData(streamsWithMeasurements, session: &sessionData)
                             streamsWithMeasurements = [:]
                             savedLines = 0
@@ -166,8 +163,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
             
             context.perform {
                 guard !savingFailed else {
-                    Log.info("##### completion called in line 85")
-                    completion(.failure(UploadingError.uploadError))
+                    completion(.failure(SDMobileSavingErrors.savingFailed))
                     return
                 }
                 
@@ -176,26 +172,14 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                     try self.averageUnaveragedMeasurements(sessionUUID: sessionData.uuid, averagingWindow: sessionData.averaging ?? .zeroWindow)
                     try self.databaseStorage.setStatusToFinishedAndUpdateEndTime(for: sessionData.uuid, context: self.context)
                     try self.context.save()
-                    Log.info("##### completion called in line 98")
                     completion(.success(()))
                 } catch {
-                    Log.info("##### completion called in line 101")
                     completion(.failure(error))
                 }
             }
         } catch {
-            // ERRORR
+            completion(.failure(SDMobileSavingErrors.readingFileError))
         }
-    }
-    
-    private func calculateAveragingWindow(startTime: Date, lastMeasurement: Date) -> AveragingWindow {
-        let sessionDuration = abs(lastMeasurement.timeIntervalSince(startTime))
-        if sessionDuration <= TimeInterval(TimeThreshold.firstThreshold.rawValue) {
-            return .zeroWindow
-        } else if sessionDuration <= TimeInterval(TimeThreshold.secondThreshold.rawValue) {
-            return .firstThresholdWindow
-        }
-        return .secondThresholdWindow
     }
     
     private func getSessionData(sessionUUID: SessionUUID, deviceID: String) -> SDSessionData? {
@@ -203,7 +187,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         context.performAndWait {
             if let existingSession = try? context.existingSession(uuid: sessionUUID) {
                 guard existingSession.isInStandaloneMode && existingSession.sensorPackageName == deviceID else {
-                    Log.info("[SD SYNC] Ignoring session \(existingSession.name ?? "none")")
+                    Log.info("[SD SYNC] Ignoring session \(existingSession.name ?? "none"), \(sessionUUID)")
                     return
                 }
                 
@@ -248,13 +232,11 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
             return
         }
         let sessionEntity = databaseStorage.createSession(uuid: sessionData.uuid, location: location, time: time, context: context)
-        Log.info("[SD Sync] saving measurements for created session")
         try saveStreams(streamsWithMeasurements: streamsWithMeasurements, session: sessionEntity, averagingWindow: sessionData.averaging ?? .zeroWindow)
         sessionData.needsToBeCreated = false
     }
     
     private func saveMeasurementsForExistingSession(streamsWithMeasurements: [SDStream: [SDSyncMeasurement]], sessionData: SDSessionData) throws {
-        Log.info("[SD Sync] Saving measurements")
         let session = try context.existingSession(uuid: sessionData.uuid)
         try saveStreams(streamsWithMeasurements: streamsWithMeasurements, session: session, averagingWindow: sessionData.averaging ?? .zeroWindow)
     }
@@ -268,14 +250,13 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     private func saveStream(sdStream: SDStream, measurements: [SDSyncMeasurement], session: SessionEntity, averagingWindow: AveragingWindow) throws {
         var existingStream = session.streamWith(sensorName: sdStream.name.rawValue)
         if existingStream == nil {
-            Log.info("## Creating stream: \(sdStream.name)")
             existingStream = try databaseStorage.createMeasurementStream(for: session, sensorName: sdStream.name, deviceID: sdStream.deviceID, context: context)
         }
         addMeasurements(measurements, toStream: existingStream!, averaging: averagingWindow)
     }
     
     private func addMeasurements(_ measurements: [SDSyncMeasurement], toStream stream: MeasurementStreamEntity, averaging: AveragingWindow) {
-        Log.info("####### SAVING MEASUREMENTS WITH AVERAGING")
+        Log.info("[SD SYNC] SAVING MEASUREMENTS WITH AVERAGING")
         guard averaging != .zeroWindow else {
             measurements.forEach( { databaseStorage.addMeasurement(to: stream, measurement: $0, averagingWindow: .zeroWindow, context: context) })
             return
@@ -294,7 +275,6 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
             databaseStorage.addMeasurement(to: stream, measurement: measurement, averagingWindow: averaging, context: context)
         }
         
-        Log.info("## SAVING REST: \(measurementsReminder.first) - \(measurementsReminder.last)")
         measurementsReminder.forEach({ databaseStorage.addMeasurement(to: stream, measurement: $0, averagingWindow: .zeroWindow, context: context) })
     }
     
@@ -307,13 +287,12 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     }
     
     private func averageUnaveragedMeasurements(stream: MeasurementStreamEntity, averagingWindow: AveragingWindow) throws {
-        Log.info("#### Averaging unaveraged measurements for stream \(stream.sensorName)")
+        Log.info("[SD SYNC] Averaging unaveraged measurements for stream \(stream.sensorName)")
         guard averagingWindow != .zeroWindow else {
             return
         }
         
         let measurements = try databaseStorage.fetchUnaveragedMeasurements(currentWindow: averagingWindow, stream: stream, context: context)
-        Log.debug("## measurements: \(measurements)")
         
         guard let intervalStart = stream.session?.startTime else { Log.error("No session start time!"); return }
         

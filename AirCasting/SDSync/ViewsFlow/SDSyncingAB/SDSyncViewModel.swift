@@ -46,7 +46,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
             Log.info("[SD SYNC] Completed connecting to AB")
             guard success else {
                 DispatchQueue.main.async {
-                    self.presentNextScreen = success
+                    self.presentNextScreen = false
                     self.alert = InAppAlerts.connectionTimeoutAlert {
                         self.shouldDismiss = true
                     }
