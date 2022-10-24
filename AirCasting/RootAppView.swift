@@ -40,7 +40,6 @@ struct RootAppView: View {
                 .navigationViewStyle(.stack)
             }
         }
-        .environment(\.managedObjectContext, Resolver.resolve(PersistenceController.self).viewContext) //TODO: Where is this used??
         .onAppWentToBackground {
             signInPersistanceObserved.clearSavedStatesWithCredentials()
         }
