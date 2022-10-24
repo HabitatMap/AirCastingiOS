@@ -57,7 +57,6 @@ struct SelectDeviceView: View {
         })
         .onAppear() {
             selected = 0
-            #warning("Handle that mobileWasTapped is somehow public")
             emptyDashboardButtonTapped.mobileWasTapped = false
         }
         .background(Color.aircastingBackground.ignoresSafeArea())

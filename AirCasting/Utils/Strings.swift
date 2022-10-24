@@ -510,8 +510,6 @@ struct Strings {
                                                              comment: "")
         static let title: String = NSLocalizedString("Power on your AirBeam",
                                                      comment: "")
-        static let messageText: String = NSLocalizedString("Wait for the conncection indicator to change from red to green before continuing.",
-                                                           comment: "")
     }
     
     enum SelectDeviceView {
@@ -848,6 +846,12 @@ struct Strings {
                                                                  comment: "")
         static let finishingSyncTitle: String = NSLocalizedString("Finalizing...",
                                                                   comment: "")
+        static let cellular = NSLocalizedString("Cellular",
+                                                comment: "")
+        static let fixed = NSLocalizedString("Fixed",
+                                                comment: "")
+        static let mobile = NSLocalizedString("Mobile",
+                                                comment: "")
     }
     
     enum SDSyncAlerts {

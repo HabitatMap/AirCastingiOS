@@ -16,7 +16,7 @@ final class UpdateSessionParamsService {
 
     func updateSessionsParams(session: SessionEntity, output: FixedSession.FixedMeasurementOutput) throws {
         #warning("TODO: set only values that have changed to avoid core data notifications and context changes")
-        Log.info("Updating session params in core data for session: \(session.uuid) [\(session.name)]")
+        Log.info("Updating session params in core data for session: \(session.uuid) [\(session.name ?? "N/A")]")
         session.uuid = output.uuid
         session.type = output.type
         session.name = output.title

@@ -10,7 +10,7 @@ class LocationServiceAdapterTests: XCTestCase {
     
     func test_whenInitialized_startsLocationTracking() {
         let trackerSpy = TrackerSpy()
-        let sut = LocationServiceAdapter(tracker: trackerSpy)
+        _ = LocationServiceAdapter(tracker: trackerSpy)
         XCTAssertEqual(trackerSpy.calls, [.start])
     }
     
@@ -48,7 +48,6 @@ class LocationServiceAdapterTests: XCTestCase {
         
         var location: CurrentValueSubject<CLLocation?, Never> {
             get { calls.append(.getLocation); return .init(nil) }
-            set { fatalError() }
         }
     }
     

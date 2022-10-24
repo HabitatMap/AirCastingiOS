@@ -147,11 +147,10 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     }
 
     private func stringForSessionType(_ sessionType: SDCardSessionType) -> String {
-        //TODO: Correct string value and move to strings
         switch sessionType {
-        case .cellular: return "Cellular"
-        case .fixed: return "Fixed"
-        case .mobile: return "Mobile"
+        case .cellular: return Strings.SyncingABView.cellular
+        case .fixed: return Strings.SyncingABView.fixed
+        case .mobile: return Strings.SyncingABView.mobile
         }
     }
 }
