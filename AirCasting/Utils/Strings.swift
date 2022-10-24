@@ -813,6 +813,17 @@ struct Strings {
                                                                     comment: "")
     }
     
+    enum ReconnectSessionCardView {
+        static let heading = NSLocalizedString("Measurement device disconnected",
+                                               comment: "")
+        static let description = NSLocalizedString("Your measurement device is no longer connected to the AirCasting app. Make sure Bluetooth is on and your measurement device is nearby.",
+                                                   comment: "")
+        static let reconnectLabel = NSLocalizedString("Reconnect",
+                                                                comment: "")
+        static let finishSessionLabel = NSLocalizedString("Finish session",
+                                                                    comment: "")
+    }
+    
     enum SDSyncRootView {
         static let title: String = NSLocalizedString("Updating sessions",
                                                      comment: "")

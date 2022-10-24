@@ -118,7 +118,10 @@ struct SessionCardView: View {
     }
 
     var standaloneSessionCard: some View {
-        StandaloneSessionCardView(session: session)
+        if checkDeviceSupportFor(feature: .standalone) {
+            return AnyView(StandaloneSessionCardView(session: session))
+        }
+        return AnyView(ReconnectSessionCardView(session: session))
     }
 
     private func selectDefaultStreamIfNeeded(streams: [MeasurementStreamEntity]) {

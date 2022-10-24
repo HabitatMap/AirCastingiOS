@@ -211,9 +211,13 @@ extension BluetoothManager: CBCentralManagerDelegate {
         guard mobilePeripheralSessionManager.activeSessionInProgressWith(peripheral) else { return }
         mobilePeripheralSessionManager.markActiveSessionAsDisconnected(peripheral: peripheral)
         connect(to: peripheral)
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
+        if checkDeviceSupportFor(feature: .standalone) { timeoutConnection(using: peripheral) }
+    }
+    
+    private func timeoutConnection(using peripheral: CBPeripheral) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(60)) {
             guard peripheral.state != .connected else { return }
-            Log.info("Didn't connect with peripheral within 10s. Canceling peripheral connection.")
+            Log.info("Didn't connect with peripheral within 60s. Canceling peripheral connection.")
             self.cancelPeripheralConnection(for: peripheral)
             if self.featureFlagProvider.isFeatureOn(.standaloneMode) ?? false {
                 Log.info("Moving session to standalone mode")

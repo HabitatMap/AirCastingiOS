@@ -506,6 +506,7 @@
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
 		FA0A582528E3545F003AAC70 /* Numeric+Decrement.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0A582428E3545F003AAC70 /* Numeric+Decrement.swift */; };
 		FA1C30BD2861BA5F0034C1C9 /* SignInPersistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1C30BC2861BA5F0034C1C9 /* SignInPersistance.swift */; };
+		FA21BC9629027D4E002E981C /* ReconnectSessionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA21BC9529027D4E002E981C /* ReconnectSessionCardView.swift */; };
 		FA2438EF28F98EA40028B126 /* DeviceKit in Frameworks */ = {isa = PBXBuildFile; productRef = FA2438EE28F98EA40028B126 /* DeviceKit */; };
 		FA2438F128F990260028B126 /* DeviceKit+checkDeviceSupportFor.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2438F028F990260028B126 /* DeviceKit+checkDeviceSupportFor.swift */; };
 		FA2438F428F996820028B126 /* Features.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2438F328F996820028B126 /* Features.swift */; };
@@ -1067,6 +1068,7 @@
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 		FA0A582428E3545F003AAC70 /* Numeric+Decrement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Numeric+Decrement.swift"; sourceTree = "<group>"; };
 		FA1C30BC2861BA5F0034C1C9 /* SignInPersistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInPersistance.swift; sourceTree = "<group>"; };
+		FA21BC9529027D4E002E981C /* ReconnectSessionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconnectSessionCardView.swift; sourceTree = "<group>"; };
 		FA2438F028F990260028B126 /* DeviceKit+checkDeviceSupportFor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeviceKit+checkDeviceSupportFor.swift"; sourceTree = "<group>"; };
 		FA2438F328F996820028B126 /* Features.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features.swift; sourceTree = "<group>"; };
 		FA2438F528F996A00028B126 /* Device+excluded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Device+excluded.swift"; sourceTree = "<group>"; };
@@ -2713,6 +2715,7 @@
 				DDF12AE726B2ADF400D067C7 /* SessionCartViewModel.swift */,
 				DDF12AEA26B2B76C00D067C7 /* SessionCartFollowing.swift */,
 				33AC7D5B273C1B9700EB1274 /* StandaloneSessionCardView.swift */,
+				FA21BC9529027D4E002E981C /* ReconnectSessionCardView.swift */,
 			);
 			name = SessionCardView;
 			sourceTree = "<group>";
@@ -3356,6 +3359,7 @@
 				33D92F5F27EB742800252F3B /* Loadable.swift in Sources */,
 				334CC6FA2751454C00C10B53 /* SDCardMobileSessionsSavingService.swift in Sources */,
 				3387DD48278F0FC300B11D02 /* CSVFileGenerator.swift in Sources */,
+				FA21BC9629027D4E002E981C /* ReconnectSessionCardView.swift in Sources */,
 				ACFC708925C1A36A00D609D9 /* UIColor.swift in Sources */,
 				DD2DDBB027B5490000807011 /* UIStateHandler.swift in Sources */,
 				B33B15E827AEE68100138FFA /* TextFileTrimmer.swift in Sources */,
