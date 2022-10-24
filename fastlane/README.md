@@ -63,6 +63,14 @@ AirCastingApp
 
 
 
+### ios bump_version_reset_build
+
+```sh
+[bundle exec] fastlane ios bump_version_reset_build
+```
+
+
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.

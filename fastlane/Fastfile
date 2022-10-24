@@ -17,9 +17,9 @@ default_platform(:ios)
 platform :ios do
    desc "AirCastingApp"
 
-   before_all do |lane|
-      tests
-   end
+   # before_all do |lane|
+   #    tests
+   # end
 
    lane :beta do
       ensure_git_branch(branch: "develop")
@@ -150,6 +150,25 @@ platform :ios do
    lane :tests do
       run_tests(scheme: "AirCasting")
     end
+
+   lane :bump_version_reset_build do
+      ensure_git_branch(branch: "develop")
+      ensure_git_status_clean
+      current_version = get_version_number
+      puts "Current version number: #{current_version}"
+      new_version = prompt(text: "Please enter a new version number: ")
+      increment_version_number_in_xcodeproj(
+         version_number: new_version
+      )
+      increment_build_number(
+         build_number: "0"
+      )
+      puts "Setting a version number to #{new_version} and reseting build to #{get_build_number}"
+      sh("git checkout -b bumped_version_to_#{new_version}")
+      sh("git add -A")
+      sh("git commit -m \"Change version number to #{new_version} and build reset\"")
+      sh("git push -u origin bumped_version_to_#{new_version}")
+   end
 
    private_lane :test_flight do
       cocoapods
