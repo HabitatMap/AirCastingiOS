@@ -7,7 +7,6 @@ import Resolver
 
 struct ReconnectSessionCardView: View {
     let session: SessionEntity
-    @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject var selectedSection: SelectedSection
     @State private var alert: AlertInfo?
     
@@ -82,11 +81,6 @@ struct ReconnectSessionCardView: View {
         }
         .foregroundColor(.accentColor)
         .font(Fonts.moderateRegularHeading2)
-    }
-    
-    func finishSessionAndSyncAlertAction() {
-        tabSelection.selection = .createSession
-        selectedSection.mobileSessionWasFinished = true
     }
     
     func finishSessionAlertAction() {
