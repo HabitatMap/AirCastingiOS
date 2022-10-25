@@ -201,6 +201,7 @@ class TabBarSelection: ObservableObject {
 
 class SelectedSection: ObservableObject {
     @Published var section = DashboardSection.following
+    @Published var mobileSessionWasFinished = false
 }
 
 enum DashboardSection: String, CaseIterable {
