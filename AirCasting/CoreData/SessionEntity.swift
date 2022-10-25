@@ -71,7 +71,7 @@ public class SessionEntity: NSManagedObject, Identifiable {
     }
     
     public var uuid: SessionUUID {
-        get { SessionUUID(rawValue: value(forKey: "uuid") as! String)! }
+        get { SessionUUID(rawValue: value(forKey: "uuid") as? String ?? "")! }
         set { setValue(newValue.rawValue, forKey: "uuid") }
     }
 
@@ -81,7 +81,7 @@ public class SessionEntity: NSManagedObject, Identifiable {
     }
     
     public var type: SessionType! {
-        get { SessionType(rawValue:(value(forKey: "type") as! String)) }
+        get { SessionType(rawValue:(value(forKey: "type") as? String ?? "")) }
         set { setValue(newValue.rawValue, forKey: "type") }
     }
     
