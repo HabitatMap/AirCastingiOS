@@ -12,7 +12,10 @@ protocol ForgotPasswordController {
 }
 
 class MockForgotPasswordController: ForgotPasswordController {
+    var loginsHistory: [String] = []
+    
     func resetPassword(login: String, completion: @escaping (Result<Void, ForgotPasswordError>) -> Void) {
+        loginsHistory.append(login)
         completion(.success(()))
     }
 }
