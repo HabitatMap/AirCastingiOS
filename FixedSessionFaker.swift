@@ -56,7 +56,7 @@ class FixedSessionFaker {
 
         var currId: Int64 = 1
         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            for stream in session.allStreams ?? [] {
+            for stream in session.allStreams {
                 let measurement = MeasurementEntity(context: context)
                 measurement.id = currId
                 measurement.time = DateBuilder.getRawDate()

@@ -76,12 +76,6 @@ struct AirMapView: View {
                                       noteMarketTapped: $noteMarkerTapped,
                                       noteNumber: $noteNumber,
                                       mapNotes: $mapNotesVM.notes)
-#warning("TODO: Implement calculating stats only for visible path points")
-                        // This doesn't work properly and it needs to be fixed, so I'm commenting it out
-                        //                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
-                        //                                mapStatsDataSource?.visiblePathPoints = visiblePoints
-                        //                                statsContainerViewModel?.adjustForNewData()
-                        //                            }
                         // Statistics container shouldn't be presented in mobile dormant tab
                         if !(session.type == .mobile && session.isActive == false) {
                             StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
