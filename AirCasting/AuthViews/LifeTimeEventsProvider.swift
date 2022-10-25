@@ -18,12 +18,12 @@ class LifeTimeEventsProvider: ObservableObject {
     }
     
     var hasEverPassedOnBoarding: Bool {
+        get {
+            userDefaults.bool(forKey: "onBoardingKey")
+        }
         set {
             objectWillChange.send()
             userDefaults.setValue(newValue, forKey: "onBoardingKey")
-        }
-        get {
-            userDefaults.bool(forKey: "onBoardingKey")
         }
     }
     
