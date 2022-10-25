@@ -72,30 +72,32 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
         createSessionService.createEmptyFixedWifiSession(input: .init(session: params,
                                                                       compression: true),
                                                          completion: { [measurementStreamStorage] result in
-                                                            switch result {
-                                                            case .success(let output):
-                                                                measurementStreamStorage.accessStorage { storage in
-                                                                    do {
-                                                                        let sessionWithURL = session.withUrlLocation(output.location)
-                                                                        try storage.createSession(sessionWithURL)
-                                                                        self.uiStore.accessStorage({ storage in
-                                                                            storage.giveHighestOrder(to: sessionWithURL.uuid)
-                                                                        })
-                                                                        try AirBeam3Configurator(peripheral: peripheral).configureFixedWifiSession(
-                                                                                                    uuid: sessionUUID,
-                                                                                                    location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
-                                                                                                    date: DateBuilder.getFakeUTCDate(),
-                                                                                                    wifiSSID: wifiSSID,
-                                                                                                    wifiPassword: wifiPassword)
-                                                                        Log.warning("Created fixed Wifi session \(output)")
-                                                                        completion(.success(()))
-                                                                    } catch {
-                                                                        completion(.failure(error))
+                                                            DispatchQueue.main.async {
+                                                                switch result {
+                                                                case .success(let output):
+                                                                    measurementStreamStorage.accessStorage { storage in
+                                                                        do {
+                                                                            let sessionWithURL = session.withUrlLocation(output.location)
+                                                                            try storage.createSession(sessionWithURL)
+                                                                            self.uiStore.accessStorage({ storage in
+                                                                                storage.giveHighestOrder(to: sessionWithURL.uuid)
+                                                                            })
+                                                                            try AirBeam3Configurator(peripheral: peripheral).configureFixedWifiSession(
+                                                                                                        uuid: sessionUUID,
+                                                                                                        location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
+                                                                                                        date: DateBuilder.getFakeUTCDate(),
+                                                                                                        wifiSSID: wifiSSID,
+                                                                                                        wifiPassword: wifiPassword)
+                                                                            Log.warning("Created fixed Wifi session \(output)")
+                                                                            completion(.success(()))
+                                                                        } catch {
+                                                                            completion(.failure(error))
+                                                                        }
                                                                     }
+                                                                case .failure(let error):
+                                                                    Log.warning("Failed to create fixed Wifi session \(error)")
+                                                                    completion(.failure(error))
                                                                 }
-                                                            case .failure(let error):
-                                                                Log.warning("Failed to create fixed Wifi session \(error)")
-                                                                completion(.failure(error))
                                                             }
                                                          })
     }
