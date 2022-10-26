@@ -19,6 +19,7 @@ protocol ConnectingAirBeamServices {
 class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
     
     @Injected private var bluetoothConnector: BluetoothConnector
+    @Injected private var btManager: NewBluetoothManager
     private var connectionToken: AnyObject?
 
     func connect(to peripheral: CBPeripheral, timeout: TimeInterval, completion: @escaping (AirBeamServicesConnectionResult) -> Void) {
@@ -27,6 +28,10 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
         guard !(peripheral.state == .connecting) else {
             completion(.deviceBusy); return
         }
+        btManager.connect(to: peripheral, timout: timeout) { result in
+            
+        }
+        
         bluetoothConnector.connect(to: peripheral)
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(Int(timeout))) {
             if connectionInProgress {
@@ -40,6 +45,11 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
             Log.info("Airebeam connected successfully")
             var characteristicsHandle: Any?
             NotificationCenter.default.removeObserver(self.connectionToken as AnyObject)
+            //
+            // Move from NotificationCenter -> BluetoothCommunicator
+            //
+            // func subscribeToCharacteristic(_ characteristic: CBUUID, timeout: TimeInterval?, notify: @escaping CharacteristicObserverAction) -> AnyHashable
+            //
             characteristicsHandle = NotificationCenter.default.addObserver(forName: .discoveredCharacteristic, object: nil, queue: .main) { notification in
                 guard notification.userInfo?[AirCastingNotificationKeys.DiscoveredCharacteristic.peripheralUUID] as! UUID == peripheral.identifier else { return }
                 connectionInProgress = false

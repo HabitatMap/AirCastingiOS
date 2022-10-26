@@ -20,6 +20,7 @@ struct SelectDeviceView: View {
     @InjectedObject private var bluetoothManager: BluetoothManager
     @Injected private var microphone: Microphone
     @Injected private var microphonePermissions: MicrophonePermissions
+    @Injected private var bluetoothHandler: BluetoothHandler
     @Binding var creatingSessionFlowContinues : Bool
     @Binding var sdSyncContinues : Bool
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
@@ -74,7 +75,7 @@ struct SelectDeviceView: View {
             // it doesn't have to be airbeam, it can be any device, but it doesn't influence anything, it's just needed for views flow
             sessionContext.deviceType = DeviceType.AIRBEAM3
             selected = 1
-            if CBCentralManager.authorization != .denied && bluetoothManager.centralManagerState == .poweredOn {
+            if !bluetoothHandler.isBluetoothDenied() {
                 isPowerABLinkActive = true
             } else {
                 isTurnOnBluetoothLinkActive = true

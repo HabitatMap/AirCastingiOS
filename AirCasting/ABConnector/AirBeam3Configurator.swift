@@ -180,6 +180,7 @@ private extension AirBeam3Configurator {
             return
         }
         Log.info("Writing value to peripheral")
+        // bluetoothCommunicator.writeValue(peripheral, data, ...)
         peripheral.writeValue(data,
                               for: characteristic,
                               type: .withResponse)

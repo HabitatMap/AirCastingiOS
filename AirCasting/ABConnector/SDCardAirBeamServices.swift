@@ -35,12 +35,12 @@ protocol SDCardAirBeamServices {
 class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     private let singleChunkMeasurementsCount = Constants.SDCardSync.numberOfMeasurementsInDataChunk
     // has notifications about measurements count in particular csv file on SD card
-    private let DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID = CBUUID(string:"0000ffde-0000-1000-8000-00805f9b34fb")
+    private let DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID = CharacteristicUUID(value:"0000ffde-0000-1000-8000-00805f9b34fb")
     
     // has notifications for reading measurements stored in csv files on SD card
-    private let DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID = CBUUID(string:"0000ffdf-0000-1000-8000-00805f9b34fb")
+    private let DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID = CharacteristicUUID(value:"0000ffdf-0000-1000-8000-00805f9b34fb")
     
-    @Injected private var bluetoothManager: BluetoothManager
+    @Injected private var bluetoothManager: BluetoothCommunicator
     private var dataCharacteristicObserver: AnyHashable?
     private var metadataCharacteristicObserver: AnyHashable?
     private var clearCardCharacteristicObserver: AnyHashable?

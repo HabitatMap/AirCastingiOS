@@ -56,8 +56,8 @@ struct SelectPeripheralView: View {
             }
             .onAppear {
                 if CBCentralManager.authorization == .allowedAlways {
+                    _ = bluetoothManager.centralManager // Permissions alert
                     // it triggers the bluetooth searching on the appearing time
-                    _ = bluetoothManager.centralManager
                     bluetoothManager.startScanning()
                 }
             }

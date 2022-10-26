@@ -9,29 +9,6 @@ import Foundation
 import CoreBluetooth
 import Resolver
 
-protocol BluetoothCommunicator {
-    typealias CharacteristicObserverAction = (Result<Data?, Error>) -> Void
-    
-    /// Adds an entry to observers of a particular characteristic
-    /// - Parameters:
-    ///   - characteristic: UUID of characteristic to observe
-    ///   - timeout: a timeout after which the error is produced
-    ///   - notify: block called each time characteristic changes (either changes value or throws an error)
-    /// - Returns: Opaque token to use when un-registering
-    func subscribeToCharacteristic(_ characteristic: CBUUID, timeout: TimeInterval?, notify: @escaping CharacteristicObserverAction) -> AnyHashable
-    
-    /// Removes an entry from observing characteristic
-    /// - Parameter token: Opaque token received on subscription
-    /// - Returns: A `Bool` value indicating if a given token was successfuly removed. Only reason it can fail is double unregistration.
-    @discardableResult func unsubscribeCharacteristicObserver(_ token: AnyHashable) -> Bool
-}
-
-extension BluetoothCommunicator {
-    func subscribeToCharacteristic(_ characteristic: CBUUID, notify: @escaping CharacteristicObserverAction) -> AnyHashable {
-        subscribeToCharacteristic(characteristic, timeout: nil, notify: notify)
-    }
-}
-
 class BluetoothManager: NSObject, BluetoothCommunicator, ObservableObject {
     
     lazy var centralManager: CBCentralManager = {
@@ -46,7 +23,7 @@ class BluetoothManager: NSObject, BluetoothCommunicator, ObservableObject {
 
     @Published var devices: [CBPeripheral] = []
     @Published var isScanning: Bool = true
-    @Published var centralManagerState: CBManagerState = .unknown
+    @Published var deviceState: BluetoothDeviceState = .unknown
     @Published var mobileSessionReconnected = false
     var observed: NSKeyValueObservation?
 
@@ -115,10 +92,10 @@ class BluetoothManager: NSObject, BluetoothCommunicator, ObservableObject {
         }
     }
     
-    private var charactieristicsMapping: [CBUUID: [CharacteristicObserver]] = [:]
+    private var charactieristicsMapping: [CharacteristicUUID: [CharacteristicObserver]] = [:]
     private let characteristicsMappingLock = NSRecursiveLock()
 
-    func subscribeToCharacteristic(_ characteristic: CBUUID, timeout: TimeInterval? = nil, notify: @escaping CharacteristicObserverAction) -> AnyHashable {
+    func subscribeToCharacteristic(_ characteristic: CharacteristicUUID, timeout: TimeInterval? = nil, notify: @escaping CharacteristicObserverAction) -> AnyHashable {
         let observer = CharacteristicObserver(action: notify)
         if let timeout = timeout { scheduleTimeout(timeout, for: observer) }
         characteristicsMappingLock.lock()
@@ -156,21 +133,25 @@ struct PeripheralMeasurement {
 extension BluetoothManager: CBCentralManagerDelegate {
 
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        centralManagerState = central.state
-
         switch central.state {
         case .unknown:
             Log.info("central.state is .unknown")
+            deviceState = .unknown
         case .resetting:
             Log.info("central.state is .resetting")
+            deviceState = .resetting
         case .unsupported:
             Log.info("central.state is .unsupported")
+            deviceState = .unsupported
         case .unauthorized:
             Log.info("central.state is .unauthorized")
+            deviceState = .unauthorized
         case .poweredOff:
             Log.info("central.state is .poweredOff")
+            deviceState = .poweredOff
         case .poweredOn:
             Log.info("central.state is .poweredOn")
+            deviceState = .poweredOn
         @unknown default:
             fatalError()
         }
@@ -256,6 +237,7 @@ extension BluetoothManager: CBPeripheralDelegate {
                 }
             }
         }
+        
         hasSomeCharacteristics ? NotificationCenter.default.post(name: .discoveredCharacteristic, object: nil, userInfo: [AirCastingNotificationKeys.DiscoveredCharacteristic.peripheralUUID : peripheral.identifier]) : nil
     }
 
@@ -265,7 +247,7 @@ extension BluetoothManager: CBPeripheralDelegate {
             return
         }
         characteristicsMappingLock.lock()
-        charactieristicsMapping[characteristic.uuid]?.forEach { observer in
+        charactieristicsMapping[.init(value: characteristic.uuid.uuidString)]?.forEach { observer in
             observer.triggerCounter += 1
             guard error == nil else { observer.action(.failure(error!)); return }
             observer.action(.success(characteristic.value))
@@ -292,7 +274,7 @@ extension BluetoothManager: CBPeripheralDelegate {
         mobilePeripheralSessionManager.enterStandaloneMode(sessionUUID: sessionUUID, centralManager: centralManager)
     }
 
-    func parseData(data: Data) -> ABMeasurementStream? {
+    private func parseData(data: Data) -> ABMeasurementStream? {
         let string = String(data: data, encoding: .utf8)
         let components = string?.components(separatedBy: ";")
         guard let values = components,
@@ -320,5 +302,17 @@ extension BluetoothManager: CBPeripheralDelegate {
                                           thresholdHigh: thresholdHigh,
                                           thresholdVeryHigh: thresholdVeryHigh)
         return newMeasurement
+    }
+}
+
+extension BluetoothManager: BluetoothConnector {
+    
+    func connect(to peripheral: CBPeripheral) {
+        Log.info("Connecting to peripheral: \(peripheral)")
+        self.centralManager.connect(peripheral, options: nil)
+    }
+    
+    func cancelPeripheralConnection(for peripheral: CBPeripheral) {
+        self.centralManager.cancelPeripheralConnection(peripheral)
     }
 }
