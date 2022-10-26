@@ -17,6 +17,7 @@ struct SingleStatViewModel: Identifiable {
 
 protocol StatisticsContainerViewModelable: ObservableObject {
     var stats: [SingleStatViewModel] { get }
-    
+    //TODO: Comment
+    var continuousModeEnabled: Bool { get set }
     func adjustForNewData()
 }

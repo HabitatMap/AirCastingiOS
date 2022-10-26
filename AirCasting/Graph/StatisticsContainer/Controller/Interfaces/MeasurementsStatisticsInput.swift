@@ -5,4 +5,6 @@ import Foundation
 
 protocol MeasurementsStatisticsInput {
     func computeStatistics()
+    //TODO: Comment
+    var continuousModeEnabled: Bool { get set }
 }

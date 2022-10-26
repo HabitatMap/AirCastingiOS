@@ -2,29 +2,39 @@
 //
 
 import Foundation
+import Resolver
 
 class MeasurementsStatisticsController: MeasurementsStatisticsInput {
     weak var output: MeasurementsStatisticsOutput?
+    var continuousModeEnabled: Bool = false {
+        didSet {
+            if continuousModeEnabled && computeStatisticsInterval != nil {
+                Log.verbose("Continuous mode enabled, adding timer")
+                timerCancellable = scheduledTimer.setupRepeatingTimer(for: computeStatisticsInterval!, block: { [weak self] in
+                    self?.computeStatistics()
+                    Log.verbose("Timer tick, computing stats")
+                })
+            } else if !continuousModeEnabled {
+                Log.verbose("Continuous mode disabled, cancelling timer")
+                timerCancellable = nil
+            }
+        }
+    }
+    @Injected private var scheduledTimer: ScheduledTimerSettable
     private var dataSource: MeasurementsStatisticsDataSource
     private let calculator: StatisticsCalculator
-    private let scheduledTimer: ScheduledTimerSettable
     private let desiredStats: [MeasurementStatistics.Statistic]
     private var timerCancellable: Cancellable?
+    private let computeStatisticsInterval: Double?
     
     init(dataSource: MeasurementsStatisticsDataSource,
          calculator: StatisticsCalculator,
-         scheduledTimer: ScheduledTimerSettable,
          desiredStats: [MeasurementStatistics.Statistic],
          computeStatisticsInterval: Double?) {
         self.dataSource = dataSource
         self.calculator = calculator
-        self.scheduledTimer = scheduledTimer
         self.desiredStats = desiredStats
-        if computeStatisticsInterval != nil {
-            timerCancellable = scheduledTimer.setupRepeatingTimer(for: computeStatisticsInterval!, block: { [weak self] in
-                 self?.computeStatistics()
-            })
-        }
+        self.computeStatisticsInterval = computeStatisticsInterval
         self.dataSource.onForceReload = { [weak self] in
             self?.computeStatistics()
         }

@@ -113,7 +113,13 @@ struct AirMapView: View {
         //            mapStatsDataSource.visiblePathPoints = pathPoints
         //            statsContainerViewModel.adjustForNewData()
         //        }
-        .onAppear { statsContainerViewModel.adjustForNewData() }
+        .onAppear {
+            statsContainerViewModel.adjustForNewData()
+            statsContainerViewModel.continuousModeEnabled = true
+        }
+        .onDisappear {
+            statsContainerViewModel.continuousModeEnabled = false
+        }
         .onChange(of: scenePhase) { phase in
             switch phase {
             case .background, .inactive: isUserInteracting = false

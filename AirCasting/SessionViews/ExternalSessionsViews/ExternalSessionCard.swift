@@ -197,7 +197,6 @@ private extension ExternalSessionCard {
         
         let controller = MeasurementsStatisticsController(dataSource: dataSource,
                                                           calculator: StandardStatisticsCalculator(),
-                                                          scheduledTimer: ScheduledTimerSetter(),
                                                           desiredStats: MeasurementStatistics.Statistic.allCases,
                                                           computeStatisticsInterval: computeStatisticsInterval)
         let viewModel = StatisticsContainerViewModel(statsInput: controller)
