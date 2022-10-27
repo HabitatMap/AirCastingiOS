@@ -68,11 +68,7 @@ final class UpdateSessionParamsService {
 
             let oldMeasurements = oldStream.measurements?.array as? [MeasurementEntity] ?? []
             let measurementDiff = diff(oldMeasurements, streamOutput.measurements) {
-                if let id = $0.id {
-                    return id == $1.id
-                } else {
-                    return $0.time == $1.time && $0.value == Double($1.value)
-                }
+                return $0.time == $1.time && $0.value == Double($1.value)
             }
             measurementDiff.inserted.forEach {
                 let newMeasurement = MeasurementEntity(context: context)
@@ -114,7 +110,6 @@ private extension UpdateSessionParamsService {
         entity.value = Double(measurement.value)
         entity.location = CLLocationCoordinate2D(latitude: measurement.latitude, longitude: measurement.longitude)
         entity.time = measurement.time
-        entity.id = measurement.id
     }
 
     func fillStream(_ entity: MeasurementStreamEntity, with streamOutput: FixedSession.StreamOutput) throws {
