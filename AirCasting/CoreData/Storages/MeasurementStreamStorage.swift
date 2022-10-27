@@ -143,21 +143,9 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
 
         let session = stream.session
 
-        //otherwise dormant session status changes to active when syncing measurements
+        // otherwise dormant session status changes to active when syncing measurements
         if session?.status != .FINISHED {
             session?.status = .RECORDING
-        }
-    }
-
-    func addMeasurements(_ measurements: [Measurement], toStreamWithID id: MeasurementStreamLocalID) throws {
-        let stream = try context.existingObject(with: id.id) as! MeasurementStreamEntity
-
-        measurements.forEach { measurement in
-            let newMeasurement = MeasurementEntity(context: context)
-            newMeasurement.location = measurement.location
-            newMeasurement.time = measurement.time
-            newMeasurement.value = measurement.value
-            stream.addToMeasurements(newMeasurement)
         }
     }
 
@@ -195,12 +183,6 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         return session
     }
 
-    func removeAllMeasurements(in stream: MeasurementStreamEntity, except measurementsToLeave: [MeasurementEntity]) {
-        let idsToLeave = measurementsToLeave.map(\.objectID)
-        let measurementsToDelete = stream.allMeasurements?.filter { !idsToLeave.contains($0.objectID) } ?? []
-        measurementsToDelete.forEach { context.delete($0) }
-    }
-
     private func saveMeasurementStream(for session: SessionEntity, context: NSManagedObjectContext, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID {
         let newStream = MeasurementStreamEntity(context: context)
         newStream.sensorName = stream.sensorName
@@ -233,13 +215,6 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         }
         
         return newStream.localID
-    }
-
-    func setStatusToFinishedAndUpdateEndTime(for sessionUUID: SessionUUID, endTime: Date?) throws {
-        let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        sessionEntity.status = .FINISHED
-        guard endTime != nil else { return }
-        sessionEntity.endTime = endTime
     }
 
     func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) throws {
@@ -380,13 +355,6 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         updateSessionParamsService.updateSessionsParams(sessionEntity, session: session)
         try context.save()
         return sessionEntity
-    }
-
-    func observerFor<T>(request: NSFetchRequest<T>) -> NSFetchedResultsController<T> {
-        let frc = NSFetchedResultsController(fetchRequest: request,
-                                             managedObjectContext: context,
-                                             sectionNameKeyPath: nil, cacheName: nil)
-        return frc
     }
 }
 

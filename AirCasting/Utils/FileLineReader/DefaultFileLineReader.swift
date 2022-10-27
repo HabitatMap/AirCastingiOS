@@ -22,4 +22,22 @@ class DefaultFileLineReader: FileLineReader {
         fclose(file)
         progress(.endOfFile)
     }
+    
+    func readLastNonEmptyLine(of fileURL: URL) throws -> String? {
+        guard let file: UnsafeMutablePointer<FILE> = fopen(fileURL.path, "r") else { throw FileLineReaderError.cannotOpenFile }
+        
+        var lineRead: UnsafeMutablePointer<CChar>?
+        var bufsize: Int = 0
+        var lastNonEmptyLine: String?
+        fseek(file, -200, SEEK_END)
+        while getline(&lineRead, &bufsize, file) != eofMarker {
+            var lineString = String(cString: lineRead!).trimmingCharacters(in: .newlines)
+            if lineString != "" { lastNonEmptyLine = lineString }
+        }
+        free(lineRead)
+        fseek(file, 0, SEEK_SET)
+        fclose(file)
+        return lastNonEmptyLine
+    }
 }
+

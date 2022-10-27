@@ -25,6 +25,8 @@
 		33406247281821FA004DA4DA /* ExternalSessionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33406246281821FA004DA4DA /* ExternalSessionsStore.swift */; };
 		3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3346F1F526318C1600BA4695 /* SettingsManager.swift */; };
 		334CC6FA2751454C00C10B53 /* SDCardMobileSessionsSavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334CC6F92751454C00C10B53 /* SDCardMobileSessionsSavingService.swift */; };
+		334EF27C28E5CA28000DD51E /* MeasurementsAveragingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334EF27B28E5CA28000DD51E /* MeasurementsAveragingService.swift */; };
+		334EF27E28E5CE7E000DD51E /* SDSyncMobileSessionStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334EF27D28E5CE7E000DD51E /* SDSyncMobileSessionStorage.swift */; };
 		335A8B2F2785D49100355D46 /* ShareSessionAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 335A8B2E2785D49100355D46 /* ShareSessionAPI.swift */; };
 		335B54BF28BD01C300BA92D2 /* CustomSwipeAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 335B54BE28BD01C300BA92D2 /* CustomSwipeAction.swift */; };
 		3362B4ED25E69987008D61BA /* CreateSessionDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3362B4EC25E69987008D61BA /* CreateSessionDetailsView.swift */; };
@@ -71,9 +73,11 @@
 		33BA336A266E4D1000899343 /* MobileSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BA3369266E4D1000899343 /* MobileSession.swift */; };
 		33D07A252825963000F25B4C /* ExternalSessionEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D07A232825963000F25B4C /* ExternalSessionEntity+CoreDataClass.swift */; };
 		33D07A262825963000F25B4C /* ExternalSessionEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D07A242825963000F25B4C /* ExternalSessionEntity+CoreDataProperties.swift */; };
+		33D8031628F84050004A4CFA /* SDSyncAveragingServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D8031528F84050004A4CFA /* SDSyncAveragingServiceTests.swift */; };
 		33D92F5F27EB742800252F3B /* Loadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D92F5E27EB742800252F3B /* Loadable.swift */; };
 		33E56F3D27F3498A0032117E /* StreamDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33E56F3C27F3498A0032117E /* StreamDownloader.swift */; };
 		33E63A86288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33E63A85288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift */; };
+		33ECC0E22901ACFA00A3BC85 /* AveragingServiceStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33ECC0E12901ACFA00A3BC85 /* AveragingServiceStorage.swift */; };
 		33F20FDD27692231004364EA /* SyncedMeasurementsDownloadingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F20FDC27692231004364EA /* SyncedMeasurementsDownloadingService.swift */; };
 		33F2238A270C674E00F14909 /* TimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F22389270C674E00F14909 /* TimeInterval.swift */; };
 		33F3D47C27AC1A5C003CA386 /* SessionTypeIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F3D47B27AC1A5C003CA386 /* SessionTypeIndicator.swift */; };
@@ -206,7 +210,6 @@
 		AC9F526E2652A360003CF61F /* AirSectionPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */; };
 		ACAC936D27EAFF7900829F82 /* CreatingSessionMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACAC936C27EAFF7900829F82 /* CreatingSessionMapView.swift */; };
 		ACB7084C271EC50F00BA3816 /* Integer+ArraySlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACB7084B271EC50F00BA3816 /* Integer+ArraySlice.swift */; };
-		ACBB050E2761F1B600A6B3FB /* SDSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBB050D2761F1B600A6B3FB /* SDSession.swift */; };
 		ACBB05102761F1C400A6B3FB /* SDStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBB050F2761F1C400A6B3FB /* SDStream.swift */; };
 		ACBB05132761F21500A6B3FB /* SDCardFixedSessionsSavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBB05122761F21500A6B3FB /* SDCardFixedSessionsSavingService.swift */; };
 		ACBF1AD2286C618F006DF793 /* XMarkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBF1AD1286C618F006DF793 /* XMarkButton.swift */; };
@@ -464,7 +467,7 @@
 		DDA90F0327CD00CB002F4465 /* MapSessionMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDA90F0227CD00CB002F4465 /* MapSessionMarker.swift */; };
 		DDB05581274BC60D00DA1A8A /* SessionUpdateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB05580274BC60D00DA1A8A /* SessionUpdateService.swift */; };
 		DDB448282732AA4B00F11340 /* AirCastingGraphSimplifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB448272732AA4B00F11340 /* AirCastingGraphSimplifier.swift */; };
-		DDB44C252704AF830027176E /* AveragingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB44C242704AF830027176E /* AveragingService.swift */; };
+		DDB44C252704AF830027176E /* ActiveSessionsAveragingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB44C242704AF830027176E /* ActiveSessionsAveragingController.swift */; };
 		DDBA6137276B3AD700E3FEF9 /* AddNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA6136276B3AD700E3FEF9 /* AddNoteView.swift */; };
 		DDBA6139276B3AE200E3FEF9 /* EditNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA6138276B3AE200E3FEF9 /* EditNoteView.swift */; };
 		DDBC156426A0799300982526 /* SystemSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC156326A0799300982526 /* SystemSettings.swift */; };
@@ -574,6 +577,8 @@
 		33406246281821FA004DA4DA /* ExternalSessionsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalSessionsStore.swift; sourceTree = "<group>"; };
 		3346F1F526318C1600BA4695 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		334CC6F92751454C00C10B53 /* SDCardMobileSessionsSavingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDCardMobileSessionsSavingService.swift; sourceTree = "<group>"; };
+		334EF27B28E5CA28000DD51E /* MeasurementsAveragingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsAveragingService.swift; sourceTree = "<group>"; };
+		334EF27D28E5CE7E000DD51E /* SDSyncMobileSessionStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncMobileSessionStorage.swift; sourceTree = "<group>"; };
 		335A8B2E2785D49100355D46 /* ShareSessionAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSessionAPI.swift; sourceTree = "<group>"; };
 		335B54BE28BD01C300BA92D2 /* CustomSwipeAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSwipeAction.swift; sourceTree = "<group>"; };
 		3362B4EC25E69987008D61BA /* CreateSessionDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionDetailsView.swift; sourceTree = "<group>"; };
@@ -621,9 +626,11 @@
 		33BA3369266E4D1000899343 /* MobileSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSession.swift; sourceTree = "<group>"; };
 		33D07A232825963000F25B4C /* ExternalSessionEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
 		33D07A242825963000F25B4C /* ExternalSessionEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		33D8031528F84050004A4CFA /* SDSyncAveragingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncAveragingServiceTests.swift; sourceTree = "<group>"; };
 		33D92F5E27EB742800252F3B /* Loadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loadable.swift; sourceTree = "<group>"; };
 		33E56F3C27F3498A0032117E /* StreamDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDownloader.swift; sourceTree = "<group>"; };
 		33E63A85288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WiFiAwareSessionSynchronizerProxy.swift; sourceTree = "<group>"; };
+		33ECC0E12901ACFA00A3BC85 /* AveragingServiceStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AveragingServiceStorage.swift; sourceTree = "<group>"; };
 		33F20FDC27692231004364EA /* SyncedMeasurementsDownloadingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncedMeasurementsDownloadingService.swift; sourceTree = "<group>"; };
 		33F22389270C674E00F14909 /* TimeInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInterval.swift; sourceTree = "<group>"; };
 		33F3D47B27AC1A5C003CA386 /* SessionTypeIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTypeIndicator.swift; sourceTree = "<group>"; };
@@ -763,7 +770,6 @@
 		AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AirSectionPickerView.swift; sourceTree = "<group>"; };
 		ACAC936C27EAFF7900829F82 /* CreatingSessionMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatingSessionMapView.swift; sourceTree = "<group>"; };
 		ACB7084B271EC50F00BA3816 /* Integer+ArraySlice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Integer+ArraySlice.swift"; sourceTree = "<group>"; };
-		ACBB050D2761F1B600A6B3FB /* SDSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSession.swift; sourceTree = "<group>"; };
 		ACBB050F2761F1C400A6B3FB /* SDStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDStream.swift; sourceTree = "<group>"; };
 		ACBB05122761F21500A6B3FB /* SDCardFixedSessionsSavingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDCardFixedSessionsSavingService.swift; sourceTree = "<group>"; };
 		ACBF1AD1286C618F006DF793 /* XMarkButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMarkButton.swift; sourceTree = "<group>"; };
@@ -1020,7 +1026,7 @@
 		DDA90F0227CD00CB002F4465 /* MapSessionMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapSessionMarker.swift; sourceTree = "<group>"; };
 		DDB05580274BC60D00DA1A8A /* SessionUpdateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionUpdateService.swift; sourceTree = "<group>"; };
 		DDB448272732AA4B00F11340 /* AirCastingGraphSimplifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirCastingGraphSimplifier.swift; sourceTree = "<group>"; };
-		DDB44C242704AF830027176E /* AveragingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AveragingService.swift; sourceTree = "<group>"; };
+		DDB44C242704AF830027176E /* ActiveSessionsAveragingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSessionsAveragingController.swift; sourceTree = "<group>"; };
 		DDBA6136276B3AD700E3FEF9 /* AddNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNoteView.swift; sourceTree = "<group>"; };
 		DDBA6138276B3AE200E3FEF9 /* EditNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNoteView.swift; sourceTree = "<group>"; };
 		DDBC156326A0799300982526 /* SystemSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettings.swift; sourceTree = "<group>"; };
@@ -1198,6 +1204,7 @@
 				4F8CDBD3265F8EE000976B25 /* SessionDataEraser.swift */,
 				33406246281821FA004DA4DA /* ExternalSessionsStore.swift */,
 				ACDA5EF4285B43FD00A531E9 /* SessionEntityStore.swift */,
+				33ECC0E12901ACFA00A3BC85 /* AveragingServiceStorage.swift */,
 			);
 			path = Storages;
 			sourceTree = "<group>";
@@ -1270,6 +1277,15 @@
 			name = MobileSession;
 			sourceTree = "<group>";
 		};
+		33D8031428F84021004A4CFA /* SDSync */ = {
+			isa = PBXGroup;
+			children = (
+				B37E1C932748208C0020A281 /* SDSyncFileWritingServiceTests.swift */,
+				33D8031528F84050004A4CFA /* SDSyncAveragingServiceTests.swift */,
+			);
+			path = SDSync;
+			sourceTree = "<group>";
+		};
 		33D92F5B27EB6D2000252F3B /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -1284,6 +1300,15 @@
 				FAC3B679283B96480095D915 /* ChartMeasurementsFilter.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		33ECC0E32901B15600A3BC85 /* Averaging */ = {
+			isa = PBXGroup;
+			children = (
+				334EF27B28E5CA28000DD51E /* MeasurementsAveragingService.swift */,
+				DDB44C242704AF830027176E /* ActiveSessionsAveragingController.swift */,
+			);
+			path = Averaging;
 			sourceTree = "<group>";
 		};
 		33F3D47D27AC1A6A003CA386 /* Reordering */ = {
@@ -1338,7 +1363,6 @@
 			isa = PBXGroup;
 			children = (
 				FA5F782B289A8BDD0016DF79 /* SearchAndFollowTests */,
-				B37E1C932748208C0020A281 /* SDSyncFileWritingServiceTests.swift */,
 				DDDCEC3727D0C89F00B3757C /* DateBuilderTests */,
 				B3AA784827D4D22A003B39F6 /* Resolver+XCTest.swift */,
 				B33B157D27AE854B00138FFA /* LoggerTests */,
@@ -1433,6 +1457,7 @@
 		AC32040625CC122900A68520 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				33ECC0E32901B15600A3BC85 /* Averaging */,
 				B31E361028AECB2A00E85431 /* GlobalAlerts */,
 				B3FD30B42831814900C33656 /* Microphone */,
 				B3FD30B32831813800C33656 /* TimerScheduler */,
@@ -1459,7 +1484,6 @@
 				DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */,
 				DDD1F9B02705852400D8E87F /* DataFormatters.swift */,
 				B33B15E727AEE68100138FFA /* TextFileTrimmer.swift */,
-				DDB44C242704AF830027176E /* AveragingService.swift */,
 				DDC5F589271979F100F1F9D8 /* Fonts.swift */,
 				DDC5F5872719694800F1F9D8 /* ShadowImages.swift */,
 				B3ED03C22729A8E300513522 /* AirCastingNotifications.swift */,
@@ -1781,6 +1805,7 @@
 			isa = PBXGroup;
 			children = (
 				334CC6F92751454C00C10B53 /* SDCardMobileSessionsSavingService.swift */,
+				334EF27D28E5CE7E000DD51E /* SDSyncMobileSessionStorage.swift */,
 			);
 			path = MobileSessions;
 			sourceTree = "<group>";
@@ -1790,7 +1815,6 @@
 			children = (
 				AC006D28275F52CB00E99019 /* CSVMeasurementStream.swift */,
 				AC006D26275F52B400E99019 /* CSVMeasurement.swift */,
-				ACBB050D2761F1B600A6B3FB /* SDSession.swift */,
 				3383511D2747C24800308068 /* SDSyncFileFactory.swift */,
 				ACBB050F2761F1C400A6B3FB /* SDStream.swift */,
 			);
@@ -2222,6 +2246,7 @@
 		B3E26A0A2676DAB0001A8E4C /* Logic */ = {
 			isa = PBXGroup;
 			children = (
+				33D8031428F84021004A4CFA /* SDSync */,
 				B308DC0328ABA30A004FC3EB /* Mic Calibration */,
 				B3AAACF3286DC05C00DFBD36 /* MicrophoneSessions */,
 				B3EFAB1A26EFEA8100E88141 /* Bootstrap */,
@@ -3084,6 +3109,7 @@
 				B30BAC232694B3DA00AE0476 /* XCTest+Persistence.swift in Sources */,
 				B33B161527AF0B3600138FFA /* FileLoggerTests.swift in Sources */,
 				B3AA784B27D4D7EF003B39F6 /* APIServiceTestCase.swift in Sources */,
+				33D8031628F84050004A4CFA /* SDSyncAveragingServiceTests.swift in Sources */,
 				332066A42891730E00798AC1 /* ShareSessionFileTest.swift in Sources */,
 				B33DB5702685FCFB00ED1344 /* SynchronizationTestMocks.swift in Sources */,
 				B3E26A2A26780D96001A8E4C /* SynchronizationControllerTestHelpers.swift in Sources */,
@@ -3190,7 +3216,7 @@
 				B3C6D0832890631900A25F5F /* LocationServiceAdapter.swift in Sources */,
 				FA396CA128A246BA00F8067C /* SessionStorage.swift in Sources */,
 				B376DD23268091B80083FD2F /* BodyEncodingError.swift in Sources */,
-				DDB44C252704AF830027176E /* AveragingService.swift in Sources */,
+				DDB44C252704AF830027176E /* ActiveSessionsAveragingController.swift in Sources */,
 				336A909727A492A000851100 /* DropViewDelegate.swift in Sources */,
 				AC9F526C2652A360003CF61F /* DashboardView.swift in Sources */,
 				AC3203CB25CA991C00A68520 /* TurnOnBluetoothView.swift in Sources */,
@@ -3239,7 +3265,6 @@
 				B3F1448026AE4CA0006A4612 /* OfflineAlert.swift in Sources */,
 				4F8CDBD2265F8DAC00976B25 /* Assertions.swift in Sources */,
 				B3FD77C6267C94AF00E97CC2 /* SessionUploadService.swift in Sources */,
-				ACBB050E2761F1B600A6B3FB /* SDSession.swift in Sources */,
 				338CA6D327CD2F1900505331 /* SearchAndFollowChartViewModel.swift in Sources */,
 				B367A596274E9EAA004C605B /* RemoteNotificationRouter.swift in Sources */,
 				33D07A252825963000F25B4C /* ExternalSessionEntity+CoreDataClass.swift in Sources */,
@@ -3375,6 +3400,7 @@
 				AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */,
 				B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */,
 				FAF3B4E128057EC100F0F4B0 /* MeasurementType.swift in Sources */,
+				334EF27E28E5CE7E000DD51E /* SDSyncMobileSessionStorage.swift in Sources */,
 				B3C3F8B92695A295003E2CB4 /* StatisticsContainerViewModelable.swift in Sources */,
 				AC32040425CC067D00A68520 /* CheckBox.swift in Sources */,
 				ACBF1AD2286C618F006DF793 /* XMarkButton.swift in Sources */,
@@ -3514,6 +3540,7 @@
 				B33B15F327AEE69900138FFA /* DocumentsFileLoggerStore+LogHandle.swift in Sources */,
 				AC8CFF4125E5095600FB2918 /* Textfield.swift in Sources */,
 				DD123EC227BD2C53001083C3 /* SearchMapViewModel.swift in Sources */,
+				33ECC0E22901ACFA00A3BC85 /* AveragingServiceStorage.swift in Sources */,
 				B3FD77C3267C94AF00E97CC2 /* SessionDownloadService.swift in Sources */,
 				FAC3B67A283B96480095D915 /* ChartMeasurementsFilter.swift in Sources */,
 				AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */,
@@ -3548,6 +3575,7 @@
 				B3E26A032676D9AA001A8E4C /* ArrayUtils.swift in Sources */,
 				ACCEB2252763A2230040140B /* SDSyncViewModel.swift in Sources */,
 				B3E2B65C27506E7300019167 /* DefaultFileLineReader.swift in Sources */,
+				334EF27C28E5CA28000DD51E /* MeasurementsAveragingService.swift in Sources */,
 				ACDF82FC265BBDE200A4D04A /* UIFont.swift in Sources */,
 				DD8C380E2689A55A00901FDF /* BackendSettingsView.swift in Sources */,
 				ACCEB21E2763A2230040140B /* SDSyncRootView.swift in Sources */,
@@ -3760,7 +3788,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -3770,7 +3798,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.11.0;
+				MARKETING_VERSION = 1.12.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3788,7 +3816,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;
@@ -3797,7 +3825,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.11.0;
+				MARKETING_VERSION = 1.12.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "HabitatMap AppStore";
@@ -3876,7 +3904,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;
@@ -3885,7 +3913,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.11.0;
+				MARKETING_VERSION = 1.12.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "AirCasting Ad hoc distribution";
@@ -3921,7 +3949,7 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
@@ -3940,7 +3968,7 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
@@ -3959,7 +3987,7 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;

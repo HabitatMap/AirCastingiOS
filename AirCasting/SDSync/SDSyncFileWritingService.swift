@@ -10,24 +10,51 @@ protocol SDSyncFileWriter {
 }
 
 final class SDSyncFileWritingService: SDSyncFileWriter {
-    var mobileFileURL: URL?
-    var fixedFileURL: URL?
-    
-    var path: URL {
-        let path = FileManager.default.urls(for: .documentDirectory, in: .allDomainsMask)[0]
-        return path
+    private var path: URL {
+        FileManager.default.urls(for: .documentDirectory, in: .allDomainsMask)[0]
     }
     
     private let bufferThreshold: Int
     // We add buffers to limit the amount of savings to file. We save to file only when the amount of data reaches the threshold, or when the flushAndSave() func is called.
     private var buffers: [URL: [String]] = [:]
     private var fileHandles: [URL: FileHandle] = [:]
+    private let parser = SDCardMeasurementsParser()
+    private var currentURL: URL? {
+        didSet {
+            guard currentURL != oldValue, let oldValue else { return }
+            flushBuffer(for: oldValue)
+        }
+    }
     
     init(bufferThreshold: Int) {
         self.bufferThreshold = bufferThreshold
     }
     
+    func writeToFile(data: String, sessionType: SDCardSessionType) {
+        if fileHandles.count == 0 {
+            do {
+                try createDirectories()
+            } catch {
+                Log.error("Error creating directories! \(error.localizedDescription)")
+                return
+            }
+        }
+        
+        let lines = data.components(separatedBy: "\r\n").filter { !$0.trimmingCharacters(in: ["\n"]).isEmpty }
+        
+        lines.forEach { line in
+            guard let uuid = parser.getUUID(lineString: line) else { return }
+            let url = fileURL(for: sessionType, with: uuid)
+            currentURL = url
+            buffers[url, default: []].append(line)
+            let bufferCount = buffers[url]?.count ?? 0
+            guard bufferCount == bufferThreshold else { return }
+            flushBuffer(for: url)
+        }
+    }
+    
     func finishAndSave() -> [(URL, SDCardSessionType)] {
+        flushBuffers()
         guard fileHandles.count > 0 else {
             do {
                 try removeFiles()
@@ -38,8 +65,7 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
             return []
         }
         
-        let toReturn = [(fileURL(for: .mobile), SDCardSessionType.mobile), (fileURL(for: .fixed), SDCardSessionType.fixed)]
-        flushBuffers()
+        let toReturn = [(directoryURL(for: .mobile), SDCardSessionType.mobile), (directoryURL(for: .fixed), SDCardSessionType.fixed)]
         do {
             try closeFiles()
         } catch {
@@ -49,6 +75,7 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
     }
     
     func finishAndRemoveFiles() {
+        Log.info("Finish and remove called")
         buffers = [:]
         do {
             try closeFiles()
@@ -58,37 +85,18 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
         }
     }
     
-    func writeToFile(data: String, sessionType: SDCardSessionType) {
-        if fileHandles.count == 0 {
-            do {
-                try openFiles()
-            } catch {
-                Log.error("Error opening files! \(error.localizedDescription)")
-                return
-            }
-        }
-        
-        let lines = data.components(separatedBy: "\r\n").filter { !$0.trimmingCharacters(in: ["\n"]).isEmpty }
-        let url = fileURL(for: sessionType)
-        buffers[url, default: []].append(contentsOf: lines)
-        let bufferCount = buffers[url]?.count ?? 0
-        guard bufferCount == bufferThreshold else { return }
-        flushBuffer(for: sessionType)
-    }
-    
     private func flushBuffers() {
-        SDCardSessionType.allCases.forEach { flushBuffer(for: $0) }
+        buffers.keys.forEach { flushBuffer(for: $0) }
     }
     
-    private func openFiles() throws {
-        let fileURLs = Set(SDCardSessionType.allCases.map { fileURL(for: $0) })
-        try fileURLs.forEach { fileURL in
-            let fileExists = FileManager.default.fileExists(atPath: fileURL.path)
-            if fileExists {
-                try FileManager.default.removeItem(at: fileURL)
+    private func createDirectories() throws {
+        let directoryURLs = Set(SDCardSessionType.allCases.map { directoryURL(for: $0) })
+        try directoryURLs.forEach { directoryURL in
+            let directoryExists = FileManager.default.fileExists(atPath: directoryURL.path)
+            if directoryExists {
+                try FileManager.default.removeItem(at: directoryURL)
             }
-            try Data().write(to: fileURL)
-            fileHandles[fileURL] = try FileHandle(forWritingTo: fileURL)
+            try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: false)
         }
     }
     
@@ -99,19 +107,15 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
     
     private func removeFiles() throws {
         try SDCardSessionType.allCases.forEach {
-            let fileURL = fileURL(for: $0)
-            guard FileManager.default.fileExists(atPath: fileURL.path) else { return }
-            try FileManager.default.removeItem(at: fileURL)
+            let directoryURL = directoryURL(for: $0)
+            guard FileManager.default.fileExists(atPath: directoryURL.path) else { return }
+            try FileManager.default.removeItem(at: directoryURL)
         }
     }
     
-    private func flushBuffer(for sessionType: SDCardSessionType) {
-        let url = fileURL(for: sessionType)
-        guard let file = fileHandles[url] else {
-            Log.warning("File handle not found for session type \(sessionType)")
-            return
-        }
+    private func flushBuffer(for url: URL) {
         do {
+            let file = try getFileHandle(for: url)
             try file.seekToEnd()
             guard let buffer = buffers[url] else { return }
             let content = buffer.joined(separator: "\n") + "\n"
@@ -123,13 +127,33 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
         buffers[url] = []
     }
     
-    private func fileURL(for sessionType: SDCardSessionType) -> URL {
-        let fileURL: URL
-        if sessionType == .mobile {
-            fileURL = mobileFileURL ?? path.appendingPathComponent("mobile.csv")
-        } else {
-            fileURL = fixedFileURL ?? path.appendingPathComponent("fixed.csv")
+    private func getFileHandle(for url: URL) throws -> FileHandle {
+        if let file = fileHandles[url] {
+            return file
         }
-        return fileURL
+        
+        fileHandles[url] = try openFile(fileURL: url)
+        return fileHandles[url]!
+    }
+    
+    private func openFile(fileURL: URL) throws -> FileHandle {
+        if FileManager.default.fileExists(atPath: fileURL.path) {
+            try FileManager.default.removeItem(at: fileURL)
+            Log.error("Unexpected file found at \(fileURL)")
+        }
+        try Data().write(to: fileURL)
+        return try FileHandle(forWritingTo: fileURL)
+    }
+    
+    private func directoryURL(for sessionType: SDCardSessionType) -> URL {
+        if sessionType == .mobile {
+            return path.appendingPathComponent("mobile")
+        } else {
+            return path.appendingPathComponent("fixed")
+        }
+    }
+    
+    private func fileURL(for sessionType: SDCardSessionType, with uuid: String) -> URL {
+        directoryURL(for: sessionType).appendingPathComponent("\(uuid)")
     }
 }

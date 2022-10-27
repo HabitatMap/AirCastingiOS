@@ -71,4 +71,8 @@ class FileLineReaderStub: FileLineReader {
             progress($0)
         }
     }
+    
+    func readLastNonEmptyLine(of fileURL: URL) throws -> String? {
+        "Line"
+    }
 }
