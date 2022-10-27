@@ -125,7 +125,6 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                 case .line(let content):
                     context.perform {
                         guard let measurements = self.parser.parseMeasurement(lineString: content) else {
-                            Log.error("Failed to parse line from the file: \(content)")
                             return
                         }
                         

@@ -160,7 +160,7 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
         guard let sessionURL = session.urlLocation,
               var components = URLComponents(string: sessionURL)
         else {
-            Log.error("No URL for session \(String(describing: session.uuid))")
+            Log.info("No URL for session \(String(describing: session.uuid))")
             return
         }
         
