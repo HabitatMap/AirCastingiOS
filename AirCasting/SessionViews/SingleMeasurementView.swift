@@ -52,7 +52,7 @@ struct SingleMeasurementView: View {
                         let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
                         HStack(spacing: 3) {
                             if value != nil {
-                                MeasurementDotView(value: value!, thresholds: threshold)
+                                MeasurementDotView(value: round(value!), thresholds: threshold)
                                 Text("\(Int(round(value!)))")
                                     .font(Fonts.moderateRegularHeading3)
                                     .foregroundColor(.aircastingGray)
@@ -68,7 +68,7 @@ struct SingleMeasurementView: View {
                         .padding(.horizontal, 9)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
-                                .strokeBorder((selectedStream == stream && value != nil) ? formatter.color(for: value!) : .clear)
+                                .strokeBorder((selectedStream == stream && value != nil) ? formatter.color(for: round(value!)) : .clear)
                         )
                     }
                 }

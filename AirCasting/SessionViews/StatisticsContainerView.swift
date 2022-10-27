@@ -25,9 +25,9 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
                 VStack(spacing: 7) {
                     Text(stat.title)
                     if stat.presentationStyle == .distinct {
-                        distinctParameter(value: stat.value)
+                        distinctParameter(value: round(stat.value))
                     } else if stat.presentationStyle == .standard {
-                        standardParameter(value: stat.value)
+                        standardParameter(value: round(stat.value))
                     }
                 }
             }
