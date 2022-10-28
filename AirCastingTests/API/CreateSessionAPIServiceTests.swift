@@ -37,7 +37,8 @@ final class CreateSessionAPIServiceTests: APIServiceTestCase {
             receivedRequest = request
             completion(.failure(URLError(.timedOut)), request)
         }
-        tested.createEmptyFixedWifiSession(input: sampleInput) { _ in }
+        let input = sampleInput
+        tested.createEmptyFixedWifiSession(input: input) { _ in }
 
         let request = try XCTUnwrap(receivedRequest)
         let httpBody = try XCTUnwrap(request.httpBody)
@@ -49,11 +50,11 @@ final class CreateSessionAPIServiceTests: APIServiceTestCase {
         let formatter = DateFormatters.CreateSessionAPIService.encoderDateFormatter
         encoder.dateEncodingStrategy = .formatted(formatter)
 
-        let inputJSONData = try encoder.encode(sampleInput.session)
+        let inputJSONData = try encoder.encode(input.session)
         let gzippedData = try inputJSONData.gzipped()
         let sessionBase64String = gzippedData.base64EncodedString(options: [.lineLength76Characters, .endLineWithLineFeed])
 
-        let apiInput = APIInput(session: sessionBase64String, compression: sampleInput.compression)
+        let apiInput = APIInput(session: sessionBase64String, compression: input.compression)
         XCTAssertEqual(try JSONDecoder().decode(APIInput.self, from: httpBody), apiInput)
     }
 
