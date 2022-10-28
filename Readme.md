@@ -74,7 +74,7 @@ Use the `bump_version_reset_build` lane when you need to increment version numbe
 1. `cd` into top project directory
 2. make sure you're on a `develop` branch and your git status is clean
 3. run `fastlane bump_version_reset_build`
-4. fastlane pushes the bumped version branch to repo
+4. once the Fastlane finish, push the branch onto remote repo
 5. merge the branch into develop
 
 ### Integration
