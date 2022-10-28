@@ -69,6 +69,14 @@ Use the release hotfix lane when you need to add quick changes to the app that i
 5. run `fastlane hotfix_release`
 6. create PRs to main and to develop branch 
 
+### Bump version after release
+Use the `bump_version_reset_build` lane when you need to increment version number and reset build (to 0) after release is completed:
+1. `cd` into top project directory
+2. make sure you're on a `develop` branch and your git status is clean
+3. run `fastlane bump_version_reset_build`
+4. once the Fastlane finish, push the branch onto remote repo
+5. merge the branch into develop
+
 ### Integration
 For the fastlane setup to work you'll need to obtain an `.env.default` file and place it inside Fastlane directory. It contains secret keys used for Firebase communication and appstore connect key details. 
 If you want to integrate the app into your custom setup, provide this file using template:
