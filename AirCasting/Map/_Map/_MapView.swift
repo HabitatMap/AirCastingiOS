@@ -106,10 +106,10 @@ struct _MapView: UIViewRepresentable {
                 let s = try GMSMapStyle(contentsOfFileURL: styleURL)
                 mapView.mapStyle = s
             } else {
-                print("Unable to find style.json")
+                Log.verbose("Unable to find style.json")
             }
         } catch {
-            print("One or more of the map styles failed to load. \(error)")
+            Log.verbose("One or more of the map styles failed to load. \(error)")
         }
         
         return mapView
@@ -273,15 +273,15 @@ struct _MapView: UIViewRepresentable {
     }
     
     private func setupStyling(for mapView: GMSMapView) {
-        print("Setting styling for colorscheme: \(colorScheme)")
+        Log.verbose("Setting styling for colorscheme: \(colorScheme)")
         do {
             if let styleURL = Bundle.main.url(forResource: colorScheme == .light ? "style" : "darkStyle", withExtension: "json") {
                 mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
             } else {
-                print("Unable to find style.json")
+                Log.verbose("Unable to find style.json")
             }
         } catch {
-            print("One or more of the map styles failed to load. \(error)")
+            Log.verbose("One or more of the map styles failed to load. \(error)")
         }
     }
     
@@ -347,18 +347,18 @@ extension _MapView.MapType {
 //    override init() {
 //        super.init()
 //        self.manager.delegate = self
-//        print("Requesting authorization")
+//        Log.verbose("Requesting authorization")
 //        self.manager.requestAlwaysAuthorization()
 //    }
 //
 //    func startTrackingUserPosision(_ newPos: @escaping (CLLocation) -> Void) {
-//        print("Callback set")
+//        Log.verbose("Callback set")
 //        callback = newPos
 //    }
 //
 //    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
 //        guard let loc = locations.first else { return }
-//        print("new location: \(loc)")
+//        Log.verbose("new location: \(loc)")
 //        latestLoc = loc
 //    }
 //}
