@@ -157,12 +157,7 @@ private extension SessionHeaderView {
                     }
                 }
             }
-            // As long as we get session.deviceType = nil we should handle somehow showing those devices which were used to record
-            // [|(-)   (-)|]    |-------------------|
-            //  |   ___   |  -- | You, do something |
-            //  |_________|     |-------------------|
-            // so the idea at leat for now is this below
-#warning("Fix - Handle session.deviceType (for now it is always nill)")
+            
             if isSensorTypeNeeded {
                 sensorType
                     .font(Fonts.moderateRegularHeading4)

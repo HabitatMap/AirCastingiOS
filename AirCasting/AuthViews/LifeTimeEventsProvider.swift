@@ -8,22 +8,22 @@ class LifeTimeEventsProvider: ObservableObject {
     private static let wasAlreadyLaunchedInThePastKey = "FirstRunInfoProvider.wasAlreadyLaunchedInThePastKey"
     
     var hasEverLoggedIn: Bool {
+        get {
+            userDefaults.bool(forKey: "hasEverLoggedIn")
+        }
         set {
             objectWillChange.send()
             userDefaults.setValue(newValue, forKey: "hasEverLoggedIn")
         }
-        get {
-            userDefaults.bool(forKey: "hasEverLoggedIn")
-        }
     }
     
     var hasEverPassedOnBoarding: Bool {
+        get {
+            userDefaults.bool(forKey: "onBoardingKey")
+        }
         set {
             objectWillChange.send()
             userDefaults.setValue(newValue, forKey: "onBoardingKey")
-        }
-        get {
-            userDefaults.bool(forKey: "onBoardingKey")
         }
     }
     

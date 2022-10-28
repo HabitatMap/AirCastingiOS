@@ -51,7 +51,7 @@ final class ChartViewModel: ObservableObject {
         databaseObserver = nil
         guard let sensor = stream?.sensorName else { return }
         let filter: ChartDatabaseObserverFilter = session.isFixed ? .hour : .minute(countingFrom: session.startTime?.convertedFromUTCToLocal ?? DateBuilder.getRawDate())
-        databaseObserver = ChartDatabaseObserver(session: session.uuid.rawValue ?? "", sensor: sensor, filtered: filter) { [weak self] in
+        databaseObserver = ChartDatabaseObserver(session: session.uuid.rawValue, sensor: sensor, filtered: filter) { [weak self] in
             guard let self = self else { return }
             self.log("Measurements change detected")
             self.generateEntries()
@@ -134,6 +134,6 @@ final class ChartViewModel: ObservableObject {
     }
     
     private var logSessionInfo: String {
-        "\(session.uuid ?? "uuid not avilable"), \(session.name ?? "name not available")"
+        "\(session.uuid), \(session.name ?? "name not available")"
     }
 }

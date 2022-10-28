@@ -17,7 +17,7 @@ extension Publisher {
     ///    .dataTaskPublisher(for: url)
     ///    .logVerbose("Data received!")
     ///    .sink()
-    ///~~~
+    /// ~~~
     func logVerbose(message: StringLiteralType,
                     file: String = #fileID,
                     function: String = #function,
@@ -41,7 +41,7 @@ extension Publisher {
     ///    .decode(type: [String].self, decoder: JSONDecoder())
     ///    .logVerbose("Received \($0.count) values!")
     ///    .sink()
-    ///~~~
+    /// ~~~
     func logVerbose(_ messageClosure: @escaping (_ output: Output) -> String,
                     file: String = #fileID,
                     function: String = #function,

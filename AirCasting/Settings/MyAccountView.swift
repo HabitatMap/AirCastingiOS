@@ -3,7 +3,6 @@
 
 import AirCastingStyling
 import SwiftUI
-import AirCastingStyling
 
 struct MyAccountView: View {
     var body: some View {
