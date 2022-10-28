@@ -269,7 +269,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         
         let secondsFromTheStartOfLastAveragingWindow = Int(firstMeasurementTime.timeIntervalSince(sessionStartTime)) % averaging.rawValue
         
-        let intervalStart  = firstMeasurementTime.addingTimeInterval(TimeInterval(averaging.rawValue - secondsFromTheStartOfLastAveragingWindow))
+        let intervalStart = firstMeasurementTime.addingTimeInterval(TimeInterval(averaging.rawValue - secondsFromTheStartOfLastAveragingWindow))
         
         let measurementsReminder = averagingService.averageMeasurementsWithReminder(measurements: measurements, startTime: intervalStart, averagingWindow: averaging) { measurement, _ in
             databaseStorage.addMeasurement(to: stream, measurement: measurement, averagingWindow: averaging, context: context)

@@ -18,7 +18,6 @@ struct AirMapView: View {
     @ObservedObject var thresholds: ABMeasurementsViewThreshold
     @StateObject var statsContainerViewModel: StatisticsContainerViewModel
     @StateObject var mapNotesVM: MapNotesViewModel
-//  @StateObject var mapStatsDataSource: MapStatsDataSource
     @ObservedObject var session: SessionEntity
     @Binding var showLoadingIndicator: Bool
     @Binding var selectedStream: MeasurementStreamEntity?
@@ -103,10 +102,6 @@ struct AirMapView: View {
                                                              sessionUUID: session.uuid))
         })
         .navigationBarTitleDisplayMode(.inline)
-        //        .onChange(of: selectedStream) { newStream in
-        //            mapStatsDataSource.visiblePathPoints = pathPoints
-        //            statsContainerViewModel.adjustForNewData()
-        //        }
         .onAppear { statsContainerViewModel.adjustForNewData() }
         .onChange(of: scenePhase) { phase in
             switch phase {
