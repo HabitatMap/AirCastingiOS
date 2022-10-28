@@ -153,7 +153,6 @@ private extension CreateAccountView {
             
             
             if isPasswordCorrect && isEmailCorrect && !isUsernameBlank {
-#warning("Show progress and lock ui to prevent multiple api calls")
                 isLoading = true
                 let userInput = AuthorizationAPI.SignupUserInput(email: signInPersistanceObserved.email,
                                                                  username: signInPersistanceObserved.username,

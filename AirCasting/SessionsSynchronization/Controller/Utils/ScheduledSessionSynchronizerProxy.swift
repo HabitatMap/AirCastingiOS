@@ -19,8 +19,8 @@ final class ScheduledSessionSynchronizerProxy<S: Scheduler>: SessionSynchronizer
     lazy var syncInProgress: CurrentValueSubject<Bool, Never> = self.controller.syncInProgress
     
     var errorStream: SessionSynchronizerErrorStream? {
-        set { controller.errorStream = newValue }
         get { controller.errorStream }
+        set { controller.errorStream = newValue }
     }
     
     private let scheduler: S

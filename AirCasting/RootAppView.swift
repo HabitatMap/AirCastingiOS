@@ -40,7 +40,7 @@ struct RootAppView: View {
                 .navigationViewStyle(.stack)
             }
         }
-        .environment(\.managedObjectContext, Resolver.resolve(PersistenceController.self).viewContext) //TODO: Where is this used??
+        .environment(\.managedObjectContext, Resolver.resolve(PersistenceController.self).viewContext) // This is necessary. Otherwise we get following warning: 'Context in environment is not connected to a persistent store coordinator'
         .onAppWentToBackground {
             signInPersistanceObserved.clearSavedStatesWithCredentials()
         }

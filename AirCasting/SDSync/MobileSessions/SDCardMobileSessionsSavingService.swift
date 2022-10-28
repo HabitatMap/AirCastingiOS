@@ -269,7 +269,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         
         let secondsFromTheStartOfLastAveragingWindow = Int(firstMeasurementTime.timeIntervalSince(sessionStartTime)) % averaging.rawValue
         
-        var intervalStart  = firstMeasurementTime.addingTimeInterval(TimeInterval(averaging.rawValue - secondsFromTheStartOfLastAveragingWindow))
+        let intervalStart = firstMeasurementTime.addingTimeInterval(TimeInterval(averaging.rawValue - secondsFromTheStartOfLastAveragingWindow))
         
         let measurementsReminder = averagingService.averageMeasurementsWithReminder(measurements: measurements, startTime: intervalStart, averagingWindow: averaging) { measurement, _ in
             databaseStorage.addMeasurement(to: stream, measurement: measurement, averagingWindow: averaging, context: context)
@@ -287,7 +287,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     }
     
     private func averageUnaveragedMeasurements(stream: MeasurementStreamEntity, averagingWindow: AveragingWindow) throws {
-        Log.info("[SD SYNC] Averaging unaveraged measurements for stream \(stream.sensorName)")
+        Log.info("[SD SYNC] Averaging unaveraged measurements for stream \(stream.sensorName ?? "with no name")")
         guard averagingWindow != .zeroWindow else {
             return
         }

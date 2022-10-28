@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 enum AuthErrors: Error {
-    //sign up
+    // sign up
     case passwordTooShort
     case incorrectEmail
     case emptyTextfield

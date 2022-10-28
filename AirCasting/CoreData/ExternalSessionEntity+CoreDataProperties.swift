@@ -20,7 +20,7 @@ extension ExternalSessionEntity {
     @NSManaged public var measurementStreams: NSOrderedSet?
     @NSManaged public var uiState: UIStateEntity?
     
-    //TODO: Think about this empty string stuff
+    // TODO: Think about this empty string stuff
     public var uuid: SessionUUID {
         get { SessionUUID(rawValue: value(forKey: "uuid") as? String ?? "")! }
         set { setValue(newValue.rawValue, forKey: "uuid") }

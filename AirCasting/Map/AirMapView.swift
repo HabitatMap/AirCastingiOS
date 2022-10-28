@@ -18,7 +18,6 @@ struct AirMapView: View {
     @ObservedObject var thresholds: ABMeasurementsViewThreshold
     @StateObject var statsContainerViewModel: StatisticsContainerViewModel
     @StateObject var mapNotesVM: MapNotesViewModel
-//  @StateObject var mapStatsDataSource: MapStatsDataSource
     @ObservedObject var session: SessionEntity
     @Binding var showLoadingIndicator: Bool
     @Binding var selectedStream: MeasurementStreamEntity?
@@ -76,12 +75,6 @@ struct AirMapView: View {
                                       noteMarketTapped: $noteMarkerTapped,
                                       noteNumber: $noteNumber,
                                       mapNotes: $mapNotesVM.notes)
-#warning("TODO: Implement calculating stats only for visible path points")
-                        // This doesn't work properly and it needs to be fixed, so I'm commenting it out
-                        //                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
-                        //                                mapStatsDataSource?.visiblePathPoints = visiblePoints
-                        //                                statsContainerViewModel?.adjustForNewData()
-                        //                            }
                         // Statistics container shouldn't be presented in mobile dormant tab
                         if !(session.type == .mobile && session.isActive == false) {
                             StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
@@ -109,10 +102,6 @@ struct AirMapView: View {
                                                              sessionUUID: session.uuid))
         })
         .navigationBarTitleDisplayMode(.inline)
-        //        .onChange(of: selectedStream) { newStream in
-        //            mapStatsDataSource.visiblePathPoints = pathPoints
-        //            statsContainerViewModel.adjustForNewData()
-        //        }
         .onAppear { statsContainerViewModel.adjustForNewData() }
         .onChange(of: scenePhase) { phase in
             switch phase {
