@@ -198,7 +198,7 @@ extension Database.MeasurementStream {
                   thresholdLow: Int(coreDataEntity.thresholdLow),
                   thresholdVeryLow: Int(coreDataEntity.thresholdVeryLow),
                   measurements: coreDataEntity.allMeasurements?.map {
-                    .init(id: $0.id!, time: $0.time, value: $0.value, latitude: $0.location?.latitude, longitude: $0.location?.longitude)
+                    .init(time: $0.time, value: $0.value, latitude: $0.location?.latitude, longitude: $0.location?.longitude)
                   } ?? [],
                   deleted: coreDataEntity.gotDeleted)
     }
