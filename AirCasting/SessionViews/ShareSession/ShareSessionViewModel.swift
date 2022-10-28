@@ -100,14 +100,10 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     
     func didAppear() {
         isLoading = true
-        do {
-            try fireUploadingSession { self.isLoading = false }
-        } catch {
-            Log.error("Error when uploading sessions before session share: \(error.localizedDescription)")
-        }
+        fireUploadingSession { self.isLoading = false }
     }
     
-    private func fireUploadingSession(onEnd: @escaping () -> Void) throws {
+    private func fireUploadingSession(onEnd: @escaping () -> Void) {
         if sessionSynchronizer.syncInProgress.value {
             var subscription: AnyCancellable?
             subscription = sessionSynchronizer.syncInProgress.receive(on: DispatchQueue.main).sink { value in
@@ -160,7 +156,7 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
         guard let sessionURL = session.urlLocation,
               var components = URLComponents(string: sessionURL)
         else {
-            Log.info("No URL for session \(String(describing: session.uuid))")
+            Log.error("No URL for session \(String(describing: session.uuid))")
             return
         }
         
