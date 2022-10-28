@@ -89,6 +89,10 @@ extension Resolver: ResolverRegistering {
             let context = Resolver.resolve(PersistenceController.self).editContext
             return DefaultSessionEntityStore(context: context)
         }
+        main.register { (_, _) -> AveragingServiceStorage in
+            let context = Resolver.resolve(PersistenceController.self).editContext
+            return DefaultAveragingServiceStorage(context: context)
+        }.scope(.cached)
         main.register { DefaultFileLineReader() as FileLineReader }
         main.register { SessionDataEraser() as DataEraser }
         
@@ -173,7 +177,7 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultSettingsRedirection() as SettingsRedirection }.scope(.application)
         main.register { LifeTimeEventsProvider(userDefaults: .standard) }.implements(FirstRunInfoProvidable.self).scope(.application)
         main.register { MicrophoneManager() }.scope(.cached)
-        main.register { AveragingService(measurementStreamStorage: Resolver.resolve()) }.scope(.cached)
+        main.register { ActiveSessionsAveragingController() }.scope(.cached)
         main.register { MobilePeripheralSessionManager(measurementStreamStorage: Resolver.resolve()) }.scope(.cached)
         main.register { BluetoothManager(mobilePeripheralSessionManager: Resolver.resolve()) }
         .implements(BluetoothConnector.self)
@@ -224,7 +228,7 @@ extension Resolver: ResolverRegistering {
         main.register { SDSyncFileValidationService() as SDSyncFileValidator }
         main.register { SDSyncFileWritingService(bufferThreshold: 1000) as SDSyncFileWriter }
         main.register { BluetoothSDCardAirBeamServices() as SDCardAirBeamServices }
-        
+        main.register { DefaultMeasurementsAveragingService() as MeasurementsAveragingService }
         main.register { SessionCardUIStateHandlerDefault() as SessionCardUIStateHandler }.scope(.cached)
         
         // MARK: - Notes
@@ -263,17 +267,9 @@ extension Resolver: ResolverRegistering {
         main.register { FoundationTimerScheduler() as TimerScheduler }
             .scope(.unique)
         
-        main.register { MicrophoneCalibrator(microphone: try! AVMicrophone(),
-                                             dateProvider: DateBuilder.getRawDate,
-                                             minimalMeasurementsCount: 12,
-                                             calibrationDuration: 5.0,
-                                             timeBetweenMeasurements: 0.25) as MicrophoneCalibration }
-        
         main.register { UserDefaultsMicrophoneCalibraionValueProvider() }
             .implements(MicrophoneCalibraionValueProvider.self)
             .implements(MicrophoneCalibrationValueWritable.self)
-        
-        main.register { DefaultCalibrationDurationDecider() as CalibrationDurationDecider }
         
         // MARK: Alerts
         

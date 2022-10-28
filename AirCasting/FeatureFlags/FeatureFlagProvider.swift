@@ -8,7 +8,7 @@ enum FeatureFlag: String, Equatable, CaseIterable {
     case searchAndFollow
     case deleteAccount
     case microphoneCalibration
-    case microphoneCalibrationWizard
+    case thresholdAlerts
 }
 
 extension FeatureFlag {
@@ -21,7 +21,7 @@ extension FeatureFlag {
         case .searchAndFollow: return "Search and Follow"
         case .deleteAccount: return "Delete Account"
         case .microphoneCalibration: return "Microphone calibration"
-        case .microphoneCalibrationWizard: return "Microphone calibration wizard"
+        case .thresholdAlerts: return "Threshold alerts"
         }
     }
 }

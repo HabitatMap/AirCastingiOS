@@ -40,7 +40,7 @@ class SDSyncController {
     @Injected private var fileLineReader: FileLineReader
     @Injected private var mobileSessionsSaver: SDCardMobileSessionssSaver
     @Injected private var fixedSessionsUploader: SDCardFixedSessionsUploadingService
-    @Injected private var averagingService: AveragingService
+    @Injected private var averagingService: ActiveSessionsAveragingController
     @Injected private var sessionSynchronizer: SessionSynchronizer
     @Injected private var measurementsDownloader: SyncedMeasurementsDownloader
     
@@ -62,25 +62,25 @@ class SDSyncController {
             }
         }, completion: { [weak self] result in
             guard let self = self else { return }
+            progress(.finalizing)
             self.writingQueue.sync {
                 switch result {
                 case .success(let metadata):
                     Log.info("[SD SYNC] Finished reading data with success")
-                    progress(.finalizing)
-                    let files = self.fileWriter.finishAndSave()
-                    Log.info("[SD SYNC] Files: \(files)")
-                    guard !files.isEmpty else {
+                    let directories = self.fileWriter.finishAndSave()
+                    Log.info("[SD SYNC] Files: \(directories)")
+                    guard !directories.isEmpty else {
                         Log.info("[SD SYNC] No files. Finishing sd sync")
                         completion(.success(()))
                         return
                     }
                     
                     // MARK: checking if files have the right number of rows and if rows have the right values
-                    self.checkFilesForCorruption(files, expectedMeasurementsCount: metadata.expectedMeasurementsCount) { fileValidationResult in
+                    self.checkDirectoriesForCorruption(directories, expectedMeasurementsCount: metadata.expectedMeasurementsCount) { fileValidationResult in
                         switch fileValidationResult {
-                        case .success(let verifiedFiles):
+                        case .success(let verifiedDirectories):
                             Log.info("[SD SYNC] Check for corruption passed")
-                            self.handle(files: verifiedFiles, sensorName: sensorName, completion: completion)
+                            self.handle(filesDirectories: verifiedDirectories, sensorName: sensorName, completion: completion)
                         case .failure(let error):
                             Log.error(error.localizedDescription)
                             completion(.failure(.filesCorrupted))
@@ -95,15 +95,16 @@ class SDSyncController {
         })
     }
     
-    private func handle(files: [(URL, SDCardSessionType)], sensorName: String, completion: @escaping (Result<Void, SDSyncError>) -> Void ) {
-        let mobileFileURL = files.first(where: { $0.1 == SDCardSessionType.mobile })?.0
-        let fixedFileURL = files.first(where: { $0.1 == SDCardSessionType.fixed })?.0
+    private func handle(filesDirectories: [(URL, SDCardSessionType)], sensorName: String, completion: @escaping (Result<Void, SDSyncError>) -> Void ) {
+        let mobileFilesDirectoryURL = filesDirectories.first(where: { $0.1 == SDCardSessionType.mobile })?.0
+        let fixedFilesDirectoryURL = filesDirectories.first(where: { $0.1 == SDCardSessionType.fixed })?.0
         
-        func handleFixedFile(fixedFileURL: URL) {
-            process(fixedSessionFile: fixedFileURL, deviceID: sensorName) { result in
+        func handleFixedFiles(at fixedFilesDirectoryURL: URL) {
+            process(fixedSessionsFilesDirectory: fixedFilesDirectoryURL, deviceID: sensorName) { result in
                 switch result {
                 case .success(let fixedSessionsUUIDs):
                     self.measurementsDownloader.download(sessionsUUIDs: fixedSessionsUUIDs)
+                    Log.info("Completion success. Fixed sessions upladed successfully.")
                     completion(.success(()))
                 case .failure:
                     completion(.failure(.fixedSessionsProcessingFailure))
@@ -111,29 +112,31 @@ class SDSyncController {
             }
         }
         
-        if let mobileFileURL = mobileFileURL {
-            process(mobileSessionFile: mobileFileURL, deviceID: sensorName) { mobileResult in
+        if let mobileFilesDirectoryURL = mobileFilesDirectoryURL {
+            process(mobileSessionFilesDirectory: mobileFilesDirectoryURL, deviceID: sensorName) { mobileResult in
                 guard mobileResult else {
                     completion(.failure(.mobileSessionsProcessingFailure))
                     return
                 }
                 
-                if let fixedFileURL = fixedFileURL {
-                    handleFixedFile(fixedFileURL: fixedFileURL)
+                if let fixedFilesDirectoryURL = fixedFilesDirectoryURL {
+                    handleFixedFiles(at: fixedFilesDirectoryURL)
                 } else {
+                    Log.info("[SD Sync] Completion success. There was no fixed directory.")
                     completion(.success(()))
                 }
             }
-        } else if let fixedFileURL = fixedFileURL {
-            handleFixedFile(fixedFileURL: fixedFileURL)
+        } else if let fixedFilesDirectoryURL = fixedFilesDirectoryURL {
+            handleFixedFiles(at: fixedFilesDirectoryURL)
         } else {
+            Log.info("[SD Sync] Completion success. There were no directories.")
             completion(.success(()))
         }
     }
     
-    private func process(fixedSessionFile: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
+    private func process(fixedSessionsFilesDirectory: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
         Log.info("[SD Sync] Processing fixed file")
-        fixedSessionsUploader.processAndUpload(fileURL: fixedSessionFile, deviceID: deviceID) { result in
+        fixedSessionsUploader.processAndUpload(filesDirectoryURL: fixedSessionsFilesDirectory, deviceID: deviceID) { result in
             switch result {
             case .success(let sessions):
                 Log.info("[SD Sync] Finished processing fixed file with success")
@@ -145,16 +148,13 @@ class SDSyncController {
         }
     }
     
-    private func process(mobileSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) {
+    private func process(mobileSessionFilesDirectory: URL, deviceID: String, completion: @escaping (Bool) -> Void) {
         Log.info("[SD Sync] Processing mobile file")
-        self.mobileSessionsSaver.saveDataToDb(fileURL: mobileSessionFile, deviceID: deviceID) { result in
+        self.mobileSessionsSaver.saveDataToDb(filesDirectoryURL: mobileSessionFilesDirectory, deviceID: deviceID) { result in
             switch result {
-            case .success(let sessions):
+            case .success():
                 Log.info("[SD Sync] Saved mobile data with success")
-                self.averagingService.averageMeasurements(for: sessions) {
-                    Log.info("[SD Sync] Averaging done")
-                    self.onCurrentSyncEnd { self.startBackendSync() }
-                }
+                self.onCurrentSyncEnd { self.startBackendSync() }
                 completion(true)
             case .failure(let error):
                 Log.error("[SD Sync] Failed to save sessions to database: \(error.localizedDescription)")
@@ -189,8 +189,8 @@ class SDSyncController {
         }
     }
     
-    private func checkFilesForCorruption(_ files: [(URL, SDCardSessionType)], expectedMeasurementsCount: [SDCardSessionType: Int], completion: (Result<[(URL, SDCardSessionType)], Error>) -> Void) {
-        let toValidate = files.compactMap { file -> SDCardCSVFile in
+    private func checkDirectoriesForCorruption(_ directories: [(URL, SDCardSessionType)], expectedMeasurementsCount: [SDCardSessionType: Int], completion: (Result<[(URL, SDCardSessionType)], Error>) -> Void) {
+        let toValidate = directories.compactMap { file -> SDCardCSVFile in
             let fileURL = file.0
             let sessionType = file.1
             
@@ -208,7 +208,7 @@ class SDSyncController {
             case .failure(let error):
                 completion(.failure(error))
             case .success:
-                completion(.success(files))
+                completion(.success(directories))
             }
         }
     }

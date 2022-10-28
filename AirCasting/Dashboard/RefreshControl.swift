@@ -24,7 +24,7 @@ struct RefreshControl: View {
         //
         // Values here are handpicked using the eye-ball technique 👀
         .padding(.top, isRefreshing ? 8 : -30)
-        .padding(.bottom, isRefreshing ? 40 : 0)
+        .padding(.bottom, isRefreshing ? 40 : 1)
     }
     
     private func shouldStartRefreshing(using geometry: GeometryProxy) -> Bool {

@@ -63,6 +63,7 @@ final class SessionDownloadService: SessionDownstream, MeasurementsDownloadable 
                     let sessionData = try decoder.decode(SessionsSynchronization.SessionDownstreamData.self, from: response.data)
                     completion(.success(sessionData))
                 } catch {
+                    Log.error("Failed to download session with uuid \(session): \(error)")
                     completion(.failure(error))
                 }
             case .failure(let error):

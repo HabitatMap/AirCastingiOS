@@ -45,7 +45,7 @@ class DefaultFeatureFlagProvider: FeatureFlagProvider {
             #else
             return false
             #endif
-        case .microphoneCalibrationWizard:
+        case .thresholdAlerts:
             #if DEBUG
             return true
             #else

@@ -60,6 +60,23 @@ Use the `release_update` lane when you need to add some changes to the release c
 3. apply and commit changes that are needed. DO NOT cherry-pick commits from develop branch. Remember to merge PRs with fixes directly to the release branch
 4. run `fastlane release_update` 
 
+### Release hotfix
+Use the release hotfix lane when you need to add quick changes to the app that is already in the App Store:
+1. `cd` into top project directory
+2. `git checkout` to the main branch
+3. run `fastlane hotfix_init`. After that you should be checked out to the hotfix branch
+4. apply and commit changes that are needed
+5. run `fastlane hotfix_release`
+6. create PRs to main and to develop branch 
+
+### Bump version after release
+Use the `bump_version_reset_build` lane when you need to increment version number and reset build (to 0) after release is completed:
+1. `cd` into top project directory
+2. make sure you're on a `develop` branch and your git status is clean
+3. run `fastlane bump_version_reset_build`
+4. once the Fastlane finish, push the branch onto remote repo
+5. merge the branch into develop
+
 ### Integration
 For the fastlane setup to work you'll need to obtain an `.env.default` file and place it inside Fastlane directory. It contains secret keys used for Firebase communication and appstore connect key details. 
 If you want to integrate the app into your custom setup, provide this file using template:

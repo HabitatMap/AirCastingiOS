@@ -34,7 +34,7 @@ public class SimpleLogFormatter: LogFormatter {
     let symbols: [LogLevel: String]
     private let formatter = DateFormatter(format: "MM-dd-y HH:mm:ss.SSS", timezone: .utc)
     
-    public init(symbols: [LogLevel: String] = [.info: "👀", .warning: "⚠️", .error: "‼️"]) {
+    public init(symbols: [LogLevel: String] = [.info: "👀", .warning: "⚠️", .error: "‼️", .verbose: "🗣"]) {
         self.symbols = symbols
     }
 

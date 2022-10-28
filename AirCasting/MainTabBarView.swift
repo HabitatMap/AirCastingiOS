@@ -201,6 +201,7 @@ class TabBarSelection: ObservableObject {
 
 class SelectedSection: ObservableObject {
     @Published var section = DashboardSection.following
+    @Published var mobileSessionWasFinished = false
 }
 
 enum DashboardSection: String, CaseIterable {
@@ -211,6 +212,13 @@ enum DashboardSection: String, CaseIterable {
     
     var localizedString: String {
         NSLocalizedString(rawValue, comment: "")
+    }
+    
+    var allowsRefreshing: Bool {
+        switch self {
+        case .fixed, .mobileDormant: return true
+        case .following, .mobileActive: return false
+        }
     }
 }
 
