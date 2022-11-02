@@ -15,7 +15,7 @@ struct TurnOnBluetoothView: View {
     @State private var presentRestartScreen = false
     @State private var presentUnplugScreen = false
     @Injected private var settingsRedirection: SettingsRedirection
-    @InjectedObject private var bluetoothManager: BluetoothManager
+    @Injected private var bluetoothManager: NewBluetoothManager
     @Binding var creatingSessionFlowContinues: Bool
     @Binding var sdSyncContinues: Bool
     var isSDClearProcess: Bool = false
@@ -60,7 +60,7 @@ struct TurnOnBluetoothView: View {
         )
         .onAppear(perform: {
             if CBCentralManager.authorization != .allowedAlways {
-                _ = bluetoothManager.centralManager
+                bluetoothManager.forceBluetoothPermissionPopup()
             }
         })
         .padding()

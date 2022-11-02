@@ -182,6 +182,9 @@ extension Resolver: ResolverRegistering {
         main.register { BluetoothManager(mobilePeripheralSessionManager: Resolver.resolve()) }
         .implements(BluetoothConnector.self)
         .scope(.cached)
+        main.register { NewBluetoothManager() }
+        .implements(NewBluetoothCommunicator.self)
+        .scope(.cached)
         main.register { DefaultBluetoothHandler() as BluetoothHandler }
         main.register { UserState() }.scope(.application)
         main.register { SyncedMeasurementsDownloadingService() as SyncedMeasurementsDownloader }

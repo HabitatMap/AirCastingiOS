@@ -24,6 +24,7 @@
 		334062442816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */; };
 		33406247281821FA004DA4DA /* ExternalSessionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33406246281821FA004DA4DA /* ExternalSessionsStore.swift */; };
 		3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3346F1F526318C1600BA4695 /* SettingsManager.swift */; };
+		334C7B272912ACF800617DCB /* SelectPeripheralViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334C7B262912ACF800617DCB /* SelectPeripheralViewModel.swift */; };
 		334CC6FA2751454C00C10B53 /* SDCardMobileSessionsSavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334CC6F92751454C00C10B53 /* SDCardMobileSessionsSavingService.swift */; };
 		334EF27C28E5CA28000DD51E /* MeasurementsAveragingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334EF27B28E5CA28000DD51E /* MeasurementsAveragingService.swift */; };
 		334EF27E28E5CE7E000DD51E /* SDSyncMobileSessionStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334EF27D28E5CE7E000DD51E /* SDSyncMobileSessionStorage.swift */; };
@@ -579,6 +580,7 @@
 		3340624528181376004DA4DA /* AirCasting v5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v5.xcdatamodel"; sourceTree = "<group>"; };
 		33406246281821FA004DA4DA /* ExternalSessionsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalSessionsStore.swift; sourceTree = "<group>"; };
 		3346F1F526318C1600BA4695 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
+		334C7B262912ACF800617DCB /* SelectPeripheralViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPeripheralViewModel.swift; sourceTree = "<group>"; };
 		334CC6F92751454C00C10B53 /* SDCardMobileSessionsSavingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDCardMobileSessionsSavingService.swift; sourceTree = "<group>"; };
 		334EF27B28E5CA28000DD51E /* MeasurementsAveragingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsAveragingService.swift; sourceTree = "<group>"; };
 		334EF27D28E5CE7E000DD51E /* SDSyncMobileSessionStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncMobileSessionStorage.swift; sourceTree = "<group>"; };
@@ -1201,6 +1203,15 @@
 			path = SDSync;
 			sourceTree = "<group>";
 		};
+		334C7B252912ACDB00617DCB /* SelectPeripheralView */ = {
+			isa = PBXGroup;
+			children = (
+				AC1DAD4425C9858C009AC4D1 /* SelectPeripheralView.swift */,
+				334C7B262912ACF800617DCB /* SelectPeripheralViewModel.swift */,
+			);
+			path = SelectPeripheralView;
+			sourceTree = "<group>";
+		};
 		336F86CC282E64B400FEFD61 /* Storages */ = {
 			isa = PBXGroup;
 			children = (
@@ -1523,7 +1534,7 @@
 				AC86EE6A25D03DC00083F8C0 /* SelectDeviceView.swift */,
 				AC3203CA25CA991C00A68520 /* TurnOnBluetoothView.swift */,
 				AC32041B25CC46EF00A68520 /* PowerABView.swift */,
-				AC1DAD4425C9858C009AC4D1 /* SelectPeripheralView.swift */,
+				334C7B252912ACDB00617DCB /* SelectPeripheralView */,
 				AC32041E25CC485E00A68520 /* ConnectingABView.swift */,
 				AC960C7725DD39F500EC95DD /* ABConnectedView.swift */,
 				DD4108F8273BE92700BF10FF /* CreateSessionDetails */,
@@ -3480,6 +3491,7 @@
 				AC524A9A2615E3600061AD45 /* NSManagedObjectContext+Utils.swift in Sources */,
 				B38E6CCA26C5F19F00C21C45 /* SessionStoppable.swift in Sources */,
 				AC25C6DA2817DAAE0091C714 /* DeleteAccountController.swift in Sources */,
+				334C7B272912ACF800617DCB /* SelectPeripheralViewModel.swift in Sources */,
 				DDC22C8027B6C508000E81D1 /* ViewControl.swift in Sources */,
 				B3EBB10C26A06D2D002BD81F /* DefaultForgotPasswordViewModel.swift in Sources */,
 				B3EAF01827AFC43300290222 /* ShareLogsViewModel.swift in Sources */,

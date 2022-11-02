@@ -18,7 +18,7 @@ protocol BluetoothStateHandler {
     func forceBluetoothPermissionPopup()
 }
 
-final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerDelegate, CBPeripheralDelegate {
+final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralManagerDelegate, CBPeripheralDelegate {
     // TODO: Make it private when the rest of the codebase is transformed to not use CB
     lazy var centralManager: CBCentralManager = {
         let centralManager = CBCentralManager()
@@ -61,10 +61,6 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
         }
     }
     
-    struct BluetoothCharacteristic {
-        let device: BluetoothDevice
-    }
-    
     func startScanning(scanningWindow: Int = 30,
                        onDeviceDiscovered: @escaping (BluetoothDevice) -> Void,
                        onScanningFinished: (() -> Void)?) {
@@ -77,7 +73,7 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(scanningWindow)) { [centralManager = self.centralManager] in
                 self.queue.async {
                     Log.verbose("Stopping scanning for BT devices")
-                    self.centralManager.stopScan()
+                    centralManager.stopScan()
                     onScanningFinished?()
                 }
             }
@@ -100,13 +96,13 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
         case unknown
     }
     
-    func connect(to device: BluetoothDevice, timout: Int, completion: @escaping ConnectionCallback) {
+    func connect(to device: BluetoothDevice, timeout: TimeInterval, completion: @escaping ConnectionCallback) {
         queue.async {
             Log.verbose("Starting connection to BT device \(device.peripheral.name ?? "unnamed")")
             self.connectionCallbacks[device.peripheral, default: []].append(completion)
             self.centralManager.connect(device.peripheral)
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(timout)) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + timeout) {
                 self.queue.async {
                     Log.verbose("Connection timed out for BT device \(device.peripheral.name ?? "unnamed")")
                     self.connectionCallbacks[device.peripheral] = []
@@ -138,27 +134,43 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
     
     // MARK: Characteristics
     
+    struct BluetoothCharacteristic {
+        let device: BluetoothDevice
+    }
+    
+    struct CharacteristicDiscoveryObserver {
+        let identifier = UUID()
+        var discovered = false
+        let action: CharacteristicsDicoveryCallback
+        
+        init(action: @escaping CharacteristicsDicoveryCallback) {
+            self.action = action
+        }
+    }
+    
     private var charactieristicsMapping: [CharacteristicUUID: [CharacteristicObserver]] = [:]
     private let characteristicsMappingLock = NSRecursiveLock()
     typealias CharacteristicsDicoveryCallback = (Result<[BluetoothCharacteristic], Error>) -> Void
-    private var characteristicsDicoveryCallbacks: [CBPeripheral: [CharacteristicsDicoveryCallback]] = [:]
+    private var characteristicsDicoveryCallbacks: [CBPeripheral: [CharacteristicDiscoveryObserver]] = [:]
     
     func discoverCharacteristics(for device: BluetoothDevice,
                                  timeout: TimeInterval,
                                  completion: @escaping CharacteristicsDicoveryCallback) {
         queue.async {
             device.peripheral.discoverServices(nil)
-            characteristicsDicoveryCallbacks[device.peripheral, default: []].append(completion)
+            let observer = CharacteristicDiscoveryObserver(action: completion)
+            self.characteristicsDicoveryCallbacks[device.peripheral, default: []].append(observer)
+            self.scheduleCharacteristicsDiscoveryTimeout(timeout, for: observer)
         }
     }
-
-    func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-        queue.async {
-            if let services = peripheral.services {
-                for service in services {
-                    peripheral.discoverCharacteristics(nil, for: service)
-                }
-            }
+    
+    private func scheduleCharacteristicsDiscoveryTimeout(_ timeout: TimeInterval, for observer: CharacteristicDiscoveryObserver) {
+        Log.info("Scheduling timeout")
+        DispatchQueue.global().asyncAfter(deadline: .now() + timeout) {
+            self.characteristicsMappingLock.lock()
+            defer { self.characteristicsMappingLock.unlock() }
+            guard observer.discovered == false else { return }
+            observer.action(.failure(CharacteristicObservingError.timeout))
         }
     }
     
@@ -209,6 +221,16 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
         }
     }
     
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        queue.async {
+            if let services = peripheral.services {
+                for service in services {
+                    peripheral.discoverCharacteristics(nil, for: service)
+                }
+            }
+        }
+    }
+    
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         if let characteristics = service.characteristics {
             Log.info("Did discover service characteristics\n")
@@ -219,17 +241,10 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
         }
         
         characteristicsDicoveryCallbacks[peripheral]?.forEach {
-            let asd = peripheral.services?.flatMap(\.characteristics).compactMap { $0 }
-            $0(.success())
+            let characteristics = peripheral.services?.compactMap(\.characteristics).compactMap { $0 }
+            $0(.success([.init(device: BluetoothDevice(peripheral: peripheral))])) // Fix with Paweł
         }
-    }
-    
-    func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-        if let services = peripheral.services {
-            for service in services {
-                peripheral.discoverCharacteristics(nil, for: service)
-            }
-        }
+        characteristicsDicoveryCallbacks.removeValue(forKey: peripheral)
     }
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
