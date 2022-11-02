@@ -1,7 +1,6 @@
 //  Created by Lunar on 04/02/2021.
 //
 
-import CoreBluetooth
 import SwiftUI
 import AirCastingStyling
 import Resolver
@@ -14,8 +13,8 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
     @Injected private var mobilePeripheralSessionManager: MobilePeripheralSessionManager
     @Environment(\.presentationMode) var presentationMode
     
-    init(sessionContext: CreateSessionContext, peripheral: CBPeripheral, creatingSessionFlowContinues: Binding<Bool>) {
-        _viewModel = .init(wrappedValue: VM(sessionContext: sessionContext, peripheral: peripheral))
+    init(sessionContext: CreateSessionContext, device: NewBluetoothManager.BluetoothDevice, creatingSessionFlowContinues: Binding<Bool>) {
+        _viewModel = .init(wrappedValue: VM(sessionContext: sessionContext, device: device))
         self._creatingSessionFlowContinues = .init(projectedValue: creatingSessionFlowContinues)
     }
     

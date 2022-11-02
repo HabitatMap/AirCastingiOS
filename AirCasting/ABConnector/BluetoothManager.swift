@@ -16,7 +16,7 @@ class BluetoothManager: NSObject, BluetoothCommunicator, ObservableObject {
 
     @Published var devices: [CBPeripheral] = []
     @Published var isScanning: Bool = true
-//    @Published var deviceState: BluetoothDeviceState = .unknown
+    @Published var deviceState: BluetoothDeviceState = .unknown
     @Published var mobileSessionReconnected = false
     var observed: NSKeyValueObservation?
 

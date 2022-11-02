@@ -30,19 +30,19 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     @Published var shouldDismiss: Bool = false
     @Published var alert: AlertInfo?
 
-    private let peripheral: CBPeripheral
+    private let device: NewBluetoothManager.BluetoothDevice
     @Injected private var airBeamConnectionController: AirBeamConnectionController
     @Injected private var sdSyncController: SDSyncController
     private let sessionContext: CreateSessionContext
 
     init(sessionContext: CreateSessionContext,
-         peripheral: CBPeripheral) {
-        self.peripheral = peripheral
+         device: NewBluetoothManager.BluetoothDevice) {
+        self.device = device
         self.sessionContext = sessionContext
     }
 
     func connectToAirBeamAndSync() {
-        self.airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { success in
+        self.airBeamConnectionController.connectToAirBeam(device: device) { success in
             Log.info("[SD SYNC] Completed connecting to AB")
             guard success else {
                 DispatchQueue.main.async {
@@ -53,7 +53,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                 }
                 return
             }
-            self.sdSyncController.syncFromAirbeam(self.peripheral, progress: { [weak self] newStatus in
+            self.sdSyncController.syncFromAirbeam(self.device, progress: { [weak self] newStatus in
                 guard let self = self else { return }
                 switch newStatus {
                 case .inProgress(let progress):
@@ -71,7 +71,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                 guard let self = self else { return }
                 switch result {
                 case .success():
-                    guard self.peripheral.state == .connected else {
+                    guard self.device.peripheral.state == .connected else {
                         Log.info("[SD SYNC] Device disconnected. Attempting reconnect")
                         self.reconnectWithAirbeamAndClearCard()
                         return
@@ -89,7 +89,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     }
 
     private func clearSDCard() {
-        self.sdSyncController.clearSDCard(self.peripheral) { result in
+        self.sdSyncController.clearSDCard(self.device) { result in
             DispatchQueue.main.async {
                 self.presentNextScreen = true
                 if !result {
@@ -101,7 +101,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     }
     
     private func reconnectWithAirbeamAndClearCard() {
-        airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { [weak self] success in
+        airBeamConnectionController.connectToAirBeam(device: device) { [weak self] success in
             guard let self = self else { return }
             guard success else {
                 Log.info("[SD SYNC] Reconnecting failed")
@@ -118,7 +118,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     }
 
     private func disconnectAirBeam() {
-        airBeamConnectionController.disconnectAirBeam(peripheral: peripheral)
+        airBeamConnectionController.disconnectAirBeam(device: device)
     }
     
     private func alertForError(_ error: SDSyncError) -> AlertInfo {

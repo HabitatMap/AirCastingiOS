@@ -44,6 +44,7 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
         let peripheral: CBPeripheral
         let id = UUID()
         var name: String?
+        var uuid: String
         
         static func == (lhs: NewBluetoothManager.BluetoothDevice, rhs: NewBluetoothManager.BluetoothDevice) -> Bool {
             lhs.peripheral == rhs.peripheral
@@ -52,6 +53,7 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
         init(peripheral: CBPeripheral) {
             self.peripheral = peripheral
             name = peripheral.name
+            uuid = peripheral.identifier.description
         }
     }
     
@@ -194,6 +196,7 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
                                    characteristic: CharacteristicUUID,
                                    timeout: TimeInterval? = nil,
                                    notify: @escaping CharacteristicObserverAction) -> AnyHashable {
+        // DOESN'T WORK FOR SD SYNC
         let observer = CharacteristicObserver(action: notify)
         if let timeout = timeout { scheduleTimeout(timeout, for: observer) }
         characteristicsMappingLock.lock()

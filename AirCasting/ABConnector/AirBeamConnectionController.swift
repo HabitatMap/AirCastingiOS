@@ -2,19 +2,18 @@
 //
 
 import Foundation
-import CoreBluetooth
 import Resolver
 
 protocol AirBeamConnectionController {
-    func connectToAirBeam(peripheral: CBPeripheral, completion: @escaping (Bool) -> Void)
-    func disconnectAirBeam(peripheral: CBPeripheral)
+    func connectToAirBeam(device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Bool) -> Void)
+    func disconnectAirBeam(device: NewBluetoothManager.BluetoothDevice)
 }
 
 class DefaultAirBeamConnectionController: AirBeamConnectionController {
     @Injected private var connectingAirBeamServices: ConnectingAirBeamServices
     
-    func connectToAirBeam(peripheral: CBPeripheral, completion: @escaping (Bool) -> Void) {
-        connectingAirBeamServices.connect(to: peripheral, timeout: 10) { result in
+    func connectToAirBeam(device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Bool) -> Void) {
+        connectingAirBeamServices.connect(to: device, timeout: 10) { result in
             switch result {
             case .success:
                 completion(true)
@@ -26,7 +25,7 @@ class DefaultAirBeamConnectionController: AirBeamConnectionController {
         }
     }
     
-    func disconnectAirBeam(peripheral: CBPeripheral) {
-        connectingAirBeamServices.disconnect(from: peripheral)
+    func disconnectAirBeam(device: NewBluetoothManager.BluetoothDevice) {
+        connectingAirBeamServices.disconnect(from: device)
     }
 }

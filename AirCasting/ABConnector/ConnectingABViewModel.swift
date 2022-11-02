@@ -2,7 +2,6 @@
 //
 
 import Combine
-import CoreBluetooth
 import Resolver
 
 // [RESOLVER] Move this VM init to View when all dependencies resolved
@@ -21,26 +20,26 @@ class AirbeamConnectionViewModel: ObservableObject {
     @Published var shouldDismiss: Bool = false
     @Published var alert: AlertInfo? = nil
     
-    private let peripheral: CBPeripheral
+    private let device: NewBluetoothManager.BluetoothDevice
     private let sessionContext: CreateSessionContext
     
     required init(sessionContext: CreateSessionContext,
-         peripheral: CBPeripheral) {
-        self.peripheral = peripheral
+                  device: NewBluetoothManager.BluetoothDevice) {
+        self.device = device
         self.sessionContext = sessionContext
     }
     
     func connectToAirBeam() {
-        self.bluetoothConnectionProtector.isAirBeamAvailableForNewConnection(peripheraUUID: peripheral.identifier.description) { result in
+        self.bluetoothConnectionProtector.isAirBeamAvailableForNewConnection(peripheraUUID: device.uuid) { result in
             switch result {
             case .success(_):
-                self.airBeamConnectionController.connectToAirBeam(peripheral: self.peripheral) { success in
+                self.airBeamConnectionController.connectToAirBeam(device: self.device) { success in
                     guard success else {
                         self.getAlert(.timeOut); return
                     }
-                    DispatchQueue.main.async {
+//                    DispatchQueue.main.async {
                         self.isDeviceConnected = success
-                    }
+//                    }
                     self.configureAB()
                 }
             case .failure(let error):
@@ -53,7 +52,7 @@ class AirbeamConnectionViewModel: ObservableObject {
     private func configureAB() {
         if let sessionUUID = self.sessionContext.sessionUUID {
             // [Resolver] NOTE: Do we want configurator to be injected?
-            let configurator = AirBeam3Configurator(peripheral: self.peripheral)
+            let configurator = AirBeam3Configurator(peripheral: self.device.peripheral)
             do {
                 try configurator.configureFixed(uuid: sessionUUID)
             } catch {

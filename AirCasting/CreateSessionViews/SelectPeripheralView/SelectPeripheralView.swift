@@ -119,14 +119,14 @@ struct SelectPeripheralView: View {
             if syncMode == true {
                 let viewModel =
                 SDSyncViewModelDefault(sessionContext: sessionContext,
-                                       peripheral: selection.peripheral)
+                                       device: selection)
                 destination = AnyView(SyncingABView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             } else if SDClearingRouteProcess {
-                let viewModel = ClearingSDCardViewModelDefault(isSDClearProcess: SDClearingRouteProcess, peripheral: selection.peripheral)
+                let viewModel = ClearingSDCardViewModelDefault(isSDClearProcess: SDClearingRouteProcess, device: selection)
                 destination = AnyView(ClearingSDCardView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             } else {
                 destination = AnyView(ConnectingABView(sessionContext: sessionContext,
-                                                       peripheral: selection.peripheral, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+                                                       device: selection, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             }
         } else {
             destination = AnyView(EmptyView())

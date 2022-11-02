@@ -28,8 +28,8 @@ struct SDCardDownloadSummary {
 }
 
 protocol SDCardAirBeamServices {
-    func downloadData(from peripheral: CBPeripheral, progress: @escaping (SDCardDataChunk) -> Void, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void)
-    func clearSDCard(of peripheral: CBPeripheral, completion: @escaping (Result<Void, Error>) -> Void)
+    func downloadData(from device: NewBluetoothManager.BluetoothDevice, progress: @escaping (SDCardDataChunk) -> Void, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void)
+    func clearSDCard(of device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
@@ -40,7 +40,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     // has notifications for reading measurements stored in csv files on SD card
     private let DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID = CharacteristicUUID(value:"0000ffdf-0000-1000-8000-00805f9b34fb")
     
-    @Injected private var bluetoothManager: BluetoothCommunicator
+    @Injected private var bluetoothManager: NewBluetoothManager
     private var dataCharacteristicObserver: AnyHashable?
     private var metadataCharacteristicObserver: AnyHashable?
     private var clearCardCharacteristicObserver: AnyHashable?
@@ -50,73 +50,73 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     private var monitoringForFinishedSendingToken: Cancellable?
     private let queue: DispatchQueue = .init(label: "SDSyncAirBeamServices")
     
-    func downloadData(from peripheral: CBPeripheral, progress: @escaping (SDCardDataChunk) -> Void, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void) {
+    func downloadData(from device: NewBluetoothManager.BluetoothDevice, progress: @escaping (SDCardDataChunk) -> Void, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void) {
         var currentSessionType: SDCardSessionType?
         
         Log.info("[SD Sync] Downloading data")
         
-        configureABforSync(peripheral: peripheral)
-        metadataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
+        configureABforSync(peripheral: device.peripheral)
+        metadataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(for: device, characteristic: DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
             switch result {
             case .success(let data):
                 self.queue.async { [weak self] in
                     currentSessionType = currentSessionType.next
-                    self?.handleMetadata(data, currentSessionType: currentSessionType!, completion: completion)
+                    self?.handleMetadata(data, device: device, currentSessionType: currentSessionType!, completion: completion)
                 }
             case .failure(let error):
                 self.queue.async { [weak self] in
                     Log.warning("[SD SYNC]  Error while receiving metadata from SD card: \(error.localizedDescription)")
-                    self?.finishSync { completion(.failure(error)) }
+                    self?.finishSync(device: device) { completion(.failure(error)) }
                 }
             }
         }
         
-        dataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
+        dataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(for: device, characteristic: DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
             switch result {
             case .success(let data):
                 self.queue.async { [weak self] in
-                    self?.handlePayload(data: data, currentSessionType: currentSessionType, progress: progress, completion: completion)
+                    self?.handlePayload(device: device, data: data, currentSessionType: currentSessionType, progress: progress, completion: completion)
                 }
             case .failure(let error):
                 self.queue.async { [weak self] in
                     Log.warning("Error while receiving data from SD card: \(error.localizedDescription)")
-                    self?.finishSync { completion(.failure(error)) }
+                    self?.finishSync(device: device) { completion(.failure(error)) }
                 }
             }
         }
     }
     
-    func clearSDCard(of peripheral: CBPeripheral, completion: @escaping (Result<Void, Error>) -> Void) {
+    func clearSDCard(of device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
         Log.info("[SD Sync] Starting clearing SD card process")
-        sendClearConfig(peripheral: peripheral)
-        clearCardCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID, timeout: 10) { result in
+        sendClearConfig(peripheral: device.peripheral)
+        clearCardCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(for: device, characteristic: DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID, timeout: 10) { result in
             switch result {
             case .success(let data):
                 guard let data = data, let payload = String(data: data, encoding: .utf8) else {
                     completion(.failure(SDCardSyncError.cantDecodePayload))
-                    self.bluetoothManager.unsubscribeCharacteristicObserver(self.clearCardCharacteristicObserver!)
+                    self.bluetoothManager.unsubscribeCharacteristicObserver(for: device, token: self.clearCardCharacteristicObserver!)
                     return
                 }
                 Log.info("[SD CARD SYNC] " + payload)
                 if payload == "SD_DELETE_FINISH" {
                     completion(.success(()))
                     Log.info("[SD CARD SYNC] SD card cleared")
-                    self.bluetoothManager.unsubscribeCharacteristicObserver(self.clearCardCharacteristicObserver!)
+                    self.bluetoothManager.unsubscribeCharacteristicObserver(for: device, token: self.clearCardCharacteristicObserver!)
                 } else {
                     Log.warning("[SD CARD SYNC] Wrong metadata for clearing sd card")
-                    self.bluetoothManager.unsubscribeCharacteristicObserver(self.clearCardCharacteristicObserver!)
+                    self.bluetoothManager.unsubscribeCharacteristicObserver(for: device, token: self.clearCardCharacteristicObserver!)
                 }
             case .failure(let error):
                 Log.warning("Error while receiving metadata from SD card: \(error.localizedDescription)")
                 completion(.failure(error))
-                self.bluetoothManager.unsubscribeCharacteristicObserver(self.clearCardCharacteristicObserver!)
+                self.bluetoothManager.unsubscribeCharacteristicObserver(for: device, token: self.clearCardCharacteristicObserver!)
             }
         }
     }
     
-    private func handleMetadata(_ data: Data?, currentSessionType: SDCardSessionType, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void) {
+    private func handleMetadata(_ data: Data?, device: NewBluetoothManager.BluetoothDevice, currentSessionType: SDCardSessionType, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void) {
         guard let data = data, let payload = String(data: data, encoding: .utf8) else {
-            self.finishSync { completion(.failure(SDCardSyncError.cantDecodePayload)) }
+            self.finishSync(device: device) { completion(.failure(SDCardSyncError.cantDecodePayload)) }
             return
         }
         
@@ -126,7 +126,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
             // That's why we have to add the monitoring which checks if any new data is still being send, and if not, then we are letting the called know that Airbeam finished sending data.
             Log.info("[SD Sync] Received SD_SYNC_FINISH message. Monitoring for end of payload.")
             self.startMonitoringForEnd {
-                self.finishSync { completion(.success(.init(expectedMeasurementsCount: self.expectedMeasurementsCount))) }
+                self.finishSync(device: device) { completion(.success(.init(expectedMeasurementsCount: self.expectedMeasurementsCount))) }
                 Log.info("[SD CARD SYNC] Sync finished.")
             }
             return
@@ -136,7 +136,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         // Payload format is ` Some string: ${number_of_entries_expected} `
         guard let measurementsCountSting = payload.split(separator: ":").last?.trimmingCharacters(in: .whitespaces) else {
             Log.warning("Unexpected metadata format: (\(payload))")
-            self.finishSync { completion(.failure(SDCardSyncError.unexpectedMetadataFormat)) }
+            self.finishSync(device: device) { completion(.failure(SDCardSyncError.unexpectedMetadataFormat)) }
             return
         }
         let measurementsCount = Int(measurementsCountSting)
@@ -146,11 +146,11 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         self.expectedMeasurementsCount[currentSessionType] = measurementsCount ?? 0
     }
     
-    private func handlePayload(data: Data?, currentSessionType: SDCardSessionType?, progress: @escaping (SDCardDataChunk) -> Void, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void) {
+    private func handlePayload(device: NewBluetoothManager.BluetoothDevice, data: Data?, currentSessionType: SDCardSessionType?, progress: @escaping (SDCardDataChunk) -> Void, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void) {
         guard let data = data, let payload = String(data: data, encoding: .utf8) else { return }
         guard let sessionType = currentSessionType else {
             Log.error("[SD SYNC] Received data before first metadata payload!")
-            self.finishSync { completion(.failure(SDCardSyncError.wrongOrderOfReceivedPayload)) }
+            self.finishSync(device: device) { completion(.failure(SDCardSyncError.wrongOrderOfReceivedPayload)) }
             return
         }
         self.receivedMeasurementsCount[sessionType, default: 0] += Constants.SDCardSync.numberOfMeasurementsInDataChunk
@@ -175,9 +175,9 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         configurator.clearSDCard()
     }
     
-    private func finishSync(completion: () -> Void) {
-        self.bluetoothManager.unsubscribeCharacteristicObserver(self.dataCharacteristicObserver!)
-        self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
+    private func finishSync(device: NewBluetoothManager.BluetoothDevice, completion: () -> Void) {
+        self.bluetoothManager.unsubscribeCharacteristicObserver(for: device, token: self.dataCharacteristicObserver!)
+        self.bluetoothManager.unsubscribeCharacteristicObserver(for: device, token: self.metadataCharacteristicObserver!)
         expectedMeasurementsCount = [:]
         receivedMeasurementsCount = [:]
         if let token = monitoringForFinishedSendingToken {
