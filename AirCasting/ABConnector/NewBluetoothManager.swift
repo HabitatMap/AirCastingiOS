@@ -26,20 +26,6 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
         return centralManager
     }()
     
-    enum CharacteristicObservingError: Error {
-        case timeout
-    }
-
-    private class CharacteristicObserver {
-        let identifier = UUID()
-        var triggerCounter = 0
-        let action: CharacteristicObserverAction
-        
-        init(action: @escaping CharacteristicObserverAction) {
-            self.action = action
-        }
-    }
-    
     private var queue = DispatchQueue(label: "bluetooth.driver.queue")
     
     func forceBluetoothPermissionPopup() {
@@ -53,11 +39,19 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
     private typealias DiscoveryCallback = (BluetoothDevice) -> Void
     private var deviceDiscoveryCallbacks: [DiscoveryCallback] = []
     
-    class BluetoothDevice {
-        fileprivate let peripheral: CBPeripheral
+    class BluetoothDevice: Equatable {
+        // fileprivate let peripheral: CBPeripheral  TEMPORARILY COMMENTED OUT
+        let peripheral: CBPeripheral
+        let id = UUID()
+        var name: String?
+        
+        static func == (lhs: NewBluetoothManager.BluetoothDevice, rhs: NewBluetoothManager.BluetoothDevice) -> Bool {
+            lhs.peripheral == rhs.peripheral
+        }
         
         init(peripheral: CBPeripheral) {
             self.peripheral = peripheral
+            name = peripheral.name
         }
     }
     
@@ -77,6 +71,12 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
                     onScanningFinished?()
                 }
             }
+        }
+    }
+    
+    func stopScan() {
+        if centralManager.isScanning {
+            centralManager.stopScan()
         }
     }
     
@@ -104,6 +104,9 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
             
             DispatchQueue.main.asyncAfter(deadline: .now() + timeout) {
                 self.queue.async {
+                    guard !(self.connectionCallbacks[device.peripheral]?.isEmpty ?? true) else {
+                        return
+                    }
                     Log.verbose("Connection timed out for BT device \(device.peripheral.name ?? "unnamed")")
                     self.connectionCallbacks[device.peripheral] = []
                     completion(.failure(BluetoothDriverError.timeout))
@@ -115,10 +118,12 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         queue.async {
             Log.verbose("Did connect to BT device \(peripheral.name ?? "unnamed")")
+            peripheral.delegate = self
             guard let callbacks = self.connectionCallbacks[peripheral] else {
                 return
             }
             callbacks.forEach { $0(.success(())) }
+            self.connectionCallbacks[peripheral] = []
         }
     }
     
@@ -144,6 +149,20 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
         let action: CharacteristicsDicoveryCallback
         
         init(action: @escaping CharacteristicsDicoveryCallback) {
+            self.action = action
+        }
+    }
+    
+    enum CharacteristicObservingError: Error {
+        case timeout
+    }
+
+    private class CharacteristicObserver {
+        let identifier = UUID()
+        var triggerCounter = 0
+        let action: CharacteristicObserverAction
+        
+        init(action: @escaping CharacteristicObserverAction) {
             self.action = action
         }
     }
@@ -242,7 +261,7 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
         
         characteristicsDicoveryCallbacks[peripheral]?.forEach {
             let characteristics = peripheral.services?.compactMap(\.characteristics).compactMap { $0 }
-            $0(.success([.init(device: BluetoothDevice(peripheral: peripheral))])) // Fix with Paweł
+            $0.action(.success([.init(device: BluetoothDevice(peripheral: peripheral))])) // Fix with Paweł
         }
         characteristicsDicoveryCallbacks.removeValue(forKey: peripheral)
     }
@@ -257,10 +276,37 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
         characteristicsMappingLock.unlock()
     }
     
-    // MARK: Temp, delegate methods
+    // MARK: Central manager state
+    
+    private var deviceState: BluetoothDeviceState = .unknown
+    
+    func isBluetoothDenied() -> Bool {
+        CBCentralManager.authorization != .allowedAlways || deviceState != .poweredOn
+    }
     
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        // TODO
+        switch central.state {
+        case .unknown:
+            Log.info("central.state is .unknown")
+            deviceState = .unknown
+        case .resetting:
+            Log.info("central.state is .resetting")
+            deviceState = .resetting
+        case .unsupported:
+            Log.info("central.state is .unsupported")
+            deviceState = .unsupported
+        case .unauthorized:
+            Log.info("central.state is .unauthorized")
+            deviceState = .unauthorized
+        case .poweredOff:
+            Log.info("central.state is .poweredOff")
+            deviceState = .poweredOff
+        case .poweredOn:
+            Log.info("central.state is .poweredOn")
+            deviceState = .poweredOn
+        @unknown default:
+            fatalError()
+        }
     }
 
 }

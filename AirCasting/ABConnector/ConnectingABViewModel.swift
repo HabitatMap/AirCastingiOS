@@ -38,7 +38,9 @@ class AirbeamConnectionViewModel: ObservableObject {
                     guard success else {
                         self.getAlert(.timeOut); return
                     }
-                    self.isDeviceConnected = success
+                    DispatchQueue.main.async {
+                        self.isDeviceConnected = success
+                    }
                     self.configureAB()
                 }
             case .failure(let error):

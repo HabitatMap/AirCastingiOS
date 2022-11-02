@@ -10,20 +10,13 @@ import CoreBluetooth
 import Resolver
 
 class BluetoothManager: NSObject, BluetoothCommunicator, ObservableObject {
+    @Injected var newBluetoothManager: NewBluetoothManager
     
-    lazy var centralManager: CBCentralManager = {
-        let centralManager = CBCentralManager()
-        centralManager.delegate = self
-        isScanning = centralManager.isScanning
-        observed = centralManager.observe(\.isScanning) { [weak self] _, change in
-            self?.isScanning = self?.centralManager.isScanning ?? false
-        }
-        return centralManager
-    }()
+    lazy var centralManager = newBluetoothManager.centralManager
 
     @Published var devices: [CBPeripheral] = []
     @Published var isScanning: Bool = true
-    @Published var deviceState: BluetoothDeviceState = .unknown
+//    @Published var deviceState: BluetoothDeviceState = .unknown
     @Published var mobileSessionReconnected = false
     var observed: NSKeyValueObservation?
 
@@ -133,28 +126,8 @@ struct PeripheralMeasurement {
 extension BluetoothManager: CBCentralManagerDelegate {
 
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        switch central.state {
-        case .unknown:
-            Log.info("central.state is .unknown")
-            deviceState = .unknown
-        case .resetting:
-            Log.info("central.state is .resetting")
-            deviceState = .resetting
-        case .unsupported:
-            Log.info("central.state is .unsupported")
-            deviceState = .unsupported
-        case .unauthorized:
-            Log.info("central.state is .unauthorized")
-            deviceState = .unauthorized
-        case .poweredOff:
-            Log.info("central.state is .poweredOff")
-            deviceState = .poweredOff
-        case .poweredOn:
-            Log.info("central.state is .poweredOn")
-            deviceState = .poweredOn
-        @unknown default:
-            fatalError()
-        }
+        //
+        Log.verbose("!!!! UPDATED STATE")
     }
 
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {

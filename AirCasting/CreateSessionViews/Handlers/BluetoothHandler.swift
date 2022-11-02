@@ -10,9 +10,9 @@ protocol BluetoothHandler {
 }
 
 class DefaultBluetoothHandler: BluetoothHandler {
-    @Injected private var bluetoothManager: BluetoothManager
+    @Injected private var bluetoothManager: NewBluetoothManager
     
     func isBluetoothDenied() -> Bool {
-        CBCentralManager.authorization != .allowedAlways || bluetoothManager.deviceState != .poweredOn
+        bluetoothManager.isBluetoothDenied()
     }
 }

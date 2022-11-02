@@ -6,14 +6,13 @@
 //
 
 import AirCastingStyling
-import CoreBluetooth
 import SwiftUI
 import Resolver
 
 struct SelectPeripheralView: View {
-    @State private var selection: CBPeripheral? = nil
+    @StateObject var viewModel = SelectPeripheralViewModel()
+    @State private var selection: NewBluetoothManager.BluetoothDevice? = nil
     var SDClearingRouteProcess: Bool
-    @InjectedObject private var bluetoothManager: BluetoothManager
     @EnvironmentObject var sessionContext: CreateSessionContext
     @Injected private var connectionController: AirBeamConnectionController
     @Binding var creatingSessionFlowContinues: Bool
@@ -28,26 +27,26 @@ struct SelectPeripheralView: View {
                     LazyVStack(alignment: .leading, spacing: 25) {
                         HStack(spacing: 8) {
                             Text(Strings.SelectPeripheralView.airBeamsText)
-                            if bluetoothManager.isScanning {
+                            if viewModel.isScanning {
                                 loader
                             }
                         }
-                        displayDeviceButton(devices: bluetoothManager.airbeams)
+                        displayDeviceButton(devices: viewModel.airbeams)
                         
                         HStack(spacing: 8) {
                             Text(Strings.SelectPeripheralView.otherText)
-                            if bluetoothManager.isScanning {
+                            if viewModel.isScanning {
                                 loader
                             }
                         }
-                        displayDeviceButton(devices: bluetoothManager.otherDevices)
+                        displayDeviceButton(devices: viewModel.otherDevices)
                     }
                     Spacer()
                 }
                 .listStyle(PlainListStyle())
                 .font(Fonts.moderateRegularHeading1)
                 .foregroundColor(.aircastingDarkGray)
-                if !bluetoothManager.isScanning {
+                if !viewModel.isScanning {
                     refreshButton
                         .font(Fonts.moderateRegularHeading3)
                         .frame(alignment: .trailing)
@@ -55,14 +54,10 @@ struct SelectPeripheralView: View {
                 connectButton.disabled(selection == nil)
             }
             .onAppear {
-                if CBCentralManager.authorization == .allowedAlways {
-                    _ = bluetoothManager.centralManager // Permissions alert
-                    // it triggers the bluetooth searching on the appearing time
-                    bluetoothManager.startScanning()
-                }
+                viewModel.viewAppeared()
             }
             .onDisappear {
-                bluetoothManager.centralManager.stopScan()
+                viewModel.viewDisappeared()
             }
             .padding()
             .background(Color.aircastingBackground.ignoresSafeArea())
@@ -70,12 +65,11 @@ struct SelectPeripheralView: View {
         }
     }
     
-    func displayDeviceButton(devices: [CBPeripheral]) -> some View {
-        ForEach(devices, id: \.self) { availableDevice in
+    func displayDeviceButton(devices: [NewBluetoothManager.BluetoothDevice]) -> some View {
+        ForEach(devices, id: \.id) { availableDevice in
             Button(action: {
                 selection = availableDevice
-                
-                sessionContext.peripheral = availableDevice
+                sessionContext.peripheral = availableDevice.peripheral //CHANGE WHEN NEW LOGIC FOR RECORDING SESSION WILL BE IMPLEMENTED
             }) {
                 HStack(spacing: 20) {
                     CheckBox(isSelected: selection == availableDevice)
@@ -114,7 +108,7 @@ struct SelectPeripheralView: View {
     
     var refreshButton: some View {
         Button(action: {
-            bluetoothManager.startScanning()
+            viewModel.refreshButtonTapped()
         }, label: {
             Text(Strings.SelectPeripheralView.refreshButton)
         })
@@ -126,14 +120,14 @@ struct SelectPeripheralView: View {
             if syncMode == true {
                 let viewModel =
                 SDSyncViewModelDefault(sessionContext: sessionContext,
-                                       peripheral: selection)
+                                       peripheral: selection.peripheral)
                 destination = AnyView(SyncingABView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             } else if SDClearingRouteProcess {
-                let viewModel = ClearingSDCardViewModelDefault(isSDClearProcess: SDClearingRouteProcess, peripheral: selection)
+                let viewModel = ClearingSDCardViewModelDefault(isSDClearProcess: SDClearingRouteProcess, peripheral: selection.peripheral)
                 destination = AnyView(ClearingSDCardView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             } else {
                 destination = AnyView(ConnectingABView(sessionContext: sessionContext,
-                                                       peripheral: selection, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+                                                       peripheral: selection.peripheral, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             }
         } else {
             destination = AnyView(EmptyView())
