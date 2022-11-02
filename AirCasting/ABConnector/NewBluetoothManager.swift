@@ -273,7 +273,13 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
         characteristicsMappingLock.unlock()
     }
     
+    func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
+        Log.verbose("## Did write value for characteristic: \(characteristic)")
+    }
+    
+    
     // MARK: Central manager state
+    
     
     private var deviceState: BluetoothDeviceState = .unknown
     

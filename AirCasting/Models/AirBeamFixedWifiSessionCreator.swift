@@ -46,7 +46,7 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
         // then send AB auth data to connect to web session and data needed to start recording
         guard let name = session.name,
               let startTime = session.startTime,
-              let peripheral = sessionContext.peripheral,
+              let device = sessionContext.device,
               let wifiSSID = sessionContext.wifiSSID,
               let wifiPassword = sessionContext.wifiPassword,
               let contribute = sessionContext.contribute
@@ -82,7 +82,9 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                                                                             self.uiStore.accessStorage({ storage in
                                                                                 storage.giveHighestOrder(to: sessionWithURL.uuid)
                                                                             })
-                                                                            try AirBeam3Configurator(peripheral: peripheral).configureFixedWifiSession(
+                                                                            
+                                                                            // TODO: move from passing peripheral here
+                                                                            try AirBeam3Configurator(peripheral: device.peripheral).configureFixedWifiSession(
                                                                                                         uuid: sessionUUID,
                                                                                                         location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
                                                                                                         date: DateBuilder.getFakeUTCDate(),

@@ -41,7 +41,7 @@ final class AirBeamCellularSessionCreator: SessionCreator {
         // then send AB auth data to connect to web session and data needed to start recording
         guard let name = session.name,
               let startTime = session.startTime,
-              let peripheral = sessionContext.peripheral,
+              let device = sessionContext.device,
               let contribute = sessionContext.contribute else {
             assertionFailure("invalidCreateSessionContext \(sessionContext)")
             completion(.failure(AirBeamSessionCreatorError.invalidCreateSessionContext(sessionContext)))
@@ -77,7 +77,7 @@ final class AirBeamCellularSessionCreator: SessionCreator {
                                                                             self.uiStore.accessStorage({ storage in
                                                                                 storage.giveHighestOrder(to: sessionWithURL.uuid)
                                                                             })
-                                                                            try AirBeam3Configurator(peripheral: peripheral).configureFixedCellularSession(uuid: sessionUUID,
+                                                                            try AirBeam3Configurator(peripheral: device.peripheral).configureFixedCellularSession(uuid: sessionUUID,
                                                                                                                                                            location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
                                                                                                                                                            date: DateBuilder.getFakeUTCDate())
                                                                             Log.warning("Created fixed cellular session \(output)")

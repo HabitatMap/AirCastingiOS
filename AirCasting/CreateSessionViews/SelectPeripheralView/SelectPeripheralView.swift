@@ -14,7 +14,6 @@ struct SelectPeripheralView: View {
     @State private var selection: NewBluetoothManager.BluetoothDevice? = nil
     var SDClearingRouteProcess: Bool
     @EnvironmentObject var sessionContext: CreateSessionContext
-    @Injected private var connectionController: AirBeamConnectionController
     @Binding var creatingSessionFlowContinues: Bool
     var syncMode: Bool = false
     
@@ -69,7 +68,7 @@ struct SelectPeripheralView: View {
         ForEach(devices, id: \.id) { availableDevice in
             Button(action: {
                 selection = availableDevice
-                sessionContext.peripheral = availableDevice.peripheral //CHANGE WHEN NEW LOGIC FOR RECORDING SESSION WILL BE IMPLEMENTED
+                sessionContext.device = availableDevice
             }) {
                 HStack(spacing: 20) {
                     CheckBox(isSelected: selection == availableDevice)
