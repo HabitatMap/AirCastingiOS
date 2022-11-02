@@ -32,7 +32,7 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
             switch result {
             case .success:
                 self.btManager.discoverCharacteristics(for: device, timeout: timeout) { characteristicsResult in
-                    switch result {
+                    switch characteristicsResult {
                     case .success:
                         completion(.success)
                     case .failure(let error):
@@ -45,33 +45,6 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
                 completion(.timeout)
             }
         }
-        
-//        bluetoothConnector.connect(to: peripheral)
-//        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(Int(timeout))) {
-//            if connectionInProgress {
-//                Log.info("Airbeam connection failed")
-//                self.bluetoothConnector.cancelPeripheralConnection(for: peripheral)
-//                completion(.timeout)
-//                NotificationCenter.default.removeObserver(self.connectionToken as AnyObject)
-//            }
-//        }
-//        connectionToken = NotificationCenter.default.addObserver(forName: .deviceConnected, object: nil, queue: nil) { _ in
-//            Log.info("Airebeam connected successfully")
-//            var characteristicsHandle: Any?
-//            NotificationCenter.default.removeObserver(self.connectionToken as AnyObject)
-//            //
-//            // Move from NotificationCenter -> BluetoothCommunicator
-//            //
-//            // func subscribeToCharacteristic(_ characteristic: CBUUID, timeout: TimeInterval?, notify: @escaping CharacteristicObserverAction) -> AnyHashable
-//            //
-//            characteristicsHandle = NotificationCenter.default.addObserver(forName: .discoveredCharacteristic, object: nil, queue: .main) { notification in
-//                guard notification.userInfo?[AirCastingNotificationKeys.DiscoveredCharacteristic.peripheralUUID] as! UUID == peripheral.identifier else { return }
-//                connectionInProgress = false
-//                completion(.success)
-//                guard let characteristicsHandle = characteristicsHandle else { return }
-//                NotificationCenter.default.removeObserver(characteristicsHandle)
-//            }
-//        }
     }
     
     func disconnect(from peripheral: CBPeripheral) {
