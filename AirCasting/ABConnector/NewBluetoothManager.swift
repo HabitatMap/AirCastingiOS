@@ -115,6 +115,10 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
         }
     }
     
+    func disconnect(from device: BluetoothDevice) {
+        self.centralManager.cancelPeripheralConnection(device.peripheral)
+    }
+    
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         queue.async {
             Log.verbose("Did connect to BT device \(peripheral.name ?? "unnamed")")

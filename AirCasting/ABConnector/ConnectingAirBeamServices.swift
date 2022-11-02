@@ -17,7 +17,6 @@ protocol ConnectingAirBeamServices {
 }
 
 class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
-    
     @Injected private var bluetoothConnector: BluetoothConnector
     @Injected private var btManager: NewBluetoothManager
     private var connectionToken: AnyObject?
@@ -48,6 +47,7 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
     }
     
     func disconnect(from peripheral: CBPeripheral) {
-        bluetoothConnector.cancelPeripheralConnection(for: peripheral)
+        let device = NewBluetoothManager.BluetoothDevice(peripheral: peripheral)
+        btManager.disconnect(from: device)
     }
 }
