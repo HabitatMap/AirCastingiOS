@@ -225,3 +225,30 @@ class MobilePeripheralSessionManager {
         activeMobileSession?.peripheral == peripheral
     }
 }
+
+
+class ReconnectionController: BluetoothConnectionObserver {
+    @Injected private var mobilePeripheralManager: MobilePeripheralSessionManager
+    @Injected private var bluetoothManager: NewBluetoothManager
+    
+    init() {
+        bluetoothManager.addConnectionObserver(self)
+    }
+    
+    func didDisconnect(device: NewBluetoothManager.BluetoothDevice) {
+        guard mobilePeripheralManager.activeSessionInProgressWith(device.peripheral) else { return } //TODO: Move away from CB!
+        mobilePeripheralManager.markActiveSessionAsDisconnected(peripheral: device.peripheral)
+        
+        bluetoothManager.connect(to: device, timeout: 10) { result in
+            switch result {
+            case .success: break
+            case .failure(let error):
+                self.mobilePeripheralManager.moveSessionToStandaloneMode(peripheral: devic.peripheral)
+            }
+        }
+    }
+}
+
+class MobileSessionRecorderController {
+    
+}

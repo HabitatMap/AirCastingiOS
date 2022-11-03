@@ -278,6 +278,10 @@ extension Resolver: ResolverRegistering {
         
         main.register { WindowAlertPresenter() as GlobalAlertPresenter }
             .scope(.application)
+        
+        // MARK: Reconnect
+        main.register { ReconnectionController() }
+            .scope(.application)
     }
     
     // MARK: - Composition helpers
