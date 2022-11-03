@@ -179,6 +179,8 @@ extension Resolver: ResolverRegistering {
         main.register { MicrophoneManager() }.scope(.cached)
         main.register { ActiveSessionsAveragingController() }.scope(.cached)
         main.register { MobilePeripheralSessionManager(measurementStreamStorage: Resolver.resolve()) }.scope(.cached)
+        main.register { MobileAirBeamSessionRecordingController() as MobileSessionRecordingController }
+            .scope(.application)
         main.register { BluetoothManager(mobilePeripheralSessionManager: Resolver.resolve()) }
         .implements(BluetoothConnector.self)
         .scope(.cached)

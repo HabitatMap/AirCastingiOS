@@ -94,22 +94,22 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
             case .success(let data):
                 guard let data = data, let payload = String(data: data, encoding: .utf8) else {
                     completion(.failure(SDCardSyncError.cantDecodePayload))
-                    self.bluetoothManager.unsubscribeCharacteristicObserver(for: device, token: self.clearCardCharacteristicObserver!)
+                    self.bluetoothManager.unsubscribeCharacteristicObserver(token: self.clearCardCharacteristicObserver!)
                     return
                 }
                 Log.info("[SD CARD SYNC] " + payload)
                 if payload == "SD_DELETE_FINISH" {
                     completion(.success(()))
                     Log.info("[SD CARD SYNC] SD card cleared")
-                    self.bluetoothManager.unsubscribeCharacteristicObserver(for: device, token: self.clearCardCharacteristicObserver!)
+                    self.bluetoothManager.unsubscribeCharacteristicObserver(token: self.clearCardCharacteristicObserver!)
                 } else {
                     Log.warning("[SD CARD SYNC] Wrong metadata for clearing sd card")
-                    self.bluetoothManager.unsubscribeCharacteristicObserver(for: device, token: self.clearCardCharacteristicObserver!)
+                    self.bluetoothManager.unsubscribeCharacteristicObserver(token: self.clearCardCharacteristicObserver!)
                 }
             case .failure(let error):
                 Log.warning("Error while receiving metadata from SD card: \(error.localizedDescription)")
                 completion(.failure(error))
-                self.bluetoothManager.unsubscribeCharacteristicObserver(for: device, token: self.clearCardCharacteristicObserver!)
+                self.bluetoothManager.unsubscribeCharacteristicObserver(token: self.clearCardCharacteristicObserver!)
             }
         }
     }
@@ -176,8 +176,8 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     }
     
     private func finishSync(device: NewBluetoothManager.BluetoothDevice, completion: () -> Void) {
-        self.bluetoothManager.unsubscribeCharacteristicObserver(for: device, token: self.dataCharacteristicObserver!)
-        self.bluetoothManager.unsubscribeCharacteristicObserver(for: device, token: self.metadataCharacteristicObserver!)
+        self.bluetoothManager.unsubscribeCharacteristicObserver(token: self.dataCharacteristicObserver!)
+        self.bluetoothManager.unsubscribeCharacteristicObserver(token: self.metadataCharacteristicObserver!)
         expectedMeasurementsCount = [:]
         receivedMeasurementsCount = [:]
         if let token = monitoringForFinishedSendingToken {

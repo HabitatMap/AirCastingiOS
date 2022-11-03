@@ -200,10 +200,12 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
     private class CharacteristicObserver {
         let identifier = UUID()
         var triggerCounter = 0
+        var device: BluetoothDevice
         let action: CharacteristicObserverAction
         
-        init(action: @escaping CharacteristicObserverAction) {
+        init(action: @escaping CharacteristicObserverAction, device: BluetoothDevice) {
             self.action = action
+            self.device = device
         }
     }
     
@@ -241,14 +243,16 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
                                    timeout: TimeInterval? = nil,
                                    notify: @escaping CharacteristicObserverAction) -> AnyHashable {
         // DOESN'T WORK FOR SD SYNC
-        let observer = CharacteristicObserver(action: notify)
+        let observer = CharacteristicObserver(action: notify, device: device)
         if let timeout = timeout { scheduleTimeout(timeout, for: observer) }
         characteristicsMappingLock.lock()
         charactieristicsMapping[characteristic, default:[]].append(observer)
         characteristicsMappingLock.unlock()
         device.peripheral.services?.forEach {
-            let allMatching = $0.characteristics?.filter { $0.uuid.uuidString == characteristic.value } ?? []
-            allMatching.forEach { device.peripheral.setNotifyValue(true, for: $0) }
+            let allMatching = $0.characteristics?.filter { $0.uuid == CBUUID(string: characteristic.value) } ?? []
+            allMatching.forEach {
+                device.peripheral.setNotifyValue(true, for: $0)
+            }
         }
         if device.peripheral.services == nil {
             device.peripheral.discoverServices(nil)
@@ -256,19 +260,20 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
         return observer.identifier
     }
     
-    @discardableResult func unsubscribeCharacteristicObserver(for device: BluetoothDevice, token: AnyHashable) -> Bool {
+    @discardableResult func unsubscribeCharacteristicObserver(token: AnyHashable) -> Bool {
         guard let uuid = token as? UUID else { return false }
         characteristicsMappingLock.lock(); defer { characteristicsMappingLock.unlock() }
         guard let containgObserver = charactieristicsMapping.first(where: { $1.contains { $0.identifier == uuid } }) else { return false }
         var containingObserverArray = containgObserver.value
+        let device = containingObserverArray.first?.device
         containingObserverArray.removeAll { $0.identifier == uuid }
         let characteristic = containgObserver.key
         charactieristicsMapping[characteristic] = containingObserverArray
         // If last subscriber unssubbed, stop notifying
         if containingObserverArray.isEmpty {
-            device.peripheral.services?.forEach {
-                let allMatching = $0.characteristics?.filter { $0.uuid.uuidString == characteristic.value } ?? []
-                allMatching.forEach { device.peripheral.setNotifyValue(false, for: $0) }
+            device?.peripheral.services?.forEach {
+                let allMatching = $0.characteristics?.filter { $0.uuid == CBUUID(string: characteristic.value) } ?? []
+                allMatching.forEach { device?.peripheral.setNotifyValue(false, for: $0) }
             }
         }
         return true
@@ -298,7 +303,7 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
         if let characteristics = service.characteristics {
             Log.info("Did discover service characteristics\n")
             for characteristic in characteristics {
-                guard charactieristicsMapping.keys.contains(where: { $0.value == characteristic.uuid.uuidString }) else { continue }
+                guard charactieristicsMapping.keys.contains(where: { CBUUID(string: $0.value) == characteristic.uuid }) else { continue }
                 peripheral.setNotifyValue(true, for: characteristic)
             }
         }
@@ -314,12 +319,13 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         characteristicsMappingLock.lock()
-        charactieristicsMapping[.init(value: characteristic.uuid.uuidString)]?.forEach { observer in
+        defer { characteristicsMappingLock.unlock()}
+        guard let containgObserver = charactieristicsMapping.first(where: { CBUUID(string: $0.key.value) == characteristic.uuid }) else { return }
+        containgObserver.value.forEach { observer in
             observer.triggerCounter += 1
             guard error == nil else { observer.action(.failure(error!)); return }
             callbackQueue.async { observer.action(.success(characteristic.value)) }
         }
-        characteristicsMappingLock.unlock()
     }
     
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {

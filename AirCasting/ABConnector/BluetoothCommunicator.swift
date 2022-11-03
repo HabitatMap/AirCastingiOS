@@ -46,7 +46,7 @@ protocol NewBluetoothCommunicator {
     ///     - device: device from which we want to unsubscribe
     ///     - token: Opaque token received on subscription
     /// - Returns: A `Bool` value indicating if a given token was successfuly removed. Only reason it can fail is double unregistration.
-    @discardableResult func unsubscribeCharacteristicObserver(for device: NewBluetoothManager.BluetoothDevice, token: AnyHashable) -> Bool
+    @discardableResult func unsubscribeCharacteristicObserver(token: AnyHashable) -> Bool
 }
 
 extension BluetoothCommunicator {
