@@ -2,6 +2,7 @@
 //
 
 import Combine
+import Foundation
 import Resolver
 
 // [RESOLVER] Move this VM init to View when all dependencies resolved
@@ -37,9 +38,9 @@ class AirbeamConnectionViewModel: ObservableObject {
                     guard success else {
                         self.getAlert(.timeOut); return
                     }
-//                    DispatchQueue.main.async {
+                    DispatchQueue.main.async {
                         self.isDeviceConnected = success
-//                    }
+                    }
                     self.configureAB()
                 }
             case .failure(let error):

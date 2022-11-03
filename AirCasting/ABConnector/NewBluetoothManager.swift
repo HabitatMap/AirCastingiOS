@@ -18,6 +18,10 @@ protocol BluetoothStateHandler {
     func forceBluetoothPermissionPopup()
 }
 
+protocol BluetoothConnectionObserver: AnyObject {
+    func didDisconnect(device: NewBluetoothManager.BluetoothDevice)
+}
+
 final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralManagerDelegate, CBPeripheralDelegate {
     // TODO: Make it private when the rest of the codebase is transformed to not use CB
     lazy var centralManager: CBCentralManager = {
@@ -32,6 +36,29 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
         // The BT permissions popup shows whenever CBCentralManager is created
         // so we force it here.
         _ = centralManager
+    }
+    
+    // MARK: Observers
+    
+    private var callbackQueue = DispatchQueue(label: "bluetooth.driver.callback.queue")
+    private var connectionObservers: [BluetoothConnectionObserver] = []
+    
+    func addConnectionObserver(_ observer: BluetoothConnectionObserver) {
+        queue.async {
+            self.connectionObservers.append(observer)
+        }
+    }
+    
+    func removeConnectionObserver(_ observer: BluetoothConnectionObserver) {
+        queue.async {
+            self.connectionObservers.removeAll(where: { $0 === observer })
+        }
+    }
+    
+    private func callConnectionObserversWithDisconnect(for device: BluetoothDevice) {
+        self.connectionObservers.forEach { observer in
+            callbackQueue.async { observer.didDisconnect(device: device) }
+        }
     }
     
     // MARK: Scanning
@@ -66,11 +93,11 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
             self.centralManager.scanForPeripherals(withServices: nil,
                                               options: nil)
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(scanningWindow)) { [centralManager = self.centralManager] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(scanningWindow)) {
                 self.queue.async {
                     Log.verbose("Stopping scanning for BT devices")
-                    centralManager.stopScan()
-                    onScanningFinished?()
+                    self.centralManager.stopScan()
+                    self.callbackQueue.async { onScanningFinished?() }
                 }
             }
         }
@@ -85,7 +112,9 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         queue.async {
             Log.verbose("Did discover BT device \(peripheral.name ?? "unnamed")")
-            self.deviceDiscoveryCallbacks.forEach { $0(BluetoothDevice(peripheral: peripheral)) }
+            self.deviceDiscoveryCallbacks.forEach { callback in
+                self.callbackQueue.async { callback(BluetoothDevice(peripheral: peripheral)) }
+            }
         }
     }
     
@@ -111,7 +140,8 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
                     }
                     Log.verbose("Connection timed out for BT device \(device.peripheral.name ?? "unnamed")")
                     self.connectionCallbacks[device.peripheral] = []
-                    completion(.failure(BluetoothDriverError.timeout))
+                    self.callbackQueue.async { completion(.failure(BluetoothDriverError.timeout)) }
+                    
                 }
             }
         }
@@ -128,7 +158,9 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
             guard let callbacks = self.connectionCallbacks[peripheral] else {
                 return
             }
-            callbacks.forEach { $0(.success(())) }
+            callbacks.forEach { callback in
+                self.callbackQueue.async { callback(.success(())) }
+            }
             self.connectionCallbacks[peripheral] = []
         }
     }
@@ -139,7 +171,15 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
             guard let callbacks = self.connectionCallbacks[peripheral] else {
                 return
             }
-            callbacks.forEach { $0(.failure(error ?? BluetoothDriverError.unknown)) }
+            callbacks.forEach { callback in
+                self.callbackQueue.async { callback(.failure(error ?? BluetoothDriverError.unknown)) }
+            }
+        }
+    }
+    
+    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        queue.async {
+            self.callConnectionObserversWithDisconnect(for: .init(peripheral: peripheral))
         }
     }
     
@@ -185,10 +225,14 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
     private func scheduleCharacteristicsDiscoveryTimeout(_ timeout: TimeInterval, for peripheral: CBPeripheral) {
         Log.info("Scheduling timeout")
         DispatchQueue.global().asyncAfter(deadline: .now() + timeout) {
-            guard let callbacks = self.characteristicsDicoveryCallbacks[peripheral] else { return }
-            guard !callbacks.isEmpty else { return }
-            callbacks.forEach({ $0(.failure(CharacteristicsDiscoveryError.timeout)) })
-            self.characteristicsDicoveryCallbacks[peripheral] = []
+            self.queue.async {
+                guard let callbacks = self.characteristicsDicoveryCallbacks[peripheral] else { return }
+                guard !callbacks.isEmpty else { return }
+                callbacks.forEach { callback in
+                    self.callbackQueue.async { callback(.failure(CharacteristicsDiscoveryError.timeout)) }
+                }
+                self.characteristicsDicoveryCallbacks[peripheral] = []
+            }
         }
     }
     
@@ -236,7 +280,7 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
             self.characteristicsMappingLock.lock()
             defer { self.characteristicsMappingLock.unlock() }
             guard observer.triggerCounter == 0 else { return }
-            observer.action(.failure(CharacteristicObservingError.timeout))
+            self.callbackQueue.async { observer.action(.failure(CharacteristicObservingError.timeout)) }
         }
     }
     
@@ -259,9 +303,11 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
             }
         }
         
-        characteristicsDicoveryCallbacks[peripheral]?.forEach {
+        characteristicsDicoveryCallbacks[peripheral]?.forEach { callback in
             let characteristics = peripheral.services?.compactMap(\.characteristics).compactMap { $0 }
-            $0(.success([.init(device: BluetoothDevice(peripheral: peripheral))])) // Fix with Paweł
+            callbackQueue.async {
+                callback(.success([.init(device: BluetoothDevice(peripheral: peripheral))])) // Fix with Paweł
+            }
         }
         characteristicsDicoveryCallbacks.removeValue(forKey: peripheral)
     }
@@ -271,7 +317,7 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
         charactieristicsMapping[.init(value: characteristic.uuid.uuidString)]?.forEach { observer in
             observer.triggerCounter += 1
             guard error == nil else { observer.action(.failure(error!)); return }
-            observer.action(.success(characteristic.value))
+            callbackQueue.async { observer.action(.success(characteristic.value)) }
         }
         characteristicsMappingLock.unlock()
     }
