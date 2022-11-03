@@ -12,7 +12,6 @@ class MeasurementsStatisticsController: MeasurementsStatisticsInput {
                 Log.verbose("Continuous mode enabled, adding timer")
                 timerCancellable = scheduledTimer.setupRepeatingTimer(for: computeStatisticsInterval!, block: { [weak self] in
                     self?.computeStatistics()
-                    Log.verbose("Timer tick, computing stats")
                 })
             } else if !continuousModeEnabled {
                 Log.verbose("Continuous mode disabled, cancelling timer")
