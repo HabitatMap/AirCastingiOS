@@ -241,9 +241,19 @@ class ReconnectionController: BluetoothConnectionObserver {
         
         bluetoothManager.connect(to: device, timeout: 10) { result in
             switch result {
-            case .success: break
-            case .failure(let error):
-                self.mobilePeripheralManager.moveSessionToStandaloneMode(peripheral: devic.peripheral)
+            case .success:
+                Log.info("Reconnected to a peripheral: \(device.peripheral)")
+                self.bluetoothManager.discoverCharacteristics(for: device, timeout: 10) { result in
+                    switch result {
+                    case .success:
+                        Log.info("Discovered characteristics for: \(device.peripheral)")
+                        self.mobilePeripheralManager.configureAB()
+                    case .failure(_):
+                        self.mobilePeripheralManager.moveSessionToStandaloneMode(peripheral: device.peripheral)
+                    }
+                }
+            case .failure(_):
+                self.mobilePeripheralManager.moveSessionToStandaloneMode(peripheral: device.peripheral)
             }
         }
     }
