@@ -17,6 +17,7 @@ struct SingleStatViewModel: Identifiable {
 
 protocol StatisticsContainerViewModelable: ObservableObject {
     var stats: [SingleStatViewModel] { get }
-    
+    /// When continous mode is enabled it will allow for a time-based stats refreshing
+    var continuousModeEnabled: Bool { get set }
     func adjustForNewData()
 }

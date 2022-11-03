@@ -166,9 +166,9 @@ private extension ExternalSessionCard {
     private var graphNavigationLink: some View {
         let graphView = ExternalGraphView(session: session,
                                           thresholds: ABMeasurementsViewThreshold(value: thresholds),
+                                          graphStatsDataSource: graphStatsDataSource.dataSource,
                                           selectedStream: $selectedStream,
-                                          statsContainerViewModel: graphStatsViewModel,
-                                          graphStatsDataSource: graphStatsDataSource.dataSource)
+                                          statsContainerViewModel: graphStatsViewModel)
             .foregroundColor(.aircastingDarkGray)
         
         return NavigationLink(destination: graphView,
@@ -197,7 +197,6 @@ private extension ExternalSessionCard {
         
         let controller = MeasurementsStatisticsController(dataSource: dataSource,
                                                           calculator: StandardStatisticsCalculator(),
-                                                          scheduledTimer: ScheduledTimerSetter(),
                                                           desiredStats: MeasurementStatistics.Statistic.allCases,
                                                           computeStatisticsInterval: computeStatisticsInterval)
         let viewModel = StatisticsContainerViewModel(statsInput: controller)

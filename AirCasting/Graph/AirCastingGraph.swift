@@ -115,7 +115,6 @@ class AirCastingGraph: UIView {
             zoomoutToThirtyMinutes(dataSet: dataSet)
         }
         layoutNotes()
-        callDateRangeChangeObserver()
     }
     
     private func callDateRangeChangeObserver() {

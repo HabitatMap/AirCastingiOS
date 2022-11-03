@@ -275,6 +275,10 @@ extension Resolver: ResolverRegistering {
         
         main.register { WindowAlertPresenter() as GlobalAlertPresenter }
             .scope(.application)
+        
+        // MARK: Timers
+        
+        main.register { ScheduledTimerSetter() as ScheduledTimerSettable }.scope(.application)
     }
     
     // MARK: - Composition helpers
