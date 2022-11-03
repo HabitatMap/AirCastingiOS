@@ -9,7 +9,6 @@ import SwiftUI
 import Resolver
 
 struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsContainerViewModelable {
-    
     let session: SessionEntity
     let thresholds: [SensorThreshold]
     // This pair doesn't belong here, it should be elegantly handled by VM when refactored
@@ -81,6 +80,13 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                                              noteNumber: selectedNote!.number,
                                                              sessionUUID: session.uuid))
         })
+        .onAppear {
+            statsContainerViewModel.adjustForNewData()
+            statsContainerViewModel.continuousModeEnabled = true
+        }
+        .onDisappear {
+            statsContainerViewModel.continuousModeEnabled = false
+        }
         .navigationBarTitleDisplayMode(.inline)
         .background(Color.aircastingBackground.ignoresSafeArea())
     }

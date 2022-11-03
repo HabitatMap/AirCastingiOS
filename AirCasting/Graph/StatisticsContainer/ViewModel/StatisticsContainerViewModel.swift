@@ -5,7 +5,7 @@ import Foundation
 import SwiftUI
 
 final class StatisticsContainerViewModel: StatisticsContainerViewModelable, MeasurementsStatisticsOutput {
-    private let statsInput: MeasurementsStatisticsInput
+    private var statsInput: MeasurementsStatisticsInput
     
     init(statsInput: MeasurementsStatisticsInput) {
         self.statsInput = statsInput
@@ -13,6 +13,11 @@ final class StatisticsContainerViewModel: StatisticsContainerViewModelable, Meas
     }
     
     @Published var stats: [SingleStatViewModel] = []
+    
+    var continuousModeEnabled: Bool {
+        get { statsInput.continuousModeEnabled }
+        set { statsInput.continuousModeEnabled = newValue }
+    }
     
     func adjustForNewData() {
         statsInput.computeStatistics()
