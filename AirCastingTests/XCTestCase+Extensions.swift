@@ -8,13 +8,13 @@ import XCTest
 extension XCTestCase {
     /// Helper method to simplify publishers check
     ///
-    ///```
+    /// ```
     /// func testIdentifyingUsernames() throws {
     ///     let tokenizer = Tokenizer()
     ///     let tokens = try awaitPublisherResult(tokenizer.tokenize("Hello @john")).get()
     ///     XCTAssertEqual(tokens, [.text("Hello "), .username("john")])
     /// }
-    ///```
+    /// ```
     /// - parameters:
     ///     - publisher: tested publisher
     ///     - timeout: timeout in which the await will wait

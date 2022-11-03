@@ -15,8 +15,7 @@ final class UpdateSessionParamsService {
     }
 
     func updateSessionsParams(session: SessionEntity, output: FixedSession.FixedMeasurementOutput) throws {
-        #warning("TODO: set only values that have changed to avoid core data notifications and context changes")
-        Log.info("Updating session params in core data for session: \(session.uuid) [\(session.name)]")
+        Log.info("Updating session params in core data for session: \(session.uuid) [\(session.name ?? "N/A")]")
         session.uuid = output.uuid
         session.type = output.type
         session.name = output.title
@@ -41,7 +40,7 @@ final class UpdateSessionParamsService {
             try fillStream(stream, with: $0)
             stream.session = session
         }
-//        streamDiff.removed.forEach(context.delete)
+        
         try streamDiff.common.forEach { oldStream, streamOutput in
             oldStream.sensorName = streamOutput.sensor_name
             oldStream.sensorPackageName = streamOutput.sensor_package_name
@@ -68,18 +67,14 @@ final class UpdateSessionParamsService {
 
             let oldMeasurements = oldStream.measurements?.array as? [MeasurementEntity] ?? []
             let measurementDiff = diff(oldMeasurements, streamOutput.measurements) {
-                if let id = $0.id {
-                    return id == $1.id
-                } else {
-                    return $0.time == $1.time && $0.value == Double($1.value)
-                }
+                return $0.time == $1.time && $0.value == Double($1.value)
             }
             measurementDiff.inserted.forEach {
                 let newMeasurement = MeasurementEntity(context: context)
                 fillMeasurement(newMeasurement, with: $0)
                 newMeasurement.measurementStream = oldStream
             }
-//            measurementDiff.removed.forEach(context.delete)
+            
             measurementDiff.common.forEach { oldMeasurement, measurementOutput in
                 oldMeasurement.value = Double(measurementOutput.value)
                 oldMeasurement.location = CLLocationCoordinate2D(latitude: measurementOutput.latitude, longitude: measurementOutput.longitude)
@@ -114,7 +109,6 @@ private extension UpdateSessionParamsService {
         entity.value = Double(measurement.value)
         entity.location = CLLocationCoordinate2D(latitude: measurement.latitude, longitude: measurement.longitude)
         entity.time = measurement.time
-        entity.id = measurement.id
     }
 
     func fillStream(_ entity: MeasurementStreamEntity, with streamOutput: FixedSession.StreamOutput) throws {

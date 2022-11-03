@@ -130,8 +130,7 @@ struct SynchronizationDataConverter {
                                                                              unitSymbol: stream.unitSymbol!,
                                                                              deleted: stream.deleted,
                                                                              measurements: stream.measurements.map {
-                                                                                SessionsSynchronization.SessionStoreMeasurementData(id: $0.id,
-                                                                                                                                    time: $0.time,
+                                                                                SessionsSynchronization.SessionStoreMeasurementData(time: $0.time,
                                                                                                                                     value: $0.value,
                                                                                                                                     latitude: $0.latitude,
                                                                                                                                     longitude: $0.longitude)
@@ -168,8 +167,7 @@ struct SynchronizationDataConverter {
     
     func convertDownloadDataToDatabaseStream(data: SessionsSynchronization.MeasurementStreamDownstreamData) -> SessionsSynchronization.SessionStoreMeasurementStreamData {
         let measurements: [SessionsSynchronization.SessionStoreMeasurementData] = data.measurements?.map { measurement in
-            #warning("Remove id from measurement")
-            return SessionsSynchronization.SessionStoreMeasurementData(id: .random(in: 0...Int64.max), time: measurement.time, value: measurement.value, latitude: measurement.latitude, longitude: measurement.longitude)
+            return SessionsSynchronization.SessionStoreMeasurementData(time: measurement.time, value: measurement.value, latitude: measurement.latitude, longitude: measurement.longitude)
         } ?? []
         return SessionsSynchronization.SessionStoreMeasurementStreamData(id: data.id, measurementShortType: data.measurementShortType, measurementType: data.measurementType, sensorName: data.sensorName, sensorPackageName: data.sensorPackageName, thresholdHigh: data.thresholdHigh, thresholdLow: data.thresholdLow, thresholdMedium: data.thresholdMedium, thresholdVeryHigh: data.thresholdVeryHigh, thresholdVeryLow: data.thresholdVeryLow, unitName: data.unitName, unitSymbol: data.unitSymbol, deleted: false, measurements: measurements)
     }

@@ -49,7 +49,7 @@ struct SDSyncMobileSessionsDatabaseStorage {
     
     func createSession(uuid: SessionUUID, location: CLLocationCoordinate2D?, time: Date?, context: NSManagedObjectContext) -> SessionEntity {
         Log.info("[SD Sync] Creating session: \(uuid)")
-        var session = Session(uuid: uuid, type: .mobile, name: "Imported from SD card", deviceType: .AIRBEAM3, location: location, startTime: time)
+        let session = Session(uuid: uuid, type: .mobile, name: "Imported from SD card", deviceType: .AIRBEAM3, location: location, startTime: time)
         let sessionEntity = newSessionEntity(context: context)
         updateSessionParamsService.updateSessionsParams(sessionEntity, session: session)
         return sessionEntity

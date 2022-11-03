@@ -24,7 +24,7 @@ struct GoogleMapView: UIViewRepresentable {
     let showMyLocationButton: Bool
     @Environment(\.colorScheme) var colorScheme
     
-    //MARK: - Place picker variables
+    // MARK: - Place picker variables
     @Binding var placePickerIsUpdating: Bool
     @Binding var placePickerLocation: CLLocationCoordinate2D?
     

@@ -78,8 +78,6 @@ class BluetoothManager: NSObject, BluetoothCommunicator, ObservableObject {
     }
 
     func startScanning() {
-        //AirBeam 3 UUID
-        //let service = CBUUID(string: "0000ffdd-0000-1000-8000-00805f9b34fb")
         devices = []
         centralManager.scanForPeripherals(withServices: nil,
                                           options: nil)

@@ -40,8 +40,8 @@ final class ChartDatabaseObserver {
         guard filtered.count > 0, shouldFireObserver(newMeasurement: newestMeasurement) else { return }
         Log.info("Firing.\n" +
                  "   New measurement time: \(newestMeasurement.time.debugInfo),\n" +
-                 "   session name: \(newestMeasurement.measurementStream.session?.name ?? newestMeasurement.measurementStream.externalSession?.name ?? "??")\n" +
-                 "   session start time: \(newestMeasurement.measurementStream.session?.startTime.debugInfo ?? newestMeasurement.measurementStream.externalSession?.startTime.debugDescription),\n" +
+                 "   session name: \(newestMeasurement.measurementStream?.session?.name ?? newestMeasurement.measurementStream.externalSession?.name ?? "??")\n" +
+                 "   session start time: \(newestMeasurement.measurementStream?.session?.startTime.debugInfo ?? newestMeasurement.measurementStream?.externalSession?.startTime.debugDescription ?? "no time"),\n" +
                  "   filtering: \(filteringComponent)")
         onMeasurementsChange()
     }
