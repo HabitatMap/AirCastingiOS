@@ -51,9 +51,9 @@ struct SingleMeasurementView: View {
                     if let threshold = threshold.value, measurementPresentationStyle == .showValues {
                         let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
                         HStack(spacing: 3) {
-                            if value != nil {
-                                MeasurementDotView(value: round(value!), thresholds: threshold)
-                                Text("\(Int(round(value!)))")
+                            if let value {
+                                MeasurementDotView(value: round(value), thresholds: threshold)
+                                Text("\(Int(round(value)))")
                                     .font(Fonts.moderateRegularHeading3)
                                     .foregroundColor(.aircastingGray)
                                     .scaledToFill()
