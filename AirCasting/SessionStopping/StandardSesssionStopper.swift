@@ -7,7 +7,7 @@ import Resolver
 class StandardSesssionStopper: SessionStoppable {
     private let uuid: SessionUUID
     @Injected private var sessionStorage: SessionStorage
-    @Injected private var sessionRecorder: MobileSessionRecordingController
+    @Injected private var sessionRecorder: BluetoothSessionController
     
     init(uuid: SessionUUID) {
         self.uuid = uuid

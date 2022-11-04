@@ -44,6 +44,7 @@
 		3375E8D62791EFA70019A5DE /* FileZipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3375E8D52791EFA70019A5DE /* FileZipper.swift */; };
 		33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */; };
 		33831B14291544C40097020C /* SDSyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33831B13291544C40097020C /* SDSyncController.swift */; };
+		33831B19291549A60097020C /* BluetoothSessionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33831B18291549A60097020C /* BluetoothSessionController.swift */; };
 		3383511E2747C24800308068 /* SDSyncFileFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3383511D2747C24800308068 /* SDSyncFileFactory.swift */; };
 		3384C1DD274EC4C00022B008 /* SDSyncFileValidationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3384C1DC274EC4C00022B008 /* SDSyncFileValidationService.swift */; };
 		3387448E28896C5D00E178F6 /* WifiAwareSessionSynchronizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3387448D28896C5D00E178F6 /* WifiAwareSessionSynchronizerTests.swift */; };
@@ -600,6 +601,7 @@
 		3375E8D52791EFA70019A5DE /* FileZipper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileZipper.swift; sourceTree = "<group>"; };
 		33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartViewModel.swift; sourceTree = "<group>"; };
 		33831B13291544C40097020C /* SDSyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncController.swift; sourceTree = "<group>"; };
+		33831B18291549A60097020C /* BluetoothSessionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothSessionController.swift; sourceTree = "<group>"; };
 		3383511D2747C24800308068 /* SDSyncFileFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncFileFactory.swift; sourceTree = "<group>"; };
 		3384C1DC274EC4C00022B008 /* SDSyncFileValidationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncFileValidationService.swift; sourceTree = "<group>"; };
 		3387448D28896C5D00E178F6 /* WifiAwareSessionSynchronizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WifiAwareSessionSynchronizerTests.swift; sourceTree = "<group>"; };
@@ -1226,6 +1228,16 @@
 			path = Storages;
 			sourceTree = "<group>";
 		};
+		33831B17291548980097020C /* BluetoothSession */ = {
+			isa = PBXGroup;
+			children = (
+				33831B18291549A60097020C /* BluetoothSessionController.swift */,
+				33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */,
+				33BA3366266E4B9600899343 /* MobileSession */,
+			);
+			path = BluetoothSession;
+			sourceTree = "<group>";
+		};
 		338607AF2886E0ED0002D3A8 /* NetworkMonitoring */ = {
 			isa = PBXGroup;
 			children = (
@@ -1288,10 +1300,10 @@
 		33BA3366266E4B9600899343 /* MobileSession */ = {
 			isa = PBXGroup;
 			children = (
-				33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */,
 				33BA3369266E4D1000899343 /* MobileSession.swift */,
 			);
 			name = MobileSession;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		33D8031428F84021004A4CFA /* SDSync */ = {
@@ -1651,7 +1663,7 @@
 				333448712743D75300ACA5E4 /* SDSync */,
 				AC1DAD4325C98556009AC4D1 /* ABConnector */,
 				332F521825FA38B90047236D /* MicrophoneSession */,
-				33BA3366266E4B9600899343 /* MobileSession */,
+				33831B17291548980097020C /* BluetoothSession */,
 				DDBA6135276B3A8900E3FEF9 /* Notes */,
 				DDB0557F274BC5AF00DA1A8A /* SingleSessionSynchronizer */,
 				AC6D56A825B0837500D221BA /* SessionViews */,
@@ -3318,6 +3330,7 @@
 				FA4F1B75281809B2002711B4 /* AirBeamStreamSuffixes.swift in Sources */,
 				B3ED03C32729A8E300513522 /* AirCastingNotifications.swift in Sources */,
 				AC006D2B275F537300E99019 /* UploadFixedSessionAPIService.swift in Sources */,
+				33831B19291549A60097020C /* BluetoothSessionController.swift in Sources */,
 				B33B15FF27AEE6E900138FFA /* WeakRef.swift in Sources */,
 				DDCE5D3A26A213620033C211 /* DefaultDeleteSessionViewModel.swift in Sources */,
 				ACCEB21A2763A2230040140B /* SDSyncCompleteView.swift in Sources */,
