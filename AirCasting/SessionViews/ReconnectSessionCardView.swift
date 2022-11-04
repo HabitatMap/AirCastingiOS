@@ -6,25 +6,22 @@ import AirCastingStyling
 import Resolver
 
 struct ReconnectSessionCardView: View {
-    let session: SessionEntity
+    @StateObject var viewModel: ReconnectSessionCardViewModel
     @EnvironmentObject var selectedSection: SelectedSection
-    @State private var alert: AlertInfo?
     
     var body: some View {
-        Group {
-            Spacer()
-            VStack(alignment: .leading, spacing: 5) {
-                header
-                content
-            }
-            .foregroundColor(.aircastingGray)
-            .padding()
-            .background(
-                Color.aircastingBackground
-                    .cardShadow()
-            )
-            .overlay(Rectangle().frame(width: nil, height: 4, alignment: .top).foregroundColor(Color.red), alignment: .top)
+        Spacer()
+        VStack(alignment: .leading, spacing: 5) {
+            header
+            content
         }
+        .foregroundColor(.aircastingGray)
+        .padding()
+        .background(
+            Color.aircastingBackground
+                .cardShadow()
+        )
+        .overlay(Rectangle().frame(width: nil, height: 4, alignment: .top).foregroundColor(Color.red), alignment: .top)
     }
     
     var header: some View {
@@ -33,7 +30,7 @@ struct ReconnectSessionCardView: View {
             isExpandButtonNeeded: false,
             isMenuNeeded: false,
             isCollapsed: .constant(false),
-            session: session)
+            session: viewModel.session)
     }
     
     var content: some View {
@@ -49,23 +46,29 @@ struct ReconnectSessionCardView: View {
             finishAndDontSyncButton
                 .padding()
         }
-        .alert(item: $alert, content: { $0.makeAlert() })
+        .alert(item: $viewModel.alert, content: { $0.makeAlert() })
         .padding()
     }
     
     var reconnectionLabel: some View {
         Button {
-            //
+            if !viewModel.isSpinnerOn {
+                // Custom method of button disable: this can keep the UI style always the same
+                // ... but do nothing when needed (as the button would be correctly disabled)
+                viewModel.onRecconectTap()
+            }
         } label: {
             ZStack(alignment: .center) {
                 HStack(alignment: .center) {
                     Text(Strings.ReconnectSessionCardView.reconnectLabel)
                 }
-                HStack {
-                    Spacer()
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                        .padding(.trailing)
+                if viewModel.isSpinnerOn {
+                    HStack {
+                        Spacer()
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .padding(.trailing)
+                    }
                 }
             }
         }
@@ -75,21 +78,11 @@ struct ReconnectSessionCardView: View {
     
     var finishAndDontSyncButton: some View {
         Button(Strings.ReconnectSessionCardView.finishSessionLabel) {
-            alert = InAppAlerts.finishSessionAlert(sessionName: session.name) {
-                self.finishSessionAlertAction()
+            viewModel.onFinishDontSyncTapped {
+                selectedSection.mobileSessionWasFinished = true
             }
         }
         .foregroundColor(.accentColor)
         .font(Fonts.moderateRegularHeading2)
-    }
-    
-    func finishSessionAlertAction() {
-        let sessionStopper = Resolver.resolve(SessionStoppable.self, args: self.session)
-        do {
-            try sessionStopper.stopSession()
-            selectedSection.mobileSessionWasFinished = true
-        } catch {
-            Log.info("error when stpoing session - \(error)")
-        }
     }
 }

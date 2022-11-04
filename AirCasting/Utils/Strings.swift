@@ -622,6 +622,10 @@ struct Strings {
         
         static let finishAlertMessage: String = NSLocalizedString("The session will be moved to Mobile Dormant tab and you won't be able to add new measurement to it.",
                                                                   comment: "")
+        static let cannotReconnectAlertTitle: String = NSLocalizedString("Reconnection process.",
+                                                                  comment: "")
+        static let cannotReconnectAlertMessage: String = NSLocalizedString("Cannot process reconnection anymore. Please finish session, so it will be moved to Mobile Dormant.",
+                                                                  comment: "")
         static let finishAlertMessage_withSync: String = NSLocalizedString(" SD card will be cleared afterwards.",
                                                                            comment: "")
         static let finishAlertButton: String = NSLocalizedString("Finish recording",

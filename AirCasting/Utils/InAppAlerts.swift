@@ -143,6 +143,15 @@ struct InAppAlerts {
         )
     }
     
+    static func cannotReconnectSession(sessionName: String?) -> AlertInfo {
+        AlertInfo(
+            title: Strings.SessionHeaderView.cannotReconnectAlertTitle,
+            message: Strings.SessionHeaderView.cannotReconnectAlertMessage,
+            buttons: [.default(title: Strings.Commons.gotIt,
+                         action: nil)]
+        )
+    }
+    
     static func finishAndSyncAlert(sessionName: String?, action: @escaping (() -> Void)) -> AlertInfo {
         AlertInfo(
             title: ((sessionName == nil) ? Strings.SessionHeaderView.finishAlertTitleSYNCNoName : String(format: Strings.SessionHeaderView.finishAlertTitleNamed, arguments: [sessionName!])),

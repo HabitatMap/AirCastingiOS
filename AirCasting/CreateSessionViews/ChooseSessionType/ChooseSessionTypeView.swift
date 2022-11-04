@@ -19,7 +19,7 @@ struct ChooseSessionTypeView: View {
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
     var shouldShowSDSyncButton: Bool {
-        featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) && checkDeviceSupportFor(feature: .sync)
+        featureFlagsViewModel.enabledFeatures.contains(.sdCardSync)
     }
     
     var shouldShowFollowSessionButton: Bool {

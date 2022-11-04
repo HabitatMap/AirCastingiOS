@@ -111,6 +111,7 @@ extension Resolver: ResolverRegistering {
         .scope(.application)
         main.register { OverridingFeatureFlagProvider() }.scope(.cached)
         main.register { DefaultFeatureFlagProvider() }.scope(.cached)
+        main.register { DeviceFeatureFlagProvider() }.scope(.cached)
 #if !DEBUG
         main.register { FirebaseFeatureFlagProvider() }.scope(.cached)
 #endif
@@ -118,16 +119,19 @@ extension Resolver: ResolverRegistering {
 #if DEBUG
             CompositeFeatureFlagProvider(children: [
                 Resolver.resolve(OverridingFeatureFlagProvider.self),
+                Resolver.resolve(DeviceFeatureFlagProvider.self),
                 AllFeaturesOn()
             ]) as FeatureFlagProvider
 #elseif BETA
             CompositeFeatureFlagProvider(children: [
                 Resolver.resolve(OverridingFeatureFlagProvider.self),
+                Resolver.resolve(DeviceFeatureFlagProvider.self),
                 Resolver.resolve(FirebaseFeatureFlagProvider.self),
                 Resolver.resolve(DefaultFeatureFlagProvider.self)
             ]) as FeatureFlagProvider
 #else
             CompositeFeatureFlagProvider(children: [
+                Resolver.resolve(DeviceFeatureFlagProvider.self),
                 Resolver.resolve(FirebaseFeatureFlagProvider.self),
                 Resolver.resolve(DefaultFeatureFlagProvider.self)
             ]) as FeatureFlagProvider

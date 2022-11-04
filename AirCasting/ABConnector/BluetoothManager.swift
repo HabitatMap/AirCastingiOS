@@ -49,9 +49,12 @@ class BluetoothManager: NSObject, BluetoothCommunicator, ObservableObject {
     @Published var centralManagerState: CBManagerState = .unknown
     @Published var mobileSessionReconnected = false
     var observed: NSKeyValueObservation?
+    @Published var isReconnectionOn = false
+    @Published var didAlreayCancellConnection = false
 
     let mobilePeripheralSessionManager: MobilePeripheralSessionManager
     @Injected private var featureFlagProvider: FeatureFlagProvider
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
 
     private var MEASUREMENTS_CHARACTERISTIC_UUIDS: [CBUUID] = [
         CBUUID(string:"0000ffe1-0000-1000-8000-00805f9b34fb"),    // Temperature
@@ -186,6 +189,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         // Here's code for getting data from AB.
+        didAlreayCancellConnection = false
         peripheral.delegate = self
         if mobilePeripheralSessionManager.activeSessionInProgressWith(peripheral) {
             var characteristicsHandle: Any?
@@ -207,23 +211,27 @@ extension BluetoothManager: CBCentralManagerDelegate {
         Log.info("Disconnected peripheral \(peripheral) with error: \(String(describing: error?.localizedDescription))")
 
         charactieristicsMapping.removeAll()
-
-        guard mobilePeripheralSessionManager.activeSessionInProgressWith(peripheral) else { return }
+        
+        guard mobilePeripheralSessionManager.activeSessionInProgressWith(peripheral) && !didAlreayCancellConnection else { return }
         mobilePeripheralSessionManager.markActiveSessionAsDisconnected(peripheral: peripheral)
-        connect(to: peripheral)
-        if checkDeviceSupportFor(feature: .standalone) { timeoutConnection(using: peripheral) }
+        connectWithTimeout(using: peripheral)
     }
     
-    private func timeoutConnection(using peripheral: CBPeripheral) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(60)) {
+    func connectWithTimeout(using peripheral: CBPeripheral) {
+        isReconnectionOn = true
+        connect(to: peripheral)
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
+            self.isReconnectionOn = false
             guard peripheral.state != .connected else { return }
-            Log.info("Didn't connect with peripheral within 60s. Canceling peripheral connection.")
+            Log.info("Didn't connect with peripheral within 10s. Canceling peripheral connection.")
             self.cancelPeripheralConnection(for: peripheral)
-            if self.featureFlagProvider.isFeatureOn(.standaloneMode) ?? false {
-                Log.info("Moving session to standalone mode")
+            self.didAlreayCancellConnection = true
+            Log.info("Moving session to standalone mode")
+            
+            if self.featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
+                // In any other case, we will put a session into recconection mode.
+                // Look into `ReconnectSessionCard` - UI adjusted so that user can trigger reconnection process when convinient
                 self.mobilePeripheralSessionManager.moveSessionToStandaloneMode(peripheral: peripheral)
-            } else {
-                self.mobilePeripheralSessionManager.finishSession(for: peripheral, centralManager: self.centralManager)
             }
         }
     }
