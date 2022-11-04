@@ -43,6 +43,7 @@
 		3375E8D42791EDC50019A5DE /* CLLocationCoordinate2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3375E8D32791EDC50019A5DE /* CLLocationCoordinate2D.swift */; };
 		3375E8D62791EFA70019A5DE /* FileZipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3375E8D52791EFA70019A5DE /* FileZipper.swift */; };
 		33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */; };
+		33831B14291544C40097020C /* SDSyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33831B13291544C40097020C /* SDSyncController.swift */; };
 		3383511E2747C24800308068 /* SDSyncFileFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3383511D2747C24800308068 /* SDSyncFileFactory.swift */; };
 		3384C1DD274EC4C00022B008 /* SDSyncFileValidationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3384C1DC274EC4C00022B008 /* SDSyncFileValidationService.swift */; };
 		3387448E28896C5D00E178F6 /* WifiAwareSessionSynchronizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3387448D28896C5D00E178F6 /* WifiAwareSessionSynchronizerTests.swift */; };
@@ -266,7 +267,6 @@
 		B30BAC212694AEAA00AE0476 /* GraphStatsDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC202694AEAA00AE0476 /* GraphStatsDataSourceTests.swift */; };
 		B30BAC232694B3DA00AE0476 /* XCTest+Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC222694B3DA00AE0476 /* XCTest+Persistence.swift */; };
 		B30BAC252694B5D900AE0476 /* TestStreamGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC242694B5D900AE0476 /* TestStreamGenerator.swift */; };
-		B30F9A612745601F00C85E17 /* SDSyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30F9A602745601F00C85E17 /* SDSyncController.swift */; };
 		B30F9A632745626B00C85E17 /* SDCardAirBeamServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30F9A622745626B00C85E17 /* SDCardAirBeamServices.swift */; };
 		B31AFB7027AE6F0700CA6FA3 /* PrintLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31AFB6F27AE6F0700CA6FA3 /* PrintLogger.swift */; };
 		B31B7EC9267E2024002DAC18 /* SyncContextServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31B7EC8267E2024002DAC18 /* SyncContextServiceTests.swift */; };
@@ -599,6 +599,7 @@
 		3375E8D32791EDC50019A5DE /* CLLocationCoordinate2D.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationCoordinate2D.swift; sourceTree = "<group>"; };
 		3375E8D52791EFA70019A5DE /* FileZipper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileZipper.swift; sourceTree = "<group>"; };
 		33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartViewModel.swift; sourceTree = "<group>"; };
+		33831B13291544C40097020C /* SDSyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncController.swift; sourceTree = "<group>"; };
 		3383511D2747C24800308068 /* SDSyncFileFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncFileFactory.swift; sourceTree = "<group>"; };
 		3384C1DC274EC4C00022B008 /* SDSyncFileValidationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncFileValidationService.swift; sourceTree = "<group>"; };
 		3387448D28896C5D00E178F6 /* WifiAwareSessionSynchronizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WifiAwareSessionSynchronizerTests.swift; sourceTree = "<group>"; };
@@ -830,7 +831,6 @@
 		B30BAC202694AEAA00AE0476 /* GraphStatsDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphStatsDataSourceTests.swift; sourceTree = "<group>"; };
 		B30BAC222694B3DA00AE0476 /* XCTest+Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTest+Persistence.swift"; sourceTree = "<group>"; };
 		B30BAC242694B5D900AE0476 /* TestStreamGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStreamGenerator.swift; sourceTree = "<group>"; };
-		B30F9A602745601F00C85E17 /* SDSyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SDSyncController.swift; path = ../ABConnector/SDSyncController.swift; sourceTree = "<group>"; };
 		B30F9A622745626B00C85E17 /* SDCardAirBeamServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDCardAirBeamServices.swift; sourceTree = "<group>"; };
 		B31AFB6F27AE6F0700CA6FA3 /* PrintLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintLogger.swift; sourceTree = "<group>"; };
 		B31B7EC8267E2024002DAC18 /* SyncContextServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncContextServiceTests.swift; sourceTree = "<group>"; };
@@ -1192,13 +1192,13 @@
 			isa = PBXGroup;
 			children = (
 				ACCEB2012763A2230040140B /* ViewsFlow */,
-				B30F9A602745601F00C85E17 /* SDSyncController.swift */,
 				ACBB050A2761F14500A6B3FB /* FixedSessions */,
 				ACBB050C2761F18600A6B3FB /* Models */,
 				33885BB127468B4E00F41CB5 /* SDSyncFileWritingService.swift */,
 				3384C1DC274EC4C00022B008 /* SDSyncFileValidationService.swift */,
 				ACBB050B2761F15A00A6B3FB /* MobileSessions */,
 				ACBB05112761F1D700A6B3FB /* Parsing */,
+				33831B13291544C40097020C /* SDSyncController.swift */,
 			);
 			path = SDSync;
 			sourceTree = "<group>";
@@ -3262,7 +3262,7 @@
 				AC7EB37825A6FB3A00A7F2AF /* MainTabBarView.swift in Sources */,
 				B38E6CD026C5F83D00C21C45 /* StandardSesssionStopper.swift in Sources */,
 				3399394D27DA1722006144AF /* SingleSessionDownloader.swift in Sources */,
-				B30F9A612745601F00C85E17 /* SDSyncController.swift in Sources */,
+				33831B14291544C40097020C /* SDSyncController.swift in Sources */,
 				332066AF28981EDD00798AC1 /* ThresholdAlertSheetViewModel.swift in Sources */,
 				33B397D9284FB77400C95387 /* PhotoPicker.swift in Sources */,
 				33406247281821FA004DA4DA /* ExternalSessionsStore.swift in Sources */,
