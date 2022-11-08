@@ -67,7 +67,7 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
     private var deviceDiscoveryCallbacks: [DiscoveryCallback] = []
     
     class BluetoothDevice: Equatable {
-        // fileprivate let peripheral: CBPeripheral  TEMPORARILY COMMENTED OUT
+//        fileprivate let peripheral: CBPeripheral COMMENTED OUT JUST TEMPORARILY
         let peripheral: CBPeripheral
         let id = UUID()
         var name: String?
@@ -242,7 +242,6 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
                                    characteristic: CharacteristicUUID,
                                    timeout: TimeInterval? = nil,
                                    notify: @escaping CharacteristicObserverAction) -> AnyHashable {
-        // DOESN'T WORK FOR SD SYNC
         let observer = CharacteristicObserver(action: notify, device: device)
         if let timeout = timeout { scheduleTimeout(timeout, for: observer) }
         characteristicsMappingLock.lock()
@@ -326,6 +325,39 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
             guard error == nil else { observer.action(.failure(error!)); return }
             callbackQueue.async { observer.action(.success(characteristic.value)) }
         }
+    }
+    
+    // MARK: Writing values
+    
+    func sendMessage(data: Data, to device: BluetoothDevice, serviceID: String, characteristicID: String) {
+        let serviceUUID = CBUUID(string: serviceID)
+        let characteristicUUID = CBUUID(string: characteristicID)
+        guard let characteristic = getCharacteristic(serviceID: serviceUUID,
+                                                     charID: characteristicUUID,
+                                                     peripheral: device.peripheral) else {
+            Log.error("Unable to get characteristic from \(device.peripheral)")
+            return
+        }
+        Log.info("Writing value to peripheral")
+        device.peripheral.writeValue(data,
+                              for: characteristic,
+                              type: .withResponse)
+    }
+    
+    
+    
+    private func getCharacteristic(serviceID: CBUUID, charID: CBUUID, peripheral: CBPeripheral) -> CBCharacteristic? {
+        Log.info("Getting characteristics for peripheral. Peripheral services: \(String(describing: peripheral.services?.count))")
+        let service = peripheral.services?.first(where: { data -> Bool in
+            data.uuid == serviceID
+        })
+        Log.info("Service characteristics: \(String(describing: service?.characteristics?.count))")
+        guard let characteristic = service?.characteristics?.first(where: { characteristic -> Bool in
+            characteristic.uuid == charID
+        }) else {
+            return nil
+        }
+        return characteristic
     }
     
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {

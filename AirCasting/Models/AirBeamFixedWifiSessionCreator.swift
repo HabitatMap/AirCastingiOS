@@ -83,8 +83,7 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                                                                                 storage.giveHighestOrder(to: sessionWithURL.uuid)
                                                                             })
                                                                             
-                                                                            // TODO: move from passing peripheral here
-                                                                            try AirBeam3Configurator(peripheral: device.peripheral).configureFixedWifiSession(
+                                                                            try AirBeam3Configurator(device: device).configureFixedWifiSession(
                                                                                                         uuid: sessionUUID,
                                                                                                         location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
                                                                                                         date: DateBuilder.getFakeUTCDate(),

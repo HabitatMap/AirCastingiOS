@@ -39,6 +39,11 @@ class MobilePeripheralSessionManager {
         self.measurementStreamStorage = measurementStreamStorage
     }
 
+    func startRecording(session: Session, device: NewBluetoothManager.BluetoothDevice) {
+        let peripheral = device.peripheral
+        startRecording(session: session, peripheral: peripheral)
+    }
+    
     func startRecording(session: Session, peripheral: CBPeripheral) {
         measurementStreamStorage.accessStorage { [weak self] storage in
             do {
@@ -234,7 +239,7 @@ class MobilePeripheralSessionManager {
 
     func configureAB() {
         guard let peripheral = activeMobileSession?.peripheral else { return }
-        AirBeam3Configurator(peripheral: peripheral)
+        AirBeam3Configurator(device: .init(peripheral: peripheral))
             .configureMobileSession(
                 location: locationTracker.location.value?.coordinate ?? .undefined
             )

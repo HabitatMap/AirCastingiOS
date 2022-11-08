@@ -77,7 +77,7 @@ final class AirBeamCellularSessionCreator: SessionCreator {
                                                                             self.uiStore.accessStorage({ storage in
                                                                                 storage.giveHighestOrder(to: sessionWithURL.uuid)
                                                                             })
-                                                                            try AirBeam3Configurator(peripheral: device.peripheral).configureFixedCellularSession(uuid: sessionUUID,
+                                                                            try AirBeam3Configurator(device: device).configureFixedCellularSession(uuid: sessionUUID,
                                                                                                                                                            location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
                                                                                                                                                            date: DateBuilder.getFakeUTCDate())
                                                                             Log.warning("Created fixed cellular session \(output)")

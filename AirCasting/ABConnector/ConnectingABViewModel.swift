@@ -53,7 +53,7 @@ class AirbeamConnectionViewModel: ObservableObject {
     private func configureAB() {
         if let sessionUUID = self.sessionContext.sessionUUID {
             // [Resolver] NOTE: Do we want configurator to be injected?
-            let configurator = AirBeam3Configurator(peripheral: self.device.peripheral)
+            let configurator = AirBeam3Configurator(device: self.device)
             do {
                 try configurator.configureFixed(uuid: sessionUUID)
             } catch {

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import CoreBluetooth
 import CoreLocation
 import Resolver
 
@@ -15,34 +14,20 @@ struct AirBeam3Configurator {
         case missingAuthenticationToken
     }
     @Injected private var userAuthenticationSession: UserAuthenticationSession
-    let peripheral: CBPeripheral
-
-    init(peripheral: CBPeripheral) {
-        self.peripheral = peripheral
-    }
-    
+    @Injected private var btManager: NewBluetoothManager
+    private let device: NewBluetoothManager.BluetoothDevice
     private let hexMessageBuilder = HexMessagesBuilder()
     private let dateFormatter: DateFormatter = DateFormatters.AirBeam3Configurator.usLocaleFullDateDateFormatter
     
-    // have notifications about new measurements
-    private let MEASUREMENTS_CHARACTERISTIC_UUIDS: [CBUUID] = [
-        CBUUID(string:"0000ffe1-0000-1000-8000-00805f9b34fb"),    // Temperature
-        CBUUID(string:"0000ffe3-0000-1000-8000-00805f9b34fb"),    // Humidity
-        CBUUID(string:"0000ffe4-0000-1000-8000-00805f9b34fb"),    // PM1
-        CBUUID(string:"0000ffe5-0000-1000-8000-00805f9b34fb"),    // PM2.5
-        CBUUID(string:"0000ffe6-0000-1000-8000-00805f9b34fb")]    // PM10
-    
     // used for sending hex codes to the AirBeam
-    private let CONFIGURATION_CHARACTERISTIC_UUID = CBUUID(string:"0000ffde-0000-1000-8000-00805f9b34fb")
-    
-    // has notifications about measurements count in particular csv file on SD card
-    private let DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID = CBUUID(string:"0000ffde-0000-1000-8000-00805f9b34fb")
-    
-    // has notifications for reading measurements stored in csv files on SD card
-    private let DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID = CBUUID(string:"0000ffdf-0000-1000-8000-00805f9b34fb")
+    private let configurationCharacteristicUUID = "0000ffde-0000-1000-8000-00805f9b34fb"
     
     // service id
-    private let SERVICE_UUID = CBUUID(string:"0000ffdd-0000-1000-8000-00805f9b34fb")
+    private let serviceUUID = "0000ffdd-0000-1000-8000-00805f9b34fb"
+
+    init(device: NewBluetoothManager.BluetoothDevice) {
+        self.device = device
+    }
     
     func configureMobileSession(location: CLLocationCoordinate2D) {
         Log.info("Starting configuring mobile session.")
@@ -122,9 +107,9 @@ private extension AirBeam3Configurator {
     }
     
     private func sendAuthToken(authToken: String) {
-        let message = hexMessageBuilder.authTokenMessage(authToken: authToken)
+        guard let message = hexMessageBuilder.authTokenMessage(authToken: authToken) else { return }
         Log.info("Sending auth token to peripheral")
-        sendConfigMessage(data: message!)
+        sendConfigMessage(data: message)
     }
     
     private func sendLocationConfiguration(location: CLLocationCoordinate2D) {
@@ -171,32 +156,7 @@ private extension AirBeam3Configurator {
         sendConfigMessage(data: message)
     }
     
-    // MARK: Utils
-    
-    func sendConfigMessage(data: Data) {
-        guard let characteristic = getCharacteristic(serviceID: SERVICE_UUID,
-                                                     charID: CONFIGURATION_CHARACTERISTIC_UUID) else {
-            Log.error("Unable to get characteristic from \(peripheral)")
-            return
-        }
-        Log.info("Writing value to peripheral")
-        // bluetoothCommunicator.writeValue(peripheral, data, ...)
-        peripheral.writeValue(data,
-                              for: characteristic,
-                              type: .withResponse)
-    }
-    
-    func getCharacteristic(serviceID: CBUUID, charID: CBUUID) -> CBCharacteristic? {
-        Log.info("Getting characteristics for peripheral. Peripheral services: \(String(describing: peripheral.services?.count))")
-        let service = peripheral.services?.first(where: { data -> Bool in
-            data.uuid == serviceID
-        })
-        Log.info("Service characteristics: \(String(describing: service?.characteristics?.count))")
-        guard let characteristic = service?.characteristics?.first(where: { characteristic -> Bool in
-            characteristic.uuid == charID
-        }) else {
-            return nil
-        }
-        return characteristic
+    private func sendConfigMessage(data: Data) {
+        btManager.sendMessage(data: data, to: device, serviceID: serviceUUID, characteristicID: configurationCharacteristicUUID)
     }
 }

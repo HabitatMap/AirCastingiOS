@@ -55,7 +55,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         
         Log.info("[SD Sync] Downloading data")
         
-        configureABforSync(peripheral: device.peripheral)
+        configureABforSync(device: device)
         metadataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(for: device, characteristic: DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
             switch result {
             case .success(let data):
@@ -88,7 +88,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     
     func clearSDCard(of device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
         Log.info("[SD Sync] Starting clearing SD card process")
-        sendClearConfig(peripheral: device.peripheral)
+        sendClearConfig(device: device)
         clearCardCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(for: device, characteristic: DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID, timeout: 10) { result in
             switch result {
             case .success(let data):
@@ -165,13 +165,13 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         progress(SDCardDataChunk(payload: payload, sessionType: sessionType, progress: progressFraction))
     }
     
-    private func configureABforSync(peripheral: CBPeripheral) {
-        let configurator = AirBeam3Configurator(peripheral: peripheral)
+    private func configureABforSync(device: NewBluetoothManager.BluetoothDevice) {
+        let configurator = AirBeam3Configurator(device: device)
         configurator.configureSDSync()
     }
     
-    private func sendClearConfig(peripheral: CBPeripheral) {
-        let configurator = AirBeam3Configurator(peripheral: peripheral)
+    private func sendClearConfig(device: NewBluetoothManager.BluetoothDevice) {
+        let configurator = AirBeam3Configurator(device: device)
         configurator.clearSDCard()
     }
     
