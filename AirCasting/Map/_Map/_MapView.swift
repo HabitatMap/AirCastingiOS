@@ -77,7 +77,7 @@ struct _MapView: UIViewRepresentable {
     private let userTracker: UserTracker
     private let markers: [Marker]
     
-    init(path: [PathPoint], type: MapType, trackingStyle: TrackingStyle, userIndicatorStyle: UserIndicatorStyle, userTracker: UserTracker, markers: [Marker]) {
+    init(path: [PathPoint] = [], type: MapType, trackingStyle: TrackingStyle, userIndicatorStyle: UserIndicatorStyle, userTracker: UserTracker, markers: [Marker] = []) {
         self.path = path
         self.type = type
         self.trackingStyle = trackingStyle
@@ -100,7 +100,7 @@ struct _MapView: UIViewRepresentable {
             }
         }
         
-        // setupStyling(for: mapView)
+        setupStyling(for: mapView)
         do {
             if let styleURL = Bundle.main.url(forResource: "style", withExtension: "json") {
                 let s = try GMSMapStyle(contentsOfFileURL: styleURL)
@@ -122,7 +122,7 @@ struct _MapView: UIViewRepresentable {
         }
         context.coordinator.previousFrameMarkers = markers
         drawPolyline(uiView, context: context)
-//        setupStyling(for: uiView)
+        setupStyling(for: uiView)
         
         guard !context.coordinator.suspendTracking else { return }
         updateCameraPosition(in: uiView, context: context)

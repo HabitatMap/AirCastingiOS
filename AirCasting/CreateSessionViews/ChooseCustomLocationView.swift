@@ -12,6 +12,7 @@ struct ChooseCustomLocationView: View {
     @State private var location: CLLocationCoordinate2D?
     @State var placePickerIsUpdating: Bool = false
     @State var isLocationPopupPresented = false
+    @StateObject var bindableLocationTracker = BindableLocationTracker()
     @Binding var creatingSessionFlowContinues: Bool
     var sessionName: String
     
@@ -37,6 +38,10 @@ struct ChooseCustomLocationView: View {
         .sheet(isPresented: $isLocationPopupPresented) {
             PlacePicker(service: ChooseLocationPickerService(address: $locationName, location: $location))
         }
+        .onChange(of: location, perform: { newLocation in
+            guard let newLocation else { return }
+            bindableLocationTracker.locationSource = newLocation
+        })
         .onChange(of: isLocationPopupPresented, perform: { present in
             // The reason for this is to prevent map from multiple times refreshing after first map update
             placePickerIsUpdating = !present
@@ -45,12 +50,16 @@ struct ChooseCustomLocationView: View {
     }
 
     var mapGoogle: some View {
-        GoogleMapView(pathPoints: [],
-                      placePickerIsUpdating: $placePickerIsUpdating,
-                      isUserInteracting: Binding.constant(true),
-                      mapNotes: .constant([]),
-                      isMapOnPickerScreen: true,
-                      placePickerLocation: $location)
+        _MapView(type: .normal,
+                 trackingStyle: .user,
+                 userIndicatorStyle: .none,
+                 userTracker: bindableLocationTracker)
+//        GoogleMapView(pathPoints: [],
+//                      placePickerIsUpdating: $placePickerIsUpdating,
+//                      isUserInteracting: Binding.constant(true),
+//                      mapNotes: .constant([]),
+//                      isMapOnPickerScreen: true,
+//                      placePickerLocation: $location)
     }
 
     var dot: some View {
@@ -88,5 +97,11 @@ struct ChooseCustomLocationView: View {
                 EmptyView()
             }
         )
+    }
+}
+
+extension CLLocationCoordinate2D: Equatable {
+    public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
+        lhs.longitude == rhs.longitude && lhs.latitude == rhs.latitude
     }
 }

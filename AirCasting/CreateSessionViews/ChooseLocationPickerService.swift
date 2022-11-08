@@ -19,3 +19,25 @@ class ChooseLocationPickerService: PlacePickerService {
         location = place.coordinate
     }
 }
+
+class BindableLocationTracker: UserTracker, ObservableObject {
+    var locationSource: CLLocationCoordinate2D {
+        didSet {
+            guard oldValue != locationSource else { return }
+            newPosClosure?(.init(latitude: locationSource.latitude,
+                                 longitude: locationSource.longitude))
+            objectWillChange.send()
+        }
+    }
+    
+    private var newPosClosure: ((CLLocation) -> Void)?
+    
+    init() {
+        let locationTracker = Resolver.resolve(LocationTracker.self)
+        locationSource = locationTracker.location.value?.coordinate ?? .init(latitude: 0, longitude: 0)
+    }
+    
+    func startTrackingUserPosision(_ newPos: @escaping (CLLocation) -> Void) {
+        self.newPosClosure = newPos
+    }
+}

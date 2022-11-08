@@ -162,7 +162,8 @@ private extension CreateSessionDetailsView {
     
     var createSesssionLink: some View {
         NavigationLink(
-            destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionName: viewModel.sessionName),
+            destination: ChooseCustomLocationView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionName: viewModel.sessionName),
+            //destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionName: viewModel.sessionName),
             isActive: $viewModel.isConfirmCreatingSessionActive,
             label: {
                 EmptyView()
