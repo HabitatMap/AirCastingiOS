@@ -77,7 +77,8 @@ struct _MapView: UIViewRepresentable {
     private let userTracker: UserTracker
     private let markers: [Marker]
     
-    init(path: [PathPoint] = [], type: MapType, trackingStyle: TrackingStyle, userIndicatorStyle: UserIndicatorStyle, userTracker: UserTracker, markers: [Marker] = []) {
+    // TODO: Think about it
+    init(path: [PathPoint] = [], type: MapType, trackingStyle: TrackingStyle, userIndicatorStyle: UserIndicatorStyle, userPosition: CLLocationCoordinate2D? = nil, mapCenter: Binding<CLLocationCoordinate2D>, markers: [Marker] = []) {
         self.path = path
         self.type = type
         self.trackingStyle = trackingStyle
