@@ -10,10 +10,9 @@ struct ChooseCustomLocationView: View {
     @State private var isConfirmCreatingSessionActive: Bool = false
     @State private var locationName = ""
     @State private var location: CLLocationCoordinate2D?
-    @State var placePickerIsUpdating: Bool = false
     @State var isLocationPopupPresented = false
-    @StateObject var bindableLocationTracker = BindableLocationTracker()
     @Binding var creatingSessionFlowContinues: Bool
+    @StateObject private var locationTracker = BindableLocationTracker()
     var sessionName: String
     
     @EnvironmentObject private var sessionContext: CreateSessionContext
@@ -40,20 +39,17 @@ struct ChooseCustomLocationView: View {
         }
         .onChange(of: location, perform: { newLocation in
             guard let newLocation else { return }
-            bindableLocationTracker.locationSource = newLocation
-        })
-        .onChange(of: isLocationPopupPresented, perform: { present in
-            // The reason for this is to prevent map from multiple times refreshing after first map update
-            placePickerIsUpdating = !present
+            locationTracker.locationSource = newLocation
         })
         .padding()
     }
 
     var mapGoogle: some View {
+        // TODO: Remember to revert this view from being shown in the mobile session wizard! (createSesssionLink in CreateSessionDetailsView.swift)
         _MapView(type: .normal,
                  trackingStyle: .user,
-                 userIndicatorStyle: .none,
-                 userTracker: bindableLocationTracker)
+                 userIndicatorStyle: .custom(color: .red),
+                 userTracker: locationTracker)
 //        GoogleMapView(pathPoints: [],
 //                      placePickerIsUpdating: $placePickerIsUpdating,
 //                      isUserInteracting: Binding.constant(true),

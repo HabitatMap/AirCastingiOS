@@ -39,5 +39,7 @@ class BindableLocationTracker: UserTracker, ObservableObject {
     
     func startTrackingUserPosision(_ newPos: @escaping (CLLocation) -> Void) {
         self.newPosClosure = newPos
+        newPos(.init(latitude: locationSource.latitude,
+                     longitude: locationSource.longitude))
     }
 }

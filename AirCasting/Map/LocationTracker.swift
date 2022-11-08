@@ -51,6 +51,7 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
         }
         locationStartReference += 1
         Log.info("Started location tracking (refcount: \(locationStartReference))")
+        assert(locationStartReference >= 0)
     }
     
     func stop() {
@@ -61,6 +62,7 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
             location.value = nil
         }
         Log.info("Stopped location tracking (refcount: \(locationStartReference))")
+        assert(locationStartReference >= 0)
     }
     
     func requestAuthorization() {
@@ -104,6 +106,7 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
 class UserTrackerAdapter: UserTracker {
     private let locationTracker: LocationTracker
     private var locationCancellable: AnyCancellable?
+    private var didStartTracking: Bool = false
     
     init(_ locationTracker: LocationTracker) {
         self.locationTracker = locationTracker
@@ -112,6 +115,7 @@ class UserTrackerAdapter: UserTracker {
     func startTrackingUserPosision(_ newPos: @escaping (CLLocation) -> Void) {
         Log.verbose("## Starting tracking location")
         locationTracker.start()
+        didStartTracking = true
         locationCancellable = locationTracker.location.sink {
             Log.verbose("## New location")
             newPos($0 ?? .applePark)
@@ -119,6 +123,7 @@ class UserTrackerAdapter: UserTracker {
     }
     
     deinit {
+        guard didStartTracking else { return }
         Log.verbose("## Stopping tracking location")
         locationTracker.stop()
     }
