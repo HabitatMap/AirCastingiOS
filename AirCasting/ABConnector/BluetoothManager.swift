@@ -50,7 +50,7 @@ class BluetoothManager: NSObject, BluetoothCommunicator, ObservableObject {
     @Published var mobileSessionReconnected = false
     var observed: NSKeyValueObservation?
     @Published var isReconnectionOn = false
-    @Published var didAlreayCancellConnection = false
+    @Published var peripheralConnectionIsCancelled = false
 
     let mobilePeripheralSessionManager: MobilePeripheralSessionManager
     @Injected private var featureFlagProvider: FeatureFlagProvider
@@ -189,7 +189,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         // Here's code for getting data from AB.
-        didAlreayCancellConnection = false
+        peripheralConnectionIsCancelled = false
         peripheral.delegate = self
         if mobilePeripheralSessionManager.activeSessionInProgressWith(peripheral) {
             var characteristicsHandle: Any?
@@ -212,7 +212,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
 
         charactieristicsMapping.removeAll()
         
-        guard mobilePeripheralSessionManager.activeSessionInProgressWith(peripheral) && !didAlreayCancellConnection else { return }
+        guard mobilePeripheralSessionManager.activeSessionInProgressWith(peripheral) && !peripheralConnectionIsCancelled else { return }
         mobilePeripheralSessionManager.markActiveSessionAsDisconnected(peripheral: peripheral)
         connectWithTimeout(using: peripheral)
     }
@@ -225,7 +225,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
             guard peripheral.state != .connected else { return }
             Log.info("Didn't connect with peripheral within 10s. Canceling peripheral connection.")
             self.cancelPeripheralConnection(for: peripheral)
-            self.didAlreayCancellConnection = true
+            self.peripheralConnectionIsCancelled = true
             Log.info("Moving session to standalone mode")
             
             if self.featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {

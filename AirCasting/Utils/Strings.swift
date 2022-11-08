@@ -622,7 +622,7 @@ struct Strings {
         
         static let finishAlertMessage: String = NSLocalizedString("The session will be moved to Mobile Dormant tab and you won't be able to add new measurement to it.",
                                                                   comment: "")
-        static let cannotReconnectAlertTitle: String = NSLocalizedString("Reconnection process.",
+        static let cannotReconnectAlertTitle: String = NSLocalizedString("Reconnection failure",
                                                                   comment: "")
         static let cannotReconnectAlertMessage: String = NSLocalizedString("Cannot process reconnection anymore. Please finish session, so it will be moved to Mobile Dormant.",
                                                                   comment: "")
