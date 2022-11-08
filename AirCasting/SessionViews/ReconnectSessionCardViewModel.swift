@@ -14,8 +14,8 @@ class ReconnectSessionCardViewModel: ObservableObject {
     
     init(session: SessionEntity) {
         self.session = session
-        reconnectionObserver = bm.$isReconnectionOn.sink { value in
-            self.isSpinnerOn = value
+        reconnectionObserver = bm.$connectionState.receive(on: DispatchQueue.main).sink { value in
+            self.isSpinnerOn = (value == .connecting)
         }
     }
     
