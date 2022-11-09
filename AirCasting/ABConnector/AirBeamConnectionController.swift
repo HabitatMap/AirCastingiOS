@@ -5,24 +5,15 @@ import Foundation
 import Resolver
 
 protocol AirBeamConnectionController {
-    func connectToAirBeam(device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Bool) -> Void)
+    func connectToAirBeam(device: NewBluetoothManager.BluetoothDevice, completion: @escaping (AirBeamServicesConnectionResult) -> Void)
     func disconnectAirBeam(device: NewBluetoothManager.BluetoothDevice)
 }
 
 class DefaultAirBeamConnectionController: AirBeamConnectionController {
     @Injected private var connectingAirBeamServices: ConnectingAirBeamServices
     
-    func connectToAirBeam(device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Bool) -> Void) {
-        connectingAirBeamServices.connect(to: device, timeout: 10) { result in
-            switch result {
-            case .success:
-                completion(true)
-            case .deviceBusy:
-                completion(false)
-            case .timeout:
-                completion(false)
-            }
-        }
+    func connectToAirBeam(device: NewBluetoothManager.BluetoothDevice, completion: @escaping (AirBeamServicesConnectionResult) -> Void) {
+        connectingAirBeamServices.connect(to: device, timeout: 10, completion: completion)
     }
     
     func disconnectAirBeam(device: NewBluetoothManager.BluetoothDevice) {

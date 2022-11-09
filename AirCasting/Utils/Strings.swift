@@ -932,6 +932,13 @@ struct Strings {
                                                        comment: "")
     }
     
+    enum IncompatibleDeviceAlert {
+        static let title: String = NSLocalizedString("Incompatible Device",
+                                                     comment: "")
+        static let message: String = NSLocalizedString("This device is not compatible with this application.",
+                                                       comment: "")
+    }
+    
     enum InAppAlerts {
         static let noInternetConnectionTitle: String = NSLocalizedString("No internet connection",
                                                                    comment: "")

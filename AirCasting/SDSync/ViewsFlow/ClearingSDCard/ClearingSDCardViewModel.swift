@@ -42,8 +42,8 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
     }
     
     func clearSDCardButtonTapped() {
-        self.airBeamConnectionController.connectToAirBeam(device: device) { success in
-            guard success else {
+        self.airBeamConnectionController.connectToAirBeam(device: device) { result in
+            guard result == .success else {
                 DispatchQueue.main.async {
                     self.isClearingCompletedValue = false
                     self.error = ClearingSDCardError.noConnection

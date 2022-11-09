@@ -188,6 +188,14 @@ struct InAppAlerts {
                              action: dismiss) ])
     }
     
+    static func incompatibleDevice(dismiss: (@escaping () -> Void)) -> AlertInfo {
+        AlertInfo(title: Strings.IncompatibleDeviceAlert.title,
+                  message: Strings.IncompatibleDeviceAlert.message,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss) ])
+    }
+    
     static func locationAlert() -> AlertInfo {
         let redirection = Resolver.resolve(SettingsRedirection.self)
         return AlertInfo(title: Strings.SelectDeviceView.alertTitle,

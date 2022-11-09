@@ -8,6 +8,7 @@ enum AirBeamServicesConnectionResult {
     case success
     case timeout
     case deviceBusy
+    case incompatibleDevice
 }
 
 protocol ConnectingAirBeamServices {
@@ -18,6 +19,7 @@ protocol ConnectingAirBeamServices {
 class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
     @Injected private var btManager: NewBluetoothManager
     private var connectionToken: AnyObject?
+    private var airBeamCharacteristics = ["FFDE", "FFDF", "FFE1", "FFE3", "FFE4", "FFE5", "FFE6"]
 
     func connect(to device: NewBluetoothManager.BluetoothDevice, timeout: TimeInterval, completion: @escaping (AirBeamServicesConnectionResult) -> Void) {
         Log.info("Starting Airbeam connection")
@@ -32,8 +34,8 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
             case .success:
                 self.btManager.discoverCharacteristics(for: device, timeout: timeout) { characteristicsResult in
                     switch characteristicsResult {
-                    case .success:
-                        completion(.success)
+                    case .success(let characteristics):
+                        completion(self.isCompatibile(characteristics.map(\.UUID)) ? .success : .incompatibleDevice)
                     case .failure(let error):
                         Log.error("Failed to discover characteristics: \(error)")
                         completion(.timeout)
@@ -48,5 +50,9 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
     
     func disconnect(from device: NewBluetoothManager.BluetoothDevice) {
         btManager.disconnect(from: device)
+    }
+    
+    private func isCompatibile(_ uuids: [String]) -> Bool {
+        airBeamCharacteristics.allSatisfy({ uuids.contains($0) })
     }
 }

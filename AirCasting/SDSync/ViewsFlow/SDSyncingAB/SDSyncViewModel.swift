@@ -42,14 +42,12 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     }
 
     func connectToAirBeamAndSync() {
-        self.airBeamConnectionController.connectToAirBeam(device: device) { success in
+        self.airBeamConnectionController.connectToAirBeam(device: device) { result in
             Log.info("[SD SYNC] Completed connecting to AB")
-            guard success else {
+            guard result == .success else {
                 DispatchQueue.main.async {
                     self.presentNextScreen = false
-                    self.alert = InAppAlerts.connectionTimeoutAlert {
-                        self.shouldDismiss = true
-                    }
+                    self.getConnectionAlert(result)
                 }
                 return
             }
@@ -101,9 +99,9 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     }
     
     private func reconnectWithAirbeamAndClearCard() {
-        airBeamConnectionController.connectToAirBeam(device: device) { [weak self] success in
+        airBeamConnectionController.connectToAirBeam(device: device) { [weak self] result in
             guard let self = self else { return }
-            guard success else {
+            guard result == .success else {
                 Log.info("[SD SYNC] Reconnecting failed")
                 DispatchQueue.main.async {
                     self.presentNextScreen = false
@@ -141,6 +139,25 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
             }
         case .mobileSessionsProcessingFailure:
             return InAppAlerts.sdSyncMobileFailAlert {
+                self.shouldDismiss = true
+            }
+        }
+    }
+    
+    private func getConnectionAlert(_ result: AirBeamServicesConnectionResult) {
+        switch result {
+        case .timeout:
+            self.alert = InAppAlerts.connectionTimeoutAlert {
+                self.shouldDismiss = true
+            }
+        case .deviceBusy:
+            self.alert = InAppAlerts.bluetoothSessionAlreadyRecordingAlert {
+                self.shouldDismiss = true
+            }
+        case .success:
+            break
+        case .incompatibleDevice:
+            self.alert = InAppAlerts.incompatibleDevice {
                 self.shouldDismiss = true
             }
         }

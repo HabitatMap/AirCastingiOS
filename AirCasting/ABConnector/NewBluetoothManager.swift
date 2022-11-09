@@ -194,7 +194,7 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
     // MARK: Characteristics
     
     struct BluetoothCharacteristic {
-        let device: BluetoothDevice
+        let UUID: String
     }
     
     enum CharacteristicObservingError: Error {
@@ -316,9 +316,9 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
         }
         
         characteristicsDicoveryCallbacks[peripheral]?.forEach { callback in
-            let characteristics = peripheral.services?.compactMap(\.characteristics).compactMap { $0 }
+            let characteristics = peripheral.services?.compactMap(\.characteristics).compactMap { $0 }.flatMap({$0}) ?? []
             callbackQueue.async {
-                callback(.success([.init(device: BluetoothDevice(peripheral: peripheral))])) // Fix with Paweł
+                callback(.success(characteristics.map({BluetoothCharacteristic(UUID: $0.uuid.uuidString )})))
             }
         }
         characteristicsDicoveryCallbacks.removeValue(forKey: peripheral)

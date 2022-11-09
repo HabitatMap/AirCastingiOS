@@ -7,12 +7,6 @@ import Resolver
 
 // [RESOLVER] Move this VM init to View when all dependencies resolved
 class AirbeamConnectionViewModel: ObservableObject {
-    
-    private enum AlertType {
-        case timeOut
-        case busyDevice
-    }
-    
     @Injected private var airBeamConnectionController: AirBeamConnectionController
     @Injected private var userAuthenticationSession: UserAuthenticationSession
     @Injected private var bluetoothConnectionProtector: ConnectionProtectable
@@ -34,18 +28,21 @@ class AirbeamConnectionViewModel: ObservableObject {
         self.bluetoothConnectionProtector.isAirBeamAvailableForNewConnection(peripheraUUID: device.uuid) { result in
             switch result {
             case .success(_):
-                self.airBeamConnectionController.connectToAirBeam(device: self.device) { success in
-                    guard success else {
-                        self.getAlert(.timeOut); return
+                self.airBeamConnectionController.connectToAirBeam(device: self.device) { result in
+                    guard result == .success else {
+                        DispatchQueue.main.async {
+                            self.getAlert(result)
+                        }
+                        return
                     }
                     DispatchQueue.main.async {
-                        self.isDeviceConnected = success
+                        self.isDeviceConnected = true
                     }
                     self.configureAB()
                 }
             case .failure(let error):
                 Log.info("Cannot create new mobile session while other is ongoing \(error.localizedDescription)")
-                self.getAlert(.busyDevice); return
+                self.getAlert(.deviceBusy); return
             }
         }
     }
@@ -62,14 +59,20 @@ class AirbeamConnectionViewModel: ObservableObject {
         }
     }
     
-    private func getAlert(_ alert: AlertType) {
-        switch alert {
-        case .timeOut:
+    private func getAlert(_ result: AirBeamServicesConnectionResult) {
+        switch result {
+        case .timeout:
             self.alert = InAppAlerts.connectionTimeoutAlert {
                 self.shouldDismiss = true
             }
-        case .busyDevice:
+        case .deviceBusy:
             self.alert = InAppAlerts.bluetoothSessionAlreadyRecordingAlert {
+                self.shouldDismiss = true
+            }
+        case .success:
+            break
+        case .incompatibleDevice:
+            self.alert = InAppAlerts.incompatibleDevice {
                 self.shouldDismiss = true
             }
         }
