@@ -32,6 +32,14 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
     
     private var queue = DispatchQueue(label: "bluetooth.driver.queue")
     
+    override init() {
+        super.init()
+        if CBCentralManager.authorization == .allowedAlways {
+            // To avoid the .unknown state of centralManager when bluetooth is poweredOn
+            let _ = centralManager
+        }
+    }
+    
     func forceBluetoothPermissionPopup() {
         // The BT permissions popup shows whenever CBCentralManager is created
         // so we force it here.

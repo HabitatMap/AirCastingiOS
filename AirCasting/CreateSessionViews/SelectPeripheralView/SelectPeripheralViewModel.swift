@@ -12,8 +12,8 @@ class SelectPeripheralViewModel: ObservableObject {
     @Published var otherDevices = [NewBluetoothManager.BluetoothDevice]()
     
     func viewAppeared() {
+        btManager.forceBluetoothPermissionPopup()
         if CBCentralManager.authorization == .allowedAlways {
-            btManager.forceBluetoothPermissionPopup()
             scan()
         }
     }

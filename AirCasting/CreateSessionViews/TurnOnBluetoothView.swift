@@ -59,9 +59,7 @@ struct TurnOnBluetoothView: View {
             }
         )
         .onAppear(perform: {
-            if CBCentralManager.authorization != .allowedAlways {
-                bluetoothManager.forceBluetoothPermissionPopup()
-            }
+            bluetoothManager.forceBluetoothPermissionPopup()
         })
         .padding()
         .background(Color.aircastingBackground.ignoresSafeArea())

@@ -9,4 +9,12 @@ protocol BluetoothPermisionsChecker {
     func isBluetoothDenied() -> Bool
 }
 
+class DefaultBluetoothHandler: BluetoothPermisionsChecker {
+    @Injected private var bluetoothManager: NewBluetoothManager
+    
+    func isBluetoothDenied() -> Bool {
+        bluetoothManager.isBluetoothDenied()
+    }
+}
+
 extension NewBluetoothManager: BluetoothPermisionsChecker {}
