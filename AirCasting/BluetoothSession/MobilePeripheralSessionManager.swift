@@ -242,7 +242,16 @@ class MobilePeripheralSessionManager {
         AirBeam3Configurator(device: .init(peripheral: peripheral))
             .configureMobileSession(
                 location: locationTracker.location.value?.coordinate ?? .undefined
-            )
+            ) { result in
+                switch result {
+                case .success():
+                    Log.info("## Successfully configured AB")
+                    return
+                case .failure(let error):
+                    Log.error("## Failed to configure AB: \(error)")
+                    return
+                }
+            }
     }
 
     func activeSessionInProgressWith(_ peripheral: CBPeripheral) -> Bool {

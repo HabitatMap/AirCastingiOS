@@ -182,13 +182,13 @@ extension Resolver: ResolverRegistering {
         main.register { MobileAirBeamSessionRecordingController() as BluetoothSessionController }
             .scope(.application)
         main.register { AirbeamMeasurementsRecordingServices() as MeasurementsRecordingServices }
-        main.register { BluetoothManager(mobilePeripheralSessionManager: Resolver.resolve()) }
+        main.register { _BluetoothManager(mobilePeripheralSessionManager: Resolver.resolve()) }
         .implements(BluetoothConnector.self)
         .scope(.cached)
         main.register { NewBluetoothManager() }
         .implements(NewBluetoothCommunicator.self)
+        .implements(BluetoothPermisionsChecker.self)
         .scope(.cached)
-        main.register { DefaultBluetoothHandler() as BluetoothHandler }
         main.register { UserState() }.scope(.application)
         main.register { SyncedMeasurementsDownloadingService() as SyncedMeasurementsDownloader }
         main.register { ConnectingAirBeamServicesBluetooth() as ConnectingAirBeamServices }
@@ -199,9 +199,9 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultRemoveDataController() as RemoveDataController }
         main.register { DefaultThresholdAlertsController() as ThresholdAlertsController }
         main.register { BluetoothConnectionProtector() as ConnectionProtectable }
+        main.register { DefaultStandaloneModeController() as StandaloneModeController }
         
         // MARK: - Session stopping
-        
         main.register { (_, args) in
             getSessionStopper(for: args())
         }

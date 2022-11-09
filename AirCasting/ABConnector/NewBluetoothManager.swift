@@ -329,7 +329,10 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
     
     // MARK: Writing values
     
-    func sendMessage(data: Data, to device: BluetoothDevice, serviceID: String, characteristicID: String) {
+    typealias writingValueCallback = (Result<Void, Error>) -> Void
+    private var writingValueCallbacks: [CBCharacteristic: [writingValueCallback]] = [:]
+    
+    func sendMessage(data: Data, to device: BluetoothDevice, serviceID: String, characteristicID: String, completion: @escaping writingValueCallback) {
         let serviceUUID = CBUUID(string: serviceID)
         let characteristicUUID = CBUUID(string: characteristicID)
         guard let characteristic = getCharacteristic(serviceID: serviceUUID,
@@ -339,9 +342,13 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
             return
         }
         Log.info("Writing value to peripheral")
-        device.peripheral.writeValue(data,
-                              for: characteristic,
-                              type: .withResponse)
+        
+        queue.async {
+            self.writingValueCallbacks[characteristic, default: []].append(completion)
+            device.peripheral.writeValue(data,
+                                         for: characteristic,
+                                         type: .withResponse)
+        }
     }
     
     
@@ -361,9 +368,13 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
     }
     
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
-        Log.verbose("## Did write value for characteristic: \(characteristic)")
+        queue.async {
+            Log.verbose("## Did write value for characteristic: \(characteristic), error: \(error)")
+            self.writingValueCallbacks[characteristic]?.forEach { error == nil ? $0(.success(())) : $0(.failure(error!)) }
+            self.writingValueCallbacks[characteristic] = nil
+        }
+        
     }
-    
     
     // MARK: Central manager state
     

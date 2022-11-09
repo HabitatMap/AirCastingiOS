@@ -77,9 +77,19 @@ final class AirBeamCellularSessionCreator: SessionCreator {
                                                                             self.uiStore.accessStorage({ storage in
                                                                                 storage.giveHighestOrder(to: sessionWithURL.uuid)
                                                                             })
-                                                                            try AirBeam3Configurator(device: device).configureFixedCellularSession(uuid: sessionUUID,
+                                                                            try AirBeam3Configurator(device: device)
+                                                                                .configureFixedCellularSession(uuid: sessionUUID,
                                                                                                                                                            location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
-                                                                                                                                                           date: DateBuilder.getFakeUTCDate())
+                                                                                                               date: DateBuilder.getFakeUTCDate()) { result in
+                                                                                    switch result {
+                                                                                    case .success():
+                                                                                        Log.info("## Successfully configured AB")
+                                                                                        return
+                                                                                    case .failure(let error):
+                                                                                        Log.error("## Failed to configure AB: \(error)")
+                                                                                        return
+                                                                                    }
+                                                                                }
                                                                             Log.warning("Created fixed cellular session \(output)")
                                                                             completion(.success(()))
                                                                         } catch {

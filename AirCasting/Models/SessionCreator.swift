@@ -85,8 +85,17 @@ final class MobilePeripheralSessionCreator: SessionCreator {
                                   locationless: sessionContext.locationless,
                                   tags: sessionContext.sessionTags,
                                   status: .NEW)
-            AirBeam3Configurator(device: device).configureMobileSession(
-                                    location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200))
+            AirBeam3Configurator(device: device)
+                .configureMobileSession(location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200)) { result in
+                    switch result {
+                    case .success():
+                        Log.info("## Successfully configured AB")
+                        return
+                    case .failure(let error):
+                        Log.error("## Failed to configure AB: \(error)")
+                        return
+                    }
+                }
             
             
             recorder.startRecording(session: session, device: device)

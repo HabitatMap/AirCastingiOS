@@ -9,7 +9,7 @@ import Foundation
 import CoreBluetooth
 import Resolver
 
-class BluetoothManager: NSObject, BluetoothCommunicator, ObservableObject {
+class _BluetoothManager: NSObject, BluetoothCommunicator, ObservableObject {
     @Injected var newBluetoothManager: NewBluetoothManager
     
     lazy var centralManager = newBluetoothManager.centralManager
@@ -123,7 +123,7 @@ struct PeripheralMeasurement {
     let measurementStream: ABMeasurementStream
 }
 
-extension BluetoothManager: CBCentralManagerDelegate {
+extension _BluetoothManager: CBCentralManagerDelegate {
 
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         //
@@ -179,7 +179,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
     }
 }
 
-extension BluetoothManager: CBPeripheralDelegate {
+extension _BluetoothManager: CBPeripheralDelegate {
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         if let services = peripheral.services {
@@ -278,7 +278,7 @@ extension BluetoothManager: CBPeripheralDelegate {
     }
 }
 
-extension BluetoothManager: BluetoothConnector {
+extension _BluetoothManager: BluetoothConnector {
     
     func connect(to peripheral: CBPeripheral) {
         Log.info("Connecting to peripheral: \(peripheral)")

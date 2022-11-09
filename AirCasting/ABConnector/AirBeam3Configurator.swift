@@ -29,32 +29,48 @@ struct AirBeam3Configurator {
         self.device = device
     }
     
-    func configureMobileSession(location: CLLocationCoordinate2D) {
+    func configureMobileSession(location: CLLocationCoordinate2D, completion: @escaping (Result<Void, Error>) -> Void) {
         Log.info("Starting configuring mobile session.")
-        sendLocationConfiguration(location: location)
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-            let dateString = dateFormatter.string(from: DateBuilder.getFakeUTCDate())
-            sendCurrentTimeConfiguration(date: dateString)
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-                sendMobileModeRequest()
+        sendLocationConfiguration(location: location) { result in
+            switch result {
+            case .success():
+                let dateString = dateFormatter.string(from: DateBuilder.getFakeUTCDate())
+                sendCurrentTimeConfiguration(date: dateString) { result in
+                    switch result {
+                    case .success():
+                        sendMobileModeRequest(completion: completion)
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }
-
+    
     func configureFixedWifiSession(uuid: SessionUUID,
                                    location: CLLocationCoordinate2D,
                                    date: Date,
                                    wifiSSID: String,
-                                   wifiPassword: String) throws {
-        let dateString = dateFormatter.string(from: date)
-        
+                                   wifiPassword: String,
+                                   completion: @escaping (Result<Void, Error>) -> Void) throws {
+        // IS THIS DELAY NECESSARY??
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-            sendLocationConfiguration(location: location)
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                sendCurrentTimeConfiguration(date: dateString)
-                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                    sendWifiConfiguration(wifiSSID: wifiSSID, wifiPassword: wifiPassword)
+            sendLocationConfiguration(location: location) { result in
+                switch result {
+                case .success():
+                    let dateString = dateFormatter.string(from: date)
+                    sendCurrentTimeConfiguration(date: dateString) { result in
+                        switch result {
+                        case .success():
+                            sendWifiConfiguration(wifiSSID: wifiSSID, wifiPassword: wifiPassword, completion: completion)
+                        case .failure(let error):
+                            completion(.failure(error))
+                        }
+                    }
+                case .failure(let error):
+                    completion(.failure(error))
                 }
             }
         }
@@ -62,15 +78,24 @@ struct AirBeam3Configurator {
     
     func configureFixedCellularSession(uuid: SessionUUID,
                                        location: CLLocationCoordinate2D,
-                                       date: Date) throws {
-        let dateString = dateFormatter.string(from: date)
-        
+                                       date: Date,
+                                       completion: @escaping (Result<Void, Error>) -> Void) throws {
+        // IS THIS DELAY NECESSARY??
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-            sendLocationConfiguration(location: location)
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                sendCurrentTimeConfiguration(date: dateString)
-                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                    sendCellularConfiguration()
+            sendLocationConfiguration(location: location) { result in
+                switch result {
+                case .success():
+                    let dateString = dateFormatter.string(from: date)
+                    sendCurrentTimeConfiguration(date: dateString) { result in
+                        switch result {
+                        case .success():
+                            sendCellularConfiguration(completion: completion)
+                        case .failure(let error):
+                            completion(.failure(error))
+                        }
+                    }
+                case .failure(let error):
+                    completion(.failure(error))
                 }
             }
         }
@@ -82,81 +107,81 @@ struct AirBeam3Configurator {
         guard let token = userAuthenticationSession.token else {
             throw AirBeam3ConfiguratorError.missingAuthenticationToken
         }
-        sendUUIDRequest(uuid: uuid)
+        sendUUIDRequest(uuid: uuid, completion: { _ in })
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-            sendAuthToken(authToken: token)
+            sendAuthToken(authToken: token, completion: { _ in })
         }
     }
     
     func configureSDSync() {
-        downloadFromSDCardModeRequest()
+        downloadFromSDCardModeRequest(completion: { _ in })
     }
     
     func clearSDCard() {
-        clearSDCardModeRequest()
+        clearSDCardModeRequest(completion: { _ in })
     }
 }
 
 private extension AirBeam3Configurator {
     
     // MARK: Commands
-    private func sendUUIDRequest(uuid: SessionUUID) {
+    private func sendUUIDRequest(uuid: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void) {
         let message = hexMessageBuilder.uuidMessage(uuid: uuid)
         Log.info("Sending UUID request to peripheral")
-        sendConfigMessage(data: message)
+        sendConfigMessage(data: message, completion: completion)
     }
     
-    private func sendAuthToken(authToken: String) {
+    private func sendAuthToken(authToken: String, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let message = hexMessageBuilder.authTokenMessage(authToken: authToken) else { return }
         Log.info("Sending auth token to peripheral")
-        sendConfigMessage(data: message)
+        sendConfigMessage(data: message, completion: completion)
     }
     
-    private func sendLocationConfiguration(location: CLLocationCoordinate2D) {
+    private func sendLocationConfiguration(location: CLLocationCoordinate2D, completion: @escaping (Result<Void, Error>) -> Void) {
         let message = hexMessageBuilder.locationMessage(lat: location.latitude,
                                                            lng: location.longitude)
         Log.info("Sending location configuration to peripheral")
-        sendConfigMessage(data: message)
+        sendConfigMessage(data: message, completion: completion)
     }
     
-    private func sendCurrentTimeConfiguration(date: String) {
+    private func sendCurrentTimeConfiguration(date: String, completion: @escaping (Result<Void, Error>) -> Void) {
         let message = hexMessageBuilder.currentTimeMessage(date: date)
         Log.info("Sending time configuration to peripheral")
-        sendConfigMessage(data: message)
+        sendConfigMessage(data: message, completion: completion)
     }
     
-    private func sendMobileModeRequest() {
+    private func sendMobileModeRequest(completion: @escaping (Result<Void, Error>) -> Void) {
         let message = hexMessageBuilder.bluetoothConfigurationMessage
         Log.info("Sending mobile mode request to peripheral")
-        sendConfigMessage(data: message)
+        sendConfigMessage(data: message, completion: completion)
     }
     
-    private func sendWifiConfiguration(wifiSSID: String, wifiPassword: String) {
+    private func sendWifiConfiguration(wifiSSID: String, wifiPassword: String, completion: @escaping (Result<Void, Error>) -> Void) {
         let message = hexMessageBuilder.wifiConfigurationMessage(wifiSSID: wifiSSID,
                                                                  wifiPassword: wifiPassword)
         Log.info("Sending wifi configuration to peripheral")
-        sendConfigMessage(data: message)
+        sendConfigMessage(data: message, completion: completion)
     }
     
-    private func sendCellularConfiguration() {
+    private func sendCellularConfiguration(completion: @escaping (Result<Void, Error>) -> Void) {
         let message = hexMessageBuilder.cellularconfigurationCode
         Log.info("Sending cellular configuration to peripheral")
-        sendConfigMessage(data: message)
+        sendConfigMessage(data: message, completion: completion)
     }
     
-    private func downloadFromSDCardModeRequest() {
+    private func downloadFromSDCardModeRequest(completion: @escaping (Result<Void, Error>) -> Void) {
         let message = hexMessageBuilder.downloadFromSDCardModeRequest
         Log.info("Sending download from SD card mode request to peripheral")
-        sendConfigMessage(data: message)
+        sendConfigMessage(data: message, completion: completion)
     }
     
-    private func clearSDCardModeRequest() {
+    private func clearSDCardModeRequest(completion: @escaping (Result<Void, Error>) -> Void) {
         let message = hexMessageBuilder.clearSDCardModeRequest
         Log.info("Sending clear SD card mode request to peripheral")
-        sendConfigMessage(data: message)
+        sendConfigMessage(data: message, completion: completion)
     }
     
-    private func sendConfigMessage(data: Data) {
-        btManager.sendMessage(data: data, to: device, serviceID: serviceUUID, characteristicID: configurationCharacteristicUUID)
+    private func sendConfigMessage(data: Data, completion: @escaping (Result<Void, Error>) -> Void) {
+        btManager.sendMessage(data: data, to: device, serviceID: serviceUUID, characteristicID: configurationCharacteristicUUID, completion: completion)
     }
 }

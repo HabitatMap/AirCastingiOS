@@ -17,10 +17,9 @@ struct SelectDeviceView: View {
     @State private var isPowerABLinkActive: Bool = false
     @State private var isMicLinkActive: Bool = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
-    @InjectedObject private var bluetoothManager: BluetoothManager
     @Injected private var microphone: Microphone
     @Injected private var microphonePermissions: MicrophonePermissions
-    @Injected private var bluetoothHandler: BluetoothHandler
+    @Injected private var bluetoothHandler: BluetoothPermisionsChecker
     @Binding var creatingSessionFlowContinues : Bool
     @Binding var sdSyncContinues : Bool
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped

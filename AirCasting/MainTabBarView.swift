@@ -15,7 +15,7 @@ struct MainTabBarView: View {
     @State var homeImage: String = HomeIcon.selected.string
     @State var settingsImage: String = SettingsIcon.unselected.string
     @State var plusImage: String = PlusIcon.unselected.string
-    @InjectedObject private var bluetoothManager: BluetoothManager
+//    @InjectedObject private var bluetoothManager: BluetoothManager
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
     @StateObject var selectedSection = SelectedSection()
     @StateObject var reorderButton = ReorderButton()
@@ -72,12 +72,12 @@ struct MainTabBarView: View {
             tabSelection.selection == .createSession ? (plusImage = PlusIcon.selected.string) : (plusImage = PlusIcon.unselected.string)
             
         })
-        .onChange(of: bluetoothManager.mobileSessionReconnected, perform: { _ in
-            if bluetoothManager.mobileSessionReconnected {
-                bluetoothManager.mobilePeripheralSessionManager.configureAB()
-                bluetoothManager.mobileSessionReconnected.toggle()
-            }
-        })
+//        .onChange(of: bluetoothManager.mobileSessionReconnected, perform: { _ in
+//            if bluetoothManager.mobileSessionReconnected {
+//                bluetoothManager.mobilePeripheralSessionManager.configureAB()
+//                bluetoothManager.mobileSessionReconnected.toggle()
+//            }
+//        })
         .environmentObject(selectedSection)
         .environmentObject(tabSelection)
         .environmentObject(emptyDashboardButtonTapped)

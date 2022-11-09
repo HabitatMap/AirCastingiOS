@@ -83,12 +83,22 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                                                                                 storage.giveHighestOrder(to: sessionWithURL.uuid)
                                                                             })
                                                                             
-                                                                            try AirBeam3Configurator(device: device).configureFixedWifiSession(
+                                                                            try AirBeam3Configurator(device: device)
+                                                                                .configureFixedWifiSession(
                                                                                                         uuid: sessionUUID,
                                                                                                         location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
                                                                                                         date: DateBuilder.getFakeUTCDate(),
                                                                                                         wifiSSID: wifiSSID,
-                                                                                                        wifiPassword: wifiPassword)
+                                                                                                        wifiPassword: wifiPassword) { result in
+                                                                                                            switch result {
+                                                                                                            case .success():
+                                                                                                                Log.info("## Successfully configured AB")
+                                                                                                                return
+                                                                                                            case .failure(let error):
+                                                                                                                Log.error("## Failed to configure AB: \(error)")
+                                                                                                                return
+                                                                                                            }
+                                                                                                        }
                                                                             Log.warning("Created fixed Wifi session \(output)")
                                                                             completion(.success(()))
                                                                         } catch {
