@@ -6,7 +6,6 @@
 //
 
 import AirCastingStyling
-import CoreBluetooth
 import SwiftUI
 import Resolver
 
@@ -15,7 +14,7 @@ struct TurnOnBluetoothView: View {
     @State private var presentRestartScreen = false
     @State private var presentUnplugScreen = false
     @Injected private var settingsRedirection: SettingsRedirection
-    @Injected private var bluetoothManager: NewBluetoothManager
+    @Injected private var bluetoothManager: BluetoothStateHandler
     @Binding var creatingSessionFlowContinues: Bool
     @Binding var sdSyncContinues: Bool
     var isSDClearProcess: Bool = false
@@ -80,9 +79,9 @@ struct TurnOnBluetoothView: View {
 
     var continueButton: some View {
         Button(action: {
-            if CBCentralManager.authorization == .denied {
+            if bluetoothManager.authorizationState == .denied {
                 settingsRedirection.goToBluetoothSettings(type: .app)
-            } else if bluetoothManager.centralManager.state != .poweredOn {
+            } else if bluetoothManager.deviceState != .poweredOn {
                 settingsRedirection.goToBluetoothSettings(type: .global)
             } else {
                 if isSDClearProcess {

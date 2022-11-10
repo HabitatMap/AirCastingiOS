@@ -6,7 +6,6 @@ import AirCastingStyling
 import Resolver
 
 struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
-    
     @StateObject var viewModel: VM
     @Binding var creatingSessionFlowContinues: Bool
     @State private var showNextScreen: Bool = false

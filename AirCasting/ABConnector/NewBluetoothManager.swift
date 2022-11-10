@@ -8,21 +8,39 @@ import Resolver
 public enum BluetoothDeviceAuthorizationState {
     case notDetermined
     case denied
+    case restricted
     case allowedAlways
 }
 
-// TODO: Naming
 protocol BluetoothStateHandler {
     var authorizationState: BluetoothDeviceAuthorizationState { get }
     var deviceState: BluetoothDeviceState { get }
     func forceBluetoothPermissionPopup()
 }
 
+protocol BluetoothScanner {
+    func startScanning(scanningWindow: Int,
+                       onDeviceDiscovered: @escaping (NewBluetoothManager.BluetoothDevice) -> Void,
+                       onScanningFinished: (() -> Void)?)
+    func stopScan()
+}
+
+protocol BluetoothConnectionHandler {
+    func connect(to device: NewBluetoothManager.BluetoothDevice, timeout: TimeInterval, completion: @escaping NewBluetoothManager.ConnectionCallback)
+    func disconnect(from device: NewBluetoothManager.BluetoothDevice)
+    func discoverCharacteristics(for device: NewBluetoothManager.BluetoothDevice, timeout: TimeInterval, completion: @escaping NewBluetoothManager.CharacteristicsDicoveryCallback)
+}
+
+protocol BluetoothConnectionObservable {
+    func addConnectionObserver(_ observer: BluetoothConnectionObserver)
+    func removeConnectionObserver(_ observer: BluetoothConnectionObserver)
+}
+
 protocol BluetoothConnectionObserver: AnyObject {
     func didDisconnect(device: NewBluetoothManager.BluetoothDevice)
 }
 
-final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralManagerDelegate, CBPeripheralDelegate {
+final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, BluetoothStateHandler, BluetoothConnectionHandler, BluetoothScanner, BluetoothConnectionObservable, CBCentralManagerDelegate, CBPeripheralDelegate {
     // TODO: Make it private when the rest of the codebase is transformed to not use CB
     lazy var centralManager: CBCentralManager = {
         let centralManager = CBCentralManager()
@@ -40,10 +58,58 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
         }
     }
     
+    // MARK: Central manager state
+    private(set) var deviceState: BluetoothDeviceState = .unknown
+    var authorizationState: BluetoothDeviceAuthorizationState {
+        get {
+            switch CBCentralManager.authorization {
+            case .notDetermined:
+                return .notDetermined
+            case .restricted:
+                return .restricted
+            case .denied:
+                return .denied
+            case .allowedAlways:
+                return .allowedAlways
+            @unknown default:
+                return .notDetermined
+            }
+        }
+    }
+    
+    func isBluetoothDenied() -> Bool {
+        CBCentralManager.authorization != .allowedAlways || deviceState != .poweredOn
+    }
+    
     func forceBluetoothPermissionPopup() {
         // The BT permissions popup shows whenever CBCentralManager is created
         // so we force it here.
         _ = centralManager
+    }
+    
+    func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        switch central.state {
+        case .unknown:
+            Log.info("central.state is .unknown")
+            deviceState = .unknown
+        case .resetting:
+            Log.info("central.state is .resetting")
+            deviceState = .resetting
+        case .unsupported:
+            Log.info("central.state is .unsupported")
+            deviceState = .unsupported
+        case .unauthorized:
+            Log.info("central.state is .unauthorized")
+            deviceState = .unauthorized
+        case .poweredOff:
+            Log.info("central.state is .poweredOff")
+            deviceState = .poweredOff
+        case .poweredOn:
+            Log.info("central.state is .poweredOn")
+            deviceState = .poweredOn
+        @unknown default:
+            fatalError()
+        }
     }
     
     // MARK: Observers
@@ -132,12 +198,18 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
     
     enum BluetoothDriverError: Error {
         case timeout
+        case deviceBusy
         case unknown
     }
     
     func connect(to device: BluetoothDevice, timeout: TimeInterval, completion: @escaping ConnectionCallback) {
         queue.async {
             Log.verbose("Starting connection to BT device \(device.peripheral.name ?? "unnamed")")
+            guard !(device.peripheral.state == .connecting) else {
+                completion(.failure(BluetoothDriverError.deviceBusy))
+                return
+            }
+            
             self.connectionCallbacks[device.peripheral, default: []].append(completion)
             self.centralManager.connect(device.peripheral)
             
@@ -157,6 +229,16 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
     
     func disconnect(from device: BluetoothDevice) {
         self.centralManager.cancelPeripheralConnection(device.peripheral)
+    }
+    
+    func discoverCharacteristics(for device: BluetoothDevice,
+                                 timeout: TimeInterval,
+                                 completion: @escaping CharacteristicsDicoveryCallback) {
+        queue.async {
+            device.peripheral.discoverServices(nil)
+            self.characteristicsDicoveryCallbacks[device.peripheral, default: []].append(completion)
+            self.scheduleCharacteristicsDiscoveryTimeout(timeout, for: device.peripheral)
+        }
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
@@ -186,6 +268,7 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        Log.info("Disconnected peripheral \(peripheral) with error: \(String(describing: error?.localizedDescription))")
         queue.async {
             self.callConnectionObserversWithDisconnect(for: .init(peripheral: peripheral))
         }
@@ -221,16 +304,6 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
     private let characteristicsMappingLock = NSRecursiveLock()
     typealias CharacteristicsDicoveryCallback = (Result<[BluetoothCharacteristic], Error>) -> Void
     private var characteristicsDicoveryCallbacks: [CBPeripheral: [CharacteristicsDicoveryCallback]] = [:]
-    
-    func discoverCharacteristics(for device: BluetoothDevice,
-                                 timeout: TimeInterval,
-                                 completion: @escaping CharacteristicsDicoveryCallback) {
-        queue.async {
-            device.peripheral.discoverServices(nil)
-            self.characteristicsDicoveryCallbacks[device.peripheral, default: []].append(completion)
-            self.scheduleCharacteristicsDiscoveryTimeout(timeout, for: device.peripheral)
-        }
-    }
     
     private func scheduleCharacteristicsDiscoveryTimeout(_ timeout: TimeInterval, for peripheral: CBPeripheral) {
         Log.info("Scheduling timeout")
@@ -384,37 +457,4 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
         }
         
     }
-    
-    // MARK: Central manager state
-    private var deviceState: BluetoothDeviceState = .unknown
-    
-    func isBluetoothDenied() -> Bool {
-        CBCentralManager.authorization != .allowedAlways || deviceState != .poweredOn
-    }
-    
-    func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        switch central.state {
-        case .unknown:
-            Log.info("central.state is .unknown")
-            deviceState = .unknown
-        case .resetting:
-            Log.info("central.state is .resetting")
-            deviceState = .resetting
-        case .unsupported:
-            Log.info("central.state is .unsupported")
-            deviceState = .unsupported
-        case .unauthorized:
-            Log.info("central.state is .unauthorized")
-            deviceState = .unauthorized
-        case .poweredOff:
-            Log.info("central.state is .poweredOff")
-            deviceState = .poweredOff
-        case .poweredOn:
-            Log.info("central.state is .poweredOn")
-            deviceState = .poweredOn
-        @unknown default:
-            fatalError()
-        }
-    }
-
 }

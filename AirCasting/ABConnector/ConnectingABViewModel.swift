@@ -33,7 +33,7 @@ class AirbeamConnectionViewModel: ObservableObject {
             switch result {
             case .success(_):
                 self.airBeamConnectionController.connectToAirBeam(device: self.device) { result in
-                    guard result == .success else {
+                    guard result == AirBeamServicesConnectionResult.success else {
                         DispatchQueue.main.async {
                             self.getAlert(result)
                         }
@@ -85,6 +85,10 @@ class AirbeamConnectionViewModel: ObservableObject {
             break
         case .incompatibleDevice:
             self.alert = InAppAlerts.incompatibleDevice {
+                self.shouldDismiss = true
+            }
+        case .unknown(_):
+            self.alert = InAppAlerts.genericErrorAlert {
                 self.shouldDismiss = true
             }
         }

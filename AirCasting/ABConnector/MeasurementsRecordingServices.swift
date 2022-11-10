@@ -10,7 +10,7 @@ protocol MeasurementsRecordingServices {
 }
 
 class AirbeamMeasurementsRecordingServices: MeasurementsRecordingServices {
-    @Injected private var bluetoothManager: NewBluetoothManager
+    @Injected private var bluetoothManager: NewBluetoothCommunicator
     
     private var measurementsCharacteristics: [String] = [
         "0000ffe1-0000-1000-8000-00805f9b34fb",    // Temperature

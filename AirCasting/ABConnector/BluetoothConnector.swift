@@ -4,6 +4,7 @@
 import Foundation
 import CoreBluetooth
 
+// TO BE REMOVED??
 protocol BluetoothConnector {
     func connect(to peripheral: CBPeripheral)
     func cancelPeripheralConnection(for peripheral: CBPeripheral)

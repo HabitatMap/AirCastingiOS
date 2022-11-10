@@ -6,22 +6,25 @@ import Resolver
 
 class ReconnectionController: BluetoothConnectionObserver {
     @Injected private var mobilePeripheralManager: MobilePeripheralSessionManager
-    @Injected private var bluetoothManager: NewBluetoothManager
+    @Injected private var bluetoothManager: BluetoothConnectionObservable
+    @Injected private var bluetootConnector: BluetoothConnectionHandler
     
     init() {
         bluetoothManager.addConnectionObserver(self)
     }
     
+    deinit {
+        bluetoothManager.removeConnectionObserver(self)
+    }
+    
     func didDisconnect(device: NewBluetoothManager.BluetoothDevice) {
         guard mobilePeripheralManager.activeSessionInProgressWith(device.peripheral) else { return } // TODO: Move away from CB!
-        // TODO: If the device disconnects during sd sync we should handle this as well. How?
         mobilePeripheralManager.markActiveSessionAsDisconnected(peripheral: device.peripheral)
-        
-        bluetoothManager.connect(to: device, timeout: 10) { result in
+        bluetootConnector.connect(to: device, timeout: 10) { result in
             switch result {
             case .success:
                 Log.info("Reconnected to a peripheral: \(device.peripheral)")
-                self.bluetoothManager.discoverCharacteristics(for: device, timeout: 10) { result in
+                self.bluetootConnector.discoverCharacteristics(for: device, timeout: 10) { result in
                     switch result {
                     case .success:
                         Log.info("Discovered characteristics for: \(device.peripheral)")

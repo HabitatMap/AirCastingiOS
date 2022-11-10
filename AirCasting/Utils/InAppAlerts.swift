@@ -341,6 +341,17 @@ struct InAppAlerts {
         )
     }
     
+    static func genericErrorAlert(action: @escaping (() -> Void)) -> AlertInfo {
+        AlertInfo(
+            title: Strings.InAppAlerts.genericErrorAlertTitle, message: Strings.InAppAlerts.genericErrorAlertMessage,
+            buttons: [
+                .default(title: Strings.Commons.gotIt,
+                         action: action),
+                .cancel()
+            ]
+        )
+    }
+    
     static func failedFetchingLocationlessSessionsAlert() -> AlertInfo {
         AlertInfo(
             title: Strings.InAppAlerts.failedTitle, message: Strings.InAppAlerts.fetchingDataFailedMessage,

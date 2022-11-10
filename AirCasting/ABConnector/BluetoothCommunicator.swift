@@ -49,6 +49,12 @@ protocol NewBluetoothCommunicator {
     @discardableResult func unsubscribeCharacteristicObserver(token: AnyHashable) -> Bool
 }
 
+extension NewBluetoothCommunicator {
+    func subscribeToCharacteristic(for device: NewBluetoothManager.BluetoothDevice, characteristic: CharacteristicUUID, notify: @escaping CharacteristicObserverAction) -> AnyHashable {
+        subscribeToCharacteristic(for: device, characteristic: characteristic, timeout: nil, notify: notify)
+    }
+}
+
 extension BluetoothCommunicator {
     func subscribeToCharacteristic(_ characteristic: CharacteristicUUID, notify: @escaping CharacteristicObserverAction) -> AnyHashable {
         subscribeToCharacteristic(characteristic, timeout: nil, notify: notify)

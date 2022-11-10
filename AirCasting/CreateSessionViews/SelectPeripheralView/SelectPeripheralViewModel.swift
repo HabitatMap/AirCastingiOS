@@ -6,16 +6,13 @@ import Resolver
 import CoreBluetooth // Delete when we figure out exactly why authorization is checked here
 
 class SelectPeripheralViewModel: ObservableObject {
-    @Injected var btManager: NewBluetoothManager
+    @Injected var btManager: BluetoothScanner
     @Published var isScanning = false
     @Published var airbeams = [NewBluetoothManager.BluetoothDevice]()
     @Published var otherDevices = [NewBluetoothManager.BluetoothDevice]()
     
     func viewAppeared() {
-        btManager.forceBluetoothPermissionPopup()
-        if CBCentralManager.authorization == .allowedAlways {
-            scan()
-        }
+        scan()
     }
     
     func viewDisappeared() {

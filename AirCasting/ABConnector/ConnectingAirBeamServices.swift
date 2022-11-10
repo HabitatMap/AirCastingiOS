@@ -4,11 +4,29 @@
 import Foundation
 import Resolver
 
-enum AirBeamServicesConnectionResult {
+enum AirBeamServicesConnectionResult: Equatable {
+    static func == (lhs: AirBeamServicesConnectionResult, rhs: AirBeamServicesConnectionResult) -> Bool {
+        switch (lhs, rhs) {
+        case (.success, .success):
+            return true
+        case (.timeout, .timeout):
+            return true
+        case (.deviceBusy, .deviceBusy):
+            return true
+        case (.incompatibleDevice, .incompatibleDevice):
+            return true
+        case (.unknown(let error1), .unknown(let error2)):
+            return error1?.localizedDescription == error2?.localizedDescription
+        default:
+            return false
+        }
+    }
+    
     case success
     case timeout
     case deviceBusy
     case incompatibleDevice
+    case unknown(Error?)
 }
 
 protocol ConnectingAirBeamServices {
@@ -17,21 +35,16 @@ protocol ConnectingAirBeamServices {
 }
 
 class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
-    @Injected private var btManager: NewBluetoothManager
+    @Injected private var btManager: BluetoothConnectionHandler
+    @Injected private var btState: BluetoothStateHandler
     private var connectionToken: AnyObject?
     private var airBeamCharacteristics = ["FFDE", "FFDF", "FFE1", "FFE3", "FFE4", "FFE5", "FFE6"]
 
     func connect(to device: NewBluetoothManager.BluetoothDevice, timeout: TimeInterval, completion: @escaping (AirBeamServicesConnectionResult) -> Void) {
         Log.info("Starting Airbeam connection")
-        
-        // TODO: CHANGE THIS
-        guard !(device.peripheral.state == .connecting) else {
-            completion(.deviceBusy); return
-        }
-        
         btManager.connect(to: device, timeout: timeout) { result in
-            switch result {
-            case .success:
+            do {
+                _ = try result.get()
                 self.btManager.discoverCharacteristics(for: device, timeout: timeout) { characteristicsResult in
                     switch characteristicsResult {
                     case .success(let characteristics):
@@ -41,9 +54,17 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
                         completion(.timeout)
                     }
                 }
-            case .failure(let error):
-                Log.error("Failed to connect to peripheral: \(error)")
-                completion(.timeout)
+            } catch let bluetoothError as NewBluetoothManager.BluetoothDriverError {
+                switch bluetoothError {
+                case .timeout:
+                    completion(.timeout)
+                case .deviceBusy:
+                    completion(.deviceBusy)
+                case .unknown:
+                    completion(.unknown(nil))
+                }
+            } catch {
+                completion(.unknown(error))
             }
         }
     }

@@ -11,6 +11,7 @@ enum SDCardSyncError: Error {
     case wrongOrderOfReceivedPayload
     case unexpectedMetadataFormat
     case failedConfiguration
+    case airbeamDisconnected
 }
 
 struct SDCardDataChunk {
@@ -33,7 +34,7 @@ protocol SDCardAirBeamServices {
     func clearSDCard(of device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
-class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
+class BluetoothSDCardAirBeamServices: SDCardAirBeamServices, BluetoothConnectionObserver {
     private let singleChunkMeasurementsCount = Constants.SDCardSync.numberOfMeasurementsInDataChunk
     // has notifications about measurements count in particular csv file on SD card
     private let DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID = CharacteristicUUID(value:"0000ffde-0000-1000-8000-00805f9b34fb")
@@ -41,7 +42,8 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     // has notifications for reading measurements stored in csv files on SD card
     private let DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID = CharacteristicUUID(value:"0000ffdf-0000-1000-8000-00805f9b34fb")
     
-    @Injected private var bluetoothManager: NewBluetoothManager
+    @Injected private var bluetoothManager: NewBluetoothCommunicator
+    @Injected private var bluetoothConnection: BluetoothConnectionObservable
     private var dataCharacteristicObserver: AnyHashable?
     private var metadataCharacteristicObserver: AnyHashable?
     private var clearCardCharacteristicObserver: AnyHashable?
@@ -50,8 +52,25 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     private var receivedMeasurementsCount: [SDCardSessionType: Int] = [:]
     private var monitoringForFinishedSendingToken: Cancellable?
     private let queue: DispatchQueue = .init(label: "SDSyncAirBeamServices")
+    private var currentDevice: NewBluetoothManager.BluetoothDevice?
+    private var completion: ((Result<SDCardDownloadSummary, Error>) -> Void)?
+    
+    init() {
+        bluetoothConnection.addConnectionObserver(self)
+    }
+    
+    deinit {
+        bluetoothConnection.removeConnectionObserver(self)
+    }
+    
+    func didDisconnect(device: NewBluetoothManager.BluetoothDevice) {
+        guard device == currentDevice else { return }
+        self.finishSync(device: device) { completion?(.failure(SDCardSyncError.airbeamDisconnected)) }
+    }
     
     func downloadData(from device: NewBluetoothManager.BluetoothDevice, progress: @escaping (SDCardDataChunk) -> Void, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void) {
+        currentDevice = device
+        self.completion = completion
         // It is imporatant here that we sunscribe to characteristic before configuring the AB because AB starts sending data immediately after receiving the config
         self.subscribeForDownloadingData(device: device, progress: progress, completion: completion)
         configureABforSync(device: device) { result in
@@ -211,6 +230,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         self.bluetoothManager.unsubscribeCharacteristicObserver(token: self.metadataCharacteristicObserver!)
         expectedMeasurementsCount = [:]
         receivedMeasurementsCount = [:]
+        currentDevice = nil
         if let token = monitoringForFinishedSendingToken {
             token.cancel()
         }

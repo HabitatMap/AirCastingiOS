@@ -160,6 +160,10 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
             self.alert = InAppAlerts.incompatibleDevice {
                 self.shouldDismiss = true
             }
+        case .unknown(_):
+            self.alert = InAppAlerts.genericErrorAlert {
+                self.shouldDismiss = true
+            }
         }
     }
 
