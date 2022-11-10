@@ -196,6 +196,14 @@ struct InAppAlerts {
                              action: dismiss) ])
     }
     
+    static func failedAirBeamConfiguration(dismiss: (@escaping () -> Void)) -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.airBeamConfigurationFailureTitle,
+                  message: Strings.InAppAlerts.airBeamConfigurationFailureTMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss) ])
+    }
+    
     static func locationAlert() -> AlertInfo {
         let redirection = Resolver.resolve(SettingsRedirection.self)
         return AlertInfo(title: Strings.SelectDeviceView.alertTitle,

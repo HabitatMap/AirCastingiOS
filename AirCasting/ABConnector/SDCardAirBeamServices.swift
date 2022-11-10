@@ -10,6 +10,7 @@ enum SDCardSyncError: Error {
     case cantDecodePayload
     case wrongOrderOfReceivedPayload
     case unexpectedMetadataFormat
+    case failedConfiguration
 }
 
 struct SDCardDataChunk {
@@ -51,11 +52,43 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     private let queue: DispatchQueue = .init(label: "SDSyncAirBeamServices")
     
     func downloadData(from device: NewBluetoothManager.BluetoothDevice, progress: @escaping (SDCardDataChunk) -> Void, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void) {
+        // It is imporatant here that we sunscribe to characteristic before configuring the AB because AB starts sending data immediately after receiving the config
+        self.subscribeForDownloadingData(device: device, progress: progress, completion: completion)
+        configureABforSync(device: device) { result in
+            switch result {
+            case .success():
+                Log.info("Successfully configured AB for sd sync")
+            case .failure(let error):
+                Log.error("Failed to configure AirBeam for downloading data from SD card: \(error)")
+                self.queue.async { [weak self] in
+                    Log.warning("[SD SYNC] Finishing sync")
+                    self?.finishSync(device: device) { completion(.failure(SDCardSyncError.failedConfiguration)) }
+                }
+            }
+        }
+    }
+    
+    func clearSDCard(of device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
+        Log.info("[SD Sync] Starting clearing SD card process")
+        // It is imporatant here that we sunscribe to characteristic before configuring the AB because AB starts sending data immediately after receiving the config
+        self.subscribeToMetaDataForClearingCard(device: device, completion: completion)
+        sendClearConfig(device: device) { result in
+            switch result {
+            case .success():
+                Log.info("Successfully configured AB for clearing sd card")
+            case .failure(let error):
+                Log.error("Failed to configure AirBeam for clearing SD card: \(error)")
+                self.queue.async { [weak self] in
+                    Log.warning("[SD SYNC] Finishing sync")
+                    self?.finishSync(device: device) { completion(.failure(SDCardSyncError.failedConfiguration)) }
+                }
+            }
+        }
+    }
+    
+    private func subscribeForDownloadingData(device: NewBluetoothManager.BluetoothDevice, progress: @escaping (SDCardDataChunk) -> Void, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void) {
         var currentSessionType: SDCardSessionType?
-        
         Log.info("[SD Sync] Downloading data")
-        
-        configureABforSync(device: device)
         metadataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(for: device, characteristic: DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
             switch result {
             case .success(let data):
@@ -86,9 +119,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         }
     }
     
-    func clearSDCard(of device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
-        Log.info("[SD Sync] Starting clearing SD card process")
-        sendClearConfig(device: device)
+    private func subscribeToMetaDataForClearingCard(device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
         clearCardCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(for: device, characteristic: DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID, timeout: 10) { result in
             switch result {
             case .success(let data):
@@ -132,7 +163,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
             return
         }
         
-        // This will be needed when we will want to show progress in the view
+        // This is needed for showing progress in the view
         // Payload format is ` Some string: ${number_of_entries_expected} `
         guard let measurementsCountSting = payload.split(separator: ":").last?.trimmingCharacters(in: .whitespaces) else {
             Log.warning("Unexpected metadata format: (\(payload))")
@@ -165,14 +196,14 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         progress(SDCardDataChunk(payload: payload, sessionType: sessionType, progress: progressFraction))
     }
     
-    private func configureABforSync(device: NewBluetoothManager.BluetoothDevice) {
-        let configurator = AirBeam3Configurator(device: device)
-        configurator.configureSDSync()
+    private func configureABforSync(device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
+        let configurator = Resolver.resolve(AirBeamConfigurator.self, args: device)
+        configurator.configureSDSync(completion: completion)
     }
     
-    private func sendClearConfig(device: NewBluetoothManager.BluetoothDevice) {
-        let configurator = AirBeam3Configurator(device: device)
-        configurator.clearSDCard()
+    private func sendClearConfig(device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
+        let configurator = Resolver.resolve(AirBeamConfigurator.self, args: device)
+        configurator.clearSDCard(completion: completion)
     }
     
     private func finishSync(device: NewBluetoothManager.BluetoothDevice, completion: () -> Void) {

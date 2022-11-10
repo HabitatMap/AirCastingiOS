@@ -1003,6 +1003,8 @@ struct Strings {
         static let fetchingDataFailedMessage: String = NSLocalizedString("Something went wrong. Please try again later.", comment: "")
         static let signInErrorTitle: String = NSLocalizedString("Cannot sign in",
                                                                           comment:  "")
+        static let airBeamConfigurationFailureTitle = NSLocalizedString("AirBeam configuration failed", comment: "")
+        static let airBeamConfigurationFailureTMessage = NSLocalizedString("Something went wrong with AirBeam configuration. Please try again.", comment: "")
     }
     
     enum AddNoteView {

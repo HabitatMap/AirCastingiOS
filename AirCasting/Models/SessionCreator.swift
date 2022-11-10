@@ -85,21 +85,18 @@ final class MobilePeripheralSessionCreator: SessionCreator {
                                   locationless: sessionContext.locationless,
                                   tags: sessionContext.sessionTags,
                                   status: .NEW)
-            AirBeam3Configurator(device: device)
+            Resolver.resolve(AirBeamConfigurator.self, args: device)
                 .configureMobileSession(location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200)) { result in
                     switch result {
                     case .success():
                         Log.info("## Successfully configured AB")
-                        return
+                        self.recorder.startRecording(session: session, device: device)
+                        completion(.success(()))
                     case .failure(let error):
                         Log.error("## Failed to configure AB: \(error)")
-                        return
+                        completion(.failure(error))
                     }
                 }
-            
-            
-            recorder.startRecording(session: session, device: device)
-            completion(.success(()))
         } catch {
             assertionFailure("Can't start recording mobile bluetooth session: \(error)")
             completion(.failure(error))

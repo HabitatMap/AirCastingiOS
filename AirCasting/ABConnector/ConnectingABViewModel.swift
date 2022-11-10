@@ -10,6 +10,7 @@ class AirbeamConnectionViewModel: ObservableObject {
     @Injected private var airBeamConnectionController: AirBeamConnectionController
     @Injected private var userAuthenticationSession: UserAuthenticationSession
     @Injected private var bluetoothConnectionProtector: ConnectionProtectable
+    private let configurator: AirBeamConfigurator
     
     @Published var isDeviceConnected: Bool = false
     @Published var shouldDismiss: Bool = false
@@ -22,7 +23,10 @@ class AirbeamConnectionViewModel: ObservableObject {
                   device: NewBluetoothManager.BluetoothDevice) {
         self.device = device
         self.sessionContext = sessionContext
+        self.configurator = Resolver.resolve(AirBeamConfigurator.self, args: device)
     }
+    
+    struct NoSessionUUID: Error {}
     
     func connectToAirBeam() {
         self.bluetoothConnectionProtector.isAirBeamAvailableForNewConnection(peripheraUUID: device.uuid) { result in
@@ -35,10 +39,21 @@ class AirbeamConnectionViewModel: ObservableObject {
                         }
                         return
                     }
-                    DispatchQueue.main.async {
-                        self.isDeviceConnected = true
+                    self.configureAB { result in
+                        switch result {
+                        case .success():
+                            DispatchQueue.main.async {
+                                self.isDeviceConnected = true
+                            }
+                        case .failure(let error):
+                            Log.error("Couldn't configure AB for fixed session: \(error)")
+                            DispatchQueue.main.async {
+                                self.alert = InAppAlerts.failedAirBeamConfiguration {
+                                    self.shouldDismiss = true
+                                }
+                            }
+                        }
                     }
-                    self.configureAB()
                 }
             case .failure(let error):
                 Log.info("Cannot create new mobile session while other is ongoing \(error.localizedDescription)")
@@ -47,16 +62,13 @@ class AirbeamConnectionViewModel: ObservableObject {
         }
     }
     
-    private func configureAB() {
-        if let sessionUUID = self.sessionContext.sessionUUID {
-            // [Resolver] NOTE: Do we want configurator to be injected?
-            let configurator = AirBeam3Configurator(device: self.device)
-            do {
-                try configurator.configureFixed(uuid: sessionUUID)
-            } catch {
-                Log.info("Couldn't configure AB to fixed session with uuid: \(sessionUUID)")
-            }
+    private func configureAB(completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let sessionUUID = self.sessionContext.sessionUUID else {
+            completion(.failure(NoSessionUUID.init()))
+            return
         }
+        configurator
+            .configureFixed(uuid: sessionUUID, completion: completion)
     }
     
     private func getAlert(_ result: AirBeamServicesConnectionResult) {

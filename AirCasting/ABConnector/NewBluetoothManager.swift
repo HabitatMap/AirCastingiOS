@@ -263,6 +263,7 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
         }
         if device.peripheral.services == nil {
             device.peripheral.discoverServices(nil)
+            // TODO: And then what? Fix with Paweł
         }
         return observer.identifier
     }
@@ -280,7 +281,7 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
         if containingObserverArray.isEmpty {
             device?.peripheral.services?.forEach {
                 let allMatching = $0.characteristics?.filter { $0.uuid == CBUUID(string: characteristic.value) } ?? []
-                allMatching.forEach { device?.peripheral.setNotifyValue(false, for: $0) }
+                allMatching.forEach { device?.peripheral.setNotifyValue(false, for: $0) } // TODO: this sets off API missuse warning cause the device is disconnected already
             }
         }
         return true
@@ -377,7 +378,7 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
     
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
         queue.async {
-            Log.verbose("## Did write value for characteristic: \(characteristic), error: \(error)")
+            Log.verbose("Did write value for characteristic: \(characteristic), error: \(String(describing: error))")
             self.writingValueCallbacks[characteristic]?.forEach { error == nil ? $0(.success(())) : $0(.failure(error!)) }
             self.writingValueCallbacks[characteristic] = nil
         }
@@ -385,8 +386,6 @@ final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, CBCentralMa
     }
     
     // MARK: Central manager state
-    
-    
     private var deviceState: BluetoothDeviceState = .unknown
     
     func isBluetoothDenied() -> Bool {

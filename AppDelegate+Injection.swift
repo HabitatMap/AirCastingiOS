@@ -201,6 +201,11 @@ extension Resolver: ResolverRegistering {
         main.register { BluetoothConnectionProtector() as ConnectionProtectable }
         main.register { DefaultStandaloneModeController() as StandaloneModeController }
         
+        // MARK: - AirBeam configuration
+        main.register { (_, args) in
+            AirBeam3Configurator(device: args()) as AirBeamConfigurator
+        }
+        
         // MARK: - Session stopping
         main.register { (_, args) in
             getSessionStopper(for: args())

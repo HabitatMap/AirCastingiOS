@@ -14,6 +14,7 @@ class ReconnectionController: BluetoothConnectionObserver {
     
     func didDisconnect(device: NewBluetoothManager.BluetoothDevice) {
         guard mobilePeripheralManager.activeSessionInProgressWith(device.peripheral) else { return } // TODO: Move away from CB!
+        // TODO: If the device disconnects during sd sync we should handle this as well. How?
         mobilePeripheralManager.markActiveSessionAsDisconnected(peripheral: device.peripheral)
         
         bluetoothManager.connect(to: device, timeout: 10) { result in

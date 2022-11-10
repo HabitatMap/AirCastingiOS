@@ -239,7 +239,7 @@ class MobilePeripheralSessionManager {
 
     func configureAB() {
         guard let peripheral = activeMobileSession?.peripheral else { return }
-        AirBeam3Configurator(device: .init(peripheral: peripheral))
+        Resolver.resolve(AirBeamConfigurator.self, args: NewBluetoothManager.BluetoothDevice.init(peripheral: peripheral))
             .configureMobileSession(
                 location: locationTracker.location.value?.coordinate ?? .undefined
             ) { result in

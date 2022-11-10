@@ -9,7 +9,24 @@ import Foundation
 import CoreLocation
 import Resolver
 
-struct AirBeam3Configurator {
+protocol AirBeamConfigurator {
+    func configureMobileSession(location: CLLocationCoordinate2D, completion: @escaping (Result<Void, Error>) -> Void)
+    func configureFixed(uuid: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void)
+    func configureFixedCellularSession(uuid: SessionUUID,
+                                       location: CLLocationCoordinate2D,
+                                       date: Date,
+                                       completion: @escaping (Result<Void, Error>) -> Void)
+    func configureFixedWifiSession(uuid: SessionUUID,
+                                   location: CLLocationCoordinate2D,
+                                   date: Date,
+                                   wifiSSID: String,
+                                   wifiPassword: String,
+                                   completion: @escaping (Result<Void, Error>) -> Void)
+    func configureSDSync(completion: @escaping (Result<Void, Error>) -> Void)
+    func clearSDCard(completion: @escaping (Result<Void, Error>) -> Void)
+}
+
+struct AirBeam3Configurator: AirBeamConfigurator {
     enum AirBeam3ConfiguratorError: Swift.Error {
         case missingAuthenticationToken
     }
@@ -21,8 +38,6 @@ struct AirBeam3Configurator {
     
     // used for sending hex codes to the AirBeam
     private let configurationCharacteristicUUID = "0000ffde-0000-1000-8000-00805f9b34fb"
-    
-    // service id
     private let serviceUUID = "0000ffdd-0000-1000-8000-00805f9b34fb"
 
     init(device: NewBluetoothManager.BluetoothDevice) {
@@ -54,7 +69,7 @@ struct AirBeam3Configurator {
                                    date: Date,
                                    wifiSSID: String,
                                    wifiPassword: String,
-                                   completion: @escaping (Result<Void, Error>) -> Void) throws {
+                                   completion: @escaping (Result<Void, Error>) -> Void) {
         // IS THIS DELAY NECESSARY??
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             sendLocationConfiguration(location: location) { result in
@@ -79,7 +94,7 @@ struct AirBeam3Configurator {
     func configureFixedCellularSession(uuid: SessionUUID,
                                        location: CLLocationCoordinate2D,
                                        date: Date,
-                                       completion: @escaping (Result<Void, Error>) -> Void) throws {
+                                       completion: @escaping (Result<Void, Error>) -> Void) {
         // IS THIS DELAY NECESSARY??
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             sendLocationConfiguration(location: location) { result in
@@ -103,28 +118,31 @@ struct AirBeam3Configurator {
     
     // To configure fixed session we need to send authMessage first
     // We're generating unique String for session UUID and sending it with users auth token to the AB
-    func configureFixed(uuid: SessionUUID) throws {
+    func configureFixed(uuid: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let token = userAuthenticationSession.token else {
-            throw AirBeam3ConfiguratorError.missingAuthenticationToken
+            completion(.failure(AirBeam3ConfiguratorError.missingAuthenticationToken))
+            return
         }
-        sendUUIDRequest(uuid: uuid, completion: { _ in })
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-            sendAuthToken(authToken: token, completion: { _ in })
+        sendUUIDRequest(uuid: uuid) { result in
+            switch result {
+            case .success():
+                sendAuthToken(authToken: token, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
     }
     
-    func configureSDSync() {
-        downloadFromSDCardModeRequest(completion: { _ in })
+    func configureSDSync(completion: @escaping (Result<Void, Error>) -> Void) {
+        downloadFromSDCardModeRequest(completion: completion)
     }
     
-    func clearSDCard() {
-        clearSDCardModeRequest(completion: { _ in })
+    func clearSDCard(completion: @escaping (Result<Void, Error>) -> Void) {
+        clearSDCardModeRequest(completion: completion)
     }
 }
 
 private extension AirBeam3Configurator {
-    
-    // MARK: Commands
     private func sendUUIDRequest(uuid: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void) {
         let message = hexMessageBuilder.uuidMessage(uuid: uuid)
         Log.info("Sending UUID request to peripheral")
