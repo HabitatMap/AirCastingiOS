@@ -20,7 +20,8 @@ extension _MapView {
 }
 
 protocol UserTracker {
-    func startTrackingUserPosision(_ newPos: @escaping (CLLocation) -> Void)
+    func startTrackingUserPosition(_ newPos: @escaping (CLLocation) -> Void)
+    func getLastKnownLocation() -> CLLocation?
 }
 
 extension _MapView {
@@ -47,6 +48,7 @@ extension _MapView {
     struct PathPoint {
         let lat: Double
         let long: Double
+        let value: Double
     }
     
     struct Styling {
@@ -95,10 +97,10 @@ struct _MapView: UIViewRepresentable {
         setupMapDelegate(in: mapView, context: context)
         
         if isUserPositionTrackingRequired {
-            userTracker.startTrackingUserPosision { [weak coord = context.coordinator, weak map = mapView] in
+            userTracker.startTrackingUserPosition { [weak coord = context.coordinator, weak map = mapView] in
                 coord?.latestUserLocation = $0
-                guard let map else { return }
-                updateUIView(map, context: context)
+//                guard let map else { return }
+//                updateUIView(map, context: context)
             }
         }
         
@@ -267,7 +269,7 @@ struct _MapView: UIViewRepresentable {
     }
     
     private func getStartingPoint(context: Context) -> GMSCameraPosition {
-        let coords: CLLocation = context.coordinator.latestUserLocation ?? .applePark
+        let coords: CLLocation = userTracker.getLastKnownLocation() ?? .applePark
         let newCameraPosition = GMSCameraPosition.camera(withLatitude: coords.coordinate.latitude,
                                                          longitude: coords.coordinate.longitude,
                                                          zoom: 16)
@@ -275,7 +277,7 @@ struct _MapView: UIViewRepresentable {
     }
     
     private func setupStyling(for mapView: GMSMapView) {
-        Log.verbose("Setting styling for colorscheme: \(colorScheme)")
+//        Log.verbose("Setting styling for colorscheme: \(colorScheme)")
         do {
             if let styleURL = Bundle.main.url(forResource: colorScheme == .light ? "style" : "darkStyle", withExtension: "json") {
                 mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
@@ -289,13 +291,14 @@ struct _MapView: UIViewRepresentable {
     
     func drawPolyline(_ uiView: GMSMapView, context: Context) {
         let newPath = GMSMutablePath()
+        Log.verbose("### NR: \(path.count)")
         for point in path {
             newPath.add(.init(latitude: point.lat, longitude: point.long))
         }
         
         let polyline = context.coordinator.polyline
         polyline.path = newPath
-        polyline.strokeColor = .blue //TODO: Change it (styling)
+        polyline.strokeColor = .accentColor //TODO: Change it (styling)
         polyline.strokeWidth = CGFloat(3)
         polyline.map = uiView
     }
@@ -321,6 +324,40 @@ extension _MapView.MapType {
         }
     }
 }
+
+extension _MapView {
+    class MapViewDelegateHandler: NSObject, GMSMapViewDelegate {
+        let myLocationTapHandler: (GMSMapView) -> Bool
+        let draggingHandler: (GMSMapView) -> Void
+        let markerTapHandler: (GMSMapView, GMSMarker) -> Bool
+        
+        init(myLocationTapHandler: @escaping (GMSMapView) -> Bool,
+             draggingHandler: @escaping (GMSMapView) -> Void,
+             markerTapHandler: @escaping (GMSMapView, GMSMarker) -> Bool) {
+            self.myLocationTapHandler = myLocationTapHandler
+            self.draggingHandler = draggingHandler
+            self.markerTapHandler = markerTapHandler
+        }
+        
+        func didTapMyLocationButton(for mapView: GMSMapView) -> Bool {
+            myLocationTapHandler(mapView)
+        }
+        
+        func mapView(_ mapView: GMSMapView, willMove gesture: Bool) {
+            guard gesture else { return }
+            draggingHandler(mapView)
+        }
+        
+        func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+            return markerTapHandler(mapView, marker)
+        }
+    }
+}
+
+extension CLLocation {
+    static var applePark: CLLocation { CLLocation(latitude: 37.33, longitude: -122.00) }
+}
+
 
 //@objc
 //class CLLocationUserTracker: NSObject, UserTracker, CLLocationManagerDelegate {
@@ -364,36 +401,3 @@ extension _MapView.MapType {
 //        latestLoc = loc
 //    }
 //}
-
-extension _MapView {
-    class MapViewDelegateHandler: NSObject, GMSMapViewDelegate {
-        let myLocationTapHandler: (GMSMapView) -> Bool
-        let draggingHandler: (GMSMapView) -> Void
-        let markerTapHandler: (GMSMapView, GMSMarker) -> Bool
-        
-        init(myLocationTapHandler: @escaping (GMSMapView) -> Bool,
-             draggingHandler: @escaping (GMSMapView) -> Void,
-             markerTapHandler: @escaping (GMSMapView, GMSMarker) -> Bool) {
-            self.myLocationTapHandler = myLocationTapHandler
-            self.draggingHandler = draggingHandler
-            self.markerTapHandler = markerTapHandler
-        }
-        
-        func didTapMyLocationButton(for mapView: GMSMapView) -> Bool {
-            myLocationTapHandler(mapView)
-        }
-        
-        func mapView(_ mapView: GMSMapView, willMove gesture: Bool) {
-            guard gesture else { return }
-            draggingHandler(mapView)
-        }
-        
-        func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-            return markerTapHandler(mapView, marker)
-        }
-    }
-}
-
-extension CLLocation {
-    static var applePark: CLLocation { CLLocation(latitude: 37.33, longitude: -122.00) }
-}

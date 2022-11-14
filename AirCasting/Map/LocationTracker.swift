@@ -112,7 +112,7 @@ class UserTrackerAdapter: UserTracker {
         self.locationTracker = locationTracker
     }
     
-    func startTrackingUserPosision(_ newPos: @escaping (CLLocation) -> Void) {
+    func startTrackingUserPosition(_ newPos: @escaping (CLLocation) -> Void) {
         Log.verbose("## Starting tracking location")
         locationTracker.start()
         didStartTracking = true
@@ -120,6 +120,10 @@ class UserTrackerAdapter: UserTracker {
             Log.verbose("## New location")
             newPos($0 ?? .applePark)
         }
+    }
+    
+    func getLastKnownLocation() -> CLLocation? {
+        locationTracker.location.value
     }
     
     deinit {

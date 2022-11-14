@@ -25,6 +25,7 @@ struct AirMapView: View {
     @State var isUserInteracting = true
     @State var noteMarkerTapped = false
     @State var noteNumber = 0
+    @Injected private var locationTracker: LocationTracker
     
     init(session: SessionEntity,
          thresholds: ABMeasurementsViewThreshold,
@@ -39,10 +40,10 @@ struct AirMapView: View {
         self._selectedStream = selectedStream
     }
     
-    private var pathPoints: [PathPoint] {
+    private var pathPoints: [_MapView.PathPoint] {
         return selectedStream?.allMeasurements?.compactMap {
             guard let location = $0.location else { return nil }
-            return PathPoint(location: location, measurementTime: $0.time, measurement: round(getValue(of: $0)))
+            return .init(lat: location.latitude, long: location.longitude, value: $0.value)
         } ?? []
     }
 
@@ -67,15 +68,36 @@ struct AirMapView: View {
             if let threshold = thresholds.value.threshold(for: selectedStream?.sensorName ?? "") {
                 if !showLoadingIndicator {
                     ZStack(alignment: .topLeading) {
-                        GoogleMapView(pathPoints: pathPoints,
-                                      threshold: threshold,
-                                      placePickerIsUpdating: Binding.constant(false),
-                                      isUserInteracting: $isUserInteracting,
-                                      isSessionActive: session.isActive,
-                                      isSessionFixed: session.isFixed,
-                                      noteMarketTapped: $noteMarkerTapped,
-                                      noteNumber: $noteNumber,
-                                      mapNotes: $mapNotesVM.notes)
+                        if session.isFixed {
+                            // Kropka customowa
+                            // brak PathPoint - nie rysujemy ścieżki
+                            _MapView(path: pathPoints,
+                                     type: .normal,
+                                     trackingStyle: .user,
+                                     userIndicatorStyle: .custom(color: Color(self.color(point: pathPoints.last!,
+                                                                                   threshold: threshold))),
+                                     userTracker: UserTrackerAdapter(locationTracker))
+
+                        } else if session.isActive {
+                            // Kropka customowa
+                            // są pointy - rysujemy drogę
+                            // aktualizacje trasy live
+                            _MapView(path: pathPoints,
+                                     type: .normal,
+                                     trackingStyle: .latestPathPoint,
+                                     userIndicatorStyle: .custom(color: Color(self.color(point: pathPoints.last!,
+                                                                                         threshold: threshold))),
+                                     userTracker: UserTrackerAdapter(locationTracker))
+                        } else {
+                            // kropka customowa
+                            // rusyjemy raz już gotową trasę
+                            // nie ma potrzeby aktualizacji
+                            _MapView(path: pathPoints,
+                                     type: .normal,
+                                     trackingStyle: .wholePath,
+                                     userIndicatorStyle: .none,
+                                     userTracker: UserTrackerAdapter(locationTracker))
+                        }
 #warning("TODO: Implement calculating stats only for visible path points")
                         // This doesn't work properly and it needs to be fixed, so I'm commenting it out
                         //                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
@@ -127,5 +149,35 @@ struct AirMapView: View {
     
     private func getValue(of measurement: MeasurementEntity) -> Double {
         measurement.measurementStream.isTemperature && userSettings.convertToCelsius ? TemperatureConverter.calculateCelsius(fahrenheit: measurement.value) : measurement.value
+    }
+    
+    func color(point: _MapView.PathPoint, threshold: SensorThreshold) -> UIColor {
+        let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
+        let measurement = formatter.value(from: point.value)
+        
+        return AirMapView.color(value: measurement, threshold: threshold)
+    }
+    
+    static func color(value: Int32, threshold: SensorThreshold?) -> UIColor {
+        guard let threshold = threshold else { return .white }
+        
+        let veryLow = threshold.thresholdVeryLow
+        let low = threshold.thresholdLow
+        let medium = threshold.thresholdMedium
+        let high = threshold.thresholdHigh
+        let veryHigh = threshold.thresholdVeryHigh
+        
+        switch value {
+        case veryLow ..< low:
+            return UIColor.aircastingGreen
+        case low ..< medium:
+            return UIColor.aircastingYellow
+        case medium ..< high:
+            return UIColor.aircastingOrange
+        case high ... veryHigh:
+            return UIColor.aircastingRed
+        default:
+            return UIColor.aircastingGray
+        }
     }
 }

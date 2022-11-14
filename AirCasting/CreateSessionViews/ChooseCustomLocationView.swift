@@ -14,6 +14,7 @@ struct ChooseCustomLocationView: View {
     @Binding var creatingSessionFlowContinues: Bool
     @StateObject private var locationTracker = BindableLocationTracker()
     var sessionName: String
+    @Injected private var ApplocationTracker: LocationTracker
     
     @EnvironmentObject private var sessionContext: CreateSessionContext
 
@@ -40,6 +41,7 @@ struct ChooseCustomLocationView: View {
         .onChange(of: location, perform: { newLocation in
             guard let newLocation else { return }
             locationTracker.locationSource = newLocation
+            ApplocationTracker.location.value = .init(latitude: newLocation.latitude, longitude: newLocation.longitude)
         })
         .padding()
     }
@@ -48,7 +50,7 @@ struct ChooseCustomLocationView: View {
         // TODO: Remember to revert this view from being shown in the mobile session wizard! (createSesssionLink in CreateSessionDetailsView.swift)
         _MapView(type: .normal,
                  trackingStyle: .user,
-                 userIndicatorStyle: .custom(color: .red),
+                 userIndicatorStyle: .none,
                  userTracker: locationTracker)
 //        GoogleMapView(pathPoints: [],
 //                      placePickerIsUpdating: $placePickerIsUpdating,

@@ -235,7 +235,7 @@ struct GoogleMapView: UIViewRepresentable {
         // Drawing the path
         let path = GMSMutablePath()
         let dot = context.coordinator.dot
-        
+        Log.verbose("### NR: \(pathPoints.count)")
         for point in pathPoints {
             let coordinate = point.location
             path.add(coordinate)
