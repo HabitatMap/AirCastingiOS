@@ -42,7 +42,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices, BluetoothConnection
     // has notifications for reading measurements stored in csv files on SD card
     private let DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID = CharacteristicUUID(value:"0000ffdf-0000-1000-8000-00805f9b34fb")
     
-    @Injected private var bluetoothManager: NewBluetoothCommunicator
+    @Injected private var bluetoothManager: BluetoothCommunicator
     @Injected private var bluetoothConnection: BluetoothConnectionObservable
     private var dataCharacteristicObserver: AnyHashable?
     private var metadataCharacteristicObserver: AnyHashable?

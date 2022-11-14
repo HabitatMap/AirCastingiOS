@@ -178,15 +178,12 @@ extension Resolver: ResolverRegistering {
         main.register { LifeTimeEventsProvider(userDefaults: .standard) }.implements(FirstRunInfoProvidable.self).scope(.application)
         main.register { MicrophoneManager() }.scope(.cached)
         main.register { ActiveSessionsAveragingController() }.scope(.cached)
-        main.register { MobilePeripheralSessionManager(measurementStreamStorage: Resolver.resolve()) }.scope(.cached)
+        main.register { MobilePeripheralSessionManager() }.scope(.cached)
         main.register { MobileAirBeamSessionRecordingController() as BluetoothSessionController }
             .scope(.application)
         main.register { AirbeamMeasurementsRecordingServices() as MeasurementsRecordingServices }
-        main.register { _BluetoothManager(mobilePeripheralSessionManager: Resolver.resolve()) }
-        .implements(BluetoothConnector.self)
-        .scope(.cached)
         main.register { NewBluetoothManager() }
-        .implements(NewBluetoothCommunicator.self)
+        .implements(BluetoothCommunicator.self)
         .implements(BluetoothPermisionsChecker.self)
         .implements(BluetoothStateHandler.self)
         .implements(BluetoothScanner.self)

@@ -14,9 +14,9 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionController {
     @Injected var measurementsRecorder: MeasurementsRecordingServices
     
     func startRecording(session: Session, device: NewBluetoothManager.BluetoothDevice) {
-        mobilePeripheralSessionManager.startRecording(session: session, peripheral: device.peripheral)
+        mobilePeripheralSessionManager.startRecording(session: session, device: device)
         measurementsRecorder.record(with: device) { [weak self] stream in
-            self?.mobilePeripheralSessionManager.handlePeripheralMeasurement(PeripheralMeasurement(peripheral: device.peripheral, measurementStream: stream))
+            self?.mobilePeripheralSessionManager.handlePeripheralMeasurement(AirBeamMeasurement(device: device, measurementStream: stream))
         }
     }
     

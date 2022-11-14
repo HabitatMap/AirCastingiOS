@@ -31,7 +31,7 @@ struct AirBeam3Configurator: AirBeamConfigurator {
         case missingAuthenticationToken
     }
     @Injected private var userAuthenticationSession: UserAuthenticationSession
-    @Injected private var btManager: NewBluetoothManager
+    @Injected private var btManager: BluetoothPeripheralConfigurator
     private let device: NewBluetoothManager.BluetoothDevice
     private let hexMessageBuilder = HexMessagesBuilder()
     private let dateFormatter: DateFormatter = DateFormatters.AirBeam3Configurator.usLocaleFullDateDateFormatter

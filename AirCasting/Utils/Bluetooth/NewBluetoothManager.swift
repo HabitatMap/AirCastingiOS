@@ -40,7 +40,12 @@ protocol BluetoothConnectionObserver: AnyObject {
     func didDisconnect(device: NewBluetoothManager.BluetoothDevice)
 }
 
-final class NewBluetoothManager: NSObject, NewBluetoothCommunicator, BluetoothStateHandler, BluetoothConnectionHandler, BluetoothScanner, BluetoothConnectionObservable, CBCentralManagerDelegate, CBPeripheralDelegate {
+
+protocol BluetoothPeripheralConfigurator {
+    func sendMessage(data: Data, to device: NewBluetoothManager.BluetoothDevice, serviceID: String, characteristicID: String, completion: @escaping NewBluetoothManager.writingValueCallback)
+}
+
+final class NewBluetoothManager: NSObject, BluetoothCommunicator, BluetoothStateHandler, BluetoothConnectionHandler, BluetoothScanner, BluetoothConnectionObservable, CBCentralManagerDelegate, CBPeripheralDelegate {
     // TODO: Make it private when the rest of the codebase is transformed to not use CB
     lazy var centralManager: CBCentralManager = {
         let centralManager = CBCentralManager()

@@ -5,7 +5,6 @@ import Combine
 import Foundation
 import Resolver
 
-// [RESOLVER] Move this VM init to View when all dependencies resolved
 class AirbeamConnectionViewModel: ObservableObject {
     @Injected private var airBeamConnectionController: AirBeamConnectionController
     @Injected private var userAuthenticationSession: UserAuthenticationSession

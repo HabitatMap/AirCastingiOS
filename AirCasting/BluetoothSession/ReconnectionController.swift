@@ -18,8 +18,8 @@ class ReconnectionController: BluetoothConnectionObserver {
     }
     
     func didDisconnect(device: NewBluetoothManager.BluetoothDevice) {
-        guard mobilePeripheralManager.activeSessionInProgressWith(device.peripheral) else { return } // TODO: Move away from CB!
-        mobilePeripheralManager.markActiveSessionAsDisconnected(peripheral: device.peripheral)
+        guard mobilePeripheralManager.activeSessionInProgressWith(device) else { return }
+        mobilePeripheralManager.markActiveSessionAsDisconnected(device: device)
         bluetootConnector.connect(to: device, timeout: 10) { result in
             switch result {
             case .success:
@@ -30,11 +30,11 @@ class ReconnectionController: BluetoothConnectionObserver {
                         Log.info("Discovered characteristics for: \(device.peripheral)")
                         self.mobilePeripheralManager.configureAB()
                     case .failure(_):
-                        self.mobilePeripheralManager.moveSessionToStandaloneMode(peripheral: device.peripheral)
+                        self.mobilePeripheralManager.moveSessionToStandaloneMode(device: device)
                     }
                 }
             case .failure(_):
-                self.mobilePeripheralManager.moveSessionToStandaloneMode(peripheral: device.peripheral)
+                self.mobilePeripheralManager.moveSessionToStandaloneMode(device: device)
             }
         }
     }

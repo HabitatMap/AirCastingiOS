@@ -5,15 +5,15 @@ import SwiftUI
 import AirCastingStyling
 import Resolver
 
-struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
-    @StateObject var viewModel: VM
+struct ConnectingABView: View {
+    @StateObject var viewModel: AirbeamConnectionViewModel
     @Binding var creatingSessionFlowContinues: Bool
     @State private var showNextScreen: Bool = false
     @Injected private var mobilePeripheralSessionManager: MobilePeripheralSessionManager
     @Environment(\.presentationMode) var presentationMode
     
     init(sessionContext: CreateSessionContext, device: NewBluetoothManager.BluetoothDevice, creatingSessionFlowContinues: Binding<Bool>) {
-        _viewModel = .init(wrappedValue: VM(sessionContext: sessionContext, device: device))
+        _viewModel = .init(wrappedValue: AirbeamConnectionViewModel(sessionContext: sessionContext, device: device))
         self._creatingSessionFlowContinues = .init(projectedValue: creatingSessionFlowContinues)
     }
     

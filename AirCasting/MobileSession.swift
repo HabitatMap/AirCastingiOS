@@ -5,6 +5,6 @@ import Foundation
 import CoreBluetooth
 
 struct MobileSession {
-    let peripheral: CBPeripheral
+    let device: NewBluetoothManager.BluetoothDevice
     let session: Session
 }

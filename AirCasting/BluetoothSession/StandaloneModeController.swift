@@ -10,10 +10,8 @@ protocol StandaloneModeController {
 
 struct DefaultStandaloneModeController: StandaloneModeController {
     @Injected private var sessionManager: MobilePeripheralSessionManager
-    @Injected private var btManager: NewBluetoothManager
     
     func enterStandaloneMode(sessionUUID: SessionUUID) {
-        // TODO: Refactor later
-        sessionManager.enterStandaloneMode(sessionUUID: sessionUUID, centralManager: btManager.centralManager)
+        sessionManager.enterStandaloneMode(sessionUUID: sessionUUID)
     }
 }

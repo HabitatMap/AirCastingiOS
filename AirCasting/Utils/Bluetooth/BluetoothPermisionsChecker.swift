@@ -2,7 +2,6 @@
 //
 
 import Foundation
-import CoreBluetooth
 import Resolver
 
 protocol BluetoothPermisionsChecker {
