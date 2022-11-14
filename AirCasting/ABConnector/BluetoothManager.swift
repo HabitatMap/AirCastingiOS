@@ -49,11 +49,10 @@ class BluetoothManager: NSObject, BluetoothCommunicator, ObservableObject {
     @Published var centralManagerState: CBManagerState = .unknown
     @Published var mobileSessionReconnected = false
     var observed: NSKeyValueObservation?
-
+    
     let mobilePeripheralSessionManager: MobilePeripheralSessionManager
     @Injected private var featureFlagProvider: FeatureFlagProvider
-    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
-
+    
     private var MEASUREMENTS_CHARACTERISTIC_UUIDS: [CBUUID] = [
         CBUUID(string:"0000ffe1-0000-1000-8000-00805f9b34fb"),    // Temperature
         CBUUID(string:"0000ffe3-0000-1000-8000-00805f9b34fb"),    // Humidity
