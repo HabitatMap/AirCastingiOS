@@ -7,26 +7,18 @@ import Combine
 
 class ReconnectSessionCardViewModel: ObservableObject {
     let session: SessionEntity
-    var reconnectionObserver: AnyCancellable?
     @Published var alert: AlertInfo?
     @Published var isSpinnerOn = false
     @Injected private var bm: BluetoothManager
     
     init(session: SessionEntity) {
         self.session = session
-        reconnectionObserver = bm.$connectionState.receive(on: DispatchQueue.main).sink { value in
-            self.isSpinnerOn = (value == .connecting)
-        }
-    }
-    
-    deinit {
-        self.reconnectionObserver = nil
     }
     
     func onRecconectTap() {
-        guard let databaseUUID = session.bluetoothConnection?.peripheralUUID else { Log.error("Trying to get uuid but it is not saved."); showReconnectionAlert(); return }
-        guard let matchingUUID = bm.devices.first(where: { $0.identifier.description == databaseUUID }) else { Log.error("no matching uuid"); showReconnectionAlert(); return }
-        bm.connectWithTimeout(using: matchingUUID)
+//        guard let databaseUUID = session.bluetoothConnection?.peripheralUUID else { Log.error("Trying to get uuid but it is not saved."); showReconnectionAlert(); return }
+//        guard let matchingUUID = bm.devices.first(where: { $0.identifier.description == databaseUUID }) else { Log.error("no matching uuid"); showReconnectionAlert(); return }
+//        bm.connectWithTimeout(using: matchingUUID)
     }
     
     func onFinishDontSyncTapped(completion: @escaping () -> Void) {

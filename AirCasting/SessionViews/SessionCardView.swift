@@ -60,7 +60,7 @@ struct SessionCardView: View {
     }
 
     var body: some View {
-        if session.isInStandaloneMode {
+        if session.isInStandaloneMode && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
             standaloneSessionCard
         } else {
             sessionCard
@@ -118,10 +118,7 @@ struct SessionCardView: View {
     }
 
     var standaloneSessionCard: some View {
-        if featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
-            return AnyView(StandaloneSessionCardView(session: session))
-        }
-        return AnyView(ReconnectSessionCardView(viewModel: .init(session: session)))
+        StandaloneSessionCardView(session: session)
     }
 
     private func selectDefaultStreamIfNeeded(streams: [MeasurementStreamEntity]) {
