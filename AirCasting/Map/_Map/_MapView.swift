@@ -10,13 +10,13 @@ extension _MapView {
     class Coordinator {
         var latestUserLocation: CLLocation?
         var polyline = GMSPolyline()
+        var currentPath: [PathPoint] = []
         var customUserMarker: GMSMarker?
         var myLocationSink: Any?
         var mapViewDelegateHandler: MapViewDelegateHandler?
         var suspendTracking: Bool = false
         var gmsMarkers: [GMSMarker] = []
         var previousFrameMarkers: [Marker] = []
-        var lastTime = 0
     }
 }
 
@@ -46,7 +46,7 @@ extension _MapView {
         case custom(color: Color) // AC color dot
     }
     
-    struct PathPoint {
+    struct PathPoint: Equatable {
         let lat: Double
         let long: Double
         let value: Double
@@ -116,7 +116,6 @@ struct _MapView: UIViewRepresentable {
         } catch {
             Log.verbose("One or more of the map styles failed to load. \(error)")
         }
-        context.coordinator.lastTime = path.count
         return mapView
     }
     
@@ -126,9 +125,9 @@ struct _MapView: UIViewRepresentable {
             placeMarkers(uiView, markers: markers, context: context)
         }
         context.coordinator.previousFrameMarkers = markers
-        if context.coordinator.lastTime != path.count {
+        if context.coordinator.currentPath != path {
             drawPolyline(uiView, context: context)
-            context.coordinator.lastTime = path.count
+            context.coordinator.currentPath = path
         }
         setupStyling(for: uiView)
         
@@ -281,7 +280,6 @@ struct _MapView: UIViewRepresentable {
     }
     
     private func setupStyling(for mapView: GMSMapView) {
-//        Log.verbose("Setting styling for colorscheme: \(colorScheme)")
         do {
             if let styleURL = Bundle.main.url(forResource: colorScheme == .light ? "style" : "darkStyle", withExtension: "json") {
                 mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
@@ -295,14 +293,13 @@ struct _MapView: UIViewRepresentable {
     
     func drawPolyline(_ uiView: GMSMapView, context: Context) {
         let newPath = GMSMutablePath()
-        Log.verbose("### NR: \(path.count)")
         for point in path {
             newPath.add(.init(latitude: point.lat, longitude: point.long))
         }
         
         let polyline = context.coordinator.polyline
         polyline.path = newPath
-        polyline.strokeColor = .accentColor //TODO: Change it (styling)
+        polyline.strokeColor = .accentColor // TODO: Change it (styling)
         polyline.strokeWidth = CGFloat(3)
         polyline.map = uiView
     }
