@@ -171,14 +171,19 @@ private extension AirMapView {
         
         switch value {
         case veryLow ..< low:
+            Log.verbose("## Green")
             return Color.aircastingGreen
         case low ..< medium:
+            Log.verbose("## Yellow")
             return Color.aircastingYellow
         case medium ..< high:
+            Log.verbose("## Orange")
             return Color.aircastingOrange
         case high ... veryHigh:
+            Log.verbose("## Red")
             return Color.aircastingRed
         default:
+            Log.verbose("## Gray")
             return Color.aircastingGray
         }
     }
