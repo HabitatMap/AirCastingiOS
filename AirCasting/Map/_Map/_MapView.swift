@@ -90,18 +90,19 @@ struct _MapView: UIViewRepresentable {
     }
     
     func makeUIView(context: Context) -> GMSMapView {
-        let startingPoint = getStartingPoint(context: context)
+        Log.verbose("## Making map")
+        let startingPoint = getStartingPoint(coordinator: context.coordinator)
         let mapView = GMSMapView(frame: .zero, camera: startingPoint)
         setupMyLocationButtonVisibility(for: mapView)
         mapView.mapType = type.gmsMapviewType
         
-        setupMapDelegate(in: mapView, context: context)
+        setupMapDelegate(in: mapView, coordinator: context.coordinator)
         
         if isUserPositionTrackingRequired {
             userTracker.startTrackingUserPosition { [weak coord = context.coordinator, weak map = mapView] in
                 coord?.latestUserLocation = $0
-                guard let map else { return }
-                updateUIView(map, context: context)
+                guard let map, let coord else { return }
+                setupUserIndicatorStyle(with: userIndicatorStyle, in: map, with: coord)
             }
         }
         
@@ -120,19 +121,23 @@ struct _MapView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        setupUserIndicatorStyle(with: userIndicatorStyle, in: uiView, with: context)
-        if markers != context.coordinator.previousFrameMarkers {
-            placeMarkers(uiView, markers: markers, context: context)
+        asd(uiView, coordinator: context.coordinator)
+    }
+    
+    private func asd(_ uiView: GMSMapView, coordinator: Coordinator) {
+        setupUserIndicatorStyle(with: userIndicatorStyle, in: uiView, with: coordinator)
+        if markers != coordinator.previousFrameMarkers {
+            placeMarkers(uiView, markers: markers, coordinator: coordinator)
         }
-        context.coordinator.previousFrameMarkers = markers
-        if context.coordinator.currentPath != path {
-            drawPolyline(uiView, context: context)
-            context.coordinator.currentPath = path
+        coordinator.previousFrameMarkers = markers
+        if coordinator.currentPath != path {
+            drawPolyline(uiView, coordinator: coordinator)
+            coordinator.currentPath = path
         }
         setupStyling(for: uiView)
         
-        guard !context.coordinator.suspendTracking else { return }
-        updateCameraPosition(in: uiView, context: context)
+        guard !coordinator.suspendTracking else { return }
+        updateCameraPosition(in: uiView, coordinator: coordinator)
     }
     
     private func setupMyLocationButtonVisibility(for mapView: GMSMapView) {
@@ -142,36 +147,37 @@ struct _MapView: UIViewRepresentable {
         mapView.settings.myLocationButton = false
     }
     
-    private func setupMapDelegate(in mapView: GMSMapView, context: Context) {
-        context.coordinator.mapViewDelegateHandler = MapViewDelegateHandler(myLocationTapHandler: {
-            handleLocationButtonTapped(in: $0, context: context)
+    private func setupMapDelegate(in mapView: GMSMapView, coordinator: Coordinator) {
+        coordinator.mapViewDelegateHandler = MapViewDelegateHandler(myLocationTapHandler: {
+            handleLocationButtonTapped(in: $0, coordinator: coordinator)
             return true
         }, draggingHandler: { _ in
-            context.coordinator.suspendTracking = true
+            coordinator.suspendTracking = true
         }, markerTapHandler: { mapView, marker in
-            let marker = context.coordinator.previousFrameMarkers.first(where: { $0.id == (marker.userData as? Int) })
+            let marker = coordinator.previousFrameMarkers.first(where: { $0.id == (marker.userData as? Int) })
             marker?.handler?()
             return marker?.handler != nil
         })
         
-        mapView.delegate = context.coordinator.mapViewDelegateHandler
+        mapView.delegate = coordinator.mapViewDelegateHandler
     }
     
-    private func placeMarkers(_ uiView: GMSMapView, markers: [Marker], context: Context) {
-        clearMarkers(in: context)
+    private func placeMarkers(_ uiView: GMSMapView, markers: [Marker], coordinator: Coordinator) {
+        clearMarkers(in: coordinator)
         DispatchQueue.main.async {
-            context.coordinator.gmsMarkers = markers.map { createMarker(from: $0, in: uiView, with: context) }
+            // TODO: Remove pre-existing marksers from map?
+            coordinator.gmsMarkers = markers.map { createMarker(from: $0, in: uiView) }
         }
     }
     
-    private func clearMarkers(in context: Context) {
-        context.coordinator.gmsMarkers.forEach { marker in
+    private func clearMarkers(in coordinator: Coordinator) {
+        coordinator.gmsMarkers.forEach { marker in
             marker.map = nil
         }
-        context.coordinator.gmsMarkers = []
+        coordinator.gmsMarkers = []
     }
     
-    private func createMarker(from marker: Marker, in uiView: GMSMapView, with context: Context) -> GMSMarker {
+    private func createMarker(from marker: Marker, in uiView: GMSMapView) -> GMSMarker {
         let gmsMarker = GMSMarker()
         // 10 used here to be sure it will be on top of evertyhing
         gmsMarker.zIndex = 10
@@ -184,46 +190,46 @@ struct _MapView: UIViewRepresentable {
         return gmsMarker
     }
     
-    private func updateCameraPosition(in view: GMSMapView, context: Context) {
+    private func updateCameraPosition(in view: GMSMapView, coordinator: Coordinator) {
         switch trackingStyle {
         case .latestPathPoint:
-            centerMapOnLatestPathPoint(in: view, context: context)
+            centerMapOnLatestPathPoint(in: view, coordinator: coordinator)
         case .none:
             break
         case .wholePath:
-            centerMapOnWholePath(in: view, context: context)
+            centerMapOnWholePath(in: view, coordinator: coordinator)
         case .user:
-            centerMapOnUserPosition(in: view, context: context)
+            centerMapOnUserPosition(in: view, coordinator: coordinator)
         }
     }
     
-    private func handleLocationButtonTapped(in view: GMSMapView, context: Context) {
-        context.coordinator.suspendTracking = false
+    private func handleLocationButtonTapped(in view: GMSMapView, coordinator: Coordinator) {
+        coordinator.suspendTracking = false
         switch trackingStyle {
         case .none:
-            centerMapOnUserPosition(in: view, context: context)
+            centerMapOnUserPosition(in: view, coordinator: coordinator)
         case .user:
-            centerMapOnUserPosition(in: view, context: context)
+            centerMapOnUserPosition(in: view, coordinator: coordinator)
         case .latestPathPoint:
-            centerMapOnLatestPathPoint(in: view, context: context)
+            centerMapOnLatestPathPoint(in: view, coordinator: coordinator)
         case .wholePath:
-            centerMapOnWholePath(in: view, context: context)
+            centerMapOnWholePath(in: view, coordinator: coordinator)
         }
     }
     
-    private func centerMapOnUserPosition(in view: GMSMapView, context: Context) {
-        guard let latestUserLocation = context.coordinator.latestUserLocation else { return }
+    private func centerMapOnUserPosition(in view: GMSMapView, coordinator: Coordinator) {
+        guard let latestUserLocation = coordinator.latestUserLocation else { return }
         let userPos = GMSCameraPosition(target: latestUserLocation.coordinate, zoom: 16.0) // TODO: Configure later
         view.animate(to: userPos)
     }
     
-    private func centerMapOnLatestPathPoint(in view: GMSMapView, context: Context) {
+    private func centerMapOnLatestPathPoint(in view: GMSMapView, coordinator: Coordinator) {
         guard let lastPathPoint = path.last else { return }
         let userPos = GMSCameraPosition(target: .init(latitude: lastPathPoint.lat, longitude: lastPathPoint.long), zoom: 16.0) // TODO: Configure later
         view.animate(to: userPos)
     }
     
-    private func centerMapOnWholePath(in view: GMSMapView, context: Context) {
+    private func centerMapOnWholePath(in view: GMSMapView, coordinator: Coordinator) {
         let initialBounds = GMSCoordinateBounds()
         let pathPointsBoundingBox = path.reduce(initialBounds) { bounds, point in
             bounds.includingCoordinate(.init(latitude: point.lat, longitude: point.long))
@@ -241,22 +247,23 @@ struct _MapView: UIViewRepresentable {
         }
     }
     
-    private func setupUserIndicatorStyle(with style: UserIndicatorStyle, in view: GMSMapView, with context: Context) {
-        guard let userLocation = context.coordinator.latestUserLocation else { return }
+    private func setupUserIndicatorStyle(with style: UserIndicatorStyle, in view: GMSMapView, with coordinator: Coordinator) {
+        guard let userLocation = coordinator.latestUserLocation else { return }
+        Log.verbose("## Setting style: \(style)")
         switch style {
         case .none:
             break
         case .standard:
             view.isMyLocationEnabled = true
         case .custom(let color):
-            createCustomUserIndicator(color: color, userLocation: userLocation, uiView: view, context: context)
+            createCustomUserIndicator(color: color, userLocation: userLocation, uiView: view, coordinator: coordinator)
         }
     }
     
-    private func createCustomUserIndicator(color: Color, userLocation: CLLocation, uiView: GMSMapView, context: Context) {
-        let marker = context.coordinator.customUserMarker ?? GMSMarker()
-        if context.coordinator.customUserMarker == nil {
-            context.coordinator.customUserMarker = marker
+    private func createCustomUserIndicator(color: Color, userLocation: CLLocation, uiView: GMSMapView, coordinator: Coordinator) {
+        let marker = coordinator.customUserMarker ?? GMSMarker()
+        if coordinator.customUserMarker == nil {
+            coordinator.customUserMarker = marker
         }
         let markerImg = UIImage.imageWithColor(color: UIColor(color),
                                                size: CGSize(width: 20.0, height: 20.0)) // Customize with styling later?
@@ -271,7 +278,7 @@ struct _MapView: UIViewRepresentable {
         Coordinator()
     }
     
-    private func getStartingPoint(context: Context) -> GMSCameraPosition {
+    private func getStartingPoint(coordinator: Coordinator) -> GMSCameraPosition {
         let coords: CLLocation = userTracker.getLastKnownLocation() ?? .applePark
         let newCameraPosition = GMSCameraPosition.camera(withLatitude: coords.coordinate.latitude,
                                                          longitude: coords.coordinate.longitude,
@@ -291,23 +298,23 @@ struct _MapView: UIViewRepresentable {
         }
     }
     
-    func drawPolyline(_ uiView: GMSMapView, context: Context) {
+    func drawPolyline(_ uiView: GMSMapView, coordinator: Coordinator) {
         let newPath = GMSMutablePath()
         for point in path {
             newPath.add(.init(latitude: point.lat, longitude: point.long))
         }
         
-        let polyline = context.coordinator.polyline
+        let polyline = coordinator.polyline
         polyline.path = newPath
         polyline.strokeColor = .accentColor // TODO: Change it (styling)
         polyline.strokeWidth = CGFloat(3)
         polyline.map = uiView
     }
     
-    private func followUser(in mapView: GMSMapView, context: Context) {
+    private func followUser(in mapView: GMSMapView, coordinator: Coordinator) {
         mapView.isMyLocationEnabled = true
         // TODO: Check on device if we can use the `LocationTracker` instead
-        context.coordinator.myLocationSink = mapView.publisher(for: \.myLocation)
+        coordinator.myLocationSink = mapView.publisher(for: \.myLocation)
             .sink { [weak mapView] (location) in
                 guard let coordinate = location?.coordinate else { return }
                 mapView?.animate(toLocation: coordinate)

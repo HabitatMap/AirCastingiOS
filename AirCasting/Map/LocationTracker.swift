@@ -117,7 +117,6 @@ class UserTrackerAdapter: UserTracker {
         locationTracker.start()
         didStartTracking = true
         locationCancellable = locationTracker.location.sink {
-            Log.verbose("## New location \($0)")
             newPos($0 ?? .applePark)
         }
     }
