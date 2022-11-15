@@ -3,10 +3,13 @@
 
 import Foundation
 import FirebaseCrashlytics
-import Resolver
 
 class CrashlyticsLogger: Logger {
-    @Injected private var formatter: LogFormatter
+    private let formatter: LogFormatter
+    
+    init(formatter: LogFormatter) {
+        self.formatter = formatter
+    }
     
     func log(_ message:  @escaping @autoclosure () -> String, type: LogLevel, file: String, function: String, line: Int) {
         let formattedMessage = formatter.format(message(), type: type, file: file, function: function, line: line)
