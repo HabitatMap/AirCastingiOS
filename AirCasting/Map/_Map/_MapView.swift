@@ -16,6 +16,7 @@ extension _MapView {
         var suspendTracking: Bool = false
         var gmsMarkers: [GMSMarker] = []
         var previousFrameMarkers: [Marker] = []
+        var lastTime = 0
     }
 }
 
@@ -99,8 +100,8 @@ struct _MapView: UIViewRepresentable {
         if isUserPositionTrackingRequired {
             userTracker.startTrackingUserPosition { [weak coord = context.coordinator, weak map = mapView] in
                 coord?.latestUserLocation = $0
-//                guard let map else { return }
-//                updateUIView(map, context: context)
+                guard let map else { return }
+                updateUIView(map, context: context)
             }
         }
         
@@ -115,7 +116,7 @@ struct _MapView: UIViewRepresentable {
         } catch {
             Log.verbose("One or more of the map styles failed to load. \(error)")
         }
-        
+        context.coordinator.lastTime = path.count
         return mapView
     }
     
@@ -125,7 +126,10 @@ struct _MapView: UIViewRepresentable {
             placeMarkers(uiView, markers: markers, context: context)
         }
         context.coordinator.previousFrameMarkers = markers
-        drawPolyline(uiView, context: context)
+        if context.coordinator.lastTime != path.count {
+            drawPolyline(uiView, context: context)
+            context.coordinator.lastTime = path.count
+        }
         setupStyling(for: uiView)
         
         guard !context.coordinator.suspendTracking else { return }

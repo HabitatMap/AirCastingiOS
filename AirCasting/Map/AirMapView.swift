@@ -74,8 +74,7 @@ struct AirMapView: View {
                             _MapView(path: pathPoints,
                                      type: .normal,
                                      trackingStyle: .user,
-                                     userIndicatorStyle: .custom(color: Color(self.color(point: pathPoints.last!,
-                                                                                   threshold: threshold))),
+                                     userIndicatorStyle: .custom(color: self.color(points: pathPoints, threshold: threshold)),
                                      userTracker: UserTrackerAdapter(locationTracker))
 
                         } else if session.isActive {
@@ -85,8 +84,7 @@ struct AirMapView: View {
                             _MapView(path: pathPoints,
                                      type: .normal,
                                      trackingStyle: .latestPathPoint,
-                                     userIndicatorStyle: .custom(color: Color(self.color(point: pathPoints.last!,
-                                                                                         threshold: threshold))),
+                                     userIndicatorStyle: .custom(color: self.color(points: pathPoints, threshold: threshold)),
                                      userTracker: UserTrackerAdapter(locationTracker))
                         } else {
                             // kropka customowa
@@ -150,15 +148,19 @@ struct AirMapView: View {
     private func getValue(of measurement: MeasurementEntity) -> Double {
         measurement.measurementStream.isTemperature && userSettings.convertToCelsius ? TemperatureConverter.calculateCelsius(fahrenheit: measurement.value) : measurement.value
     }
-    
-    func color(point: _MapView.PathPoint, threshold: SensorThreshold) -> UIColor {
+}
+
+private extension AirMapView {
+    // This keeps track of the last PathPoint value and adjust color to it.
+    func color(points: [_MapView.PathPoint], threshold: SensorThreshold) -> Color {
         let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
-        let measurement = formatter.value(from: point.value)
         
-        return AirMapView.color(value: measurement, threshold: threshold)
+        guard let point = points.last else { return .white }
+        let measurement = formatter.value(from: point.value)
+        return getProperColor(value: measurement, threshold: threshold)
     }
     
-    static func color(value: Int32, threshold: SensorThreshold?) -> UIColor {
+    func getProperColor(value: Int32, threshold: SensorThreshold?) -> Color {
         guard let threshold = threshold else { return .white }
         
         let veryLow = threshold.thresholdVeryLow
@@ -169,15 +171,15 @@ struct AirMapView: View {
         
         switch value {
         case veryLow ..< low:
-            return UIColor.aircastingGreen
+            return Color.aircastingGreen
         case low ..< medium:
-            return UIColor.aircastingYellow
+            return Color.aircastingYellow
         case medium ..< high:
-            return UIColor.aircastingOrange
+            return Color.aircastingOrange
         case high ... veryHigh:
-            return UIColor.aircastingRed
+            return Color.aircastingRed
         default:
-            return UIColor.aircastingGray
+            return Color.aircastingGray
         }
     }
 }
