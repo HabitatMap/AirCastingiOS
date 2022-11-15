@@ -6,7 +6,27 @@ import Foundation
 import os.log
 import Resolver
 
-public let Log: Logger = Resolver.resolve()
+fileprivate let fileLoggerQueue = DispatchQueue(label: "com.habitatmap.filelogger", qos: .utility, attributes: [], autoreleaseFrequency: .workItem, target: nil)
+
+public let Log: Logger = {
+        var composite = CompositeLogger()
+#if DEBUG
+    composite.add(LoggerBuilder.shared.withType(.debug).build())
+#endif
+#if BETA || RELEASE
+        composite.add(LoggerBuilder.shared.withType(.file)
+                        .addMinimalLevel(.info)
+                        .dispatchOn(fileLoggerQueue)
+                        .build())
+        composite.add(LoggerBuilder.shared.withType(.crashlytics)
+                        .addMinimalLevel(.info)
+                        .build())
+        composite.add(LoggerBuilder.shared.withType(.crashlyticsError)
+                        .addMinimalLevel(.error)
+                        .build())
+#endif
+        return composite
+}()
 
 public enum LogLevel: UInt, CustomStringConvertible {
     case verbose, debug, info, warning, error

@@ -1,5 +1,4 @@
 import Foundation
-import Resolver
 
 /// Resettable file log holder. It is expected that the logfile is emptied upon resetting.
 protocol FileLoggerResettable {
@@ -8,11 +7,12 @@ protocol FileLoggerResettable {
 
 /// A class responsible for the process of dosposing logger data in case the system asks us to free up disk storage.
 class FileLoggerDisposer: DisposableDataHolder {
-    @Injected private var resettableLogger: FileLoggerResettable
+    private let resettableLogger: FileLoggerResettable
     let disposeQueue: DispatchQueue?
     
-    init(disposeQueue: DispatchQueue?) {
+    init(disposeQueue: DispatchQueue? = nil, resettableLogger: FileLoggerResettable) {
         self.disposeQueue = disposeQueue
+        self.resettableLogger = resettableLogger
     }
     
     func dispose() throws {
