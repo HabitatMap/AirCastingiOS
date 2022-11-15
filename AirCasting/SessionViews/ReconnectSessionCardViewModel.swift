@@ -34,6 +34,7 @@ class ReconnectSessionCardViewModel: ObservableObject {
             completion()
         } catch {
             Log.info("error when stpoing session - \(error)")
+            alert = InAppAlerts.failedFinishingSession()
         }
     }
     

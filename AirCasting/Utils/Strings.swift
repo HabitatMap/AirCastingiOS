@@ -646,6 +646,10 @@ struct Strings {
                                                              comment: "")
         static let thresholdAlertsButton: String = NSLocalizedString("Threshold alerts",
                                                              comment: "")
+        static let failedFinishSessionTitle: String = NSLocalizedString("Failed finishing session",
+                                                                        comment: "")
+        static let failedFinishSessionMessage: String = NSLocalizedString("Please try again.",
+                                                                        comment: "")
     }
     
     enum NetworkChecker {
