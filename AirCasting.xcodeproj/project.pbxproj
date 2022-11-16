@@ -438,7 +438,6 @@
 		DD22F0FD27D668DD00CB8B97 /* BottomCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD22F0FC27D668DD00CB8B97 /* BottomCard.swift */; };
 		DD28047726B3D6E70060F55E /* ConnectingAirBeamServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD28047626B3D6E70060F55E /* ConnectingAirBeamServices.swift */; };
 		DD28047926B3D7370060F55E /* AirBeamConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD28047826B3D7370060F55E /* AirBeamConnectionController.swift */; };
-		DD28047B26B3D7730060F55E /* BluetoothConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD28047A26B3D7730060F55E /* BluetoothConnector.swift */; };
 		DD2DDBAC27B535EC00807011 /* SessionCardUIState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2DDBAB27B535EC00807011 /* SessionCardUIState.swift */; };
 		DD2DDBAE27B5450100807011 /* UIStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2DDBAD27B5450100807011 /* UIStorage.swift */; };
 		DD2DDBB027B5490000807011 /* UIStateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2DDBAF27B5490000807011 /* UIStateHandler.swift */; };
@@ -1011,7 +1010,6 @@
 		DD22F0FC27D668DD00CB8B97 /* BottomCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCard.swift; sourceTree = "<group>"; };
 		DD28047626B3D6E70060F55E /* ConnectingAirBeamServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingAirBeamServices.swift; sourceTree = "<group>"; };
 		DD28047826B3D7370060F55E /* AirBeamConnectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamConnectionController.swift; sourceTree = "<group>"; };
-		DD28047A26B3D7730060F55E /* BluetoothConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothConnector.swift; sourceTree = "<group>"; };
 		DD2DDBA927B517CD00807011 /* AirCasting v4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v4.xcdatamodel"; sourceTree = "<group>"; };
 		DD2DDBAB27B535EC00807011 /* SessionCardUIState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCardUIState.swift; sourceTree = "<group>"; };
 		DD2DDBAD27B5450100807011 /* UIStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStorage.swift; sourceTree = "<group>"; };
@@ -1515,7 +1513,6 @@
 			isa = PBXGroup;
 			children = (
 				DDD24D8526A8295F00D4A327 /* ConnectingABViewModel.swift */,
-				DD28047A26B3D7730060F55E /* BluetoothConnector.swift */,
 				DD28047626B3D6E70060F55E /* ConnectingAirBeamServices.swift */,
 				B30F9A622745626B00C85E17 /* SDCardAirBeamServices.swift */,
 				33831B1C29154EF30097020C /* MeasurementsRecordingServices.swift */,
@@ -3628,7 +3625,6 @@
 				B31E361428AECB4300E85431 /* WindowAlertPresenter.swift in Sources */,
 				332020A6283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift in Sources */,
 				ACD01F922600A3C800B8F65F /* RootAppView.swift in Sources */,
-				DD28047B26B3D7730060F55E /* BluetoothConnector.swift in Sources */,
 				ACCEB2232763A2230040140B /* BackendSyncCompletedView.swift in Sources */,
 				33A7FF1A27C5115700A138D6 /* CompleteScreen.swift in Sources */,
 				331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */,
