@@ -1,8 +1,8 @@
 // Created by Lunar on 21/07/2021.
 //
 
+import Foundation
 import Combine
-import CoreBluetooth
 import Resolver
 
 struct SDSyncProgressViewModel {
@@ -69,6 +69,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                 guard let self = self else { return }
                 switch result {
                 case .success():
+                    // TODO: move this check to new bluetooth manager
                     guard self.device.peripheral.state == .connected else {
                         Log.info("[SD SYNC] Device disconnected. Attempting reconnect")
                         self.reconnectWithAirbeamAndClearCard()

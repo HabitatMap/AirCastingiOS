@@ -189,6 +189,7 @@ extension Resolver: ResolverRegistering {
         .implements(BluetoothScanner.self)
         .implements(BluetoothConnectionHandler.self)
         .implements(BluetoothConnectionObservable.self)
+        .implements(BluetoothPeripheralConfigurator.self)
         .scope(.cached)
         main.register { UserState() }.scope(.application)
         main.register { SyncedMeasurementsDownloadingService() as SyncedMeasurementsDownloader }

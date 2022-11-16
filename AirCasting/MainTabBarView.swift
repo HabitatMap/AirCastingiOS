@@ -6,7 +6,6 @@
 //
 
 import CoreData
-import CoreBluetooth
 import SwiftUI
 import Resolver
 

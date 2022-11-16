@@ -5,6 +5,8 @@ import Foundation
 import CoreLocation
 import Resolver
 
+
+//Change name to saver
 class MobilePeripheralSessionManager {
     class PeripheralMeasurementTimeLocationManager {
         @Injected private var locationTracker: LocationTracker
@@ -64,16 +66,12 @@ class MobilePeripheralSessionManager {
     }
     
     func handlePeripheralMeasurement(_ measurement: AirBeamMeasurement) {
-        if activeMobileSession == nil {
-            return
-        }
-
-        if activeMobileSession?.device == measurement.device {
-            if peripheralMeasurementManager.collectedValuesCount == 5 { peripheralMeasurementManager.startNewValuesRound(locationless: activeMobileSession!.session.locationless) }
-            
-            updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid, location: peripheralMeasurementManager.currentLocation, time: peripheralMeasurementManager.currentTime)
-            peripheralMeasurementManager.incrementCounter()
-        }
+        guard activeMobileSession?.device == measurement.device else { return }
+        
+        if peripheralMeasurementManager.collectedValuesCount == 5 { peripheralMeasurementManager.startNewValuesRound(locationless: activeMobileSession!.session.locationless) }
+        
+        updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid, location: peripheralMeasurementManager.currentLocation, time: peripheralMeasurementManager.currentTime)
+        peripheralMeasurementManager.incrementCounter()
     }
     
     func configureAB() {

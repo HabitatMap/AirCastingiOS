@@ -1,7 +1,6 @@
 // Created by Lunar on 17/11/2021.
 //
 
-import CoreBluetooth
 import CoreMIDI
 import Combine
 import Resolver

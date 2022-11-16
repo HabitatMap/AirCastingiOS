@@ -2,7 +2,6 @@
 //
 
 import Foundation
-import CoreBluetooth
 
 struct MobileSession {
     let device: NewBluetoothManager.BluetoothDevice

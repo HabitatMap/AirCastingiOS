@@ -23,11 +23,11 @@ class ReconnectionController: BluetoothConnectionObserver {
         bluetootConnector.connect(to: device, timeout: 10) { result in
             switch result {
             case .success:
-                Log.info("Reconnected to a peripheral: \(device.peripheral)")
+                Log.info("Reconnected to a peripheral: \(device)")
                 self.bluetootConnector.discoverCharacteristics(for: device, timeout: 10) { result in
                     switch result {
                     case .success:
-                        Log.info("Discovered characteristics for: \(device.peripheral)")
+                        Log.info("Discovered characteristics for: \(device)")
                         self.mobilePeripheralManager.configureAB()
                     case .failure(_):
                         self.mobilePeripheralManager.moveSessionToStandaloneMode(device: device)

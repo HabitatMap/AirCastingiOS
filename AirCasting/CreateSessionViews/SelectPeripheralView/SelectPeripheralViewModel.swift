@@ -3,7 +3,6 @@
 
 import Foundation
 import Resolver
-import CoreBluetooth // Delete when we figure out exactly why authorization is checked here
 
 class SelectPeripheralViewModel: ObservableObject {
     @Injected var btManager: BluetoothScanner

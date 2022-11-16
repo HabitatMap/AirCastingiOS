@@ -12,40 +12,7 @@ public enum BluetoothDeviceAuthorizationState {
     case allowedAlways
 }
 
-protocol BluetoothStateHandler {
-    var authorizationState: BluetoothDeviceAuthorizationState { get }
-    var deviceState: BluetoothDeviceState { get }
-    func forceBluetoothPermissionPopup()
-}
-
-protocol BluetoothScanner {
-    func startScanning(scanningWindow: Int,
-                       onDeviceDiscovered: @escaping (NewBluetoothManager.BluetoothDevice) -> Void,
-                       onScanningFinished: (() -> Void)?)
-    func stopScan()
-}
-
-protocol BluetoothConnectionHandler {
-    func connect(to device: NewBluetoothManager.BluetoothDevice, timeout: TimeInterval, completion: @escaping NewBluetoothManager.ConnectionCallback)
-    func disconnect(from device: NewBluetoothManager.BluetoothDevice)
-    func discoverCharacteristics(for device: NewBluetoothManager.BluetoothDevice, timeout: TimeInterval, completion: @escaping NewBluetoothManager.CharacteristicsDicoveryCallback)
-}
-
-protocol BluetoothConnectionObservable {
-    func addConnectionObserver(_ observer: BluetoothConnectionObserver)
-    func removeConnectionObserver(_ observer: BluetoothConnectionObserver)
-}
-
-protocol BluetoothConnectionObserver: AnyObject {
-    func didDisconnect(device: NewBluetoothManager.BluetoothDevice)
-}
-
-
-protocol BluetoothPeripheralConfigurator {
-    func sendMessage(data: Data, to device: NewBluetoothManager.BluetoothDevice, serviceID: String, characteristicID: String, completion: @escaping NewBluetoothManager.writingValueCallback)
-}
-
-final class NewBluetoothManager: NSObject, BluetoothCommunicator, BluetoothStateHandler, BluetoothConnectionHandler, BluetoothScanner, BluetoothConnectionObservable, CBCentralManagerDelegate, CBPeripheralDelegate {
+final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerDelegate, CBPeripheralDelegate {
     // TODO: Make it private when the rest of the codebase is transformed to not use CB
     lazy var centralManager: CBCentralManager = {
         let centralManager = CBCentralManager()
@@ -117,36 +84,14 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, BluetoothState
         }
     }
     
-    // MARK: Observers
-    
-    private var callbackQueue = DispatchQueue(label: "bluetooth.driver.callback.queue")
-    private var connectionObservers: [BluetoothConnectionObserver] = []
-    
-    func addConnectionObserver(_ observer: BluetoothConnectionObserver) {
-        queue.async {
-            self.connectionObservers.append(observer)
-        }
-    }
-    
-    func removeConnectionObserver(_ observer: BluetoothConnectionObserver) {
-        queue.async {
-            self.connectionObservers.removeAll(where: { $0 === observer })
-        }
-    }
-    
-    private func callConnectionObserversWithDisconnect(for device: BluetoothDevice) {
-        self.connectionObservers.forEach { observer in
-            callbackQueue.async { observer.didDisconnect(device: device) }
-        }
-    }
-    
     // MARK: Scanning
     
     private typealias DiscoveryCallback = (BluetoothDevice) -> Void
     private var deviceDiscoveryCallbacks: [DiscoveryCallback] = []
     
     class BluetoothDevice: Equatable {
-//        fileprivate let peripheral: CBPeripheral COMMENTED OUT JUST TEMPORARILY
+//        fileprivate let peripheral: CBPeripheral
+        // TODO: Make it fileprivate when the rest of the codebase is transformed to not use CB
         let peripheral: CBPeripheral
         let id = UUID()
         var name: String?
@@ -196,6 +141,30 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, BluetoothState
             }
         }
     }
+    
+    // MARK: Connection Observers
+    
+    private var callbackQueue = DispatchQueue(label: "bluetooth.driver.callback.queue")
+    private var connectionObservers: [BluetoothConnectionObserver] = []
+    
+    func addConnectionObserver(_ observer: BluetoothConnectionObserver) {
+        queue.async {
+            self.connectionObservers.append(observer)
+        }
+    }
+    
+    func removeConnectionObserver(_ observer: BluetoothConnectionObserver) {
+        queue.async {
+            self.connectionObservers.removeAll(where: { $0 === observer })
+        }
+    }
+    
+    private func callConnectionObserversWithDisconnect(for device: BluetoothDevice) {
+        self.connectionObservers.forEach { observer in
+            callbackQueue.async { observer.didDisconnect(device: device) }
+        }
+    }
+    
     
     // MARK: Connecting
     typealias ConnectionCallback = (Result<Void, Error>) -> Void
