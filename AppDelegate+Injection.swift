@@ -201,7 +201,6 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultRemoveDataController() as RemoveDataController }
         main.register { DefaultThresholdAlertsController() as ThresholdAlertsController }
         main.register { BluetoothConnectionProtector() as ConnectionProtectable }
-        main.register { DefaultStandaloneModeController() as StandaloneModeController }
         
         // MARK: - AirBeam configuration
         main.register { (_, args) in
@@ -290,8 +289,30 @@ extension Resolver: ResolverRegistering {
             .scope(.application)
         
         // MARK: Reconnect
-        main.register { ReconnectionController() }
+        main.register { DefaultReconnectionController() as ReconnectionController }
             .scope(.application)
+        main.register { SessionReconnectionController() }
+            .scope(.application)
+        
+        main.register { _, args in
+            guard let args: NewBluetoothManager.BluetoothDevice = args() else {
+                return DefaultDisconnectController() as SessionDisconnectController
+            }
+            return BluetoothSessionDisconnectController(device: args) as SessionDisconnectController
+        }
+        
+        main.register {
+            ActiveMobileSessionProvidingServiceBridge() as ActiveMobileSessionProvidingService
+        }.scope(.application)
+
+        main.register { _, args in
+            guard let args: StandaloneOrigin = args() else { fatalError() }
+            switch args {
+            case .device: return DefaultStandaloneContoller() as StandaloneController
+            case .user: return UserInitiatedStandaloneController() as StandaloneController
+            }
+            
+        }
     }
     
     // MARK: - Composition helpers
@@ -320,6 +341,11 @@ extension Resolver: ResolverRegistering {
         var onFeatureListChange: (() -> Void)?
         func isFeatureOn(_ feature: FeatureFlag) -> Bool? { true }
     }
+}
+
+enum StandaloneOrigin {
+    case device
+    case user
 }
 
 protocol DevicedSession {

@@ -4,8 +4,19 @@
 import Foundation
 import Resolver
 
-class ReconnectionController: BluetoothConnectionObserver {
-    @Injected private var mobilePeripheralManager: MobilePeripheralSessionManager
+protocol ReconnectionControllerDelegate: AnyObject {
+    func shouldReconnect(to device: NewBluetoothManager.BluetoothDevice) -> Bool
+    func didDisconnect(device: NewBluetoothManager.BluetoothDevice)
+    func didReconnect(to device: NewBluetoothManager.BluetoothDevice)
+    func didFailToReconnect(to device: NewBluetoothManager.BluetoothDevice)
+}
+
+protocol ReconnectionController {
+    var delegate: ReconnectionControllerDelegate? { get set }
+}
+
+class DefaultReconnectionController: ReconnectionController, BluetoothConnectionObserver {
+    weak var delegate: ReconnectionControllerDelegate?
     @Injected private var bluetoothManager: BluetoothConnectionObservable
     @Injected private var bluetootConnector: BluetoothConnectionHandler
     
@@ -18,8 +29,9 @@ class ReconnectionController: BluetoothConnectionObserver {
     }
     
     func didDisconnect(device: NewBluetoothManager.BluetoothDevice) {
-        guard mobilePeripheralManager.activeSessionInProgressWith(device) else { return }
-        mobilePeripheralManager.markActiveSessionAsDisconnected(device: device)
+        delegate?.didDisconnect(device: device)
+        guard delegate?.shouldReconnect(to: device) ?? false else { return }
+        
         bluetootConnector.connect(to: device, timeout: 10) { result in
             switch result {
             case .success:
@@ -28,13 +40,13 @@ class ReconnectionController: BluetoothConnectionObserver {
                     switch result {
                     case .success:
                         Log.info("Discovered characteristics for: \(device)")
-                        self.mobilePeripheralManager.configureAB()
+                        self.delegate?.didReconnect(to: device)
                     case .failure(_):
-                        self.mobilePeripheralManager.moveSessionToStandaloneMode(device: device)
+                        self.delegate?.didFailToReconnect(to: device)
                     }
                 }
             case .failure(_):
-                self.mobilePeripheralManager.moveSessionToStandaloneMode(device: device)
+                self.delegate?.didFailToReconnect(to: device)
             }
         }
     }

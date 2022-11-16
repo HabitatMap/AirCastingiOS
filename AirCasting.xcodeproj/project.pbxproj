@@ -55,7 +55,6 @@
 		33831B19291549A60097020C /* BluetoothSessionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33831B18291549A60097020C /* BluetoothSessionController.swift */; };
 		33831B1B29154E7E0097020C /* ReconnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33831B1A29154E7E0097020C /* ReconnectionController.swift */; };
 		33831B1D29154EF30097020C /* MeasurementsRecordingServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33831B1C29154EF30097020C /* MeasurementsRecordingServices.swift */; };
-		33831B21291BD0F60097020C /* StandaloneModeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33831B20291BD0F60097020C /* StandaloneModeController.swift */; };
 		3383511E2747C24800308068 /* SDSyncFileFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3383511D2747C24800308068 /* SDSyncFileFactory.swift */; };
 		3384C1DD274EC4C00022B008 /* SDSyncFileValidationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3384C1DC274EC4C00022B008 /* SDSyncFileValidationService.swift */; };
 		3387448E28896C5D00E178F6 /* WifiAwareSessionSynchronizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3387448D28896C5D00E178F6 /* WifiAwareSessionSynchronizerTests.swift */; };
@@ -285,6 +284,10 @@
 		B31B7ECB267E4DF6002DAC18 /* DummyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31B7ECA267E4DF6002DAC18 /* DummyError.swift */; };
 		B31B7ECD267E500B002DAC18 /* SyncDownstreamServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31B7ECC267E500B002DAC18 /* SyncDownstreamServiceTests.swift */; };
 		B31B7ECF267E83F6002DAC18 /* SyncUpstreamServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31B7ECE267E83F6002DAC18 /* SyncUpstreamServiceTests.swift */; };
+		B31DD83E2925256700AF491B /* SessionReconnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31DD83D2925256700AF491B /* SessionReconnectionController.swift */; };
+		B31DD84029252EBD00AF491B /* ActiveMobileSessionProvidingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31DD83F29252EBD00AF491B /* ActiveMobileSessionProvidingService.swift */; };
+		B31DD84229252ECD00AF491B /* SessionDisconnectController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31DD84129252ECD00AF491B /* SessionDisconnectController.swift */; };
+		B31DD84429252ED600AF491B /* StandaloneController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31DD84329252ED600AF491B /* StandaloneController.swift */; };
 		B31E361228AECB3900E85431 /* GlobalAlertPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31E361128AECB3900E85431 /* GlobalAlertPresenter.swift */; };
 		B31E361428AECB4300E85431 /* WindowAlertPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31E361328AECB4300E85431 /* WindowAlertPresenter.swift */; };
 		B31E361628AECB5400E85431 /* UIApplication+firstActiveWindowScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31E361528AECB5400E85431 /* UIApplication+firstActiveWindowScene.swift */; };
@@ -622,7 +625,6 @@
 		33831B18291549A60097020C /* BluetoothSessionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothSessionController.swift; sourceTree = "<group>"; };
 		33831B1A29154E7E0097020C /* ReconnectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconnectionController.swift; sourceTree = "<group>"; };
 		33831B1C29154EF30097020C /* MeasurementsRecordingServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsRecordingServices.swift; sourceTree = "<group>"; };
-		33831B20291BD0F60097020C /* StandaloneModeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandaloneModeController.swift; sourceTree = "<group>"; };
 		3383511D2747C24800308068 /* SDSyncFileFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncFileFactory.swift; sourceTree = "<group>"; };
 		3384C1DC274EC4C00022B008 /* SDSyncFileValidationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncFileValidationService.swift; sourceTree = "<group>"; };
 		3387448D28896C5D00E178F6 /* WifiAwareSessionSynchronizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WifiAwareSessionSynchronizerTests.swift; sourceTree = "<group>"; };
@@ -860,6 +862,10 @@
 		B31B7ECA267E4DF6002DAC18 /* DummyError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyError.swift; sourceTree = "<group>"; };
 		B31B7ECC267E500B002DAC18 /* SyncDownstreamServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncDownstreamServiceTests.swift; sourceTree = "<group>"; };
 		B31B7ECE267E83F6002DAC18 /* SyncUpstreamServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncUpstreamServiceTests.swift; sourceTree = "<group>"; };
+		B31DD83D2925256700AF491B /* SessionReconnectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionReconnectionController.swift; sourceTree = "<group>"; };
+		B31DD83F29252EBD00AF491B /* ActiveMobileSessionProvidingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveMobileSessionProvidingService.swift; sourceTree = "<group>"; };
+		B31DD84129252ECD00AF491B /* SessionDisconnectController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDisconnectController.swift; sourceTree = "<group>"; };
+		B31DD84329252ED600AF491B /* StandaloneController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandaloneController.swift; sourceTree = "<group>"; };
 		B31E361128AECB3900E85431 /* GlobalAlertPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalAlertPresenter.swift; sourceTree = "<group>"; };
 		B31E361328AECB4300E85431 /* WindowAlertPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowAlertPresenter.swift; sourceTree = "<group>"; };
 		B31E361528AECB5400E85431 /* UIApplication+firstActiveWindowScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+firstActiveWindowScene.swift"; sourceTree = "<group>"; };
@@ -1272,7 +1278,10 @@
 				33831B18291549A60097020C /* BluetoothSessionController.swift */,
 				33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */,
 				33831B1A29154E7E0097020C /* ReconnectionController.swift */,
-				33831B20291BD0F60097020C /* StandaloneModeController.swift */,
+				B31DD83D2925256700AF491B /* SessionReconnectionController.swift */,
+				B31DD84329252ED600AF491B /* StandaloneController.swift */,
+				B31DD84129252ECD00AF491B /* SessionDisconnectController.swift */,
+				B31DD83F29252EBD00AF491B /* ActiveMobileSessionProvidingService.swift */,
 				3320F2E3292267F200EFFB2D /* AirBeamMeasurement.swift */,
 				3320F2E5292501E600EFFB2D /* MobileBluetoothSession.swift */,
 			);
@@ -3441,6 +3450,7 @@
 				DD38A4AF27B1584600D2091F /* StringsCustomizer.swift in Sources */,
 				B3FD30B22831810D00C33656 /* FoundationTimerScheduler.swift in Sources */,
 				AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */,
+				B31DD84029252EBD00AF491B /* ActiveMobileSessionProvidingService.swift in Sources */,
 				B32D08AD267A6437006C97ED /* LogEvent.swift in Sources */,
 				ACDA5EBD285B249900A531E9 /* SettingsMyAccountViewModel.swift in Sources */,
 				3392B3FE28A3D5D000432B92 /* FetchThresholdAlertsService.swift in Sources */,
@@ -3463,6 +3473,7 @@
 				B3FD77BC267C94AF00E97CC2 /* ScheduledSessionSynchronizerProxy.swift in Sources */,
 				FA63D212289C0282002A4BD5 /* DatabaseDeviceUUID.swift in Sources */,
 				B34BB2E828AD07BA009E5927 /* MicrophoneManualCalibrationViewModel.swift in Sources */,
+				B31DD83E2925256700AF491B /* SessionReconnectionController.swift in Sources */,
 				4F5D3F73262C91C6003AD82E /* UserAuthenticationSession.swift in Sources */,
 				AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */,
 				B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */,
@@ -3514,6 +3525,7 @@
 				FA4F1B732817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift in Sources */,
 				336A909527A48CA400851100 /* ReorderingSessionHeader.swift in Sources */,
 				33FD502227A144B300162384 /* SingleMeasurementView.swift in Sources */,
+				B31DD84229252ECD00AF491B /* SessionDisconnectController.swift in Sources */,
 				338C30E225F1044B00E0305C /* PersistenceController.swift in Sources */,
 				B3FD77C2267C94AF00E97CC2 /* SessionSynchronizationContextProvidable.swift in Sources */,
 				ACDA5EF5285B43FD00A531E9 /* SessionEntityStore.swift in Sources */,
@@ -3619,7 +3631,6 @@
 				FAC3B67A283B96480095D915 /* ChartMeasurementsFilter.swift in Sources */,
 				AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */,
 				33AC7D5C273C1B9700EB1274 /* StandaloneSessionCardView.swift in Sources */,
-				33831B21291BD0F60097020C /* StandaloneModeController.swift in Sources */,
 				AC4A6A6C267CB3D40001F639 /* GraphRenderers.swift in Sources */,
 				338CA6CF27CD13E900505331 /* StaticSingleStreamView.swift in Sources */,
 				B31E361428AECB4300E85431 /* WindowAlertPresenter.swift in Sources */,
@@ -3627,6 +3638,7 @@
 				ACD01F922600A3C800B8F65F /* RootAppView.swift in Sources */,
 				ACCEB2232763A2230040140B /* BackendSyncCompletedView.swift in Sources */,
 				33A7FF1A27C5115700A138D6 /* CompleteScreen.swift in Sources */,
+				B31DD84429252ED600AF491B /* StandaloneController.swift in Sources */,
 				331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */,
 				33F604A528227F9700B48C63 /* PartialExternalSession.swift in Sources */,
 				DD430B082670FE6100F1BF2E /* GreenTextButtonStyle.swift in Sources */,

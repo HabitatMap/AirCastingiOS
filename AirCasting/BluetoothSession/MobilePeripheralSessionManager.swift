@@ -35,7 +35,7 @@ class MobilePeripheralSessionManager {
     
     // Used for adding right time and location to all 5 streams
     private var peripheralMeasurementManager = PeripheralMeasurementTimeLocationManager()
-    private var activeMobileSession: MobileSession?
+    var activeMobileSession: MobileSession?
     
     func startRecording(session: Session, device: NewBluetoothManager.BluetoothDevice) {
         measurementStreamStorage.accessStorage { [weak self] storage in
@@ -74,22 +74,6 @@ class MobilePeripheralSessionManager {
         peripheralMeasurementManager.incrementCounter()
     }
     
-    func configureAB() {
-        guard let device = activeMobileSession?.device else { return }
-        Resolver.resolve(AirBeamConfigurator.self, args: device)
-            .configureMobileSession(
-                location: locationTracker.location.value?.coordinate ?? .undefined
-            ) { result in
-                switch result {
-                case .success():
-                    return
-                case .failure(let error):
-                    Log.error("Failed to configure AirBeam: \(error)")
-                    return
-                }
-            }
-    }
-    
     func activeSessionInProgressWith(_ device: NewBluetoothManager.BluetoothDevice) -> Bool {
         activeMobileSession?.device == device
     }
@@ -117,45 +101,20 @@ class MobilePeripheralSessionManager {
         }
     }
     
-    func enterStandaloneMode(sessionUUID: SessionUUID) {
-        guard let device = activeMobileSession?.device, activeMobileSession?.session.uuid == sessionUUID else {
-            Log.warning("Enter stand alone mode called for session which is not active")
-            return
-        }
-        
-        changeSessionStatusToDisconnected(uuid: sessionUUID)
-        btManager.disconnect(from: device)
-        if !activeMobileSession!.session.locationless {
-            locationTracker.stop()
-        }
-        
-        activeMobileSession = nil
-    }
-    
-    func moveSessionToStandaloneMode(device: NewBluetoothManager.BluetoothDevice) {
-        guard activeMobileSession?.device == device else {
-            Log.warning("Enter standalone mode called for perihperal which is not associated with active session")
-            return
-        }
-        
-        if !activeMobileSession!.session.locationless {
-            locationTracker.stop()
-        }
-        
-        activeMobileSession = nil
-    }
-    
-    func markActiveSessionAsDisconnected(device: NewBluetoothManager.BluetoothDevice) {
-        guard
-            let sessionUUID = activeMobileSession?.session.uuid,
-            activeMobileSession?.device == device
-        else {
-            Log.warning("Tried to disconnect session for peripheral which is not associated with an active session")
-            return
-        }
-        Log.info("Changing session status to disconnected for: \(sessionUUID)")
-        changeSessionStatusToDisconnected(uuid: sessionUUID)
-    }
+//    func enterStandaloneMode(sessionUUID: SessionUUID) {
+//        guard let device = activeMobileSession?.device, activeMobileSession?.session.uuid == sessionUUID else {
+//            Log.warning("Enter stand alone mode called for session which is not active")
+//            return
+//        }
+//        
+//        changeSessionStatusToDisconnected(uuid: sessionUUID)
+//        btManager.disconnect(from: device)
+//        if !activeMobileSession!.session.locationless {
+//            locationTracker.stop()
+//        }
+//        
+//        activeMobileSession = nil
+//    }
     
     // Make sure we disconnect from peripheral elsewhere
     private func finishActiveSession(for device: NewBluetoothManager.BluetoothDevice) {

@@ -17,7 +17,8 @@ struct SessionHeaderView: View {
         isCollapsed ? "chevron.down" : "chevron.up"
     }
     @Binding var isCollapsed: Bool
-    @Injected private var standaloneModeController: StandaloneModeController
+    private let standaloneModeController: StandaloneController = Resolver.resolve(StandaloneController.self,
+                                                                                  args: StandaloneOrigin.user)
     @EnvironmentObject var selectedSection: SelectedSection
     @Environment(\.colorScheme) var colorScheme
     @ObservedObject var session: SessionEntity
@@ -211,7 +212,7 @@ private extension SessionHeaderView {
     
     var actionsMenuMobileEnterStandaloneMode: some View {
         Button {
-            standaloneModeController.enterStandaloneMode(sessionUUID: session.uuid)
+            standaloneModeController.moveActiveSessionToStandaloneMode()
         } label: {
             Label(title: { Text(Strings.SessionHeaderView.enterStandaloneModeButton) }, icon: { Image("standalone-icon").renderingMode(.template) })
                 .foregroundColor(colorScheme == .light ? .black : .aircastingGray)
