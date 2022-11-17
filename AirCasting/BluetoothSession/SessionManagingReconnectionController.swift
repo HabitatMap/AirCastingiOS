@@ -4,7 +4,7 @@ class SessionManagingReconnectionController: ReconnectionControllerDelegate {
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
     @Injected private var reconnectionController: ReconnectionController
     private let standaloneController: StandaloneModeController = Resolver.resolve(StandaloneModeController.self, args: StandaloneOrigin.device)
-    @Injected private var bluetoothSessionController: BluetoothSessionController
+    @Injected private var bluetoothSessionController: BluetoothSessionRecordingController
     
     init() {
         reconnectionController.delegate = self

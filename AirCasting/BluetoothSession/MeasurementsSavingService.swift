@@ -7,11 +7,14 @@ import CoreLocation
 
 protocol MeasurementsSavingService {
     func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool)
+    func createSession(session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 class DefaultMeasurementsSaver: MeasurementsSavingService {
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var uiStorage: UIStorage
     private var peripheralMeasurementManager = PeripheralMeasurementTimeLocationManager()
+    private var databasePrepared: Bool = false
     
     class PeripheralMeasurementTimeLocationManager {
         @Injected private var locationTracker: LocationTracker
@@ -29,7 +32,32 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         func incrementCounter() { collectedValuesCount += 1 }
     }
     
+    func createSession(session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
+        measurementStreamStorage.accessStorage { [weak self] storage in
+            do {
+                guard let self = self else { return }
+                let sessionReturned = try storage.createSession(session)
+                let entity = BluetoothConnectionEntity(context: sessionReturned.managedObjectContext!)
+                entity.peripheralUUID = device.uuid
+                entity.session = sessionReturned
+                self.uiStorage.accessStorage { storage in
+                    do {
+                        try storage.switchCardExpanded(to: true, sessionUUID: session.uuid)
+                    } catch {
+                        Log.error("\(error)")
+                    }
+                }
+                self.databasePrepared = true
+                completion(.success(()))
+            } catch {
+                Log.info("\(error)")
+                completion(.failure(error))
+            }
+        }
+    }
+    
     func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool) {
+        guard databasePrepared else { return }
         if peripheralMeasurementManager.collectedValuesCount == 5 { peripheralMeasurementManager.startNewValuesRound(locationless: locationless) }
         
         updateStreams(stream: measurement, sessionUUID: sessionUUID, location: peripheralMeasurementManager.currentLocation, time: peripheralMeasurementManager.currentTime)

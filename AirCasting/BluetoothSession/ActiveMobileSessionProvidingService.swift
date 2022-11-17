@@ -2,6 +2,7 @@ import Resolver
 
 protocol ActiveMobileSessionProvidingService {
     var activeSession: MobileSession? { get }
+    func setActiveSession(session: Session, device: NewBluetoothManager.BluetoothDevice)
     func clearActiveSession()
 }
 
@@ -11,6 +12,10 @@ final class ActiveMobileSessionProvidingServiceBridge: ActiveMobileSessionProvid
     
     var activeSession: MobileSession? {
         mobileSessionManager.activeMobileSession
+    }
+    
+    func setActiveSession(session: Session, device: NewBluetoothManager.BluetoothDevice) {
+        mobileSessionManager.activeMobileSession = MobileSession(device: device, session: session)
     }
     
     func clearActiveSession() {

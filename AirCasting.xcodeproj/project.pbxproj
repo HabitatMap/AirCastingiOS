@@ -51,7 +51,7 @@
 		3375E8D62791EFA70019A5DE /* FileZipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3375E8D52791EFA70019A5DE /* FileZipper.swift */; };
 		33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */; };
 		33831B14291544C40097020C /* SDSyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33831B13291544C40097020C /* SDSyncController.swift */; };
-		33831B19291549A60097020C /* BluetoothSessionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33831B18291549A60097020C /* BluetoothSessionController.swift */; };
+		33831B19291549A60097020C /* BluetoothSessionRecordingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33831B18291549A60097020C /* BluetoothSessionRecordingController.swift */; };
 		33831B1B29154E7E0097020C /* ReconnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33831B1A29154E7E0097020C /* ReconnectionController.swift */; };
 		33831B1D29154EF30097020C /* MeasurementsRecordingServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33831B1C29154EF30097020C /* MeasurementsRecordingServices.swift */; };
 		3383511E2747C24800308068 /* SDSyncFileFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3383511D2747C24800308068 /* SDSyncFileFactory.swift */; };
@@ -619,7 +619,7 @@
 		3375E8D52791EFA70019A5DE /* FileZipper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileZipper.swift; sourceTree = "<group>"; };
 		33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartViewModel.swift; sourceTree = "<group>"; };
 		33831B13291544C40097020C /* SDSyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncController.swift; sourceTree = "<group>"; };
-		33831B18291549A60097020C /* BluetoothSessionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothSessionController.swift; sourceTree = "<group>"; };
+		33831B18291549A60097020C /* BluetoothSessionRecordingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothSessionRecordingController.swift; sourceTree = "<group>"; };
 		33831B1A29154E7E0097020C /* ReconnectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconnectionController.swift; sourceTree = "<group>"; };
 		33831B1C29154EF30097020C /* MeasurementsRecordingServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsRecordingServices.swift; sourceTree = "<group>"; };
 		3383511D2747C24800308068 /* SDSyncFileFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncFileFactory.swift; sourceTree = "<group>"; };
@@ -1271,7 +1271,7 @@
 			isa = PBXGroup;
 			children = (
 				33BA3366266E4B9600899343 /* MobileSession */,
-				33831B18291549A60097020C /* BluetoothSessionController.swift */,
+				33831B18291549A60097020C /* BluetoothSessionRecordingController.swift */,
 				33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */,
 				33831B1A29154E7E0097020C /* ReconnectionController.swift */,
 				B31DD83D2925256700AF491B /* SessionManagingReconnectionController.swift */,
@@ -3364,7 +3364,7 @@
 				FA4F1B75281809B2002711B4 /* AirBeamStreamSuffixes.swift in Sources */,
 				B3ED03C32729A8E300513522 /* AirCastingNotifications.swift in Sources */,
 				AC006D2B275F537300E99019 /* UploadFixedSessionAPIService.swift in Sources */,
-				33831B19291549A60097020C /* BluetoothSessionController.swift in Sources */,
+				33831B19291549A60097020C /* BluetoothSessionRecordingController.swift in Sources */,
 				B33B15FF27AEE6E900138FFA /* WeakRef.swift in Sources */,
 				3320F2F229250CEC00EFFB2D /* BluetoothStateHandler.swift in Sources */,
 				DDCE5D3A26A213620033C211 /* DefaultDeleteSessionViewModel.swift in Sources */,

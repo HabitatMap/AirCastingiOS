@@ -193,6 +193,7 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
                         return
                     }
                     Log.verbose("Connection timed out for BT device \(device.peripheral.name ?? "unnamed")")
+                    self.centralManager.cancelPeripheralConnection(device.peripheral)
                     self.connectionCallbacks[device.peripheral] = []
                     self.callbackQueue.async { completion(.failure(BluetoothDriverError.timeout)) }
                     

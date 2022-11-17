@@ -56,7 +56,7 @@ final class MobilePeripheralSessionCreator: SessionCreator {
     enum MobilePeripheralSessionCreatorError: Swift.Error {
         case invalidCreateSessionContext(CreateSessionContext)
     }
-    @Injected private var recorder: BluetoothSessionController
+    @Injected private var recorder: BluetoothSessionRecordingController
     @Injected private var userAuthenticationSession: UserAuthenticationSession
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
 
