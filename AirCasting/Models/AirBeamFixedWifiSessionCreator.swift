@@ -82,7 +82,8 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                                                                             self.uiStore.accessStorage({ storage in
                                                                                 storage.giveHighestOrder(to: sessionWithURL.uuid)
                                                                             })
-                                                                            
+                                                                            Log.info("Created fixed Wifi session \(output)")
+                                                                            // TODO: Potentially in both fixed session creators the logic for configuring AB could be performed before the session gets created.
                                                                             Resolver.resolve(AirBeamConfigurator.self, args: device)
                                                                                 .configureFixedWifiSession(
                                                                                                         uuid: sessionUUID,
@@ -92,12 +93,11 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                                                                                                         wifiPassword: wifiPassword) { result in
                                                                                                             switch result {
                                                                                                             case .success():
-                                                                                                                Log.info("## Successfully configured AB")
-                                                                                                                Log.info("Created fixed Wifi session \(output)")
+                                                                                                                Log.info("Successfully configured AB")
                                                                                                                 completion(.success(()))
                                                                                                                 return
                                                                                                             case .failure(let error):
-                                                                                                                Log.error("## Failed to configure AB: \(error)")
+                                                                                                                Log.error("Failed to configure AB: \(error)")
                                                                                                                 completion(.failure(error))
                                                                                                             }
                                                                                                         }

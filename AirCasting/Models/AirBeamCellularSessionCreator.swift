@@ -76,17 +76,17 @@ final class AirBeamCellularSessionCreator: SessionCreator {
                                                                             self.uiStore.accessStorage({ storage in
                                                                                 storage.giveHighestOrder(to: sessionWithURL.uuid)
                                                                             })
+                                                                            Log.info("Created fixed cellular session \(output)")
                                                                             Resolver.resolve(AirBeamConfigurator.self, args: device)
                                                                                 .configureFixedCellularSession(uuid: sessionUUID,
                                                                                                                location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
                                                                                                                date: DateBuilder.getFakeUTCDate()) { result in
                                                                                     switch result {
                                                                                     case .success():
-                                                                                        Log.info("## Successfully configured AB")
-                                                                                        Log.warning("Created fixed cellular session \(output)")
+                                                                                        Log.info("Successfully configured AB")
                                                                                         completion(.success(()))
                                                                                     case .failure(let error):
-                                                                                        Log.error("## Failed to configure AB: \(error)")
+                                                                                        Log.error("Failed to configure AB: \(error)")
                                                                                         completion(.failure(error))
                                                                                     }
                                                                                 }

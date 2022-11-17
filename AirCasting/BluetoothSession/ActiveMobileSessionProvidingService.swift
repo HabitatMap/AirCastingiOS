@@ -7,7 +7,7 @@ protocol ActiveMobileSessionProvidingService {
 }
 
 final class DefaultActiveMobileSessionProvidingService: ActiveMobileSessionProvidingService {
-    var activeSession: MobileSession?
+    private(set) var activeSession: MobileSession?
     
     func setActiveSession(session: Session, device: NewBluetoothManager.BluetoothDevice) {
         activeSession = MobileSession(device: device, session: session)

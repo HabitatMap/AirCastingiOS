@@ -13,8 +13,7 @@ public enum BluetoothDeviceAuthorizationState {
 }
 
 final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerDelegate, CBPeripheralDelegate {
-    // TODO: Make it private when the rest of the codebase is transformed to not use CB
-    lazy var centralManager: CBCentralManager = {
+    lazy private var centralManager: CBCentralManager = {
         let centralManager = CBCentralManager()
         centralManager.delegate = self
         return centralManager
@@ -90,9 +89,7 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
     private var deviceDiscoveryCallbacks: [DiscoveryCallback] = []
     
     class BluetoothDevice: Equatable {
-//        fileprivate let peripheral: CBPeripheral
-        // TODO: Make it fileprivate when the rest of the codebase is transformed to not use CB
-        let peripheral: CBPeripheral
+        fileprivate let peripheral: CBPeripheral
         let id = UUID()
         var name: String?
         var uuid: String
@@ -214,6 +211,10 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
             self.characteristicsDicoveryCallbacks[device.peripheral, default: []].append(completion)
             self.scheduleCharacteristicsDiscoveryTimeout(timeout, for: device.peripheral)
         }
+    }
+    
+    func isDeviceConnected(device: BluetoothDevice) -> Bool {
+        device.peripheral.state == .connected
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
