@@ -22,9 +22,7 @@ struct AirMapView: View {
     @ObservedObject var session: SessionEntity
     @Binding var showLoadingIndicator: Bool
     @Binding var selectedStream: MeasurementStreamEntity?
-    @State var isUserInteracting = true
-    @State var noteMarkerTapped = false
-    @State var noteNumber = 0
+    @State var currentlyPresentedNoteDetails: MapNote? = nil // If set to nil, hide modal, if not nil show modal
     @Injected private var locationTracker: LocationTracker
     
     init(session: SessionEntity,
@@ -85,7 +83,8 @@ struct AirMapView: View {
                                      type: .normal,
                                      trackingStyle: .latestPathPoint,
                                      userIndicatorStyle: .custom(color: self.color(points: pathPoints, threshold: threshold)),
-                                     userTracker: UserTrackerAdapter(locationTracker))
+                                     userTracker: UserTrackerAdapter(locationTracker),
+                                     markers: mapNotesVM.notes.asMapMarkers(with: didTapNote))
                         } else {
                             // kropka customowa
                             // rusyjemy raz już gotową trasę
@@ -94,7 +93,8 @@ struct AirMapView: View {
                                      type: .normal,
                                      trackingStyle: .wholePath,
                                      userIndicatorStyle: .none,
-                                     userTracker: UserTrackerAdapter(locationTracker))
+                                     userTracker: UserTrackerAdapter(locationTracker),
+                                     markers: mapNotesVM.notes.asMapMarkers(with: didTapNote))
                         }
 #warning("TODO: Implement calculating stats only for visible path points")
                         // This doesn't work properly and it needs to be fixed, so I'm commenting it out
@@ -123,9 +123,9 @@ struct AirMapView: View {
             }
             Spacer()
         }
-        .sheet(isPresented: $noteMarkerTapped, content: {
-            EditNoteView(viewModel: EditNoteViewModelDefault(exitRoute: { noteMarkerTapped.toggle() },
-                                                             noteNumber: noteNumber,
+        .sheet(item: $currentlyPresentedNoteDetails, content: { note in
+            EditNoteView(viewModel: EditNoteViewModelDefault(exitRoute: { currentlyPresentedNoteDetails = nil },
+                                                             noteNumber: note.id,
                                                              sessionUUID: session.uuid))
         })
         .navigationBarTitleDisplayMode(.inline)
@@ -134,19 +134,16 @@ struct AirMapView: View {
         //            statsContainerViewModel.adjustForNewData()
         //        }
         .onAppear { statsContainerViewModel.adjustForNewData() }
-        .onChange(of: scenePhase) { phase in
-            switch phase {
-            case .background, .inactive: isUserInteracting = false
-            case .active: isUserInteracting = true
-            @unknown default: fatalError()
-            }
-        }
         .padding(.bottom)
         .background(Color.aircastingBackground.ignoresSafeArea())
     }
     
     private func getValue(of measurement: MeasurementEntity) -> Double {
         measurement.measurementStream.isTemperature && userSettings.convertToCelsius ? TemperatureConverter.calculateCelsius(fahrenheit: measurement.value) : measurement.value
+    }
+    
+    private func didTapNote(_ note: MapNote) {
+        currentlyPresentedNoteDetails = note
     }
 }
 
@@ -171,20 +168,24 @@ private extension AirMapView {
         
         switch value {
         case veryLow ..< low:
-            Log.verbose("## Green")
             return Color.aircastingGreen
         case low ..< medium:
-            Log.verbose("## Yellow")
             return Color.aircastingYellow
         case medium ..< high:
-            Log.verbose("## Orange")
             return Color.aircastingOrange
         case high ... veryHigh:
-            Log.verbose("## Red")
             return Color.aircastingRed
         default:
-            Log.verbose("## Gray")
             return Color.aircastingGray
         }
+    }
+}
+
+fileprivate extension Array where Element == MapNote {
+    func asMapMarkers(with handler: @escaping (MapNote) -> Void) -> [_MapView.Marker] {
+        map { note in .init(id: note.id,
+                            image: note.markerImage,
+                            location: CLLocation(latitude: note.location.latitude, longitude: note.location.longitude),
+                            handler: { handler(note) } )}
     }
 }

@@ -64,8 +64,7 @@ extension _MapView {
         let handler: (() -> Void)?
         
         static func == (lhs: _MapView.Marker, rhs: _MapView.Marker) -> Bool {
-            lhs.id == rhs.id &&
-            lhs.location == rhs.location
+            lhs.id == rhs.id
         }
     }
 }
@@ -128,8 +127,8 @@ struct _MapView: UIViewRepresentable {
         setupUserIndicatorStyle(with: userIndicatorStyle, in: uiView, with: coordinator)
         if markers != coordinator.previousFrameMarkers {
             placeMarkers(uiView, markers: markers, coordinator: coordinator)
+            coordinator.previousFrameMarkers = markers
         }
-        coordinator.previousFrameMarkers = markers
         if coordinator.currentPath != path {
             drawPolyline(uiView, coordinator: coordinator)
             coordinator.currentPath = path
@@ -164,10 +163,7 @@ struct _MapView: UIViewRepresentable {
     
     private func placeMarkers(_ uiView: GMSMapView, markers: [Marker], coordinator: Coordinator) {
         clearMarkers(in: coordinator)
-        DispatchQueue.main.async {
-            // TODO: Remove pre-existing marksers from map?
-            coordinator.gmsMarkers = markers.map { createMarker(from: $0, in: uiView) }
-        }
+        coordinator.gmsMarkers = markers.map { createMarker(from: $0, in: uiView) }
     }
     
     private func clearMarkers(in coordinator: Coordinator) {
@@ -249,7 +245,6 @@ struct _MapView: UIViewRepresentable {
     
     private func setupUserIndicatorStyle(with style: UserIndicatorStyle, in view: GMSMapView, with coordinator: Coordinator) {
         guard let userLocation = coordinator.latestUserLocation else { return }
-        Log.verbose("## Setting style: \(style)")
         switch style {
         case .none:
             break
