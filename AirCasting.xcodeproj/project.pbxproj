@@ -286,7 +286,6 @@
 		B31B7ECF267E83F6002DAC18 /* SyncUpstreamServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31B7ECE267E83F6002DAC18 /* SyncUpstreamServiceTests.swift */; };
 		B31DD83E2925256700AF491B /* SessionReconnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31DD83D2925256700AF491B /* SessionReconnectionController.swift */; };
 		B31DD84029252EBD00AF491B /* ActiveMobileSessionProvidingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31DD83F29252EBD00AF491B /* ActiveMobileSessionProvidingService.swift */; };
-		B31DD84229252ECD00AF491B /* SessionDisconnectController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31DD84129252ECD00AF491B /* SessionDisconnectController.swift */; };
 		B31DD84429252ED600AF491B /* StandaloneController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31DD84329252ED600AF491B /* StandaloneController.swift */; };
 		B31E361228AECB3900E85431 /* GlobalAlertPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31E361128AECB3900E85431 /* GlobalAlertPresenter.swift */; };
 		B31E361428AECB4300E85431 /* WindowAlertPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31E361328AECB4300E85431 /* WindowAlertPresenter.swift */; };
@@ -864,7 +863,6 @@
 		B31B7ECE267E83F6002DAC18 /* SyncUpstreamServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncUpstreamServiceTests.swift; sourceTree = "<group>"; };
 		B31DD83D2925256700AF491B /* SessionReconnectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionReconnectionController.swift; sourceTree = "<group>"; };
 		B31DD83F29252EBD00AF491B /* ActiveMobileSessionProvidingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveMobileSessionProvidingService.swift; sourceTree = "<group>"; };
-		B31DD84129252ECD00AF491B /* SessionDisconnectController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDisconnectController.swift; sourceTree = "<group>"; };
 		B31DD84329252ED600AF491B /* StandaloneController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandaloneController.swift; sourceTree = "<group>"; };
 		B31E361128AECB3900E85431 /* GlobalAlertPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalAlertPresenter.swift; sourceTree = "<group>"; };
 		B31E361328AECB4300E85431 /* WindowAlertPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowAlertPresenter.swift; sourceTree = "<group>"; };
@@ -1280,7 +1278,6 @@
 				33831B1A29154E7E0097020C /* ReconnectionController.swift */,
 				B31DD83D2925256700AF491B /* SessionReconnectionController.swift */,
 				B31DD84329252ED600AF491B /* StandaloneController.swift */,
-				B31DD84129252ECD00AF491B /* SessionDisconnectController.swift */,
 				B31DD83F29252EBD00AF491B /* ActiveMobileSessionProvidingService.swift */,
 				3320F2E3292267F200EFFB2D /* AirBeamMeasurement.swift */,
 				3320F2E5292501E600EFFB2D /* MobileBluetoothSession.swift */,
@@ -3525,7 +3522,6 @@
 				FA4F1B732817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift in Sources */,
 				336A909527A48CA400851100 /* ReorderingSessionHeader.swift in Sources */,
 				33FD502227A144B300162384 /* SingleMeasurementView.swift in Sources */,
-				B31DD84229252ECD00AF491B /* SessionDisconnectController.swift in Sources */,
 				338C30E225F1044B00E0305C /* PersistenceController.swift in Sources */,
 				B3FD77C2267C94AF00E97CC2 /* SessionSynchronizationContextProvidable.swift in Sources */,
 				ACDA5EF5285B43FD00A531E9 /* SessionEntityStore.swift in Sources */,

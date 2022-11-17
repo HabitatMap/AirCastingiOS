@@ -7,19 +7,34 @@ protocol StandaloneController {
 final class DefaultStandaloneContoller: StandaloneController {
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
     @Injected private var locationTracker: LocationTracker
-    @Injected private var sessionStorage: SessionStorage
-    @Injected private var sessionDisconnectController: SessionDisconnectController
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
     
     func moveActiveSessionToStandaloneMode() {
         guard let session = activeSessionProvider.activeSession?.session else { return }
         
-        sessionDisconnectController.disconnectSession()
+        guard let sessionUUID = activeSessionProvider.activeSession?.session.uuid else {
+            Log.warning("Tried to disconnect when no active session")
+            return
+        }
+        Log.info("Changing session status to disconnected for: \(sessionUUID)")
+        
+        performDatabaseChange(for: sessionUUID)
         
         if !session.locationless {
             locationTracker.stop()
         }
         
         activeSessionProvider.clearActiveSession()
+    }
+    
+    private func performDatabaseChange(for sessionUUID: SessionUUID) {
+        measurementStreamStorage.accessStorage { storage in
+            do {
+                try storage.updateSessionStatus(.DISCONNECTED, for: sessionUUID)
+            } catch {
+                Log.error("Unable to change session status to disconnected because of an error: \(error)")
+            }
+        }
     }
 }
 

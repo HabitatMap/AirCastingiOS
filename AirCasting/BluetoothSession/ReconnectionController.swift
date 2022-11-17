@@ -6,7 +6,6 @@ import Resolver
 
 protocol ReconnectionControllerDelegate: AnyObject {
     func shouldReconnect(to device: NewBluetoothManager.BluetoothDevice) -> Bool
-    func didDisconnect(device: NewBluetoothManager.BluetoothDevice)
     func didReconnect(to device: NewBluetoothManager.BluetoothDevice)
     func didFailToReconnect(to device: NewBluetoothManager.BluetoothDevice)
 }
@@ -29,7 +28,6 @@ class DefaultReconnectionController: ReconnectionController, BluetoothConnection
     }
     
     func didDisconnect(device: NewBluetoothManager.BluetoothDevice) {
-        delegate?.didDisconnect(device: device)
         guard delegate?.shouldReconnect(to: device) ?? false else { return }
         
         bluetootConnector.connect(to: device, timeout: 10) { result in

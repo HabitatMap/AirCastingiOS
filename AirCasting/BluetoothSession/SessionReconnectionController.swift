@@ -15,11 +15,6 @@ class SessionReconnectionController: ReconnectionControllerDelegate {
         activeSessionProvider.activeSession?.device == device
     }
     
-    func didDisconnect(device: NewBluetoothManager.BluetoothDevice) {
-        let controller = Resolver.resolve(SessionDisconnectController.self, args: device)
-        controller.disconnectSession()
-    }
-    
     func didReconnect(to device: NewBluetoothManager.BluetoothDevice) {
         bluetoothSessionController.resumeRecording(device: device) { result in
             switch result {

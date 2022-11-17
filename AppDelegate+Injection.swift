@@ -294,13 +294,6 @@ extension Resolver: ResolverRegistering {
         main.register { SessionReconnectionController() }
             .scope(.application)
         
-        main.register { _, args in
-            guard let args: NewBluetoothManager.BluetoothDevice = args() else {
-                return DefaultDisconnectController() as SessionDisconnectController
-            }
-            return BluetoothSessionDisconnectController(device: args) as SessionDisconnectController
-        }
-        
         main.register {
             ActiveMobileSessionProvidingServiceBridge() as ActiveMobileSessionProvidingService
         }.scope(.application)
