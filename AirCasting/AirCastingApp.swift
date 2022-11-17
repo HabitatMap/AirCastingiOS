@@ -26,7 +26,7 @@ struct AirCastingApp: App {
 
     init() {
         AppBootstrap().bootstrap()
-        _ = Resolver.resolve(SessionReconnectionController.self)
+        _ = Resolver.resolve(SessionManagingReconnectionController.self)
         _ = Resolver.resolve(BluetoothSessionController.self)
         syncScheduler = .init(appBecameActive: appBecameActive.eraseToAnyPublisher())
         offlineMessageViewModel = .init()

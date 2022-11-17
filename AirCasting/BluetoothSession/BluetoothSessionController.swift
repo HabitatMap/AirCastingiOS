@@ -13,6 +13,7 @@ protocol BluetoothSessionController {
 
 class MobileAirBeamSessionRecordingController: BluetoothSessionController {
     @Injected var mobilePeripheralSessionManager: MobilePeripheralSessionManager
+    @Injected var measurementsSaver: MeasurementsSavingService
     @Injected var measurementsRecorder: MeasurementsRecordingServices
     @Injected var locationTracker: LocationTracker
     
@@ -24,7 +25,7 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionController {
                     Log.info("## Successfully configured AB")
                     self.mobilePeripheralSessionManager.startRecording(session: session, device: device)
                     self.measurementsRecorder.record(with: device) { [weak self] stream in
-                        self?.mobilePeripheralSessionManager.handlePeripheralMeasurement(AirBeamMeasurement(device: device, measurementStream: stream))
+                        self?.measurementsSaver.handlePeripheralMeasurement(stream, sessionUUID: session.uuid, locationless: session.locationless)
                     }
                     completion(.success(()))
                 case .failure(let error):

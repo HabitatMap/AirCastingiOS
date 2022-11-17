@@ -1,10 +1,9 @@
 import Resolver
 
-// TODO: Maybe rename?
-class SessionReconnectionController: ReconnectionControllerDelegate {
+class SessionManagingReconnectionController: ReconnectionControllerDelegate {
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
     @Injected private var reconnectionController: ReconnectionController
-    private let standaloneController: StandaloneController = Resolver.resolve(StandaloneController.self, args: StandaloneOrigin.device)
+    private let standaloneController: StandaloneModeController = Resolver.resolve(StandaloneModeController.self, args: StandaloneOrigin.device)
     @Injected private var bluetoothSessionController: BluetoothSessionController
     
     init() {

@@ -1,10 +1,10 @@
 import Resolver
 
-protocol StandaloneController {
+protocol StandaloneModeController {
     func moveActiveSessionToStandaloneMode()
 }
 
-final class DefaultStandaloneContoller: StandaloneController {
+final class DefaultStandaloneModeContoller: StandaloneModeController {
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
     @Injected private var locationTracker: LocationTracker
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
@@ -38,9 +38,9 @@ final class DefaultStandaloneContoller: StandaloneController {
     }
 }
 
-final class UserInitiatedStandaloneController: StandaloneController {
+final class UserInitiatedStandaloneModeController: StandaloneModeController {
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
-    private let standaloneController: StandaloneController = Resolver.resolve(StandaloneController.self, args: StandaloneOrigin.device)
+    private let standaloneController: StandaloneModeController = Resolver.resolve(StandaloneModeController.self, args: StandaloneOrigin.device)
     @Injected private var bluetootConnector: BluetoothConnectionHandler
     
     func moveActiveSessionToStandaloneMode() {

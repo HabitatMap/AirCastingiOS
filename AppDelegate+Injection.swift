@@ -201,6 +201,7 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultRemoveDataController() as RemoveDataController }
         main.register { DefaultThresholdAlertsController() as ThresholdAlertsController }
         main.register { BluetoothConnectionProtector() as ConnectionProtectable }
+        main.register { DefaultMeasurementsSaver() as MeasurementsSavingService }
         
         // MARK: - AirBeam configuration
         main.register { (_, args) in
@@ -291,7 +292,7 @@ extension Resolver: ResolverRegistering {
         // MARK: Reconnect
         main.register { DefaultReconnectionController() as ReconnectionController }
             .scope(.application)
-        main.register { SessionReconnectionController() }
+        main.register { SessionManagingReconnectionController() }
             .scope(.application)
         
         main.register {
@@ -301,8 +302,8 @@ extension Resolver: ResolverRegistering {
         main.register { _, args in
             guard let args: StandaloneOrigin = args() else { fatalError() }
             switch args {
-            case .device: return DefaultStandaloneContoller() as StandaloneController
-            case .user: return UserInitiatedStandaloneController() as StandaloneController
+            case .device: return DefaultStandaloneModeContoller() as StandaloneModeController
+            case .user: return UserInitiatedStandaloneModeController() as StandaloneModeController
             }
             
         }

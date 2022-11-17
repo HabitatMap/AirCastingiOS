@@ -5,6 +5,7 @@ protocol ActiveMobileSessionProvidingService {
     func clearActiveSession()
 }
 
+// TODO: Remove MobilePeripheralSessionManager after refactor
 final class ActiveMobileSessionProvidingServiceBridge: ActiveMobileSessionProvidingService {
     @Injected private var mobileSessionManager: MobilePeripheralSessionManager
     

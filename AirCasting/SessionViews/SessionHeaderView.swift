@@ -17,7 +17,7 @@ struct SessionHeaderView: View {
         isCollapsed ? "chevron.down" : "chevron.up"
     }
     @Binding var isCollapsed: Bool
-    private let standaloneModeController: StandaloneController = Resolver.resolve(StandaloneController.self,
+    private let standaloneModeController: StandaloneModeController = Resolver.resolve(StandaloneModeController.self,
                                                                                   args: StandaloneOrigin.user)
     @EnvironmentObject var selectedSection: SelectedSection
     @Environment(\.colorScheme) var colorScheme
