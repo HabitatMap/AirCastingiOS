@@ -5,7 +5,6 @@ import Foundation
 import CoreLocation
 import Resolver
 
-//Change name to saver
 class MobilePeripheralSessionManager {
 //    class PeripheralMeasurementTimeLocationManager {
 //        @Injected private var locationTracker: LocationTracker
@@ -36,33 +35,37 @@ class MobilePeripheralSessionManager {
 //    private var peripheralMeasurementManager = PeripheralMeasurementTimeLocationManager()
     var activeMobileSession: MobileSession?
     
-    func startRecording(session: Session, device: NewBluetoothManager.BluetoothDevice) {
-        measurementStreamStorage.accessStorage { [weak self] storage in
-            do {
-                let sessionReturned = try storage.createSession(session)
-                let entity = BluetoothConnectionEntity(context: sessionReturned.managedObjectContext!)
-                entity.peripheralUUID = device.uuid
-                entity.session = sessionReturned
-                guard let self = self else { return }
-                self.uiStorage.accessStorage { storage in
-                    do {
-                        try storage.switchCardExpanded(to: true, sessionUUID: session.uuid)
-                    } catch {
-                        Log.error("\(error)")
-                    }
-                }
-                DispatchQueue.main.async {
-                    if !session.locationless {
-                        self.locationTracker.start()
-                    }
-                    self.activeMobileSession = MobileSession(device: device, session: session)
-                }
-            } catch {
-                // Handle error
-                Log.info("\(error)")
-            }
-        }
-    }
+//    func activeSessionInProgressWith(_ device: NewBluetoothManager.BluetoothDevice) -> Bool {
+//        activeMobileSession?.device == device
+//    }
+    
+//    func startRecording(session: Session, device: NewBluetoothManager.BluetoothDevice) {
+//        measurementStreamStorage.accessStorage { [weak self] storage in
+//            do {
+//                let sessionReturned = try storage.createSession(session)
+//                let entity = BluetoothConnectionEntity(context: sessionReturned.managedObjectContext!)
+//                entity.peripheralUUID = device.uuid
+//                entity.session = sessionReturned
+//                guard let self = self else { return }
+//                self.uiStorage.accessStorage { storage in
+//                    do {
+//                        try storage.switchCardExpanded(to: true, sessionUUID: session.uuid)
+//                    } catch {
+//                        Log.error("\(error)")
+//                    }
+//                }
+//                DispatchQueue.main.async {
+//                    if !session.locationless {
+//                        self.locationTracker.start()
+//                    }
+//                    self.activeMobileSession = MobileSession(device: device, session: session)
+//                }
+//            } catch {
+//                // Handle error
+//                Log.info("\(error)")
+//            }
+//        }
+//    }
     
 //    func handlePeripheralMeasurement(_ measurement: AirBeamMeasurement) {
 //        guard activeMobileSession?.device == measurement.device else { return }
@@ -72,83 +75,65 @@ class MobilePeripheralSessionManager {
 //        updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid, location: peripheralMeasurementManager.currentLocation, time: peripheralMeasurementManager.currentTime)
 //        peripheralMeasurementManager.incrementCounter()
 //    }
+
     
-    func activeSessionInProgressWith(_ device: NewBluetoothManager.BluetoothDevice) -> Bool {
-        activeMobileSession?.device == device
-    }
-    
-    // This function was used when standalone mode flag was disabled. Make sure we are handing this situation now
-    func finishSession(for device: NewBluetoothManager.BluetoothDevice) {
-        if activeMobileSession?.device == device {
-            updateDatabaseForFinishedSession(with: activeMobileSession!.session.uuid)
-            finishActiveSession(for: device)
-        }
-    }
-    
-    func finishSession(with uuid: SessionUUID) {
-        measurementStreamStorage.accessStorage { storage in
-            do {
-                let session = try storage.getExistingSession(with: uuid)
-                if session.isActive {
-                    guard let activeSession = self.activeMobileSession else { return }
-                    self.finishActiveSession(for: activeSession.device)
-                }
-                self.updateDatabaseForFinishedSession(with: session.uuid)
-            } catch {
-                Log.error("Unable to change session status to finished because of an error: \(error)")
-            }
-        }
-    }
-    
-//    func enterStandaloneMode(sessionUUID: SessionUUID) {
-//        guard let device = activeMobileSession?.device, activeMobileSession?.session.uuid == sessionUUID else {
-//            Log.warning("Enter stand alone mode called for session which is not active")
-//            return
+//    // This function was used when standalone mode flag was disabled. Make sure we are handing this situation now
+//    func finishSession(for device: NewBluetoothManager.BluetoothDevice) {
+//        if activeMobileSession?.device == device {
+//            updateDatabaseForFinishedSession(with: activeMobileSession!.session.uuid)
+//            finishActiveSession(for: device)
 //        }
-//        
-//        changeSessionStatusToDisconnected(uuid: sessionUUID)
-//        btManager.disconnect(from: device)
-//        if !activeMobileSession!.session.locationless {
-//            locationTracker.stop()
+//    }
+    
+//    func finishSession(with uuid: SessionUUID) {
+//        measurementStreamStorage.accessStorage { storage in
+//            do {
+//                let session = try storage.getExistingSession(with: uuid)
+//                if session.isActive {
+//                    guard let activeSession = self.activeMobileSession else { return }
+//                    self.finishActiveSession(for: activeSession.device)
+//                }
+//                self.updateDatabaseForFinishedSession(with: session.uuid)
+//            } catch {
+//                Log.error("Unable to change session status to finished because of an error: \(error)")
+//            }
 //        }
-//        
-//        activeMobileSession = nil
 //    }
     
     // Make sure we disconnect from peripheral elsewhere
-    private func finishActiveSession(for device: NewBluetoothManager.BluetoothDevice) {
-        guard let activeSession = activeMobileSession, let device = activeMobileSession?.device else {
-            return
-        }
+//    private func finishActiveSession(for device: NewBluetoothManager.BluetoothDevice) {
+//        guard let activeSession = activeMobileSession, let device = activeMobileSession?.device else {
+//            return
+//        }
         
-        btManager.disconnect(from: device)
-        if !activeSession.session.locationless {
-            locationTracker.stop()
-        }
-        
-        self.activeMobileSession = nil
-    }
+//        btManager.disconnect(from: device)
+//        if !activeSession.session.locationless {
+//            locationTracker.stop()
+//        }
+//        
+//        self.activeMobileSession = nil
+//    }
 
-    private func updateDatabaseForFinishedSession(with uuid: SessionUUID) {
-        measurementStreamStorage.accessStorage { storage in
-            do {
-                try storage.updateSessionStatus(.FINISHED, for: uuid)
-                try storage.updateSessionEndtime(DateBuilder.getRawDate(), for: uuid)
-            } catch {
-                Log.error("Unable to change session status to finished because of an error: \(error)")
-            }
-        }
-    }
+//    private func updateDatabaseForFinishedSession(with uuid: SessionUUID) {
+//        measurementStreamStorage.accessStorage { storage in
+//            do {
+//                try storage.updateSessionStatus(.FINISHED, for: uuid)
+//                try storage.updateSessionEndtime(DateBuilder.getRawDate(), for: uuid)
+//            } catch {
+//                Log.error("Unable to change session status to finished because of an error: \(error)")
+//            }
+//        }
+//    }
 
-    private func changeSessionStatusToDisconnected(uuid: SessionUUID) {
-        measurementStreamStorage.accessStorage { storage in
-            do {
-                try storage.updateSessionStatus(.DISCONNECTED, for: uuid)
-            } catch {
-                Log.error("Unable to change session status to disconnected because of an error: \(error)")
-            }
-        }
-    }
+//    private func changeSessionStatusToDisconnected(uuid: SessionUUID) {
+//        measurementStreamStorage.accessStorage { storage in
+//            do {
+//                try storage.updateSessionStatus(.DISCONNECTED, for: uuid)
+//            } catch {
+//                Log.error("Unable to change session status to disconnected because of an error: \(error)")
+//            }
+//        }
+//    }
 
 //    private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, location: CLLocationCoordinate2D?, time: Date) {
 //        measurementStreamStorage.accessStorage { storage in
