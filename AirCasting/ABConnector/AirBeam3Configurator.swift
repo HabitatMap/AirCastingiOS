@@ -70,23 +70,20 @@ struct AirBeam3Configurator: AirBeamConfigurator {
                                    wifiSSID: String,
                                    wifiPassword: String,
                                    completion: @escaping (Result<Void, Error>) -> Void) {
-        // IS THIS DELAY NECESSARY??
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-            sendLocationConfiguration(location: location) { result in
-                switch result {
-                case .success():
-                    let dateString = dateFormatter.string(from: date)
-                    sendCurrentTimeConfiguration(date: dateString) { result in
-                        switch result {
-                        case .success():
-                            sendWifiConfiguration(wifiSSID: wifiSSID, wifiPassword: wifiPassword, completion: completion)
-                        case .failure(let error):
-                            completion(.failure(error))
-                        }
+        sendLocationConfiguration(location: location) { result in
+            switch result {
+            case .success():
+                let dateString = dateFormatter.string(from: date)
+                sendCurrentTimeConfiguration(date: dateString) { result in
+                    switch result {
+                    case .success():
+                        sendWifiConfiguration(wifiSSID: wifiSSID, wifiPassword: wifiPassword, completion: completion)
+                    case .failure(let error):
+                        completion(.failure(error))
                     }
-                case .failure(let error):
-                    completion(.failure(error))
                 }
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }
@@ -95,23 +92,20 @@ struct AirBeam3Configurator: AirBeamConfigurator {
                                        location: CLLocationCoordinate2D,
                                        date: Date,
                                        completion: @escaping (Result<Void, Error>) -> Void) {
-        // IS THIS DELAY NECESSARY??
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-            sendLocationConfiguration(location: location) { result in
-                switch result {
-                case .success():
-                    let dateString = dateFormatter.string(from: date)
-                    sendCurrentTimeConfiguration(date: dateString) { result in
-                        switch result {
-                        case .success():
-                            sendCellularConfiguration(completion: completion)
-                        case .failure(let error):
-                            completion(.failure(error))
-                        }
+        sendLocationConfiguration(location: location) { result in
+            switch result {
+            case .success():
+                let dateString = dateFormatter.string(from: date)
+                sendCurrentTimeConfiguration(date: dateString) { result in
+                    switch result {
+                    case .success():
+                        sendCellularConfiguration(completion: completion)
+                    case .failure(let error):
+                        completion(.failure(error))
                     }
-                case .failure(let error):
-                    completion(.failure(error))
                 }
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }
