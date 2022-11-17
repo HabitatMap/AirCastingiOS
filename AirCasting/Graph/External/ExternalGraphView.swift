@@ -4,9 +4,9 @@ import Resolver
 struct ExternalGraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsContainerViewModelable {
     let session: ExternalSessionEntity
     let thresholds: ABMeasurementsViewThreshold
+    let graphStatsDataSource: GraphStatsDataSource
     @Binding var selectedStream: MeasurementStreamEntity?
     @StateObject var statsContainerViewModel: StatsViewModelType
-    let graphStatsDataSource: GraphStatsDataSource
     
     var body: some View {
         VStack(alignment: .trailing) {
@@ -41,6 +41,13 @@ struct ExternalGraphView<StatsViewModelType>: View where StatsViewModelType: Sta
                 }
             }
             Spacer()
+        }
+        .onAppear {
+            statsContainerViewModel.adjustForNewData()
+            statsContainerViewModel.continuousModeEnabled = true
+        }
+        .onDisappear {
+            statsContainerViewModel.continuousModeEnabled = false
         }
         .navigationBarTitleDisplayMode(.inline)
         .background(Color.aircastingBackground.ignoresSafeArea())

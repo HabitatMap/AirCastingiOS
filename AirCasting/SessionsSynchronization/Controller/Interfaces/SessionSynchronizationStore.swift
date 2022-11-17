@@ -77,7 +77,6 @@ extension SessionsSynchronization {
     }
     
     struct SessionStoreMeasurementData: Equatable {
-        let id: MeasurementID
         let time: Date
         let value: Double
         let latitude: Double?

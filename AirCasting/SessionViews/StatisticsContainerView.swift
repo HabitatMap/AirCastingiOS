@@ -25,9 +25,9 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
                 VStack(spacing: 7) {
                     Text(stat.title)
                     if stat.presentationStyle == .distinct {
-                        distinctParameter(value: stat.value)
+                        distinctParameter(value: round(stat.value))
                     } else if stat.presentationStyle == .standard {
-                        standardParameter(value: stat.value)
+                        standardParameter(value: round(stat.value))
                     }
                 }
             }
@@ -90,6 +90,8 @@ struct CalculatedMeasurements_Previews: PreviewProvider {
 }
 
 class FakeStatsViewModel: StatisticsContainerViewModelable {
+    var continuousModeEnabled: Bool = false
+    
     @Published var stats: [SingleStatViewModel] = [
         .init(id: 0, title: "Low dB", value: -40.0, presentationStyle: .standard),
         .init(id: 1, title: "Now dB", value: -10.2, presentationStyle: .distinct),

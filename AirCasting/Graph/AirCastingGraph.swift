@@ -37,10 +37,10 @@ class AirCastingGraph: UIView {
             lineChartView.topAnchor.constraint(equalTo: self.topAnchor),
             lineChartView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
         ])
-        //set edges
+        // set edges
         lineChartView.minOffset = 0.0
         
-        //remove border lines and legend
+        // remove border lines and legend
         lineChartView.xAxis.drawLabelsEnabled = false
         
         lineChartView.leftAxis.drawLabelsEnabled = false
@@ -79,7 +79,7 @@ class AirCastingGraph: UIView {
         let thirtyMinutesMeasurementCount = 60 * 30
         lineChartView.setVisibleXRangeMaximum(Double(thirtyMinutesMeasurementCount))
         lineChartView.moveViewToX(dataSet.xMax)
-        //enable zoom out
+        // enable zoom out
         lineChartView.setVisibleXRangeMaximum(dataSet.xMax)
     }
     
@@ -102,7 +102,7 @@ class AirCastingGraph: UIView {
         let data = LineChartData(dataSet: dataSet)
         lineChartView.data = data
         
-        //format data labels
+        // format data labels
         data.setDrawValues(false)
         
         // Line styling
@@ -115,7 +115,6 @@ class AirCastingGraph: UIView {
             zoomoutToThirtyMinutes(dataSet: dataSet)
         }
         layoutNotes()
-        callDateRangeChangeObserver()
     }
     
     private func callDateRangeChangeObserver() {
@@ -128,7 +127,6 @@ class AirCastingGraph: UIView {
     private func getCurrentDateRange() -> ClosedRange<Date> {
         let startDate = DateBuilder.getDateWithTimeIntervalSince1970(lineChartView.lowestVisibleX)
         let endDate = DateBuilder.getDateWithTimeIntervalSince1970(lineChartView.highestVisibleX)
-        #warning("Please check if this is still the case")
         // Workaround for a weird quirk with Chart - when first called
         // `startDate` is sane, but `endDate` is 1970, so we need a special
         // case to fix that.

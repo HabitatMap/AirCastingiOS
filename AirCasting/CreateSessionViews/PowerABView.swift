@@ -40,13 +40,6 @@ struct PowerABView: View {
             .foregroundColor(.accentColor)
     }
 
-    //stays here for maybe future needs
-    var messageLabel: some View {
-        Text(Strings.PowerABView.messageText)
-            .font(Fonts.moderateRegularHeading1)
-            .foregroundColor(.aircastingGray)
-    }
-
     var continueButton: some View {
         NavigationLink(destination: SelectPeripheralView(SDClearingRouteProcess: false, creatingSessionFlowContinues: $creatingSessionFlowContinues)) {
             Text(Strings.Commons.continue)

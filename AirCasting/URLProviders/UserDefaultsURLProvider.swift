@@ -5,11 +5,11 @@ import Foundation
 
 class UserDefaultsURLProvider: URLProvider {
     var baseAppURL: URL {
-        set {
-            userDefaults.set(newValue, forKey: "baseURL")
-        }
         get {
             userDefaults.url(forKey: "baseURL") ?? URL(string: "http://aircasting.org/")!
+        }
+        set {
+            userDefaults.set(newValue, forKey: "baseURL")
         }
     }
     

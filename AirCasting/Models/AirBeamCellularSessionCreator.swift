@@ -48,7 +48,6 @@ final class AirBeamCellularSessionCreator: SessionCreator {
             return
         }
         
-        #warning("TODO: change mocked data -->  notes")
         let params = CreateSessionApi.SessionParams(uuid: sessionUUID,
                                                     type: .fixed,
                                                     title: name,

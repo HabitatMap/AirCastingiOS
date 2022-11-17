@@ -23,9 +23,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     private var timerSink: Cancellable?
     private var lastFetchCancellableTask: Cancellable?
     @Injected private var removeOldServiceDefault: RemoveOldMeasurements
-
-
-    #warning("Add locking here so updates won't bump on one another")
+    
     func start() {
         updateAllSessionsMeasurements()
         timerSink = Timer.publish(every: 60, on: .current, in: .common).autoconnect().sink { [weak self] tick in

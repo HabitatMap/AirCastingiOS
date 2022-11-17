@@ -5,4 +5,6 @@ import Foundation
 
 protocol MeasurementsStatisticsInput {
     func computeStatistics()
+    /// When continous mode is enabled it will allow for a time-based stats refreshing
+    var continuousModeEnabled: Bool { get set }
 }

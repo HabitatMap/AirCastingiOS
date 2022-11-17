@@ -18,6 +18,7 @@ class LocationServiceAdapterTests: XCTestCase {
         let trackerSpy = TrackerSpy()
         var sut: LocationServiceAdapter? = LocationServiceAdapter(tracker: trackerSpy)
         sut = nil
+        XCTAssertNil(sut)
         XCTAssertEqual(trackerSpy.calls, [.start, .stop])
     }
     
@@ -48,7 +49,6 @@ class LocationServiceAdapterTests: XCTestCase {
         
         var location: CurrentValueSubject<CLLocation?, Never> {
             get { calls.append(.getLocation); return .init(nil) }
-            set { fatalError() }
         }
     }
     

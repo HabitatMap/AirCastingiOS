@@ -649,6 +649,7 @@
 		33AC7D5B273C1B9700EB1274 /* StandaloneSessionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandaloneSessionCardView.swift; sourceTree = "<group>"; };
 		33B397D8284FB77400C95387 /* PhotoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPicker.swift; sourceTree = "<group>"; };
 		33BA3369266E4D1000899343 /* MobileSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSession.swift; sourceTree = "<group>"; };
+		33C9A458290ADB12003CC326 /* AirCasting v9.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v9.xcdatamodel"; sourceTree = "<group>"; };
 		33D07A232825963000F25B4C /* ExternalSessionEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
 		33D07A242825963000F25B4C /* ExternalSessionEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		33D8031528F84050004A4CFA /* SDSyncAveragingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncAveragingServiceTests.swift; sourceTree = "<group>"; };
@@ -4226,6 +4227,7 @@
 		338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				33C9A458290ADB12003CC326 /* AirCasting v9.xcdatamodel */,
 				FA9E08C828926C07006475D6 /* AirCasting v8.xcdatamodel */,
 				336BFBCD2857788E008D4645 /* AirCasting v7.xcdatamodel */,
 				B3620725283F97750079C052 /* AirCasting v6.xcdatamodel */,
@@ -4235,7 +4237,7 @@
 				DDF551D427985AAB009D1347 /* AirCasting v2.xcdatamodel */,
 				338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */,
 			);
-			currentVersion = FA9E08C828926C07006475D6 /* AirCasting v8.xcdatamodel */;
+			currentVersion = 33C9A458290ADB12003CC326 /* AirCasting v9.xcdatamodel */;
 			path = AirCasting.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

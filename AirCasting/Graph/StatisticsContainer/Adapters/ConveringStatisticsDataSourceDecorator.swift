@@ -17,8 +17,8 @@ class ConveringStatisticsDataSourceDecorator<D: MeasurementsStatisticsDataSource
     }
     
     var onForceReload: (() -> Void)? {
-        set { dataSource.onForceReload = newValue }
         get { dataSource.onForceReload }
+        set { dataSource.onForceReload = newValue }
     }
     
     var visibleMeasurements: [MeasurementStatistics.Measurement] { dataSource.visibleMeasurements.map(convert) }
