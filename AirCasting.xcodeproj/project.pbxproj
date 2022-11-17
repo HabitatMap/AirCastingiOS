@@ -81,7 +81,6 @@
 		33A7FF2127C5160A00A138D6 /* StaticSessionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A7FF2027C5160A00A138D6 /* StaticSessionHeader.swift */; };
 		33AC7D5C273C1B9700EB1274 /* StandaloneSessionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33AC7D5B273C1B9700EB1274 /* StandaloneSessionCardView.swift */; };
 		33B397D9284FB77400C95387 /* PhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33B397D8284FB77400C95387 /* PhotoPicker.swift */; };
-		33BA3368266E4BCA00899343 /* MobilePeripheralSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */; };
 		33BA336A266E4D1000899343 /* MobileSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BA3369266E4D1000899343 /* MobileSession.swift */; };
 		33D07A252825963000F25B4C /* ExternalSessionEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D07A232825963000F25B4C /* ExternalSessionEntity+CoreDataClass.swift */; };
 		33D07A262825963000F25B4C /* ExternalSessionEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D07A242825963000F25B4C /* ExternalSessionEntity+CoreDataProperties.swift */; };
@@ -125,7 +124,6 @@
 		4FD2CA4726406F2C007E932E /* Diff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD2CA4626406F2C007E932E /* Diff.swift */; };
 		4FEEAED3262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FEEAED2262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift */; };
 		4FF60BE926550077001618BE /* SelectPeripheralView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1DAD4425C9858C009AC4D1 /* SelectPeripheralView.swift */; };
-		4FF60BEA265500C4001618BE /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */; };
 		750A51D82754D41A00D6F4E7 /* GridCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750A51D72754D41A00D6F4E7 /* GridCalculator.swift */; };
 		750A51DA2754D47F00D6F4E7 /* GridSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750A51D92754D47F00D6F4E7 /* GridSquare.swift */; };
 		750A51DC2754D4BD00D6F4E7 /* VisibleRegionCoordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750A51DB2754D4BD00D6F4E7 /* VisibleRegionCoordinates.swift */; };
@@ -650,7 +648,6 @@
 		33A7FF2027C5160A00A138D6 /* StaticSessionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticSessionHeader.swift; sourceTree = "<group>"; };
 		33AC7D5B273C1B9700EB1274 /* StandaloneSessionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandaloneSessionCardView.swift; sourceTree = "<group>"; };
 		33B397D8284FB77400C95387 /* PhotoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPicker.swift; sourceTree = "<group>"; };
-		33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobilePeripheralSessionManager.swift; sourceTree = "<group>"; };
 		33BA3369266E4D1000899343 /* MobileSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSession.swift; sourceTree = "<group>"; };
 		33D07A232825963000F25B4C /* ExternalSessionEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
 		33D07A242825963000F25B4C /* ExternalSessionEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -714,7 +711,6 @@
 		AC158E0A26A199F9006C61D3 /* Array+SensorThreshold.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+SensorThreshold.swift"; sourceTree = "<group>"; };
 		AC194B0C2684BAB40048E2C8 /* SessionLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionLoadingView.swift; sourceTree = "<group>"; };
 		AC1DAD4425C9858C009AC4D1 /* SelectPeripheralView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPeripheralView.swift; sourceTree = "<group>"; };
-		AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
 		AC25C6D52817DA250091C714 /* LogoutController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoutController.swift; sourceTree = "<group>"; };
 		AC25C6D72817DA720091C714 /* RemoveDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveDataController.swift; sourceTree = "<group>"; };
 		AC25C6D92817DAAE0091C714 /* DeleteAccountController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAccountController.swift; sourceTree = "<group>"; };
@@ -1272,7 +1268,6 @@
 			children = (
 				33BA3366266E4B9600899343 /* MobileSession */,
 				33831B18291549A60097020C /* BluetoothSessionRecordingController.swift */,
-				33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */,
 				33831B1A29154E7E0097020C /* ReconnectionController.swift */,
 				B31DD83D2925256700AF491B /* SessionManagingReconnectionController.swift */,
 				B31DD84329252ED600AF491B /* StandaloneModeController.swift */,
@@ -1520,7 +1515,6 @@
 				B30F9A622745626B00C85E17 /* SDCardAirBeamServices.swift */,
 				33831B1C29154EF30097020C /* MeasurementsRecordingServices.swift */,
 				DD28047826B3D7370060F55E /* AirBeamConnectionController.swift */,
-				AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */,
 				AC8CFF7D25EE5F9200FB2918 /* AirBeam3Configurator.swift */,
 				AC8CFF7625ECF8B100FB2918 /* HexMessagesBuilder.swift */,
 			);
@@ -3287,7 +3281,6 @@
 				AC3203CB25CA991C00A68520 /* TurnOnBluetoothView.swift in Sources */,
 				DD430B0C26710E0600F1BF2E /* PrivacyOnboarding.swift in Sources */,
 				B3FD30A8283163A300C33656 /* LevelMeasurementController.swift in Sources */,
-				4FF60BEA265500C4001618BE /* BluetoothManager.swift in Sources */,
 				DDC86644276B54A400A8E610 /* AddNoteViewModel.swift in Sources */,
 				B3FD77B6267C94AF00E97CC2 /* DatabaseSession.swift in Sources */,
 				AC32043625CD534700A68520 /* ChooseSessionTypeView.swift in Sources */,
@@ -3391,7 +3384,6 @@
 				3367B61727C924B000930E62 /* SearchCompleteScreenMapView.swift in Sources */,
 				DDC3E954275E4C3A0066A5DF /* SettingsViewModel.swift in Sources */,
 				33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */,
-				33BA3368266E4BCA00899343 /* MobilePeripheralSessionManager.swift in Sources */,
 				4F2D84EB2647DBE0003D9ED5 /* MeasurementStreamStorage.swift in Sources */,
 				ACC8838C265284AA00C5DB70 /* CoreDataHook.swift in Sources */,
 				AC8CFF5C25E6866100FB2918 /* SignInView.swift in Sources */,

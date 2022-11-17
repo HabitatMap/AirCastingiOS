@@ -178,7 +178,6 @@ extension Resolver: ResolverRegistering {
         main.register { LifeTimeEventsProvider(userDefaults: .standard) }.implements(FirstRunInfoProvidable.self).scope(.application)
         main.register { MicrophoneManager() }.scope(.cached)
         main.register { ActiveSessionsAveragingController() }.scope(.cached)
-        main.register { MobilePeripheralSessionManager() }.scope(.cached)
         main.register { MobileAirBeamSessionRecordingController() as BluetoothSessionRecordingController }
             .scope(.application)
         main.register { AirbeamMeasurementsRecordingServices() as MeasurementsRecordingServices }
@@ -296,7 +295,7 @@ extension Resolver: ResolverRegistering {
             .scope(.application)
         
         main.register {
-            ActiveMobileSessionProvidingServiceBridge() as ActiveMobileSessionProvidingService
+            DefaultActiveMobileSessionProvidingService() as ActiveMobileSessionProvidingService
         }.scope(.application)
 
         main.register { _, args in

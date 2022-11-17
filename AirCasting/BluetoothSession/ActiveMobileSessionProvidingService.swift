@@ -6,19 +6,14 @@ protocol ActiveMobileSessionProvidingService {
     func clearActiveSession()
 }
 
-// TODO: Remove MobilePeripheralSessionManager after refactor
-final class ActiveMobileSessionProvidingServiceBridge: ActiveMobileSessionProvidingService {
-    @Injected private var mobileSessionManager: MobilePeripheralSessionManager
-    
-    var activeSession: MobileSession? {
-        mobileSessionManager.activeMobileSession
-    }
+final class DefaultActiveMobileSessionProvidingService: ActiveMobileSessionProvidingService {
+    var activeSession: MobileSession?
     
     func setActiveSession(session: Session, device: NewBluetoothManager.BluetoothDevice) {
-        mobileSessionManager.activeMobileSession = MobileSession(device: device, session: session)
+        activeSession = MobileSession(device: device, session: session)
     }
     
     func clearActiveSession() {
-        mobileSessionManager.activeMobileSession = nil
+        activeSession = nil
     }
 }
