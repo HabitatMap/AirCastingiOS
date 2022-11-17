@@ -6,7 +6,7 @@ import CoreLocation
 import UIKit
 import Resolver
 
-struct MapNote {
+struct MapNote: Identifiable {
     let id: Int
     let location: CLLocationCoordinate2D
     let markerImage: UIImage
