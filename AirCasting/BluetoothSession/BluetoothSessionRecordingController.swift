@@ -13,7 +13,7 @@ protocol BluetoothSessionRecordingController {
 
 class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingController {
     @Injected private var measurementsSaver: MeasurementsSavingService
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var storage: MobileSessionStorage
     @Injected private var measurementsRecorder: MeasurementsRecordingServices
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
     @Injected private var locationTracker: LocationTracker
@@ -82,14 +82,7 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
     }
     
     private func performDatabaseChange(for uuid: SessionUUID) {
-        measurementStreamStorage.accessStorage { storage in
-            do {
-                try storage.updateSessionStatus(.FINISHED, for: uuid)
-                try storage.updateSessionEndtime(DateBuilder.getRawDate(), for: uuid)
-            } catch {
-                // TODO: Add completion here and show an alert ?
-                Log.error("Unable to change session status to finished because of an error: \(error)")
-            }
-        }
+        storage.updateSessionStatus(.FINISHED, for: uuid)
+        storage.updateSessionEndtime(DateBuilder.getRawDate(), for: uuid)
     }
 }

@@ -95,6 +95,7 @@ extension Resolver: ResolverRegistering {
         }.scope(.cached)
         main.register { DefaultFileLineReader() as FileLineReader }
         main.register { SessionDataEraser() as DataEraser }
+        main.register { DefaultMobileSessionStorageBridge() as MobileSessionStorage }
 
         // MARK: - Networking
         main.register { URLSession.shared as APIClient }.scope(.application)

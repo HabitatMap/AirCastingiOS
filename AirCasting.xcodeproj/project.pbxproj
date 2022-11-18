@@ -27,16 +27,12 @@
 		3320F2F029250CD000EFFB2D /* BluetoothScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F2EF29250CD000EFFB2D /* BluetoothScanner.swift */; };
 		3320F2F229250CEC00EFFB2D /* BluetoothStateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F2F129250CEC00EFFB2D /* BluetoothStateHandler.swift */; };
 		3320F2F6292657F800EFFB2D /* MeasurementsSavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F2F5292657F800EFFB2D /* MeasurementsSavingService.swift */; };
-		3320F2F929268AF100EFFB2D /* AirBeam3Configurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F2F829268AF100EFFB2D /* AirBeam3Configurator.swift */; };
 		3320F2FC29268FAE00EFFB2D /* SelectPeripheralViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F2FB29268FAE00EFFB2D /* SelectPeripheralViewModel.swift */; };
 		3320F2FE292692F100EFFB2D /* BluetoothPeripheralConnectionChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F2FD292692F000EFFB2D /* BluetoothPeripheralConnectionChecker.swift */; };
 		3320F301292698FD00EFFB2D /* DefaultStandaloneModeContollerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F300292698FD00EFFB2D /* DefaultStandaloneModeContollerTests.swift */; };
 		3320F30329269A5400EFFB2D /* SessionManagingReconnectionControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F30229269A5400EFFB2D /* SessionManagingReconnectionControllerTests.swift */; };
-		3320F30529269A6800EFFB2D /* DefaultReconnectionControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F30429269A6800EFFB2D /* DefaultReconnectionControllerTests.swift */; };
-		3320F30729269A8C00EFFB2D /* DefaultMeasurementsSaverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F30629269A8C00EFFB2D /* DefaultMeasurementsSaverTests.swift */; };
 		3320F30929269AB000EFFB2D /* MobileAirBeamSessionRecordingControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F30829269AB000EFFB2D /* MobileAirBeamSessionRecordingControllerTests.swift */; };
-		3320F30B29269B1500EFFB2D /* AirbeamMeasurementsRecordingServices.swiftTests in Sources */ = {isa = PBXBuildFile; fileRef = 3320F30A29269B1500EFFB2D /* AirbeamMeasurementsRecordingServices.swiftTests */; };
-		3320F30E29269BCF00EFFB2D /* ConnectingAirBeamServicesBluetoothTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F30D29269BCF00EFFB2D /* ConnectingAirBeamServicesBluetoothTests.swift */; };
+		3320F3102927E32100EFFB2D /* MobileSessionStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F30F2927E32100EFFB2D /* MobileSessionStorage.swift */; };
 		332F521425FA38430047236D /* MicrophoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332F521325FA38430047236D /* MicrophoneManager.swift */; };
 		334062442816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */; };
 		33406247281821FA004DA4DA /* ExternalSessionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33406246281821FA004DA4DA /* ExternalSessionsStore.swift */; };
@@ -602,16 +598,12 @@
 		3320F2EF29250CD000EFFB2D /* BluetoothScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothScanner.swift; sourceTree = "<group>"; };
 		3320F2F129250CEC00EFFB2D /* BluetoothStateHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothStateHandler.swift; sourceTree = "<group>"; };
 		3320F2F5292657F800EFFB2D /* MeasurementsSavingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsSavingService.swift; sourceTree = "<group>"; };
-		3320F2F829268AF100EFFB2D /* AirBeam3Configurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeam3Configurator.swift; sourceTree = "<group>"; };
 		3320F2FB29268FAE00EFFB2D /* SelectPeripheralViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPeripheralViewModel.swift; sourceTree = "<group>"; };
 		3320F2FD292692F000EFFB2D /* BluetoothPeripheralConnectionChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothPeripheralConnectionChecker.swift; sourceTree = "<group>"; };
 		3320F300292698FD00EFFB2D /* DefaultStandaloneModeContollerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultStandaloneModeContollerTests.swift; sourceTree = "<group>"; };
 		3320F30229269A5400EFFB2D /* SessionManagingReconnectionControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManagingReconnectionControllerTests.swift; sourceTree = "<group>"; };
-		3320F30429269A6800EFFB2D /* DefaultReconnectionControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultReconnectionControllerTests.swift; sourceTree = "<group>"; };
-		3320F30629269A8C00EFFB2D /* DefaultMeasurementsSaverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultMeasurementsSaverTests.swift; sourceTree = "<group>"; };
 		3320F30829269AB000EFFB2D /* MobileAirBeamSessionRecordingControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAirBeamSessionRecordingControllerTests.swift; sourceTree = "<group>"; };
-		3320F30A29269B1500EFFB2D /* AirbeamMeasurementsRecordingServices.swiftTests */ = {isa = PBXFileReference; lastKnownFileType = text; path = AirbeamMeasurementsRecordingServices.swiftTests; sourceTree = "<group>"; };
-		3320F30D29269BCF00EFFB2D /* ConnectingAirBeamServicesBluetoothTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingAirBeamServicesBluetoothTests.swift; sourceTree = "<group>"; };
+		3320F30F2927E32100EFFB2D /* MobileSessionStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSessionStorage.swift; sourceTree = "<group>"; };
 		332F521325FA38430047236D /* MicrophoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManager.swift; sourceTree = "<group>"; };
 		334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLocationlessSessionViewModel.swift; sourceTree = "<group>"; };
 		3340624528181376004DA4DA /* AirCasting v5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v5.xcdatamodel"; sourceTree = "<group>"; };
@@ -1226,14 +1218,6 @@
 			path = Bluetooth;
 			sourceTree = "<group>";
 		};
-		3320F2F729268A5B00EFFB2D /* Bluetooth */ = {
-			isa = PBXGroup;
-			children = (
-				3320F2F829268AF100EFFB2D /* AirBeam3Configurator.swift */,
-			);
-			path = Bluetooth;
-			sourceTree = "<group>";
-		};
 		3320F2FA29268F8000EFFB2D /* CreatingSession */ = {
 			isa = PBXGroup;
 			children = (
@@ -1247,20 +1231,9 @@
 			children = (
 				3320F300292698FD00EFFB2D /* DefaultStandaloneModeContollerTests.swift */,
 				3320F30229269A5400EFFB2D /* SessionManagingReconnectionControllerTests.swift */,
-				3320F30429269A6800EFFB2D /* DefaultReconnectionControllerTests.swift */,
-				3320F30629269A8C00EFFB2D /* DefaultMeasurementsSaverTests.swift */,
 				3320F30829269AB000EFFB2D /* MobileAirBeamSessionRecordingControllerTests.swift */,
 			);
 			path = BluetoothSession;
-			sourceTree = "<group>";
-		};
-		3320F30C29269B3E00EFFB2D /* ABConnection */ = {
-			isa = PBXGroup;
-			children = (
-				3320F30A29269B1500EFFB2D /* AirbeamMeasurementsRecordingServices.swiftTests */,
-				3320F30D29269BCF00EFFB2D /* ConnectingAirBeamServicesBluetoothTests.swift */,
-			);
-			path = ABConnection;
 			sourceTree = "<group>";
 		};
 		3328F11E266786C600B72D61 /* Chart */ = {
@@ -1318,6 +1291,7 @@
 				33406246281821FA004DA4DA /* ExternalSessionsStore.swift */,
 				ACDA5EF4285B43FD00A531E9 /* SessionEntityStore.swift */,
 				33ECC0E12901ACFA00A3BC85 /* AveragingServiceStorage.swift */,
+				3320F30F2927E32100EFFB2D /* MobileSessionStorage.swift */,
 			);
 			path = Storages;
 			sourceTree = "<group>";
@@ -2354,7 +2328,6 @@
 		B3E26A072676DA4E001A8E4C /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				3320F2F729268A5B00EFFB2D /* Bluetooth */,
 				B3E26A082676DA55001A8E4C /* TestDefaultProviding.swift */,
 				B31B7ECA267E4DF6002DAC18 /* DummyError.swift */,
 				B33DB56D2685FB2400ED1344 /* LocalizedErrorStub.swift */,
@@ -2382,7 +2355,6 @@
 				B30BABF92693507800AE0476 /* Statistics */,
 				DDF12AEC26B2B7E300D067C7 /* SessionCartTests */,
 				B3E26A0B2676DABA001A8E4C /* SessionsSynchronization */,
-				3320F30C29269B3E00EFFB2D /* ABConnection */,
 			);
 			path = Logic;
 			sourceTree = "<group>";
@@ -3207,7 +3179,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3320F30B29269B1500EFFB2D /* AirbeamMeasurementsRecordingServices.swiftTests in Sources */,
 				3387448E28896C5D00E178F6 /* WifiAwareSessionSynchronizerTests.swift in Sources */,
 				B32D089D267A3232006C97ED /* LogErrorPublisherTests.swift in Sources */,
 				DD2E8BE92685E12000439F8B /* URLValidatorTests.swift in Sources */,
@@ -3218,9 +3189,7 @@
 				B30BAC1F2694AE9E00AE0476 /* MapStatsDataSourceTests.swift in Sources */,
 				B3F1447826AE4337006A4612 /* FilterErrorTests.swift in Sources */,
 				4FB39E402622252700E5E564 /* XCTestCase+Extensions.swift in Sources */,
-				3320F30729269A8C00EFFB2D /* DefaultMeasurementsSaverTests.swift in Sources */,
 				DDBC992626A1652A00B0662E /* ForgotPasswordTest.swift in Sources */,
-				3320F2F929268AF100EFFB2D /* AirBeam3Configurator.swift in Sources */,
 				DDDCEC3927D0C8C700B3757C /* DateBuilderTests.swift in Sources */,
 				B3AAACF5286DC07600DFBD36 /* LevelMeasurementControllerTests.swift in Sources */,
 				B33DB5742686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift in Sources */,
@@ -3250,7 +3219,6 @@
 				B33B161027AF0B3600138FFA /* DocumentsFileLoggerStoreTests.swift in Sources */,
 				B30BABFF26935C2B00AE0476 /* TimeInterval+Helpers.swift in Sources */,
 				B3AA784927D4D22A003B39F6 /* Resolver+XCTest.swift in Sources */,
-				3320F30529269A6800EFFB2D /* DefaultReconnectionControllerTests.swift in Sources */,
 				B3AAACF7286DD91700DFBD36 /* DecibelSamplerTests.swift in Sources */,
 				B3E2B65F27506EA000019167 /* FileLineReaderTests.swift in Sources */,
 				B33DB5722686013400ED1344 /* XCTestCase+AwaitPublisher.swift in Sources */,
@@ -3278,7 +3246,6 @@
 				3320F30929269AB000EFFB2D /* MobileAirBeamSessionRecordingControllerTests.swift in Sources */,
 				B30BABFB2693509D00AE0476 /* StandardStatisticsCalculatorTests.swift in Sources */,
 				B3C6D07E28905FCC00A25F5F /* LocationServiceAdapterTests.swift in Sources */,
-				3320F30E29269BCF00EFFB2D /* ConnectingAirBeamServicesBluetoothTests.swift in Sources */,
 				DDF12AEE26B2B87F00D067C7 /* SessionCartViewModelTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3649,6 +3616,7 @@
 				33E63A86288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift in Sources */,
 				B34F2FF52909609A0070C446 /* NewBluetoothManager.swift in Sources */,
 				DD009D662698844A009F0443 /* DeleteView.swift in Sources */,
+				3320F3102927E32100EFFB2D /* MobileSessionStorage.swift in Sources */,
 				DD197FAE27BE857D00340672 /* MapDownloaderSearchedSessions.swift in Sources */,
 				DD197FAE27BE857D00340672 /* MapDownloaderSearchedSessions.swift in Sources */,
 				B3FD77BA267C94AF00E97CC2 /* SessionSynchronizer.swift in Sources */,

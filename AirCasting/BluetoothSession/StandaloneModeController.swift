@@ -1,4 +1,5 @@
 import Resolver
+import Foundation
 
 protocol StandaloneModeController {
     func moveActiveSessionToStandaloneMode()
@@ -7,7 +8,7 @@ protocol StandaloneModeController {
 final class DefaultStandaloneModeContoller: StandaloneModeController {
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
     @Injected private var locationTracker: LocationTracker
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var storage: MobileSessionStorage
     
     func moveActiveSessionToStandaloneMode() {
         guard let session = activeSessionProvider.activeSession?.session else { return }
@@ -28,13 +29,7 @@ final class DefaultStandaloneModeContoller: StandaloneModeController {
     }
     
     private func performDatabaseChange(for sessionUUID: SessionUUID) {
-        measurementStreamStorage.accessStorage { storage in
-            do {
-                try storage.updateSessionStatus(.DISCONNECTED, for: sessionUUID)
-            } catch {
-                Log.error("Unable to change session status to disconnected because of an error: \(error)")
-            }
-        }
+        storage.updateSessionStatus(.DISCONNECTED, for: sessionUUID)
     }
 }
 
