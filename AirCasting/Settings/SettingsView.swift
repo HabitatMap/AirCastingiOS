@@ -13,7 +13,6 @@ struct SettingsView: View {
     @StateObject private var viewModel: SettingsViewModel
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     @InjectedObject private var userSettings: UserSettings
-    @InjectedObject private var bluetoothManager: BluetoothManager
     private let sessionContext: CreateSessionContext
     #if DEBUG || BETA
     @StateObject private var shareLogsViewModel = ShareLogsViewModel()

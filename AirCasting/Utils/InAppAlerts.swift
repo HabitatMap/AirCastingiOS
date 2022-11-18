@@ -206,6 +206,22 @@ struct InAppAlerts {
                              action: dismiss) ])
     }
     
+    static func incompatibleDevice(dismiss: (@escaping () -> Void)) -> AlertInfo {
+        AlertInfo(title: Strings.IncompatibleDeviceAlert.title,
+                  message: Strings.IncompatibleDeviceAlert.message,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss) ])
+    }
+    
+    static func failedAirBeamConfiguration(dismiss: (@escaping () -> Void)) -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.airBeamConfigurationFailureTitle,
+                  message: Strings.InAppAlerts.airBeamConfigurationFailureTMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss) ])
+    }
+    
     static func locationAlert() -> AlertInfo {
         let redirection = Resolver.resolve(SettingsRedirection.self)
         return AlertInfo(title: Strings.SelectDeviceView.alertTitle,
@@ -337,6 +353,17 @@ struct InAppAlerts {
             title: Strings.InAppAlerts.logoutWarningTitle, message: Strings.InAppAlerts.logoutWarningMessage,
             buttons: [
                 .default(title: Strings.InAppAlerts.logoutWarningConfirmButton,
+                         action: action),
+                .cancel()
+            ]
+        )
+    }
+    
+    static func genericErrorAlert(action: @escaping (() -> Void)) -> AlertInfo {
+        AlertInfo(
+            title: Strings.InAppAlerts.genericErrorAlertTitle, message: Strings.InAppAlerts.genericErrorAlertMessage,
+            buttons: [
+                .default(title: Strings.Commons.gotIt,
                          action: action),
                 .cancel()
             ]

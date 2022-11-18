@@ -2,7 +2,6 @@
 //
 
 import Foundation
-import CoreBluetooth
 import Combine
 import Resolver
 
@@ -46,7 +45,7 @@ class SDSyncController {
     
     private let writingQueue = DispatchQueue(label: "SDSyncController")
     
-    func syncFromAirbeam(_ airbeamConnection: CBPeripheral, progress: @escaping (SDCardSyncStatus) -> Void, completion: @escaping (Result<Void, SDSyncError>) -> Void) {
+    func syncFromAirbeam(_ airbeamConnection: NewBluetoothManager.BluetoothDevice, progress: @escaping (SDCardSyncStatus) -> Void, completion: @escaping (Result<Void, SDSyncError>) -> Void) {
         Log.info("[SD SYNC] Starting syncing")
         guard let sensorName = airbeamConnection.name else {
             Log.error("[SD SYNC] Unable to identify the device")
@@ -163,7 +162,7 @@ class SDSyncController {
         }
     }
     
-    func clearSDCard(_ airbeamConnection: CBPeripheral, completion: @escaping (Bool) -> Void) {
+    func clearSDCard(_ airbeamConnection: NewBluetoothManager.BluetoothDevice, completion: @escaping (Bool) -> Void) {
         airbeamServices.clearSDCard(of: airbeamConnection) { result in
             switch result {
             case .success():
