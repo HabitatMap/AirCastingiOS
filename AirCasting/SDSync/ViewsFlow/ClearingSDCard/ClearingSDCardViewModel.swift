@@ -1,7 +1,6 @@
 // Created by Lunar on 06/12/2021.
 //
 import Foundation
-import CoreBluetooth
 
 enum ClearingSDCardError {
     case undefined
@@ -27,7 +26,7 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
     var isClearingCompleted: Published<Bool>.Publisher { $isClearingCompletedValue }
 
     var isSDClearProcess: Bool
-    private let peripheral: CBPeripheral
+    private let device: NewBluetoothManager.BluetoothDevice
     @Injected private var airBeamConnectionController: AirBeamConnectionController
     @Injected private var sdSyncController: SDSyncController
     private var error = ClearingSDCardError.undefined
@@ -37,14 +36,14 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
     @Published var presentNextScreen: Bool = false
     
     
-    init(isSDClearProcess: Bool, peripheral: CBPeripheral) {
+    init(isSDClearProcess: Bool, device: NewBluetoothManager.BluetoothDevice) {
         self.isSDClearProcess = isSDClearProcess
-        self.peripheral = peripheral
+        self.device = device
     }
     
     func clearSDCardButtonTapped() {
-        self.airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { success in
-            guard success else {
+        self.airBeamConnectionController.connectToAirBeam(device: device) { result in
+            guard result == .success else {
                 DispatchQueue.main.async {
                     self.isClearingCompletedValue = false
                     self.error = ClearingSDCardError.noConnection
@@ -52,8 +51,8 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
                 }
                 return
             }
-            self.sdSyncController.clearSDCard(self.peripheral) { result in
-                self.airBeamConnectionController.disconnectAirBeam(peripheral: self.peripheral)
+            self.sdSyncController.clearSDCard(self.device) { result in
+                self.airBeamConnectionController.disconnectAirBeam(device: self.device)
                 DispatchQueue.main.async {
                     self.isClearingCompletedValue = result
                     self.presentNextScreen = result

@@ -17,7 +17,7 @@ class SettingsViewModel: ObservableObject {
     let username = "\(KeychainStorage(service: Bundle.main.bundleIdentifier!).getProfileData(for: .username))"
     
     @Injected private var locationAuthorization: LocationAuthorization
-    @Injected private var bluetoothHandler: BluetoothHandler
+    @Injected private var bluetoothHandler: BluetoothPermisionsChecker
     @Injected private var controller: SettingsController
     @Injected private var userSettings: UserSettings
     @Injected private var networkChecker: NetworkChecker

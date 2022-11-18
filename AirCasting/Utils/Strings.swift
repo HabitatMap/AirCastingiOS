@@ -955,6 +955,13 @@ struct Strings {
                                                        comment: "")
     }
     
+    enum IncompatibleDeviceAlert {
+        static let title: String = NSLocalizedString("Incompatible Device",
+                                                     comment: "")
+        static let message: String = NSLocalizedString("This device is not compatible with this application.",
+                                                       comment: "")
+    }
+    
     enum InAppAlerts {
         static let noInternetConnectionTitle: String = NSLocalizedString("No internet connection",
                                                                    comment: "")
@@ -1019,6 +1026,10 @@ struct Strings {
         static let fetchingDataFailedMessage: String = NSLocalizedString("Something went wrong. Please try again later.", comment: "")
         static let signInErrorTitle: String = NSLocalizedString("Cannot sign in",
                                                                           comment:  "")
+        static let airBeamConfigurationFailureTitle = NSLocalizedString("AirBeam configuration failed", comment: "")
+        static let airBeamConfigurationFailureTMessage = NSLocalizedString("Something went wrong with AirBeam configuration. Please try again.", comment: "")
+        static let genericErrorAlertTitle: String = NSLocalizedString("Something went wrong", comment: "")
+        static let genericErrorAlertMessage: String = NSLocalizedString("The operation couldn't be completed.", comment: "")
     }
     
     enum AddNoteView {
