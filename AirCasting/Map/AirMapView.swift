@@ -71,8 +71,8 @@ struct AirMapView: View {
                             // brak PathPoint - nie rysujemy ścieżki
                             _MapView(path: pathPoints,
                                      type: .normal,
-                                     trackingStyle: .user,
-                                     userIndicatorStyle: .custom(color: self.color(points: pathPoints, threshold: threshold)),
+                                     trackingStyle: .latestPathPoint,
+                                     userIndicatorStyle: .custom(color: _MapViewThresholdFormatter.shared.color(points: pathPoints, threshold: threshold)),
                                      userTracker: UserTrackerAdapter(locationTracker))
 
                         } else if session.isActive {
@@ -82,7 +82,7 @@ struct AirMapView: View {
                             _MapView(path: pathPoints,
                                      type: .normal,
                                      trackingStyle: .latestPathPoint,
-                                     userIndicatorStyle: .custom(color: self.color(points: pathPoints, threshold: threshold)),
+                                     userIndicatorStyle: .custom(color: _MapViewThresholdFormatter.shared.color(points: pathPoints, threshold: threshold)),
                                      userTracker: UserTrackerAdapter(locationTracker),
                                      markers: mapNotesVM.notes.asMapMarkers(with: didTapNote))
                         } else {
@@ -144,40 +144,6 @@ struct AirMapView: View {
     
     private func didTapNote(_ note: MapNote) {
         currentlyPresentedNoteDetails = note
-    }
-}
-
-private extension AirMapView {
-    // This keeps track of the last PathPoint value and adjust color to it.
-    func color(points: [_MapView.PathPoint], threshold: SensorThreshold) -> Color {
-        let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
-        
-        guard let point = points.last else { return .white }
-        let measurement = formatter.value(from: point.value)
-        return getProperColor(value: measurement, threshold: threshold)
-    }
-    
-    func getProperColor(value: Int32, threshold: SensorThreshold?) -> Color {
-        guard let threshold = threshold else { return .white }
-        
-        let veryLow = threshold.thresholdVeryLow
-        let low = threshold.thresholdLow
-        let medium = threshold.thresholdMedium
-        let high = threshold.thresholdHigh
-        let veryHigh = threshold.thresholdVeryHigh
-        
-        switch value {
-        case veryLow ..< low:
-            return Color.aircastingGreen
-        case low ..< medium:
-            return Color.aircastingYellow
-        case medium ..< high:
-            return Color.aircastingOrange
-        case high ... veryHigh:
-            return Color.aircastingRed
-        default:
-            return Color.aircastingGray
-        }
     }
 }
 

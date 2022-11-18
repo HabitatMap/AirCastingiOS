@@ -214,8 +214,8 @@ struct _MapView: UIViewRepresentable {
     }
     
     private func centerMapOnUserPosition(in view: GMSMapView, coordinator: Coordinator) {
-        guard let latestUserLocation = coordinator.latestUserLocation else { return }
-        let userPos = GMSCameraPosition(target: latestUserLocation.coordinate, zoom: 16.0) // TODO: Configure later
+        guard let userLocation = trackingBasedLastKnownLocation(coordinator: coordinator) else { return }
+        let userPos = GMSCameraPosition(target: userLocation.coordinate, zoom: 16.0) // TODO: Configure later
         view.animate(to: userPos)
     }
     
@@ -237,20 +237,30 @@ struct _MapView: UIViewRepresentable {
     private var isUserPositionTrackingRequired: Bool {
         switch (trackingStyle, userIndicatorStyle) {
         case (.user, _): return true
-        case (_, .custom): return true
+//        case (_, .custom): return true
         // NOTE: for (_, .standard) case we don't need to track the user because GMSMapView can take care of that for us
         default: return false
         }
     }
     
+    private func trackingBasedLastKnownLocation(coordinator: Coordinator) -> CLLocation? {
+        if trackingStyle == .latestPathPoint{
+            guard let lastPath = path.last else { return nil }
+            return CLLocation(latitude: lastPath.lat, longitude: lastPath.long)
+        } else {
+            guard let userLocation = coordinator.latestUserLocation else { return nil }
+            return userLocation
+        }
+    }
+    
     private func setupUserIndicatorStyle(with style: UserIndicatorStyle, in view: GMSMapView, with coordinator: Coordinator) {
-        guard let userLocation = coordinator.latestUserLocation else { return }
         switch style {
         case .none:
             break
         case .standard:
             view.isMyLocationEnabled = true
         case .custom(let color):
+            guard let userLocation = trackingBasedLastKnownLocation(coordinator: coordinator) else { return }
             createCustomUserIndicator(color: color, userLocation: userLocation, uiView: view, coordinator: coordinator)
         }
     }
