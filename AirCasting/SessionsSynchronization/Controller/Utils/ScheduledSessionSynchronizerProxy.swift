@@ -16,7 +16,8 @@ import struct UIKit.UIBackgroundTaskIdentifier
 /// - The _Gang of Four_ book
 /// - https://refactoring.guru/design-patterns/proxy
 final class ScheduledSessionSynchronizerProxy<S: Scheduler>: SessionSynchronizer {
-    lazy var syncInProgress: CurrentValueSubject<Bool, Never> = self.controller.syncInProgress
+    // This property is meant to be used only by the UI, therefore will always be scheduled on the main thread
+    let syncInProgress: CurrentValueSubject<Bool, Never>
     
     var errorStream: SessionSynchronizerErrorStream? {
         get { controller.errorStream }
@@ -31,6 +32,8 @@ final class ScheduledSessionSynchronizerProxy<S: Scheduler>: SessionSynchronizer
     init(controller: SessionSynchronizer, scheduler: S) {
         self.controller = controller
         self.scheduler = scheduler
+        syncInProgress = .init(controller.syncInProgress.value)
+        controller.syncInProgress.receive(on: DispatchQueue.main).sink(receiveValue: { self.syncInProgress.value = $0 }).store(in: &cancellables)
     }
     
     func triggerSynchronization(options: SessionSynchronizationOptions, completion: (() -> Void)?) {
