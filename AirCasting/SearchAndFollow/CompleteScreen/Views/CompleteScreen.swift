@@ -3,9 +3,11 @@
 
 import SwiftUI
 import AirCastingStyling
+import Resolver
 
 struct CompleteScreen: View {
     @StateObject var viewModel: CompleteScreenViewModel
+    @Injected private var locationTracker: LocationTracker
     
     init(session: PartialExternalSession, exitRoute: @escaping () -> Void) {
         _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session, exitRoute: exitRoute))
@@ -37,7 +39,12 @@ struct CompleteScreen: View {
                     .padding(.vertical)
             }
             if viewModel.isMapSelected {
-                SearchCompleteScreenMapView(longitude: viewModel.sessionLongitude, latitude: viewModel.sessionLatitude)
+                _MapView(path: [.init(lat: viewModel.sessionLatitude, long: viewModel.sessionLongitude, value: 0.0)],
+                         type: .normal,
+                         trackingStyle: .latestPathPoint,
+                         userIndicatorStyle: .custom(color: .accentColor),
+                         userTracker: UserTrackerAdapter(locationTracker))
+//                SearchCompleteScreenMapView(longitude: viewModel.sessionLongitude, latitude: viewModel.sessionLatitude)
             } else {
                 SearchAndFollowChartView(viewModel: viewModel.chartViewModel)
                 chartDescription
