@@ -185,6 +185,7 @@ extension Resolver: ResolverRegistering {
         main.register { NewBluetoothManager() }
         .implements(BluetoothCommunicator.self)
         .implements(BluetoothPermisionsChecker.self)
+        .implements(BluetoothPeripheralConnectionChecker.self)
         .implements(BluetoothStateHandler.self)
         .implements(BluetoothScanner.self)
         .implements(BluetoothConnectionHandler.self)
