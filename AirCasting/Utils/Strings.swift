@@ -620,6 +620,10 @@ struct Strings {
         
         static let finishAlertMessage: String = NSLocalizedString("The session will be moved to Mobile Dormant tab and you won't be able to add new measurement to it.",
                                                                   comment: "")
+        static let cannotReconnectAlertTitle: String = NSLocalizedString("Reconnection failure",
+                                                                  comment: "")
+        static let cannotReconnectAlertMessage: String = NSLocalizedString("Cannot process reconnection anymore. Please finish session, so it will be moved to Mobile Dormant.",
+                                                                  comment: "")
         static let finishAlertMessage_withSync: String = NSLocalizedString(" SD card will be cleared afterwards.",
                                                                            comment: "")
         static let finishAlertButton: String = NSLocalizedString("Finish recording",
@@ -640,6 +644,10 @@ struct Strings {
                                                              comment: "")
         static let thresholdAlertsButton: String = NSLocalizedString("Threshold alerts",
                                                              comment: "")
+        static let failedFinishSessionTitle: String = NSLocalizedString("Failed finishing session",
+                                                                        comment: "")
+        static let failedFinishSessionMessage: String = NSLocalizedString("Please try again.",
+                                                                        comment: "")
     }
     
     enum NetworkChecker {
@@ -808,6 +816,17 @@ struct Strings {
         static let finishAndSyncButtonLabel = NSLocalizedString("Finish recording & sync",
                                                                 comment: "")
         static let finishAndDontSyncButtonLabel = NSLocalizedString("Finish recording & don't sync",
+                                                                    comment: "")
+    }
+    
+    enum ReconnectSessionCardView {
+        static let heading = NSLocalizedString("Measurement device disconnected",
+                                               comment: "")
+        static let description = NSLocalizedString("Your measurement device is no longer connected to the AirCasting app. Make sure Bluetooth is on and your measurement device is nearby.",
+                                                   comment: "")
+        static let reconnectLabel = NSLocalizedString("Reconnect",
+                                                                comment: "")
+        static let finishSessionLabel = NSLocalizedString("Finish session",
                                                                     comment: "")
     }
     
