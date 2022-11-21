@@ -37,12 +37,6 @@ struct GridSquare {
         self.polygon = GMSPolygon(path: rect)
     }
     
-    func inBounds(coordinates: CLLocationCoordinate2D?) -> Bool {
-        let bounds = GMSCoordinateBounds(coordinate: southWestLatLng, coordinate: northEastLatLng)
-        
-        return coordinates != nil ? bounds.contains(coordinates!) : false
-    }
-    
     mutating func addMeasurement(_ pathPoint: PathPoint) {
         sum += pathPoint.measurement
         number += 1
@@ -66,20 +60,25 @@ struct GridSquare {
     
     mutating func addPolygon() {
         if (polygon?.map != nil) {
-            polygon?.map = nil
+            remove()
         }
         
         polygon?.map = mapView
         newColor = false
     }
     
+    mutating func calculateAverage() {
+        self.averagedValue = sum / Double(number)
+    }
+    
     func shouldDrawPolygon() -> Bool {
         return self.newColor || (polygon?.map == nil && averagedValue != nil)
     }
     
-    
-    mutating func calculateAverage() {
-        self.averagedValue = sum / Double(number)
+    func inBounds(coordinates: CLLocationCoordinate2D?) -> Bool {
+        let bounds = GMSCoordinateBounds(coordinate: southWestLatLng, coordinate: northEastLatLng)
+        
+        return coordinates != nil ? bounds.contains(coordinates!) : false
     }
     
     func remove() {
