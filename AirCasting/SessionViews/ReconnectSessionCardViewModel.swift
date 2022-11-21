@@ -9,7 +9,6 @@ class ReconnectSessionCardViewModel: ObservableObject {
     let session: SessionEntity
     @Published var alert: AlertInfo?
     @Published var isSpinnerOn = false
-    @Injected private var bm: BluetoothManager
     
     init(session: SessionEntity) {
         self.session = session
