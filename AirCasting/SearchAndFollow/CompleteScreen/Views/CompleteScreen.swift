@@ -43,7 +43,8 @@ struct CompleteScreen: View {
                          type: .normal,
                          trackingStyle: .latestPathPoint,
                          userIndicatorStyle: .custom(color: .accentColor),
-                         userTracker: UserTrackerAdapter(locationTracker))
+                         userTracker: ConstantTracker(location: .init(latitude: viewModel.sessionLatitude,
+                                                                      longitude: viewModel.sessionLongitude)))
 //                SearchCompleteScreenMapView(longitude: viewModel.sessionLongitude, latitude: viewModel.sessionLatitude)
             } else {
                 SearchAndFollowChartView(viewModel: viewModel.chartViewModel)
