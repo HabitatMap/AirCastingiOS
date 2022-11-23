@@ -89,7 +89,7 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
     private var deviceDiscoveryCallbacks: [DiscoveryCallback] = []
     
     class BluetoothDevice: Equatable {
-        fileprivate let peripheral: CBPeripheral
+        fileprivate let peripheral: CBPeripheral!
         let id = UUID()
         var name: String?
         var uuid: String
@@ -98,10 +98,16 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
             lhs.peripheral == rhs.peripheral
         }
         
-        init(peripheral: CBPeripheral) {
+        fileprivate init(peripheral: CBPeripheral) {
             self.peripheral = peripheral
             name = peripheral.name
             uuid = peripheral.identifier.description
+        }
+        
+        init(name: String?, uuid: String) {
+            self.name = name
+            self.uuid = uuid
+            peripheral = nil
         }
     }
     
@@ -311,8 +317,7 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
             }
         }
         if device.peripheral.services == nil {
-            device.peripheral.discoverServices(nil)
-            // TODO: And then what? Fix with Paweł
+            Log.error("Tried to subscibe to characteristics before they were discovered")
         }
         return observer.identifier
     }
@@ -327,10 +332,10 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
         let characteristic = containgObserver.key
         charactieristicsMapping[characteristic] = containingObserverArray
         // If last subscriber unssubbed, stop notifying
-        if containingObserverArray.isEmpty {
+        if containingObserverArray.isEmpty && device?.peripheral.state == .connected {
             device?.peripheral.services?.forEach {
                 let allMatching = $0.characteristics?.filter { $0.uuid == CBUUID(string: characteristic.value) } ?? []
-                allMatching.forEach { device?.peripheral.setNotifyValue(false, for: $0) } // TODO: this sets off API missuse warning cause the device is disconnected already
+                allMatching.forEach { device?.peripheral.setNotifyValue(false, for: $0) }
             }
         }
         return true
@@ -396,7 +401,7 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
         guard let characteristic = getCharacteristic(serviceID: serviceUUID,
                                                      charID: characteristicUUID,
                                                      peripheral: device.peripheral) else {
-            Log.error("Unable to get characteristic from \(device.peripheral)")
+            Log.error("Unable to get characteristic from \(String(describing: device.peripheral))")
             return
         }
         Log.info("Writing value to peripheral")
