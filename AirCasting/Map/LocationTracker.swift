@@ -131,3 +131,15 @@ class UserTrackerAdapter: UserTracker {
         locationTracker.stop()
     }
 }
+
+struct ConstantTracker: UserTracker {
+    let location: CLLocation
+    
+    func getLastKnownLocation() -> CLLocation? {
+        location
+    }
+    
+    func startTrackingUserPosition(_ newPos: @escaping (CLLocation) -> Void) {
+        newPos(location)
+    }
+}

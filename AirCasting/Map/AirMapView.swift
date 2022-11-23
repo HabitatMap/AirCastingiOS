@@ -73,7 +73,7 @@ struct AirMapView: View {
                                      type: .normal,
                                      trackingStyle: .latestPathPoint,
                                      userIndicatorStyle: .custom(color: _MapViewThresholdFormatter.shared.color(points: pathPoints, threshold: threshold)),
-                                     userTracker: UserTrackerAdapter(locationTracker))
+                                     userTracker: ConstantTracker(location: pathPoints.last?.location ?? .apple))
 
                         } else if session.isActive {
                             // Kropka customowa
@@ -153,5 +153,11 @@ fileprivate extension Array where Element == MapNote {
                             image: note.markerImage,
                             location: CLLocation(latitude: note.location.latitude, longitude: note.location.longitude),
                             handler: { handler(note) } )}
+    }
+}
+
+extension _MapView.PathPoint {
+    var location: CLLocation {
+        .init(latitude: lat, longitude: long)
     }
 }
