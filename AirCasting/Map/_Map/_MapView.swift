@@ -6,20 +6,6 @@ import SwiftUI
 import GoogleMaps
 import Combine
 
-extension _MapView {
-    class Coordinator {
-        var latestUserLocation: CLLocation?
-        var polyline = GMSPolyline()
-        var currentPath: [PathPoint] = []
-        var customUserMarker: GMSMarker?
-        var myLocationSink: Any?
-        var mapViewDelegateHandler: MapViewDelegateHandler?
-        var suspendTracking: Bool = false
-        var gmsMarkers: [GMSMarker] = []
-        var previousFrameMarkers: [Marker] = []
-    }
-}
-
 protocol UserTracker {
     func startTrackingUserPosition(_ newPos: @escaping (CLLocation) -> Void)
     func getLastKnownLocation() -> CLLocation?
@@ -69,6 +55,20 @@ extension _MapView {
     }
 }
 
+extension _MapView {
+    class Coordinator {
+        fileprivate var latestUserLocation: CLLocation?
+        fileprivate var polyline = GMSPolyline()
+        fileprivate var currentPath: [PathPoint] = []
+        fileprivate var customUserMarker: GMSMarker?
+        fileprivate var myLocationSink: Any?
+        fileprivate var mapViewDelegateHandler: MapViewDelegateHandler?
+        fileprivate var suspendTracking: Bool = false
+        fileprivate var gmsMarkers: [GMSMarker] = []
+        fileprivate var previousFrameMarkers: [Marker] = []
+    }
+}
+
 struct _MapView: UIViewRepresentable {
     @Environment(\.colorScheme) private var colorScheme
     
@@ -78,6 +78,7 @@ struct _MapView: UIViewRepresentable {
     private let userIndicatorStyle: UserIndicatorStyle
     private let userTracker: UserTracker
     private let markers: [Marker]
+    private var overlayClosure: ((GMSMapView) -> Void)?
     
     init(path: [PathPoint] = [], type: MapType, trackingStyle: TrackingStyle, userIndicatorStyle: UserIndicatorStyle, userTracker: UserTracker, markers: [Marker] = []) {
         self.path = path
@@ -86,6 +87,14 @@ struct _MapView: UIViewRepresentable {
         self.userIndicatorStyle = userIndicatorStyle
         self.userTracker = userTracker
         self.markers = markers
+    }
+    
+    // This is part of a hack that allows us to stich heatmap mechanism
+    // into this new map.
+    func addingOverlay(_ closure: @escaping (GMSMapView) -> Void) -> Self {
+        var mutableSelf = self
+        mutableSelf.overlayClosure = closure
+        return mutableSelf
     }
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -106,24 +115,12 @@ struct _MapView: UIViewRepresentable {
         }
         
         setupStyling(for: mapView)
-        do {
-            if let styleURL = Bundle.main.url(forResource: "style", withExtension: "json") {
-                let s = try GMSMapStyle(contentsOfFileURL: styleURL)
-                mapView.mapStyle = s
-            } else {
-                Log.verbose("Unable to find style.json")
-            }
-        } catch {
-            Log.verbose("One or more of the map styles failed to load. \(error)")
-        }
         return mapView
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        asd(uiView, coordinator: context.coordinator)
-    }
-    
-    private func asd(_ uiView: GMSMapView, coordinator: Coordinator) {
+        overlayClosure?(uiView)
+        let coordinator = context.coordinator
         setupUserIndicatorStyle(with: userIndicatorStyle, in: uiView, with: coordinator)
         if markers != coordinator.previousFrameMarkers {
             placeMarkers(uiView, markers: markers, coordinator: coordinator)
@@ -156,6 +153,8 @@ struct _MapView: UIViewRepresentable {
             let marker = coordinator.previousFrameMarkers.first(where: { $0.id == (marker.userData as? Int) })
             marker?.handler?()
             return marker?.handler != nil
+        }, idleAt: { mapView, location in
+            overlayClosure?(mapView)
         })
         
         mapView.delegate = coordinator.mapViewDelegateHandler
@@ -317,7 +316,7 @@ struct _MapView: UIViewRepresentable {
     }
 }
 
-extension _MapView.MapType {
+fileprivate extension _MapView.MapType {
     var gmsMapviewType: GMSMapViewType {
         switch self {
         case .normal: return .normal
@@ -328,18 +327,21 @@ extension _MapView.MapType {
     }
 }
 
-extension _MapView {
+fileprivate extension _MapView {
     class MapViewDelegateHandler: NSObject, GMSMapViewDelegate {
         let myLocationTapHandler: (GMSMapView) -> Bool
         let draggingHandler: (GMSMapView) -> Void
         let markerTapHandler: (GMSMapView, GMSMarker) -> Bool
+        let idleAt: (GMSMapView, GMSCameraPosition) -> Void
         
         init(myLocationTapHandler: @escaping (GMSMapView) -> Bool,
              draggingHandler: @escaping (GMSMapView) -> Void,
-             markerTapHandler: @escaping (GMSMapView, GMSMarker) -> Bool) {
+             markerTapHandler: @escaping (GMSMapView, GMSMarker) -> Bool,
+             idleAt: @escaping (GMSMapView, GMSCameraPosition) -> Void) {
             self.myLocationTapHandler = myLocationTapHandler
             self.draggingHandler = draggingHandler
             self.markerTapHandler = markerTapHandler
+            self.idleAt = idleAt
         }
         
         func didTapMyLocationButton(for mapView: GMSMapView) -> Bool {
@@ -354,53 +356,9 @@ extension _MapView {
         func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
             return markerTapHandler(mapView, marker)
         }
+        
+        func mapView(_ mapView: GMSMapView, idleAt position: GMSCameraPosition) {
+            idleAt(mapView, position)
+        }
     }
 }
-
-extension CLLocation {
-    static var applePark: CLLocation { CLLocation(latitude: 37.33, longitude: -122.00) }
-}
-
-
-//@objc
-//class CLLocationUserTracker: NSObject, UserTracker, CLLocationManagerDelegate {
-//    private var callback: ((CLLocation) -> Void)? {
-//        didSet {
-//            guard let latestLoc else { return }
-//            callback?(latestLoc)
-//        }
-//    }
-//
-//    private var latestLoc: CLLocation? {
-//        didSet {
-//            guard let latestLoc else { return }
-//            callback?(latestLoc)
-//        }
-//    }
-//
-//    let manager: CLLocationManager = {
-//        let manager = CLLocationManager()
-//        manager.desiredAccuracy = kCLLocationAccuracyBest
-//        manager.pausesLocationUpdatesAutomatically = false
-//        manager.startUpdatingLocation()
-//        return manager
-//    }()
-//
-//    override init() {
-//        super.init()
-//        self.manager.delegate = self
-//        Log.verbose("Requesting authorization")
-//        self.manager.requestAlwaysAuthorization()
-//    }
-//
-//    func startTrackingUserPosision(_ newPos: @escaping (CLLocation) -> Void) {
-//        Log.verbose("Callback set")
-//        callback = newPos
-//    }
-//
-//    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-//        guard let loc = locations.first else { return }
-//        Log.verbose("new location: \(loc)")
-//        latestLoc = loc
-//    }
-//}

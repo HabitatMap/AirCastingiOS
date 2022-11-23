@@ -11,6 +11,10 @@ import Foundation
 import CoreData
 import Resolver
 
+class HeatmapContainer: ObservableObject {
+    var heatMap: Heatmap?
+}
+
 struct AirMapView: View {
     @Environment(\.scenePhase) var scenePhase
     
@@ -24,6 +28,8 @@ struct AirMapView: View {
     @Binding var selectedStream: MeasurementStreamEntity?
     @State var currentlyPresentedNoteDetails: MapNote? = nil // If set to nil, hide modal, if not nil show modal
     @Injected private var locationTracker: LocationTracker
+    
+    @StateObject private var heatmapContainer = HeatmapContainer()
     
     init(session: SessionEntity,
          thresholds: ABMeasurementsViewThreshold,
@@ -95,6 +101,15 @@ struct AirMapView: View {
                                      userIndicatorStyle: .none,
                                      userTracker: UserTrackerAdapter(locationTracker),
                                      markers: mapNotesVM.notes.asMapMarkers(with: didTapNote))
+                            .addingOverlay { mapView in
+                                Log.verbose("## Drawing heatmap")
+                                heatmapContainer.heatMap?.remove()
+                                let mapWidth = mapView.frame.width
+                                let mapHeight = mapView.frame.height
+                                guard mapWidth > 0, mapHeight > 0 else { return }
+                                heatmapContainer.heatMap = Heatmap(mapView, sensorThreshold: threshold, mapWidth: Int(mapWidth), mapHeight: Int(mapHeight))
+                                heatmapContainer.heatMap?.drawHeatMap(pathPoints: pathPoints.map { .init(location: .init(latitude: $0.lat, longitude: $0.long), measurementTime: DateBuilder.distantPast(), measurement: $0.value) })
+                            }
                         }
 #warning("TODO: Implement calculating stats only for visible path points")
                         // This doesn't work properly and it needs to be fixed, so I'm commenting it out
