@@ -11,4 +11,8 @@ extension CLLocation {
     static var apple: CLLocation {
         .init(latitude: 37.35, longitude: -122.05)
     }
+    
+    static var applePark: CLLocation {
+        CLLocation(latitude: 37.33, longitude: -122.00)
+    }
 }
