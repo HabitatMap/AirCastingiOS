@@ -18,7 +18,7 @@ struct ReorderingDashboard: View {
     var body: some View {
         ScrollView {
             LazyVGrid(columns: columns) {
-                ForEach(viewModel.sessions, id: \.uuid) { session in
+                ForEach(viewModel.sessions.filter { $0.uuid != "" && !$0.gotDeleted }, id: \.uuid) { session in
                     ReoredringSessionCard(session: session, thresholds: viewModel.thresholds)
                         .overlay(viewModel.currentlyDraggedSession?.uuid == session.uuid && changedView ? Color.aircastingWhite.opacity(0.8) : Color.clear)
                         .onDrag({
