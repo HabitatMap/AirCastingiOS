@@ -340,7 +340,8 @@ struct InAppAlerts {
     
     static func thresholdsValuesSettingsWarning() -> AlertInfo {
         AlertInfo(
-            title: Strings.InAppAlerts.thresholdsValuesSettingsTitle, message: Strings.InAppAlerts.thresholdsValuesSettingsMessage,
+            title: Strings.InAppAlerts.thresholdsValuesSettingsTitle,
+            message: Strings.InAppAlerts.thresholdsValuesSettingsMessage,
             buttons: [
                 .default(title: Strings.Commons.gotIt,
                          action: nil),
@@ -350,7 +351,8 @@ struct InAppAlerts {
     
     static func logoutWarningAlert(action: @escaping (() -> Void)) -> AlertInfo {
         AlertInfo(
-            title: Strings.InAppAlerts.logoutWarningTitle, message: Strings.InAppAlerts.logoutWarningMessage,
+            title: Strings.InAppAlerts.logoutWarningTitle,
+            message: Strings.InAppAlerts.logoutWarningMessage,
             buttons: [
                 .default(title: Strings.InAppAlerts.logoutWarningConfirmButton,
                          action: action),

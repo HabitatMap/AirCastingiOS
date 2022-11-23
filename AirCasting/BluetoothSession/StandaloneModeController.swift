@@ -19,7 +19,7 @@ final class DefaultStandaloneModeContoller: StandaloneModeController {
         }
         Log.info("Changing session status to disconnected for: \(sessionUUID)")
         
-        performDatabaseChange(for: sessionUUID)
+        performDatabaseStatusUpdate(for: sessionUUID)
         
         if !session.locationless {
             locationTracker.stop()
@@ -28,7 +28,7 @@ final class DefaultStandaloneModeContoller: StandaloneModeController {
         activeSessionProvider.clearActiveSession()
     }
     
-    private func performDatabaseChange(for sessionUUID: SessionUUID) {
+    private func performDatabaseStatusUpdate(for sessionUUID: SessionUUID) {
         storage.updateSessionStatus(.DISCONNECTED, for: sessionUUID)
     }
 }

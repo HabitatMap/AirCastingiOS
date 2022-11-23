@@ -35,7 +35,7 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
     func createSession(session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
         measurementStreamStorage.accessStorage { [weak self] storage in
             do {
-                guard let self = self else { return }
+                guard let self else { return }
                 let sessionReturned = try storage.createSession(session)
                 let entity = BluetoothConnectionEntity(context: sessionReturned.managedObjectContext!)
                 entity.peripheralUUID = device.uuid

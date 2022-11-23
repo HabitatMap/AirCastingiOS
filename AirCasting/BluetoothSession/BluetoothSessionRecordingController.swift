@@ -27,7 +27,8 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
                 case .success():
                     Log.info("Successfully configured AB")
                     // Step 2: Create session
-                    measurementsSaver.createSession(session: session, device: device) { [self] result in
+                    measurementsSaver.createSession(session: session, device: device) { [weak self] result in
+                        guard let self else { return }
                         switch result {
                         case .success():
                             Log.info("Successfully created session \(session.uuid) in the database")
@@ -36,9 +37,9 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
                                 self.locationTracker.start()
                             }
                             // Step 4: Set active session in active session provider
-                            activeSessionProvider.setActiveSession(session: session, device: device)
+                            self.activeSessionProvider.setActiveSession(session: session, device: device)
                             // Step 5: Start recording measurements
-                            recordMeasurements(for: activeSessionProvider.activeSession!)
+                            self.recordMeasurements(for: self.activeSessionProvider.activeSession!)
                             completion(.success(()))
                         case .failure(let error):
                             Log.error("Failed to create session: \(error)")
