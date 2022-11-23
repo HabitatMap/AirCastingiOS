@@ -114,7 +114,6 @@ struct ConfirmCreatingSessionView: View {
                                      userIndicatorStyle: .standard,
                                      userTracker: UserTrackerAdapter(locationTracker),
                                      markers: [])
-//                            CreatingSessionMapView(isMyLocationEnabled: true)
                         }
                     } else if !(sessionContext.isIndoor ?? false) {
                         _MapView(path: [],
@@ -124,9 +123,6 @@ struct ConfirmCreatingSessionView: View {
                                  userTracker: UserTrackerAdapter(locationTracker),
                                  markers: [])
                         .disabled(true)
-                        
-//                        CreatingSessionMapView(isMyLocationEnabled: false, startingLocation: sessionContext.startingLocation)
-//                            .disabled(true)
                         // It needs to be disabled to prevent user interaction (swiping map) because it is only conformation screen
                         dot
                     }

@@ -16,7 +16,7 @@ class _MapViewThresholdFormatter {
         return getProperColor(value: measurement, threshold: threshold)
     }
     
-    private func getProperColor(value: Int32, threshold: SensorThreshold?) -> Color {
+    func getProperColor(value: Int32, threshold: SensorThreshold?) -> Color {
         guard let threshold = threshold else { return .white }
         
         let veryLow = threshold.thresholdVeryLow

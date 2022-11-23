@@ -44,7 +44,12 @@ struct GridSquare {
         
         guard let averagedValue = averagedValue else { return }
         let formatter = Resolver.resolve(ThresholdFormatter.self, args: sensorThreshold)
-        let color: UIColor = GoogleMapView.color(value: formatter.value(from: averagedValue), threshold: sensorThreshold).withAlphaComponent(0.5)
+        let color = UIColor(
+            _MapViewThresholdFormatter
+                .shared
+                .getProperColor(value: formatter.value(from: averagedValue),
+                                threshold: sensorThreshold))
+            .withAlphaComponent(0.5)
         if color != fillColor {
             fillColor = color
             newColor = true
