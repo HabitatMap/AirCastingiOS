@@ -25,6 +25,7 @@ struct MainTabBarView: View {
     @StateObject var coreDataHook: CoreDataHook
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     @Environment(\.colorScheme) var colorScheme
+    @State var measurementsDownloadingInProgress = false
     
     private var sessions: [Sessionable] {
         coreDataHook.sessions
@@ -54,7 +55,8 @@ struct MainTabBarView: View {
             
         }
         .onAppCameToForeground {
-            measurementUpdatingService.updateAllSessionsMeasurements()
+            measurementsDownloadingInProgress = true
+            measurementUpdatingService.updateAllSessionsMeasurements() { measurementsDownloadingInProgress = false }
         }
         .onAppear {
             UITabBar.appearance().backgroundColor = .aircastingBackground
@@ -62,6 +64,8 @@ struct MainTabBarView: View {
             appearance.backgroundImage = UIImage()
             appearance.shadowImage = UIImage.mainTabBarShadow
             UITabBar.appearance().standardAppearance = appearance
+            measurementsDownloadingInProgress = true
+            measurementUpdatingService.updateAllSessionsMeasurements() { measurementsDownloadingInProgress = false }
             measurementUpdatingService.start()
         }
         .onChange(of: tabSelection.selection, perform: { _ in
@@ -84,7 +88,7 @@ private extension MainTabBarView {
     // Tab Bar views
     private var dashboardTab: some View {
         NavigationView {
-            DashboardView(coreDataHook: coreDataHook)
+            DashboardView(coreDataHook: coreDataHook, measurementsDownloadingInProgress: $measurementsDownloadingInProgress)
         }.navigationViewStyle(StackNavigationViewStyle())
             .tabItem {
                 createTabBarImage(homeImage)

@@ -18,6 +18,7 @@ struct DashboardView: View {
     @EnvironmentObject var reorderButton: ReorderButton
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     @State var isRefreshing: Bool
+    @Binding var measurementsDownloadingInProgress: Bool
     @State private var alert: AlertInfo?
     @InjectedObject private var userSettings: UserSettings
     @Injected private var networkChecker: NetworkChecker
@@ -28,12 +29,13 @@ struct DashboardView: View {
         coreDataHook.sessions
     }
 
-    init(coreDataHook: CoreDataHook) {
+    init(coreDataHook: CoreDataHook, measurementsDownloadingInProgress: Binding<Bool>) {
         let navBarAppearance = UINavigationBar.appearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
         _coreDataHook = StateObject(wrappedValue: coreDataHook)
         self.sessionSynchronizer = Resolver.resolve(SessionSynchronizer.self)
         _isRefreshing = .init(wrappedValue: sessionSynchronizer.syncInProgress.value)
+        _measurementsDownloadingInProgress = .init(projectedValue: measurementsDownloadingInProgress)
     }
 
     var body: some View {
@@ -48,7 +50,7 @@ struct DashboardView: View {
                 sessionTypePicker
                 TabView(selection: $selectedSection.section) {
                     ForEach(DashboardSection.allCases, id: \.self) {
-                        SessionsListView(selectedSection: $0, isRefreshing: $isRefreshing, context: persistenceController.viewContext)
+                        SessionsListView(selectedSection: $0, isRefreshing: $isRefreshing, isDownloading: $measurementsDownloadingInProgress, context: persistenceController.viewContext)
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
