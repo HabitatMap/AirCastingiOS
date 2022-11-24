@@ -303,6 +303,8 @@ extension Resolver: ResolverRegistering {
         main.register {
             DefaultActiveMobileSessionProvidingService() as ActiveMobileSessionProvidingService
         }.scope(.application)
+        
+        main.register { DefaultUserTriggeredReconnectionController() as UserTriggeredReconnectionController }
 
         main.register { _, args in
             guard let args: StandaloneOrigin = args() else { fatalError() }

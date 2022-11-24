@@ -132,7 +132,6 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         queue.async {
-            Log.verbose("Did discover BT device \(peripheral.name ?? "unnamed")")
             self.deviceDiscoveryCallbacks.forEach { callback in
                 self.callbackQueue.async { callback(BluetoothDevice(peripheral: peripheral)) }
             }

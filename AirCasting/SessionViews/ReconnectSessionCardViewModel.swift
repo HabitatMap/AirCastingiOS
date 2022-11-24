@@ -6,9 +6,7 @@ import Resolver
 import Combine
 
 class ReconnectSessionCardViewModel: ObservableObject {
-    @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
-    @Injected private var sessionRecorder: BluetoothSessionRecordingController
-    let session: SessionEntity
+    @Injected private var reconnectionController: UserTriggeredReconnectionController
     @Published var alert: AlertInfo?
     @Published var connectingState: ConnectingState = .idle {
         didSet {
@@ -23,8 +21,7 @@ class ReconnectSessionCardViewModel: ObservableObject {
         }
     }
     @Published var buttonLabel = Strings.ReconnectSessionCardView.reconnectLabel
-    
-    private var reconnectionController = UserTriggeredReconnectionController()
+    let session: SessionEntity    
     
     enum ConnectingState {
         case idle
@@ -75,28 +72,15 @@ class ReconnectSessionCardViewModel: ObservableObject {
     
     private func connect(with uuid: String) {
         connectingState = .connecting
-        reconnectionController.reconnectWithPeripheral(deviceUUID: uuid) { [weak self] result in
+        reconnectionController.reconnectWithPeripheral(deviceUUID: uuid, session: Session(uuid: session.uuid, type: session.type, name: session.name, deviceType: session.deviceType, location: session.location, startTime: session.startTime)) { [weak self] result in
             guard let self else { return }
             switch result {
-            case .success(let device):
-                let session = self.session
-                self.activeSessionProvider.setActiveSession(session: Session(uuid: session.uuid, type: session.type, name: session.name, deviceType: session.deviceType, location: session.location, startTime: session.startTime), device: device)
-                self.sessionRecorder.resumeRecording(device: device) { result in
-                    switch result {
-                    case .success():
-                        DispatchQueue.main.async {
-                            self.connectingState = .connected
-                        }
-                    case .failure(let error):
-                        Log.info("## ERROR: \(error)")
-                        DispatchQueue.main.async {
-                            self.connectingState = .idle
-                            self.showAlertFor(error: .airbeamConfigurationFailure)
-                        }
-                    }
+            case .success():
+                DispatchQueue.main.async {
+                    self.connectingState = .connected
                 }
             case .failure(let error):
-                Log.info("## ERROR: \(error)")
+                Log.info("Failed to reconnect: \(error)")
                 DispatchQueue.main.async {
                     self.connectingState = .idle
                     self.showAlertFor(error: error)
