@@ -56,7 +56,11 @@ struct MainTabBarView: View {
         }
         .onAppCameToForeground {
             measurementsDownloadingInProgress = true
-            measurementUpdatingService.updateAllSessionsMeasurements() { measurementsDownloadingInProgress = false }
+            measurementUpdatingService.updateAllSessionsMeasurements() {
+                DispatchQueue.main.async {
+                    measurementsDownloadingInProgress = false
+                }
+            }
         }
         .onAppear {
             UITabBar.appearance().backgroundColor = .aircastingBackground
@@ -65,7 +69,11 @@ struct MainTabBarView: View {
             appearance.shadowImage = UIImage.mainTabBarShadow
             UITabBar.appearance().standardAppearance = appearance
             measurementsDownloadingInProgress = true
-            measurementUpdatingService.updateAllSessionsMeasurements() { measurementsDownloadingInProgress = false }
+            measurementUpdatingService.updateAllSessionsMeasurements() {
+                DispatchQueue.main.async {
+                    measurementsDownloadingInProgress = false
+                }
+            }
             measurementUpdatingService.start()
         }
         .onChange(of: tabSelection.selection, perform: { _ in
@@ -214,6 +222,13 @@ enum DashboardSection: String, CaseIterable {
         switch self {
         case .fixed, .mobileDormant: return true
         case .following, .mobileActive: return false
+        }
+    }
+    
+    var shouldShowMeasurementDownloadProgress: Bool {
+        switch self {
+        case .following: return true
+        case .mobileDormant, .mobileActive, .fixed: return false
         }
     }
 }

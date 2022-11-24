@@ -36,6 +36,8 @@ struct DashboardView: View {
         self.sessionSynchronizer = Resolver.resolve(SessionSynchronizer.self)
         _isRefreshing = .init(wrappedValue: sessionSynchronizer.syncInProgress.value)
         _measurementsDownloadingInProgress = .init(projectedValue: measurementsDownloadingInProgress)
+        var log = isRefreshing
+        Log.info("##### IS REFRESHING: \(log)")
     }
 
     var body: some View {
@@ -50,7 +52,7 @@ struct DashboardView: View {
                 sessionTypePicker
                 TabView(selection: $selectedSection.section) {
                     ForEach(DashboardSection.allCases, id: \.self) {
-                        SessionsListView(selectedSection: $0, isRefreshing: $isRefreshing, isDownloading: $measurementsDownloadingInProgress, context: persistenceController.viewContext)
+                        SessionsListView(selectedSection: $0, isRefreshing: $isRefreshing, measurementsDownloadingInProgress: $measurementsDownloadingInProgress, context: persistenceController.viewContext)
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))

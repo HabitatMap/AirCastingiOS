@@ -121,13 +121,13 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         let context = persistenceController.editContext
         context.perform {
             do {
+                defer { completion() }
                 if !isExternal {
                     Log.info("Processing regular session response")
                     let session: SessionEntity = try context.newOrExisting(uuid: output.uuid)
                     try UpdateSessionParamsService().updateSessionsParams(session: session, output: output)
                     try self.removeOldServiceDefault.removeOldestMeasurements(in: context,
                                                                        from: sessionUUID)
-                    completion()
                 } else {
                     Log.info("Processing external session response")
                     let session = try context.existingExternalSession(uuid: sessionUUID)
@@ -145,18 +145,14 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
                     })
                     try self.removeOldServiceDefault.removeOldestMeasurements(in: context,
                                                                               from: sessionUUID)
-                    completion()
                 }
                 try context.save()
             } catch let error as UpdateSessionParamsService.Error {
                 Log.error("Failed to update session params: \(error)")
-                completion()
             } catch let error as DefaultRemoveOldMeasurementsService.Error {
                 Log.error("Failed to remove old measaurements from fixed session \(error)")
-                completion()
             } catch {
                 Log.error("Save error: \(error)")
-                completion()
             }
         }
     }

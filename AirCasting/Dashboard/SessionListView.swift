@@ -14,16 +14,16 @@ struct SessionsListView: View {
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) private var thresholds
     @StateObject private var coreDataHook: CoreDataHook
     @Binding private var isRefreshing: Bool
-    @Binding private var isDownloading: Bool
+    @Binding private var measurementsDownloadingInProgress: Bool
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
     private let listCoordinateSpaceName = "listCoordinateSpace"
     private let selectedSection: DashboardSection
 
-    init(selectedSection: DashboardSection, isRefreshing: Binding<Bool>, isDownloading: Binding<Bool>, context: NSManagedObjectContext) {
+    init(selectedSection: DashboardSection, isRefreshing: Binding<Bool>, measurementsDownloadingInProgress: Binding<Bool>, context: NSManagedObjectContext) {
         self.selectedSection = selectedSection
         _isRefreshing = .init(projectedValue: isRefreshing)
-        _isDownloading = .init(projectedValue: isDownloading)
+        _measurementsDownloadingInProgress = .init(projectedValue: measurementsDownloadingInProgress)
         _coreDataHook = .init(wrappedValue: .init(context: context))
     }
     
@@ -46,7 +46,7 @@ struct SessionsListView: View {
                 if selectedSection.allowsRefreshing {
                     RefreshControl(coordinateSpace: .named(listCoordinateSpaceName), isRefreshing: $isRefreshing)
                 }
-                if selectedSection == .following && isDownloading {
+                if selectedSection.shouldShowMeasurementDownloadProgress && measurementsDownloadingInProgress {
                     ProgressView(Strings.SessionListView.downloading)
                         .padding(.top)
                 }
