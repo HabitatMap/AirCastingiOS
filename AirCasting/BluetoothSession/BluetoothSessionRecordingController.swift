@@ -62,10 +62,8 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
         // being done by the MeasurementStreamStorage class automagically.
         // This is something we might want to change at some point.
         
-        guard !isRecording else { return }
-        // If we are reconnecting session (when standalone mode is disabled)
-        // we might need to start recording measurements and track location again
-        // if the app has been closed in the mean time
+        guard !isRecording else { return } // To make sure we are not recording more than one session at once
+        
         if !(activeSessionProvider.activeSession?.session.locationless ?? true) {
             self.locationTracker.start()
         }
