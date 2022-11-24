@@ -56,7 +56,9 @@ class AirbeamConnectionViewModel: ObservableObject {
                 }
             case .failure(let error):
                 Log.info("Cannot create new mobile session while other is ongoing \(error.localizedDescription)")
-                self.getAlert(.deviceBusy); return
+                DispatchQueue.main.async {
+                    self.getAlert(.deviceBusy); return
+                }
             }
         }
     }
