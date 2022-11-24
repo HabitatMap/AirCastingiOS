@@ -10,15 +10,34 @@ class ReconnectSessionCardViewModel: ObservableObject {
     @Injected private var sessionRecorder: BluetoothSessionRecordingController
     let session: SessionEntity
     @Published var alert: AlertInfo?
-    @Published var isSpinnerOn = false
+    @Published var connectingState: ConnectingState = .idle {
+        didSet {
+            switch connectingState {
+            case .idle:
+                buttonLabel = Strings.ReconnectSessionCardView.reconnectLabel
+            case .connecting:
+                buttonLabel = Strings.ReconnectSessionCardView.connectingLabel
+            case .connected:
+                buttonLabel = Strings.ReconnectSessionCardView.connectedLabel
+            }
+        }
+    }
+    @Published var buttonLabel = Strings.ReconnectSessionCardView.reconnectLabel
+    
     private var reconnectionController = UserTriggeredReconnectionController()
+    
+    enum ConnectingState {
+        case idle
+        case connecting
+        case connected
+    }
     
     init(session: SessionEntity) {
         self.session = session
     }
     
     func onRecconectTap() {
-        guard let peripheralUUID = session.bluetoothConnection?.peripheralUUID else { Log.error("Trying to get uuid but it is not saved."); showReconnectionAlert(); return }
+        guard let peripheralUUID = session.bluetoothConnection?.peripheralUUID else { Log.error("Trying to get uuid but it is not saved."); showGenericAlert(); return }
         connect(with: peripheralUUID)
     }
     
@@ -39,12 +58,23 @@ class ReconnectSessionCardViewModel: ObservableObject {
         }
     }
     
-    private func showReconnectionAlert() {
-        alert = InAppAlerts.cannotReconnectSession(sessionName: session.name)
+    private func showGenericAlert() {
+        alert = InAppAlerts.genericErrorAlert()
+    }
+    
+    private func showAlertFor(error: UserTroggeredReconnectionError) {
+        switch error {
+        case .anotherActiveSessionInProgress:
+            alert = InAppAlerts.anotherSessionInProgress()
+        case .deviceNotDiscovered:
+            alert = InAppAlerts.failedToDiscoverDevice()
+        case .failedToConnect, .failedToDiscoverCharacteristics, .airbeamConfigurationFailure:
+            alert = InAppAlerts.failedToConnectWithDevice()
+        }
     }
     
     private func connect(with uuid: String) {
-        isSpinnerOn = true
+        connectingState = .connecting
         reconnectionController.reconnectWithPeripheral(deviceUUID: uuid) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -54,21 +84,22 @@ class ReconnectSessionCardViewModel: ObservableObject {
                 self.sessionRecorder.resumeRecording(device: device) { result in
                     switch result {
                     case .success():
-                        Log.info("## Success")
                         DispatchQueue.main.async {
-                            self.isSpinnerOn = false
+                            self.connectingState = .connected
                         }
                     case .failure(let error):
                         Log.info("## ERROR: \(error)")
                         DispatchQueue.main.async {
-                            self.isSpinnerOn = false
+                            self.connectingState = .idle
+                            self.showAlertFor(error: .airbeamConfigurationFailure)
                         }
                     }
                 }
             case .failure(let error):
                 Log.info("## ERROR: \(error)")
                 DispatchQueue.main.async {
-                    self.isSpinnerOn = false
+                    self.connectingState = .idle
+                    self.showAlertFor(error: error)
                 }
             }
         }

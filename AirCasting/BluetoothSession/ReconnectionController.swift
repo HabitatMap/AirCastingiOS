@@ -50,20 +50,20 @@ class DefaultReconnectionObserver: ReconnectionController, BluetoothConnectionOb
     }
 }
 
+enum UserTroggeredReconnectionError: Error {
+    case anotherActiveSessionInProgress
+    case failedToDiscoverCharacteristics
+    case failedToConnect
+    case deviceNotDiscovered
+    case airbeamConfigurationFailure
+}
 
 class UserTriggeredReconnectionController {
     @Injected private var btScanner: BluetoothScanner
     @Injected private var bluetootConnector: BluetoothConnectionHandler
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
     
-    enum UserTroggeredReconnectionError: Error {
-        case anotherActiveSessionInProgress
-        case failedToDiscoverCharacteristics
-        case failedToConnect
-        case deviceNotDiscovered
-    }
-    
-    func reconnectWithPeripheral(deviceUUID: String, completion: @escaping (Result<NewBluetoothManager.BluetoothDevice, Error>) -> Void) {
+    func reconnectWithPeripheral(deviceUUID: String, completion: @escaping (Result<NewBluetoothManager.BluetoothDevice, UserTroggeredReconnectionError>) -> Void) {
         guard activeSessionProvider.activeSession == nil else {
             Log.info("Tried to resume session when there was another active session in progress")
             completion(.failure(UserTroggeredReconnectionError.anotherActiveSessionInProgress))
