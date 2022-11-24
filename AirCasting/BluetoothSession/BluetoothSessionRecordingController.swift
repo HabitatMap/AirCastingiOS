@@ -8,7 +8,7 @@ import CoreLocation
 protocol BluetoothSessionRecordingController {
     func startRecording(session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void)
     func resumeRecording(device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void)
-    func stopRecordingSession(with uuid: SessionUUID)
+    func stopRecordingSession(with uuid: SessionUUID, databaseChange: (MobileSessionStorage) -> Void)
 }
 
 class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingController {
@@ -72,11 +72,12 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
         recordMeasurements(for: activeSessionProvider.activeSession!)
     }
     
-    func stopRecordingSession(with uuid: SessionUUID) {
-        // Database change should be performed for active and disconnected sessions
-        performDatabaseChange(for: uuid)
+    func stopRecordingSession(with uuid: SessionUUID, databaseChange: (MobileSessionStorage) -> Void) {
+        // Database change should be performed for both active and disconnected sessions
+        databaseChange(storage)
         
         guard let activeSession = activeSessionProvider.activeSession, activeSession.session.uuid == uuid else { return }
+        
         btManager.disconnect(from: activeSession.device)
         if !activeSession.session.locationless {
             locationTracker.stop()
@@ -92,10 +93,5 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
         measurementsRecorder.record(with: activeSession.device) { [weak self] stream in
             self?.measurementsSaver.handlePeripheralMeasurement(stream, sessionUUID: activeSession.session.uuid, locationless: activeSession.session.locationless)
         }
-    }
-    
-    private func performDatabaseChange(for uuid: SessionUUID) {
-        storage.updateSessionStatus(.FINISHED, for: uuid)
-        storage.updateSessionEndtime(DateBuilder.getRawDate(), for: uuid)
     }
 }

@@ -22,6 +22,7 @@ struct ReconnectSessionCardView: View {
                 .cardShadow()
         )
         .overlay(Rectangle().frame(width: nil, height: 4, alignment: .top).foregroundColor(Color.red), alignment: .top)
+        .onAppear() { viewModel.viewDidAppear() }
     }
     
     var header: some View {

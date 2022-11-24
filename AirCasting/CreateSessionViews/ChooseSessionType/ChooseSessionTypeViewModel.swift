@@ -35,12 +35,12 @@ class ChooseSessionTypeViewModel: ObservableObject {
         self.sessionContext = sessionContext
     }
     
-    func setSearchAndFollow(using new: Bool) { isSearchAndFollowLinkActive = new }
-    func setInfoPresented(using new: Bool) { isInfoPresented = new }
-    func setStartSync(using new: Bool) { startSync = new }
-    func setPowerABLink(using new: Bool) { isPowerABLinkActive = new }
-    func setBluetoothLink(using new: Bool) { isTurnBluetoothOnLinkActive = new }
-    func setMobileLink(using new: Bool) { isMobileLinkActive = new }
+    func setSearchAndFollow(using new: Bool) { DispatchQueue.main.async { self.isSearchAndFollowLinkActive = new }}
+    func setInfoPresented(using new: Bool) { DispatchQueue.main.async { self.isInfoPresented = new }}
+    func setStartSync(using new: Bool) { DispatchQueue.main.async { self.startSync = new }}
+    func setPowerABLink(using new: Bool) { DispatchQueue.main.async { self.isPowerABLinkActive = new }}
+    func setBluetoothLink(using new: Bool) { DispatchQueue.main.async { self.isTurnBluetoothOnLinkActive = new }}
+    func setMobileLink(using new: Bool) { DispatchQueue.main.async { self.isMobileLinkActive = new } }
     func setLocationLink(using new: Bool) { isTurnLocationOnLinkActive = new }
     
     func handleMobileSessionState() {

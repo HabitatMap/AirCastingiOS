@@ -123,8 +123,8 @@ extension Resolver: ResolverRegistering {
         main.register {
 #if DEBUG
             CompositeFeatureFlagProvider(children: [
-                Resolver.resolve(DeviceFeatureFlagProvider.self),
                 Resolver.resolve(OverridingFeatureFlagProvider.self),
+                Resolver.resolve(DeviceFeatureFlagProvider.self),
                 AllFeaturesOn()
             ]) as FeatureFlagProvider
 #elseif BETA

@@ -44,6 +44,11 @@ class ReconnectSessionCardViewModel: ObservableObject {
         }
     }
     
+    // This is just in case something goes wrong and the viewModel stays in memory
+    func viewDidAppear() {
+        connectingState = .idle
+    }
+    
     private func finishSessionAlertAction(completion: () -> Void) {
         let sessionStopper = Resolver.resolve(SessionStoppable.self, args: session)
         do {
