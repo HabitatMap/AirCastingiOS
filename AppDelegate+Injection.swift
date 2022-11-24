@@ -123,20 +123,20 @@ extension Resolver: ResolverRegistering {
         main.register {
 #if DEBUG
             CompositeFeatureFlagProvider(children: [
+                Resolver.resolve(DeviceFeatureFlagProvider.self),
                 Resolver.resolve(OverridingFeatureFlagProvider.self),
-//                Resolver.resolve(DeviceFeatureFlagProvider.self),
                 AllFeaturesOn()
             ]) as FeatureFlagProvider
 #elseif BETA
             CompositeFeatureFlagProvider(children: [
                 Resolver.resolve(OverridingFeatureFlagProvider.self),
-//                Resolver.resolve(DeviceFeatureFlagProvider.self),
+                Resolver.resolve(DeviceFeatureFlagProvider.self),
                 Resolver.resolve(FirebaseFeatureFlagProvider.self),
                 Resolver.resolve(DefaultFeatureFlagProvider.self)
             ]) as FeatureFlagProvider
 #else
             CompositeFeatureFlagProvider(children: [
-//                Resolver.resolve(DeviceFeatureFlagProvider.self),
+                Resolver.resolve(DeviceFeatureFlagProvider.self),
                 Resolver.resolve(FirebaseFeatureFlagProvider.self),
                 Resolver.resolve(DefaultFeatureFlagProvider.self)
             ]) as FeatureFlagProvider
@@ -295,7 +295,7 @@ extension Resolver: ResolverRegistering {
             .scope(.application)
 
         // MARK: Reconnect
-        main.register { DefaultReconnectionController() as ReconnectionController }
+        main.register { DefaultReconnectionObserver() as ReconnectionController }
             .scope(.application)
         main.register { SessionManagingReconnectionController() }
             .scope(.application)

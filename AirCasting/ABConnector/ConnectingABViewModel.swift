@@ -67,7 +67,7 @@ class AirbeamConnectionViewModel: ObservableObject {
             return
         }
         configurator
-            .configureFixed(uuid: sessionUUID, completion: completion)
+            .configureSession(uuid: sessionUUID, completion: completion)
     }
     
     private func getAlert(_ result: AirBeamServicesConnectionResult) {

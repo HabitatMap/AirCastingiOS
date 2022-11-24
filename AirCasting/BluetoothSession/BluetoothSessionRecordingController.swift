@@ -18,6 +18,7 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
     @Injected private var locationTracker: LocationTracker
     @Injected private var btManager: BluetoothConnectionHandler
+    private var isRecording = false
     
     func startRecording(session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
         // Step 1: Configure AB
@@ -56,9 +57,19 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
         Resolver.resolve(AirBeamConfigurator.self, args: device)
             .configureMobileSession(location: locationTracker.location.value?.coordinate ?? .undefined,
                                     completion: completion)
+        
         // Info: we're not changing the sessions `status` property here to `.RECORDING` because it is currently
         // being done by the MeasurementStreamStorage class automagically.
         // This is something we might want to change at some point.
+        
+        guard !isRecording else { return }
+        // If we are reconnecting session (when standalone mode is disabled)
+        // we might need to start recording measurements and track location again
+        // if the app has been closed in the mean time
+        if !(activeSessionProvider.activeSession?.session.locationless ?? true) {
+            self.locationTracker.start()
+        }
+        recordMeasurements(for: activeSessionProvider.activeSession!)
     }
     
     func stopRecordingSession(with uuid: SessionUUID) {
@@ -73,10 +84,12 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
         
         activeSessionProvider.clearActiveSession()
         measurementsRecorder.stopRecording()
+        isRecording = false
     }
     
     private func recordMeasurements(for activeSession: MobileSession) {
-        measurementsRecorder.record(with:activeSession.device) { [weak self] stream in
+        isRecording = true
+        measurementsRecorder.record(with: activeSession.device) { [weak self] stream in
             self?.measurementsSaver.handlePeripheralMeasurement(stream, sessionUUID: activeSession.session.uuid, locationless: activeSession.session.locationless)
         }
     }
