@@ -28,7 +28,7 @@ class DefaultUserTriggeredReconnectionController: UserTriggeredReconnectionContr
         }
         
         var discoveredDevices: [NewBluetoothManager.BluetoothDevice] = []
-        btScanner.startScanning(scanningWindow: 10, onDeviceDiscovered: { discoveredDevices.append($0) }, onScanningFinished: { [weak self] in
+        btScanner.startScanning(scanningWindow: 5, onDeviceDiscovered: { discoveredDevices.append($0) }, onScanningFinished: { [weak self] in
             guard let device = discoveredDevices.first(where: { $0.uuid == deviceUUID }) else {
                 completion(.failure(.deviceNotDiscovered))
                 return
@@ -45,7 +45,7 @@ class DefaultUserTriggeredReconnectionController: UserTriggeredReconnectionContr
         })
     }
     
-    func connect(to device: NewBluetoothManager.BluetoothDevice, session: Session, completion: @escaping (Result<Void, UserTriggeredReconnectionError>) -> Void) {
+    private func connect(to device: NewBluetoothManager.BluetoothDevice, session: Session, completion: @escaping (Result<Void, UserTriggeredReconnectionError>) -> Void) {
         bluetootConnector.connect(to: device, timeout: 10) {[weak self] result in
             switch result {
             case .success:
@@ -66,7 +66,7 @@ class DefaultUserTriggeredReconnectionController: UserTriggeredReconnectionContr
         }
     }
     
-    func resume(_ session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, UserTriggeredReconnectionError>) -> Void) {
+    private func resume(_ session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, UserTriggeredReconnectionError>) -> Void) {
         activeSessionProvider.setActiveSession(session: session, device: device)
         sessionRecorder.resumeRecording(device: device) { result in
             switch result {
