@@ -98,7 +98,6 @@ struct _MapView: UIViewRepresentable {
     }
     
     func makeUIView(context: Context) -> GMSMapView {
-        Log.verbose("## Making map")
         let startingPoint = getStartingPoint(coordinator: context.coordinator)
         let mapView = GMSMapView(frame: .zero, camera: startingPoint)
         setupMyLocationButtonVisibility(for: mapView)
