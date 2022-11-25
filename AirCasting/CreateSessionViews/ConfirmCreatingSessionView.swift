@@ -125,7 +125,8 @@ struct ConfirmCreatingSessionView: View {
                     Text(Strings.ConfirmCreatingSessionView.startRecording)
                         .font(Fonts.muliBoldHeading1)
                 })
-                    .buttonStyle(BlueButtonStyle())
+                .buttonStyle(BlueButtonStyle())
+                .disabled(isActive)
             }
             .padding()
         }

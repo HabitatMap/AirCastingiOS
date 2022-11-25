@@ -11,6 +11,10 @@ protocol BluetoothSessionRecordingController {
     func stopRecordingSession(with uuid: SessionUUID, databaseChange: (MobileSessionStorage) -> Void)
 }
 
+enum SessionRecordingControllerError: Error {
+    case sessionAlreadyInProgress
+}
+
 class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingController {
     @Injected private var measurementsSaver: MeasurementsSavingService
     @Injected private var storage: MobileSessionStorage
@@ -22,6 +26,12 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
     
     func startRecording(session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
         // Step 1: Configure AB
+        guard !isRecording else {
+            // We want to make sure we are not recording more than one session at once
+            completion(.failure(SessionRecordingControllerError.sessionAlreadyInProgress))
+            assertionFailure("Tried to record a session when there was another session being recorded")
+            return
+        }
         Resolver.resolve(AirBeamConfigurator.self, args: device)
             .configureMobileSession(location: session.location ?? CLLocationCoordinate2D(latitude: 200, longitude: 200)) { [self] result in
                 switch result {
