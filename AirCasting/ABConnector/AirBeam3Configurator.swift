@@ -11,7 +11,7 @@ import Resolver
 
 protocol AirBeamConfigurator {
     func configureMobileSession(location: CLLocationCoordinate2D, completion: @escaping (Result<Void, Error>) -> Void)
-    func configureFixed(uuid: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void)
+    func configureSession(uuid: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void)
     func configureFixedCellularSession(uuid: SessionUUID,
                                        location: CLLocationCoordinate2D,
                                        date: Date,
@@ -112,7 +112,7 @@ struct AirBeam3Configurator: AirBeamConfigurator {
     
     // To configure fixed session we need to send authMessage first
     // We're generating unique String for session UUID and sending it with users auth token to the AB
-    func configureFixed(uuid: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void) {
+    func configureSession(uuid: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let token = userAuthenticationSession.token else {
             completion(.failure(AirBeam3ConfiguratorError.missingAuthenticationToken))
             return

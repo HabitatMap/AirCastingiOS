@@ -831,7 +831,19 @@ struct Strings {
                                                    comment: "")
         static let reconnectLabel = NSLocalizedString("Reconnect",
                                                                 comment: "")
+        static let connectingLabel = NSLocalizedString("Connecting...",
+                                                                comment: "")
+        static let connectedLabel = NSLocalizedString("Finalizing...",
+                                                                comment: "")
         static let finishSessionLabel = NSLocalizedString("Finish session",
+                                                                    comment: "")
+        static let failedTitle = NSLocalizedString("Failed to reconnect",
+                                                                    comment: "")
+        static let anotherSessionMessage = NSLocalizedString("There is another mobile session in progress. Finish it in order to reconnect.",
+                                                                    comment: "")
+        static let deviceNotDiscoveredMessage = NSLocalizedString("It seems your device is not turned on or it is too far from your phone. Make sure your AirBeam is turned on and close to your phone and try again.",
+                                                                    comment: "")
+        static let connectionFailureMessage = NSLocalizedString("Something interrupted the connection with the devcie. Please toggle power on your device and try again.",
                                                                     comment: "")
     }
     

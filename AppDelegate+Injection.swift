@@ -124,19 +124,19 @@ extension Resolver: ResolverRegistering {
 #if DEBUG
             CompositeFeatureFlagProvider(children: [
                 Resolver.resolve(OverridingFeatureFlagProvider.self),
-//                Resolver.resolve(DeviceFeatureFlagProvider.self),
+                Resolver.resolve(DeviceFeatureFlagProvider.self),
                 AllFeaturesOn()
             ]) as FeatureFlagProvider
 #elseif BETA
             CompositeFeatureFlagProvider(children: [
                 Resolver.resolve(OverridingFeatureFlagProvider.self),
-//                Resolver.resolve(DeviceFeatureFlagProvider.self),
+                Resolver.resolve(DeviceFeatureFlagProvider.self),
                 Resolver.resolve(FirebaseFeatureFlagProvider.self),
                 Resolver.resolve(DefaultFeatureFlagProvider.self)
             ]) as FeatureFlagProvider
 #else
             CompositeFeatureFlagProvider(children: [
-//                Resolver.resolve(DeviceFeatureFlagProvider.self),
+                Resolver.resolve(DeviceFeatureFlagProvider.self),
                 Resolver.resolve(FirebaseFeatureFlagProvider.self),
                 Resolver.resolve(DefaultFeatureFlagProvider.self)
             ]) as FeatureFlagProvider
@@ -303,6 +303,8 @@ extension Resolver: ResolverRegistering {
         main.register {
             DefaultActiveMobileSessionProvidingService() as ActiveMobileSessionProvidingService
         }.scope(.application)
+        
+        main.register { DefaultUserTriggeredReconnectionController() as UserTriggeredReconnectionController }
 
         main.register { _, args in
             guard let args: StandaloneOrigin = args() else { fatalError() }

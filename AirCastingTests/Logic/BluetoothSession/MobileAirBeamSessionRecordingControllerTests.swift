@@ -72,7 +72,7 @@ class AirBeamConfiguratorMock: AirBeamConfigurator {
     }
     
     func configureMobileSession(location: CLLocationCoordinate2D, completion: @escaping (Result<Void, Error>) -> Void) {}
-    func configureFixed(uuid: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void) {}
+    func configureSession(uuid: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void) {}
     func configureFixedCellularSession(uuid: SessionUUID,
                                        location: CLLocationCoordinate2D,
                                        date: Date,

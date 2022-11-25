@@ -52,17 +52,13 @@ struct ReconnectSessionCardView: View {
     
     var reconnectionLabel: some View {
         Button {
-            if !viewModel.isSpinnerOn {
-                // Custom method of button disable: this can keep the UI style always the same
-                // ... but do nothing when needed (as the button would be correctly disabled)
-                viewModel.onRecconectTap()
-            }
+            viewModel.onRecconectTap()
         } label: {
             ZStack(alignment: .center) {
                 HStack(alignment: .center) {
-                    Text(Strings.ReconnectSessionCardView.reconnectLabel)
+                    Text(viewModel.buttonLabel)
                 }
-                if viewModel.isSpinnerOn {
+                if viewModel.connectingState != .idle {
                     HStack {
                         Spacer()
                         ProgressView()
@@ -74,6 +70,7 @@ struct ReconnectSessionCardView: View {
         }
         .font(Fonts.muliBoldHeading1)
         .buttonStyle(BlueButtonStyle())
+        .disabled(viewModel.connectingState != .idle)
     }
     
     var finishAndDontSyncButton: some View {

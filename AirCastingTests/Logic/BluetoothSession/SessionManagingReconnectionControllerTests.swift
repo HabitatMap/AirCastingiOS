@@ -33,5 +33,5 @@ class StandaloneModeControllerMock: StandaloneModeController {
 class BluetoothSessionRecordingControllerMock: BluetoothSessionRecordingController {
     func startRecording(session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {}
     func resumeRecording(device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {}
-    func stopRecordingSession(with uuid: SessionUUID) {}
+    func stopRecordingSession(with uuid: AirCasting.SessionUUID, databaseChange: (AirCasting.MobileSessionStorage) -> Void) {}
 }
