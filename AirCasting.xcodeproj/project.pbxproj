@@ -44,7 +44,6 @@
 		335A8B2F2785D49100355D46 /* ShareSessionAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 335A8B2E2785D49100355D46 /* ShareSessionAPI.swift */; };
 		335B54BF28BD01C300BA92D2 /* CustomSwipeAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 335B54BE28BD01C300BA92D2 /* CustomSwipeAction.swift */; };
 		3362B4ED25E69987008D61BA /* CreateSessionDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3362B4EC25E69987008D61BA /* CreateSessionDetailsView.swift */; };
-		3367B61727C924B000930E62 /* SearchCompleteScreenMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3367B61627C924B000930E62 /* SearchCompleteScreenMapView.swift */; };
 		336A909127A453FE00851100 /* ReorderingDashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336A909027A453FE00851100 /* ReorderingDashboard.swift */; };
 		336A909327A4553000851100 /* ReoredringSessionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336A909227A4553000851100 /* ReoredringSessionCard.swift */; };
 		336A909527A48CA400851100 /* ReorderingSessionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336A909427A48CA400851100 /* ReorderingSessionHeader.swift */; };
@@ -621,7 +620,6 @@
 		335A8B2E2785D49100355D46 /* ShareSessionAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSessionAPI.swift; sourceTree = "<group>"; };
 		335B54BE28BD01C300BA92D2 /* CustomSwipeAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSwipeAction.swift; sourceTree = "<group>"; };
 		3362B4EC25E69987008D61BA /* CreateSessionDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionDetailsView.swift; sourceTree = "<group>"; };
-		3367B61627C924B000930E62 /* SearchCompleteScreenMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCompleteScreenMapView.swift; sourceTree = "<group>"; };
 		336A909027A453FE00851100 /* ReorderingDashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderingDashboard.swift; sourceTree = "<group>"; };
 		336A909227A4553000851100 /* ReoredringSessionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReoredringSessionCard.swift; sourceTree = "<group>"; };
 		336A909427A48CA400851100 /* ReorderingSessionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderingSessionHeader.swift; sourceTree = "<group>"; };
@@ -1404,7 +1402,6 @@
 				33F82FC127F60498001654D8 /* ThresholdsValue+Color.swift */,
 				338CA6CE27CD13E900505331 /* StaticSingleStreamView.swift */,
 				339BF3DF27D231B900BBCB23 /* Header */,
-				3367B61627C924B000930E62 /* SearchCompleteScreenMapView.swift */,
 				338CA6D027CD2D9200505331 /* SearchAndFollowChartView.swift */,
 				338CA6D227CD2F1900505331 /* SearchAndFollowChartViewModel.swift */,
 				FAC3B679283B96480095D915 /* ChartMeasurementsFilter.swift */,
@@ -3451,7 +3448,6 @@
 				B30BAC132694AA3200AE0476 /* MeasurementsStatisticsController.swift in Sources */,
 				DD9DD37527A2B92E00E657E4 /* TurnOnLocationFixedViewModel.swift in Sources */,
 				FAB34933281AB208001F6E58 /* URLRequest.swift in Sources */,
-				3367B61727C924B000930E62 /* SearchCompleteScreenMapView.swift in Sources */,
 				DDC3E954275E4C3A0066A5DF /* SettingsViewModel.swift in Sources */,
 				33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */,
 				4F2D84EB2647DBE0003D9ED5 /* MeasurementStreamStorage.swift in Sources */,
