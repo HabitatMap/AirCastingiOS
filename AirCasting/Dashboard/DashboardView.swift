@@ -36,8 +36,6 @@ struct DashboardView: View {
         self.sessionSynchronizer = Resolver.resolve(SessionSynchronizer.self)
         _isRefreshing = .init(wrappedValue: sessionSynchronizer.syncInProgress.value)
         _measurementsDownloadingInProgress = .init(projectedValue: measurementsDownloadingInProgress)
-        var log = isRefreshing
-        Log.info("##### IS REFRESHING: \(log)")
     }
 
     var body: some View {
