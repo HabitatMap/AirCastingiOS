@@ -2,7 +2,6 @@
 //
 
 import Foundation
-import CoreBluetooth
 import Resolver
 
 enum ProceedToView {
@@ -23,7 +22,7 @@ class ChooseSessionTypeViewModel: ObservableObject {
     @Published var alert: AlertInfo?
     @Injected private var networkChecker: NetworkChecker
     @Injected private var locationAuthorization: LocationAuthorization
-    @Injected private var bluetoothHandler: BluetoothHandler
+    @Injected private var bluetoothHandler: BluetoothPermisionsChecker
     @InjectedObject private var userSettings: UserSettings
     @Injected private var urlProvider: URLProvider
     private let sessionContext: CreateSessionContext

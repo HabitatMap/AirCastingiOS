@@ -90,7 +90,7 @@ extension NSManagedObjectContext {
         return nil
     }
 
-    // Checks if session/measurement exists, if not, creates a new one
+    // Checks if session/measurementStream exists, if not, creates a new one
     func newOrExisting<T: NSManagedObject & Identifiable>(id: T.ID) throws -> T  {
         let className = NSStringFromClass(T.classForCoder())
         let fetchRequest = NSFetchRequest<T>(entityName: className)

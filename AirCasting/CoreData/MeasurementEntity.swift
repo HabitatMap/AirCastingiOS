@@ -14,11 +14,6 @@ public class MeasurementEntity: NSManagedObject, Identifiable {
     }
 
     @NSManaged public var averagingWindow: Int
-    
-    public var id: MeasurementID? {
-        get { value(forKey: "id") as? MeasurementID }
-        set { setValue(newValue, forKey: "id")}
-    }
 
     @NSManaged public var time: Date!
     @NSManaged public var value: Double

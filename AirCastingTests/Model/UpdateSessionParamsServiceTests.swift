@@ -133,7 +133,6 @@ final class UpdateSessionParamsServiceTests: ACTestCase {
             let measurements = try XCTUnwrap(databaseMeasurementStream.measurements?.array as? [AirCasting.MeasurementEntity])
             XCTAssertEqual(measurements.count, modelMeasurementStream.measurements.count)
             try zip(measurements, modelMeasurementStream.measurements).forEach { databaseMeasurement, modelMeasurement in
-                XCTAssertEqual(databaseMeasurement.id, modelMeasurement.id)
                 XCTAssertEqual(databaseMeasurement.value, modelMeasurement.measured_value)
                 XCTAssertEqual(try XCTUnwrap(databaseMeasurement.location).latitude, modelMeasurement.latitude, accuracy: 0.01)
                 XCTAssertEqual(try XCTUnwrap(databaseMeasurement.location).longitude, modelMeasurement.longitude, accuracy: 0.01)

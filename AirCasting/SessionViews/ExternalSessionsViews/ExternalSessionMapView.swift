@@ -54,6 +54,13 @@ struct ExternalSessionMapView: View {
             }
             Spacer()
         }
+        .onAppear {
+            statsContainerViewModel.adjustForNewData()
+            statsContainerViewModel.continuousModeEnabled = true
+        }
+        .onDisappear {
+            statsContainerViewModel.continuousModeEnabled = false
+        }
         .navigationBarTitleDisplayMode(.inline)
         .padding(.bottom)
         .background(Color.aircastingBackground.ignoresSafeArea())

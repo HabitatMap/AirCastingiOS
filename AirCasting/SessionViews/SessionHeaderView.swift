@@ -17,7 +17,8 @@ struct SessionHeaderView: View {
         isCollapsed ? "chevron.down" : "chevron.up"
     }
     @Binding var isCollapsed: Bool
-    @InjectedObject private var bluetoothManager: BluetoothManager
+    private let standaloneModeController: StandaloneModeController = Resolver.resolve(StandaloneModeController.self,
+                                                                                  args: StandaloneOrigin.user)
     @EnvironmentObject var selectedSection: SelectedSection
     @Environment(\.colorScheme) var colorScheme
     @ObservedObject var session: SessionEntity
@@ -157,12 +158,7 @@ private extension SessionHeaderView {
                     }
                 }
             }
-            // As long as we get session.deviceType = nil we should handle somehow showing those devices which were used to record
-            // [|(-)   (-)|]    |-------------------|
-            //  |   ___   |  -- | You, do something |
-            //  |_________|     |-------------------|
-            // so the idea at leat for now is this below
-#warning("Fix - Handle session.deviceType (for now it is always nill)")
+            
             if isSensorTypeNeeded {
                 sensorType
                     .font(Fonts.moderateRegularHeading4)
@@ -183,7 +179,7 @@ private extension SessionHeaderView {
             session.shareable ? actionsMenuShareButton : nil
             session.deletable ? actionsMenuDeleteButton : nil
             session.isFixed && featureFlagsViewModel.enabledFeatures.contains(.thresholdAlerts) ? actionsMenuThresholdAlertButton : nil
-            if session.deviceType == .AIRBEAM3 && session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
+            if checkStandaloneActionAvaibility() {
                 actionsMenuMobileEnterStandaloneMode
             }
             if session.isActive && featureFlagsViewModel.enabledFeatures.contains(.notes) {
@@ -211,7 +207,7 @@ private extension SessionHeaderView {
     
     var actionsMenuMobileEnterStandaloneMode: some View {
         Button {
-            bluetoothManager.enterStandaloneMode(sessionUUID: session.uuid)
+            standaloneModeController.moveActiveSessionToStandaloneMode()
         } label: {
             Label(title: { Text(Strings.SessionHeaderView.enterStandaloneModeButton) }, icon: { Image("standalone-icon").renderingMode(.template) })
                 .foregroundColor(colorScheme == .light ? .black : .aircastingGray)
@@ -287,5 +283,12 @@ private extension SessionHeaderView {
         } catch {
             Log.info("error when stpoing session - \(error)")
         }
+    }
+}
+
+private extension SessionHeaderView {
+    func checkStandaloneActionAvaibility() -> Bool {
+        session.deviceType == .AIRBEAM3 &&
+        session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode)
     }
 }

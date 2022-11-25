@@ -1,8 +1,8 @@
 // Created by Lunar on 21/07/2021.
 //
 
+import Foundation
 import Combine
-import CoreBluetooth
 import Resolver
 
 struct SDSyncProgressViewModel {
@@ -30,30 +30,29 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     @Published var shouldDismiss: Bool = false
     @Published var alert: AlertInfo?
 
-    private let peripheral: CBPeripheral
+    private let device: NewBluetoothManager.BluetoothDevice
     @Injected private var airBeamConnectionController: AirBeamConnectionController
+    @Injected private var btConnectionChecker: BluetoothPeripheralConnectionChecker
     @Injected private var sdSyncController: SDSyncController
     private let sessionContext: CreateSessionContext
 
     init(sessionContext: CreateSessionContext,
-         peripheral: CBPeripheral) {
-        self.peripheral = peripheral
+         device: NewBluetoothManager.BluetoothDevice) {
+        self.device = device
         self.sessionContext = sessionContext
     }
 
     func connectToAirBeamAndSync() {
-        self.airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { success in
+        self.airBeamConnectionController.connectToAirBeam(device: device) { result in
             Log.info("[SD SYNC] Completed connecting to AB")
-            guard success else {
+            guard result == .success else {
                 DispatchQueue.main.async {
                     self.presentNextScreen = false
-                    self.alert = InAppAlerts.connectionTimeoutAlert {
-                        self.shouldDismiss = true
-                    }
+                    self.getConnectionAlert(result)
                 }
                 return
             }
-            self.sdSyncController.syncFromAirbeam(self.peripheral, progress: { [weak self] newStatus in
+            self.sdSyncController.syncFromAirbeam(self.device, progress: { [weak self] newStatus in
                 guard let self = self else { return }
                 switch newStatus {
                 case .inProgress(let progress):
@@ -71,7 +70,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                 guard let self = self else { return }
                 switch result {
                 case .success():
-                    guard self.peripheral.state == .connected else {
+                    guard self.btConnectionChecker.isDeviceConnected(device: self.device) else {
                         Log.info("[SD SYNC] Device disconnected. Attempting reconnect")
                         self.reconnectWithAirbeamAndClearCard()
                         return
@@ -89,7 +88,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     }
 
     private func clearSDCard() {
-        self.sdSyncController.clearSDCard(self.peripheral) { result in
+        self.sdSyncController.clearSDCard(self.device) { result in
             DispatchQueue.main.async {
                 self.presentNextScreen = true
                 if !result {
@@ -101,9 +100,9 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     }
     
     private func reconnectWithAirbeamAndClearCard() {
-        airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { [weak self] success in
+        airBeamConnectionController.connectToAirBeam(device: device) { [weak self] result in
             guard let self = self else { return }
-            guard success else {
+            guard result == .success else {
                 Log.info("[SD SYNC] Reconnecting failed")
                 DispatchQueue.main.async {
                     self.presentNextScreen = false
@@ -118,7 +117,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     }
 
     private func disconnectAirBeam() {
-        airBeamConnectionController.disconnectAirBeam(peripheral: peripheral)
+        airBeamConnectionController.disconnectAirBeam(device: device)
     }
     
     private func alertForError(_ error: SDSyncError) -> AlertInfo {
@@ -145,13 +144,35 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
             }
         }
     }
+    
+    private func getConnectionAlert(_ result: AirBeamServicesConnectionResult) {
+        switch result {
+        case .timeout:
+            self.alert = InAppAlerts.connectionTimeoutAlert {
+                self.shouldDismiss = true
+            }
+        case .deviceBusy:
+            self.alert = InAppAlerts.bluetoothSessionAlreadyRecordingAlert {
+                self.shouldDismiss = true
+            }
+        case .success:
+            break
+        case .incompatibleDevice:
+            self.alert = InAppAlerts.incompatibleDevice {
+                self.shouldDismiss = true
+            }
+        case .unknown(_):
+            self.alert = InAppAlerts.genericErrorAlert {
+                self.shouldDismiss = true
+            }
+        }
+    }
 
     private func stringForSessionType(_ sessionType: SDCardSessionType) -> String {
-        //TODO: Correct string value and move to strings
         switch sessionType {
-        case .cellular: return "Cellular"
-        case .fixed: return "Fixed"
-        case .mobile: return "Mobile"
+        case .cellular: return Strings.SyncingABView.cellular
+        case .fixed: return Strings.SyncingABView.fixed
+        case .mobile: return Strings.SyncingABView.mobile
         }
     }
 }

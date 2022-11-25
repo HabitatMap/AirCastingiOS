@@ -56,7 +56,7 @@ final class MobilePeripheralSessionCreator: SessionCreator {
     enum MobilePeripheralSessionCreatorError: Swift.Error {
         case invalidCreateSessionContext(CreateSessionContext)
     }
-    @Injected private var mobilePeripheralSessionManager: MobilePeripheralSessionManager
+    @Injected private var recorder: BluetoothSessionRecordingController
     @Injected private var userAuthenticationSession: UserAuthenticationSession
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
 
@@ -71,7 +71,7 @@ final class MobilePeripheralSessionCreator: SessionCreator {
             return
         }
         do {
-            guard let peripheral = sessionContext.peripheral else {
+            guard let device = sessionContext.device else {
                 assertionFailure("invalidCreateSessionContext \(sessionContext)")
                 throw MobilePeripheralSessionCreatorError.invalidCreateSessionContext(sessionContext)
             }
@@ -85,10 +85,7 @@ final class MobilePeripheralSessionCreator: SessionCreator {
                                   locationless: sessionContext.locationless,
                                   tags: sessionContext.sessionTags,
                                   status: .NEW)
-            AirBeam3Configurator(peripheral: peripheral).configureMobileSession(
-                                    location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200))
-            mobilePeripheralSessionManager.startRecording(session: session, peripheral: peripheral)
-            completion(.success(()))
+            recorder.startRecording(session: session, device: device, completion: completion)
         } catch {
             assertionFailure("Can't start recording mobile bluetooth session: \(error)")
             completion(.failure(error))

@@ -17,18 +17,16 @@ class HeatmapContainer: ObservableObject {
 
 struct AirMapView: View {
     @Environment(\.scenePhase) var scenePhase
-    
+
     @InjectedObject private var userSettings: UserSettings
     @ObservedObject var thresholds: ABMeasurementsViewThreshold
     @StateObject var statsContainerViewModel: StatisticsContainerViewModel
     @StateObject var mapNotesVM: MapNotesViewModel
-//  @StateObject var mapStatsDataSource: MapStatsDataSource
     @ObservedObject var session: SessionEntity
     @Binding var showLoadingIndicator: Bool
     @Binding var selectedStream: MeasurementStreamEntity?
     @State var currentlyPresentedNoteDetails: MapNote? = nil // If set to nil, hide modal, if not nil show modal
     @Injected private var locationTracker: LocationTracker
-    
     @StateObject private var heatmapContainer = HeatmapContainer()
     
     init(session: SessionEntity,
@@ -59,7 +57,7 @@ struct AirMapView: View {
                               isCollapsed: Binding.constant(false),
                               session: session)
             .padding([.bottom, .leading, .trailing])
-            
+
             ABMeasurementsView(session: session,
                                isCollapsed: Binding.constant(false),
                                selectedStream: $selectedStream,
@@ -68,7 +66,7 @@ struct AirMapView: View {
                                viewModel:  DefaultSyncingMeasurementsViewModel(sessionDownloader: SessionDownloadService(),
                                                                                session: session))
             .padding([.bottom, .leading, .trailing])
-            
+
             if let threshold = thresholds.value.threshold(for: selectedStream?.sensorName ?? "") {
                 if !showLoadingIndicator {
                     ZStack(alignment: .topLeading) {
@@ -116,14 +114,13 @@ struct AirMapView: View {
                         //                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
                         //                                mapStatsDataSource?.visiblePathPoints = visiblePoints
                         //                                statsContainerViewModel?.adjustForNewData()
-                        //                            }
                         // Statistics container shouldn't be presented in mobile dormant tab
                         if !(session.type == .mobile && session.isActive == false) {
                             StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
                                                     threshold: threshold)
                         }
                     }.padding(.bottom)
-                    
+
                     if let selectedStream = selectedStream, let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold) {
                         NavigationLink(destination: ThresholdsSettingsView(thresholdValues: formatter.formattedBinding(),
                                                                            initialThresholds: selectedStream.thresholds,
@@ -144,15 +141,17 @@ struct AirMapView: View {
                                                              sessionUUID: session.uuid))
         })
         .navigationBarTitleDisplayMode(.inline)
-        //        .onChange(of: selectedStream) { newStream in
-        //            mapStatsDataSource.visiblePathPoints = pathPoints
-        //            statsContainerViewModel.adjustForNewData()
-        //        }
-        .onAppear { statsContainerViewModel.adjustForNewData() }
+        .onAppear {
+            statsContainerViewModel.adjustForNewData()
+            statsContainerViewModel.continuousModeEnabled = true
+        }
+        .onDisappear {
+            statsContainerViewModel.continuousModeEnabled = false
+        }
         .padding(.bottom)
         .background(Color.aircastingBackground.ignoresSafeArea())
     }
-    
+
     private func getValue(of measurement: MeasurementEntity) -> Double {
         measurement.measurementStream.isTemperature && userSettings.convertToCelsius ? TemperatureConverter.calculateCelsius(fahrenheit: measurement.value) : measurement.value
     }

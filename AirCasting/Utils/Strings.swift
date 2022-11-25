@@ -510,8 +510,6 @@ struct Strings {
                                                              comment: "")
         static let title: String = NSLocalizedString("Power on your AirBeam",
                                                      comment: "")
-        static let messageText: String = NSLocalizedString("Wait for the conncection indicator to change from red to green before continuing.",
-                                                           comment: "")
     }
     
     enum SelectDeviceView {
@@ -622,6 +620,10 @@ struct Strings {
         
         static let finishAlertMessage: String = NSLocalizedString("The session will be moved to Mobile Dormant tab and you won't be able to add new measurement to it.",
                                                                   comment: "")
+        static let cannotReconnectAlertTitle: String = NSLocalizedString("Reconnection failure",
+                                                                  comment: "")
+        static let cannotReconnectAlertMessage: String = NSLocalizedString("Cannot process reconnection anymore. Please finish session, so it will be moved to Mobile Dormant.",
+                                                                  comment: "")
         static let finishAlertMessage_withSync: String = NSLocalizedString(" SD card will be cleared afterwards.",
                                                                            comment: "")
         static let finishAlertButton: String = NSLocalizedString("Finish recording",
@@ -642,6 +644,10 @@ struct Strings {
                                                              comment: "")
         static let thresholdAlertsButton: String = NSLocalizedString("Threshold alerts",
                                                              comment: "")
+        static let failedFinishSessionTitle: String = NSLocalizedString("Failed finishing session",
+                                                                        comment: "")
+        static let failedFinishSessionMessage: String = NSLocalizedString("Please try again.",
+                                                                        comment: "")
     }
     
     enum NetworkChecker {
@@ -813,6 +819,17 @@ struct Strings {
                                                                     comment: "")
     }
     
+    enum ReconnectSessionCardView {
+        static let heading = NSLocalizedString("Measurement device disconnected",
+                                               comment: "")
+        static let description = NSLocalizedString("Your measurement device is no longer connected to the AirCasting app. Make sure Bluetooth is on and your measurement device is nearby.",
+                                                   comment: "")
+        static let reconnectLabel = NSLocalizedString("Reconnect",
+                                                                comment: "")
+        static let finishSessionLabel = NSLocalizedString("Finish session",
+                                                                    comment: "")
+    }
+    
     enum SDSyncRootView {
         static let title: String = NSLocalizedString("Updating sessions",
                                                      comment: "")
@@ -848,6 +865,12 @@ struct Strings {
                                                                  comment: "")
         static let finishingSyncTitle: String = NSLocalizedString("Finalizing...",
                                                                   comment: "")
+        static let cellular = NSLocalizedString("Cellular",
+                                                comment: "")
+        static let fixed = NSLocalizedString("Fixed",
+                                                comment: "")
+        static let mobile = NSLocalizedString("Mobile",
+                                                comment: "")
     }
     
     enum SDSyncAlerts {
@@ -932,6 +955,13 @@ struct Strings {
                                                        comment: "")
     }
     
+    enum IncompatibleDeviceAlert {
+        static let title: String = NSLocalizedString("Incompatible Device",
+                                                     comment: "")
+        static let message: String = NSLocalizedString("This device is not compatible with this application.",
+                                                       comment: "")
+    }
+    
     enum InAppAlerts {
         static let noInternetConnectionTitle: String = NSLocalizedString("No internet connection",
                                                                    comment: "")
@@ -996,6 +1026,10 @@ struct Strings {
         static let fetchingDataFailedMessage: String = NSLocalizedString("Something went wrong. Please try again later.", comment: "")
         static let signInErrorTitle: String = NSLocalizedString("Cannot sign in",
                                                                           comment:  "")
+        static let airBeamConfigurationFailureTitle = NSLocalizedString("AirBeam configuration failed", comment: "")
+        static let airBeamConfigurationFailureTMessage = NSLocalizedString("Something went wrong with AirBeam configuration. Please try again.", comment: "")
+        static let genericErrorAlertTitle: String = NSLocalizedString("Something went wrong", comment: "")
+        static let genericErrorAlertMessage: String = NSLocalizedString("The operation couldn't be completed.", comment: "")
     }
     
     enum AddNoteView {

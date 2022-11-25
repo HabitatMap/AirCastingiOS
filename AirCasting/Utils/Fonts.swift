@@ -49,7 +49,7 @@ struct Fonts {
     static let moderateRegularHeading5: Font = Font.moderate(size: 12, weight: .regular)
     static let moderateRegularHeading6: Font = Font.moderate(size: 10, weight: .regular)
     
-    //MARK: System Fonts
+    // MARK: System Fonts
     static let navBarSystemFont: Font = Font(UIFont.systemFont(ofSize: 28, weight: .bold))
 
     static let systemFontRegularHeading1: Font = Font.system(size: 13)

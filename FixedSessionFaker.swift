@@ -53,17 +53,14 @@ class FixedSessionFaker {
 
             try! context.save()
         }
-
-        var currId: Int64 = 1
+        
         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            for stream in session.allStreams ?? [] {
+            for stream in session.allStreams {
                 let measurement = MeasurementEntity(context: context)
-                measurement.id = currId
                 measurement.time = DateBuilder.getRawDate()
                 measurement.value = .random(in: 0...120)
                 measurement.location = .init(latitude: 50.049683, longitude: 19.944544)
                 stream.addToMeasurements(measurement)
-                currId += 1
             }
             try! context.save()
         }
