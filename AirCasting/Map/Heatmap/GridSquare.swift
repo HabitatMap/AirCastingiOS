@@ -82,8 +82,8 @@ struct GridSquare {
     
     func inBounds(coordinates: CLLocationCoordinate2D?) -> Bool {
         let bounds = GMSCoordinateBounds(coordinate: southWestLatLng, coordinate: northEastLatLng)
-        
-        return coordinates != nil ? bounds.contains(coordinates!) : false
+        guard let coordinates else { return false }
+        return bounds.contains(coordinates)
     }
     
     func remove() {

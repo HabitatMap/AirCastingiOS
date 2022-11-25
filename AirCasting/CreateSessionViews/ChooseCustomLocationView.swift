@@ -47,17 +47,10 @@ struct ChooseCustomLocationView: View {
     }
 
     var mapGoogle: some View {
-        // TODO: Remember to revert this view from being shown in the mobile session wizard! (createSesssionLink in CreateSessionDetailsView.swift)
         _MapView(type: .normal,
                  trackingStyle: .user,
                  userIndicatorStyle: .none,
                  userTracker: locationTracker)
-//        GoogleMapView(pathPoints: [],
-//                      placePickerIsUpdating: $placePickerIsUpdating,
-//                      isUserInteracting: Binding.constant(true),
-//                      mapNotes: .constant([]),
-//                      isMapOnPickerScreen: true,
-//                      placePickerLocation: $location)
     }
 
     var dot: some View {
