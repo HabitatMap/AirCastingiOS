@@ -12,6 +12,8 @@ import CoreData
 import Resolver
 
 class HeatmapContainer: ObservableObject {
+    // It keeps track of heatmap instances
+    // so that we always have only one
     var heatMap: Heatmap?
 }
 
@@ -25,18 +27,27 @@ struct AirMapView: View {
     @ObservedObject var session: SessionEntity
     @Binding var showLoadingIndicator: Bool
     @Binding var selectedStream: MeasurementStreamEntity?
-<<<<<<< HEAD
     @State var currentlyPresentedNoteDetails: MapNote? = nil // If set to nil, hide modal, if not nil show modal
     @Injected private var locationTracker: LocationTracker
     
     @StateObject private var heatmapContainer = HeatmapContainer()
-    
-=======
-    @State var isUserInteracting = true
-    @State var noteMarkerTapped = false
-    @State var noteNumber = 0
 
->>>>>>> 4bf4afde (Overfiring timer for statistics container fixed (#921))
+    enum AirMapSessionType {
+        case fixed
+        case active
+        case other
+    }
+    
+    var mapSessionType: Self.AirMapSessionType {
+        if session.isActive {
+            return .active
+        } else if session.isFixed {
+            return .fixed
+        } else {
+            return .other
+        }
+    }
+    
     init(session: SessionEntity,
          thresholds: ABMeasurementsViewThreshold,
          statsContainerViewModel: StateObject<StatisticsContainerViewModel>,
@@ -49,13 +60,8 @@ struct AirMapView: View {
         self._showLoadingIndicator = showLoadingIndicator
         self._selectedStream = selectedStream
     }
-<<<<<<< HEAD
     
     private var pathPoints: [_MapView.PathPoint] {
-=======
-
-    private var pathPoints: [PathPoint] {
->>>>>>> 4bf4afde (Overfiring timer for statistics container fixed (#921))
         return selectedStream?.allMeasurements?.compactMap {
             guard let location = $0.location else { return nil }
             return .init(lat: location.latitude, long: location.longitude, value: $0.value)
@@ -83,29 +89,41 @@ struct AirMapView: View {
             if let threshold = thresholds.value.threshold(for: selectedStream?.sensorName ?? "") {
                 if !showLoadingIndicator {
                     ZStack(alignment: .topLeading) {
-                        if session.isFixed {
-                            // Kropka customowa
-                            // brak PathPoint - nie rysujemy ścieżki
-                            _MapView(path: pathPoints,
-                                     type: .normal,
-                                     trackingStyle: .latestPathPoint,
-                                     userIndicatorStyle: .custom(color: _MapViewThresholdFormatter.shared.color(points: pathPoints, threshold: threshold)),
-                                     userTracker: ConstantTracker(location: pathPoints.last?.location ?? .applePark))
-
-                        } else if session.isActive {
-                            // Kropka customowa
-                            // są pointy - rysujemy drogę
-                            // aktualizacje trasy live
+                        switch mapSessionType {
+                        case .active:
+                            // - custom dot
+                            // - draw path when ongoing session updates
+                            // - live tracking
                             _MapView(path: pathPoints,
                                      type: .normal,
                                      trackingStyle: .latestPathPoint,
                                      userIndicatorStyle: .custom(color: _MapViewThresholdFormatter.shared.color(points: pathPoints, threshold: threshold)),
                                      userTracker: UserTrackerAdapter(locationTracker),
                                      markers: mapNotesVM.notes.asMapMarkers(with: didTapNote))
-                        } else {
-                            // kropka customowa
-                            // rusyjemy raz już gotową trasę
-                            // nie ma potrzeby aktualizacji
+                            .addingOverlay { mapView in
+                                heatmapContainer.heatMap?.remove()
+                                let mapWidth = mapView.frame.width
+                                let mapHeight = mapView.frame.height
+                                guard mapWidth > 0, mapHeight > 0 else { return }
+                                heatmapContainer.heatMap = Heatmap(mapView, sensorThreshold: threshold, mapWidth: Int(mapWidth), mapHeight: Int(mapHeight))
+                                heatmapContainer.heatMap?.drawHeatMap(pathPoints: pathPoints.map { .init(location: .init(latitude: $0.lat,
+                                                                                                                         longitude: $0.long),
+                                                                                                         measurementTime: DateBuilder.distantPast(),
+                                                                                                         measurement: $0.value) })
+                            }
+                        case .fixed:
+                            // - custom dot
+                            // - no path drawing
+                            _MapView(path: pathPoints,
+                                     type: .normal,
+                                     trackingStyle: .latestPathPoint,
+                                     userIndicatorStyle: .custom(color: _MapViewThresholdFormatter.shared.color(points: pathPoints, threshold: threshold)),
+                                     userTracker: ConstantTracker(location: pathPoints.last?.location ?? .applePark))
+                        case .other:
+                            // here only mobileDormant type should be considered
+                            // - custom dot
+                            // - draw already known and finished path
+                            // - no need for real time updated
                             _MapView(path: pathPoints,
                                      type: .normal,
                                      trackingStyle: .wholePath,
@@ -113,13 +131,15 @@ struct AirMapView: View {
                                      userTracker: UserTrackerAdapter(locationTracker),
                                      markers: mapNotesVM.notes.asMapMarkers(with: didTapNote))
                             .addingOverlay { mapView in
-                                Log.verbose("## Drawing heatmap")
                                 heatmapContainer.heatMap?.remove()
                                 let mapWidth = mapView.frame.width
                                 let mapHeight = mapView.frame.height
                                 guard mapWidth > 0, mapHeight > 0 else { return }
                                 heatmapContainer.heatMap = Heatmap(mapView, sensorThreshold: threshold, mapWidth: Int(mapWidth), mapHeight: Int(mapHeight))
-                                heatmapContainer.heatMap?.drawHeatMap(pathPoints: pathPoints.map { .init(location: .init(latitude: $0.lat, longitude: $0.long), measurementTime: DateBuilder.distantPast(), measurement: $0.value) })
+                                heatmapContainer.heatMap?.drawHeatMap(pathPoints: pathPoints.map { .init(location: .init(latitude: $0.lat,
+                                                                                                                         longitude: $0.long),
+                                                                                                         measurementTime: DateBuilder.distantPast(),
+                                                                                                         measurement: $0.value) })
                             }
                         }
                         // Statistics container shouldn't be presented in mobile dormant tab

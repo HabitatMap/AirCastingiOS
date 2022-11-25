@@ -113,7 +113,6 @@ class UserTrackerAdapter: UserTracker {
     }
     
     func startTrackingUserPosition(_ newPos: @escaping (CLLocation) -> Void) {
-        Log.verbose("## Starting tracking location")
         locationTracker.start()
         didStartTracking = true
         locationCancellable = locationTracker.location.sink {
@@ -127,7 +126,6 @@ class UserTrackerAdapter: UserTracker {
     
     deinit {
         guard didStartTracking else { return }
-        Log.verbose("## Stopping tracking location")
         locationTracker.stop()
     }
 }

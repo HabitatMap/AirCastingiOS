@@ -29,16 +29,7 @@ struct ExternalSessionMapView: View {
                              type: .normal,
                              trackingStyle: .latestPathPoint,
                              userIndicatorStyle: .custom(color: _MapViewThresholdFormatter.shared.color(points: pathPoints, threshold: threshold)),
-                             userTracker: UserTrackerAdapter(locationTracker))
-//                    GoogleMapView(pathPoints: pathPoints,
-//                                  threshold: threshold,
-//                                  placePickerIsUpdating: Binding.constant(false),
-//                                  isUserInteracting: Binding.constant(true),
-//                                  isSessionActive: false,
-//                                  isSessionFixed: true,
-//                                  noteMarketTapped: Binding.constant(false),
-//                                  noteNumber: Binding.constant(0),
-//                                  mapNotes: Binding.constant([]))
+                             userTracker: ConstantTracker(location: pathPoints.last?.location ?? .applePark))
                     StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
                                             threshold: threshold)
                 }.padding(.bottom)

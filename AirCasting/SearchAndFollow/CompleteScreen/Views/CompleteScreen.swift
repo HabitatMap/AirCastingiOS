@@ -3,11 +3,9 @@
 
 import SwiftUI
 import AirCastingStyling
-import Resolver
 
 struct CompleteScreen: View {
     @StateObject var viewModel: CompleteScreenViewModel
-    @Injected private var locationTracker: LocationTracker
     
     init(session: PartialExternalSession, exitRoute: @escaping () -> Void) {
         _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session, exitRoute: exitRoute))
