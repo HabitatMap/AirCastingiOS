@@ -77,7 +77,7 @@ struct AirMapView: View {
                                      type: .normal,
                                      trackingStyle: .latestPathPoint,
                                      userIndicatorStyle: .custom(color: _MapViewThresholdFormatter.shared.color(points: pathPoints, threshold: threshold)),
-                                     userTracker: ConstantTracker(location: pathPoints.last?.location ?? .apple))
+                                     userTracker: ConstantTracker(location: pathPoints.last?.location ?? .applePark))
 
                         } else if session.isActive {
                             // Kropka customowa
