@@ -8,6 +8,7 @@ import Combine
 class ReconnectSessionCardViewModel: ObservableObject {
     @Injected private var reconnectionController: UserTriggeredReconnectionController
     @Published var alert: AlertInfo?
+    @Published var buttonLabel = Strings.ReconnectSessionCardView.reconnectLabel
     @Published var connectingState: ConnectingState = .idle {
         didSet {
             switch connectingState {
@@ -20,7 +21,6 @@ class ReconnectSessionCardViewModel: ObservableObject {
             }
         }
     }
-    @Published var buttonLabel = Strings.ReconnectSessionCardView.reconnectLabel
     let session: SessionEntity    
     
     enum ConnectingState {
@@ -44,11 +44,6 @@ class ReconnectSessionCardViewModel: ObservableObject {
         }
     }
     
-    // This is just in case something goes wrong and the viewModel stays in memory
-    func viewDidAppear() {
-        connectingState = .idle
-    }
-    
     private func finishSessionAlertAction(completion: () -> Void) {
         let sessionStopper = Resolver.resolve(SessionStoppable.self, args: session)
         do {
@@ -64,13 +59,13 @@ class ReconnectSessionCardViewModel: ObservableObject {
         alert = InAppAlerts.genericErrorAlert()
     }
     
-    private func showAlertFor(error: UserTroggeredReconnectionError) {
+    private func showAlertFor(error: UserTriggeredReconnectionError) {
         switch error {
         case .anotherActiveSessionInProgress:
             alert = InAppAlerts.anotherSessionInProgress()
         case .deviceNotDiscovered:
             alert = InAppAlerts.failedToDiscoverDevice()
-        case .failedToConnect, .failedToDiscoverCharacteristics, .airbeamConfigurationFailure:
+        case .failedToConnect:
             alert = InAppAlerts.failedToConnectWithDevice()
         }
     }

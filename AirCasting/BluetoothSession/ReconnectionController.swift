@@ -14,7 +14,7 @@ protocol ReconnectionController {
     var delegate: ReconnectionControllerDelegate? { get set }
 }
 
-class DefaultReconnectionObserver: ReconnectionController, BluetoothConnectionObserver {
+class DefaultReconnectionController: ReconnectionController, BluetoothConnectionObserver {
     weak var delegate: ReconnectionControllerDelegate?
     @Injected private var bluetoothManager: BluetoothConnectionObservable
     @Injected private var bluetootConnector: BluetoothConnectionHandler

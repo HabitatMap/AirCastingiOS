@@ -295,7 +295,7 @@ extension Resolver: ResolverRegistering {
             .scope(.application)
 
         // MARK: Reconnect
-        main.register { DefaultReconnectionObserver() as ReconnectionController }
+        main.register { DefaultReconnectionController() as ReconnectionController }
             .scope(.application)
         main.register { SessionManagingReconnectionController() }
             .scope(.application)

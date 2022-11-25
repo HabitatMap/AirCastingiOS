@@ -62,7 +62,11 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
         // being done by the MeasurementStreamStorage class automagically.
         // This is something we might want to change at some point.
         
-        guard !isRecording else { return } // To make sure we are not recording more than one session at once
+        guard !isRecording else {
+            // We want to make sure we are not recording more than one session at once
+            // and resumeRecording can be called during automatic reconnect as well
+            return
+        }
         
         if !(activeSessionProvider.activeSession?.session.locationless ?? true) {
             self.locationTracker.start()
@@ -71,9 +75,10 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
     }
     
     func stopRecordingSession(with uuid: SessionUUID, databaseChange: (MobileSessionStorage) -> Void) {
-        // Database change should be performed for both active and disconnected sessions
+        // Database change is performed for both active and disconnected sessions
         databaseChange(storage)
         
+        // The code below the guard is performed only for active sessions
         guard let activeSession = activeSessionProvider.activeSession, activeSession.session.uuid == uuid else { return }
         
         btManager.disconnect(from: activeSession.device)

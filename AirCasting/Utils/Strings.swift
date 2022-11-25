@@ -828,7 +828,7 @@ struct Strings {
                                                                 comment: "")
         static let connectingLabel = NSLocalizedString("Connecting...",
                                                                 comment: "")
-        static let connectedLabel = NSLocalizedString("Connected...",
+        static let connectedLabel = NSLocalizedString("Finalizing...",
                                                                 comment: "")
         static let finishSessionLabel = NSLocalizedString("Finish session",
                                                                     comment: "")

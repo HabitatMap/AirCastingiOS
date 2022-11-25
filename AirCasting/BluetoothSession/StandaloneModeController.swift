@@ -7,7 +7,7 @@ protocol StandaloneModeController {
 
 final class DefaultStandaloneModeContoller: StandaloneModeController {
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
-    @Injected private var sessionRecoringController: BluetoothSessionRecordingController
+    @Injected private var sessionRecordingController: BluetoothSessionRecordingController
     
     func moveActiveSessionToStandaloneMode() {
         guard let sessionUUID = activeSessionProvider.activeSession?.session.uuid else {
@@ -15,7 +15,7 @@ final class DefaultStandaloneModeContoller: StandaloneModeController {
             return
         }
         
-        sessionRecoringController.stopRecordingSession(with: sessionUUID, databaseChange: {
+        sessionRecordingController.stopRecordingSession(with: sessionUUID, databaseChange: {
             Log.info("Changing session status to disconnected for: \(sessionUUID)")
             $0.updateSessionStatus(.DISCONNECTED, for: sessionUUID)
         })
