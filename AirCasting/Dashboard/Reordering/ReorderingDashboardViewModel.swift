@@ -14,7 +14,7 @@ class ReorderingDashboardViewModel: ObservableObject {
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
     
     init(sessions: [Sessionable], thresholds: [SensorThreshold]) {
-        self.sessions = sessions
+        self.sessions = sessions.filter { $0.uuid != "" && !$0.gotDeleted }
         self.thresholds = thresholds
     }
     
