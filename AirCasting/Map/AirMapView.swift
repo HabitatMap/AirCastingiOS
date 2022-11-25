@@ -99,17 +99,7 @@ struct AirMapView: View {
                                      userIndicatorStyle: .custom(color: _MapViewThresholdFormatter.shared.color(points: pathPoints, threshold: threshold)),
                                      userTracker: UserTrackerAdapter(locationTracker),
                                      markers: mapNotesVM.notes.asMapMarkers(with: didTapNote))
-                            .addingOverlay { mapView in
-                                heatmapContainer.heatMap?.remove()
-                                let mapWidth = mapView.frame.width
-                                let mapHeight = mapView.frame.height
-                                guard mapWidth > 0, mapHeight > 0 else { return }
-                                heatmapContainer.heatMap = Heatmap(mapView, sensorThreshold: threshold, mapWidth: Int(mapWidth), mapHeight: Int(mapHeight))
-                                heatmapContainer.heatMap?.drawHeatMap(pathPoints: pathPoints.map { .init(location: .init(latitude: $0.lat,
-                                                                                                                         longitude: $0.long),
-                                                                                                         measurementTime: DateBuilder.distantPast(),
-                                                                                                         measurement: $0.value) })
-                            }
+                            .addingOverlay { mapView in overlayHeatMap(on: mapView, threshold: threshold) }
                         case .fixed:
                             // - custom dot
                             // - no path drawing
@@ -129,17 +119,7 @@ struct AirMapView: View {
                                      userIndicatorStyle: .none,
                                      userTracker: UserTrackerAdapter(locationTracker),
                                      markers: mapNotesVM.notes.asMapMarkers(with: didTapNote))
-                            .addingOverlay { mapView in
-                                heatmapContainer.heatMap?.remove()
-                                let mapWidth = mapView.frame.width
-                                let mapHeight = mapView.frame.height
-                                guard mapWidth > 0, mapHeight > 0 else { return }
-                                heatmapContainer.heatMap = Heatmap(mapView, sensorThreshold: threshold, mapWidth: Int(mapWidth), mapHeight: Int(mapHeight))
-                                heatmapContainer.heatMap?.drawHeatMap(pathPoints: pathPoints.map { .init(location: .init(latitude: $0.lat,
-                                                                                                                         longitude: $0.long),
-                                                                                                         measurementTime: DateBuilder.distantPast(),
-                                                                                                         measurement: $0.value) })
-                            }
+                            .addingOverlay { mapView in overlayHeatMap(on: mapView, threshold: threshold) }
                         }
                         #warning("TODO: Implement calculating stats only for visible path points")
                         // This doesn't work properly and it needs to be fixed, so I'm commenting it out
@@ -190,6 +170,21 @@ struct AirMapView: View {
     
     private func didTapNote(_ note: MapNote) {
         currentlyPresentedNoteDetails = note
+    }
+}
+
+import GoogleMaps
+fileprivate extension AirMapView {
+    private func overlayHeatMap(on mapView: GMSMapView, threshold: SensorThreshold) {
+        heatmapContainer.heatMap?.remove()
+        let mapWidth = mapView.frame.width
+        let mapHeight = mapView.frame.height
+        guard mapWidth > 0, mapHeight > 0 else { return }
+        heatmapContainer.heatMap = Heatmap(mapView, sensorThreshold: threshold, mapWidth: Int(mapWidth), mapHeight: Int(mapHeight))
+        heatmapContainer.heatMap?.drawHeatMap(pathPoints: pathPoints.map { .init(location: .init(latitude: $0.lat,
+                                                                                                 longitude: $0.long),
+                                                                                 measurementTime: DateBuilder.distantPast(),
+                                                                                 measurement: $0.value) })
     }
 }
 
