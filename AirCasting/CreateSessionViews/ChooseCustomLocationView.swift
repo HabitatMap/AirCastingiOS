@@ -22,7 +22,8 @@ struct ChooseCustomLocationView: View {
         VStack(spacing: 40) {
             ProgressView(value: 0.85)
             titleLabel
-            createTextfield(placeholder: Strings.ChooseCustomLocationView.sessionLocation, binding: $locationName)
+            createTextfield(placeholder: Strings.ChooseCustomLocationView.sessionLocation,
+                            binding: $locationName)
                 .font(Fonts.moderateRegularHeading2)
                 .disabled(true)
                 .onTapGesture {
@@ -36,12 +37,11 @@ struct ChooseCustomLocationView: View {
         }
         .background(confirmCreatingSessionLink)
         .sheet(isPresented: $isLocationPopupPresented) {
-            PlacePicker(service: ChooseLocationPickerService(address: $locationName, location: $location))
+            PlacePicker(service: ChooseLocationPickerService(address: $locationName,
+                                                             location: $location))
         }
         .onChange(of: location, perform: { newLocation in
-            guard let newLocation else { return }
-            locationTracker.locationSource = newLocation
-            ApplocationTracker.location.value = .init(latitude: newLocation.latitude, longitude: newLocation.longitude)
+           updateTrackerWithNewLocation(newLocation)
         })
         .padding()
     }
@@ -51,6 +51,12 @@ struct ChooseCustomLocationView: View {
                  trackingStyle: .user,
                  userIndicatorStyle: .none,
                  userTracker: locationTracker)
+        .indicateMapLocationChange { newLocation in
+            updateTrackerWithNewLocation(.init(latitude: newLocation.coordinate.latitude,
+                                               longitude: newLocation.coordinate.longitude))
+            location = .init(latitude: newLocation.coordinate.latitude,
+                             longitude: newLocation.coordinate.longitude)
+        }
     }
 
     var dot: some View {
@@ -88,6 +94,13 @@ struct ChooseCustomLocationView: View {
                 EmptyView()
             }
         )
+    }
+    
+    private func updateTrackerWithNewLocation(_ loc: CLLocationCoordinate2D?) {
+        guard let loc else { return }
+        locationTracker.locationSource = loc
+        ApplocationTracker.location.value = .init(latitude: loc.latitude,
+                                                  longitude: loc.longitude)
     }
 }
 
