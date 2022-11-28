@@ -22,6 +22,7 @@ class ChooseLocationPickerService: PlacePickerService {
 
 class BindableLocationTracker: UserTracker, ObservableObject {
     func getLastKnownLocation() -> CLLocation? {
+        
         CLLocation(latitude: locationSource.latitude,
                    longitude: locationSource.longitude)
     }

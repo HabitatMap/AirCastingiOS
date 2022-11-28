@@ -79,6 +79,7 @@ struct _MapView: UIViewRepresentable {
     private let userTracker: UserTracker
     private let markers: [Marker]
     private var overlayClosure: ((GMSMapView) -> Void)?
+    private var mapDidChangePosition: ((CLLocation) -> Void)?
     
     init(path: [PathPoint] = [], type: MapType, trackingStyle: TrackingStyle, userIndicatorStyle: UserIndicatorStyle, userTracker: UserTracker, markers: [Marker] = []) {
         self.path = path
@@ -97,6 +98,12 @@ struct _MapView: UIViewRepresentable {
         return mutableSelf
     }
     
+    func indicateMapLocationChange(_ closure: @escaping (CLLocation) -> Void) -> Self {
+        var mutableSelf = self
+        mutableSelf.mapDidChangePosition = closure
+        return mutableSelf
+    }
+    
     func makeUIView(context: Context) -> GMSMapView {
         let startingPoint = getStartingPoint(coordinator: context.coordinator)
         let mapView = GMSMapView(frame: .zero, camera: startingPoint)
@@ -106,8 +113,12 @@ struct _MapView: UIViewRepresentable {
         setupMapDelegate(in: mapView, coordinator: context.coordinator)
         
         if isUserPositionTrackingRequired {
-            userTracker.startTrackingUserPosition { [weak coord = context.coordinator, weak map = mapView] in
-                coord?.latestUserLocation = $0
+            userTracker.startTrackingUserPosition { [weak coord = context.coordinator, weak map = mapView] location in
+                let oldValue = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+                if (mapView.camera.target.latitude != oldValue.latitude) || (mapView.camera.target.longitude != oldValue.longitude) {
+                    coord?.latestUserLocation = location
+                    context.coordinator.suspendTracking = false
+                }
                 guard let map, let coord else { return }
                 setupUserIndicatorStyle(with: userIndicatorStyle, in: map, with: coord)
             }
@@ -154,6 +165,9 @@ struct _MapView: UIViewRepresentable {
             return marker?.handler != nil
         }, idleAt: { mapView, location in
             overlayClosure?(mapView)
+        }, didChangePosition: { position in
+            mapDidChangePosition?(.init(latitude: position.target.latitude,
+                                       longitude: position.target.longitude))
         })
         
         mapView.delegate = coordinator.mapViewDelegateHandler
@@ -276,6 +290,8 @@ struct _MapView: UIViewRepresentable {
         let newCameraPosition = GMSCameraPosition.camera(withLatitude: coords.coordinate.latitude,
                                                          longitude: coords.coordinate.longitude,
                                                          zoom: 16)
+        coordinator.latestUserLocation = .init(latitude: coords.coordinate.latitude,
+                                               longitude: coords.coordinate.longitude)
         return newCameraPosition
     }
     
@@ -332,15 +348,18 @@ fileprivate extension _MapView {
         let draggingHandler: (GMSMapView) -> Void
         let markerTapHandler: (GMSMapView, GMSMarker) -> Bool
         let idleAt: (GMSMapView, GMSCameraPosition) -> Void
+        let didChangePosition: (GMSCameraPosition) -> Void
         
         init(myLocationTapHandler: @escaping (GMSMapView) -> Bool,
              draggingHandler: @escaping (GMSMapView) -> Void,
              markerTapHandler: @escaping (GMSMapView, GMSMarker) -> Bool,
-             idleAt: @escaping (GMSMapView, GMSCameraPosition) -> Void) {
+             idleAt: @escaping (GMSMapView, GMSCameraPosition) -> Void,
+             didChangePosition: @escaping (GMSCameraPosition) -> Void) {
             self.myLocationTapHandler = myLocationTapHandler
             self.draggingHandler = draggingHandler
             self.markerTapHandler = markerTapHandler
             self.idleAt = idleAt
+            self.didChangePosition = didChangePosition
         }
         
         func didTapMyLocationButton(for mapView: GMSMapView) -> Bool {
@@ -358,6 +377,7 @@ fileprivate extension _MapView {
         
         func mapView(_ mapView: GMSMapView, idleAt position: GMSCameraPosition) {
             idleAt(mapView, position)
+            didChangePosition(position)
         }
     }
 }
