@@ -8,7 +8,7 @@ class _MapViewThresholdFormatter {
     
     static let shared = _MapViewThresholdFormatter()
     
-    func color(points: [_MapView.PathPoint], threshold: SensorThreshold) -> Color {
+    func color(points: [_MapView.PathPoint], threshold: SensorThreshold) -> UIColor {
         let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
         
         guard let point = points.last else { return .white }
@@ -16,7 +16,7 @@ class _MapViewThresholdFormatter {
         return getProperColor(value: measurement, threshold: threshold)
     }
     
-    func getProperColor(value: Int32, threshold: SensorThreshold?) -> Color {
+    func getProperColor(value: Int32, threshold: SensorThreshold?) -> UIColor {
         guard let threshold = threshold else { return .white }
         
         let veryLow = threshold.thresholdVeryLow
@@ -27,15 +27,15 @@ class _MapViewThresholdFormatter {
         
         switch value {
         case veryLow ..< low:
-            return Color.aircastingGreen
+            return UIColor.aircastingGreen
         case low ..< medium:
-            return Color.aircastingYellow
+            return UIColor.aircastingYellow
         case medium ..< high:
-            return Color.aircastingOrange
+            return UIColor.aircastingOrange
         case high ... veryHigh:
-            return Color.aircastingRed
+            return UIColor.aircastingRed
         default:
-            return Color.aircastingGray
+            return UIColor.aircastingGray
         }
     }
 }

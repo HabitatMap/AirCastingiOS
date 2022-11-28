@@ -29,7 +29,7 @@ extension _MapView {
     enum UserIndicatorStyle {
         case none // no dot
         case standard // google style dot
-        case custom(color: Color) // AC color dot
+        case custom(color: UIColor) // AC color dot
     }
     
     struct PathPoint: Equatable {
@@ -253,13 +253,13 @@ struct _MapView: UIViewRepresentable {
         }
     }
     
-    private func createCustomUserIndicator(color: Color, userLocation: CLLocation, uiView: GMSMapView, coordinator: Coordinator) {
+    private func createCustomUserIndicator(color: UIColor, userLocation: CLLocation, uiView: GMSMapView, coordinator: Coordinator) {
         let marker = coordinator.customUserMarker ?? GMSMarker()
         if coordinator.customUserMarker == nil {
             coordinator.customUserMarker = marker
         }
-        let markerImg = UIImage.imageWithColor(color: UIColor(color),
-                                               size: CGSize(width: 20.0, height: 20.0)) // Customize with styling later?
+        let markerImg = UIImage.imageWithColor(color: color,
+                                               size: CGSize(width: 20.0, height: 20.0)) 
         
         marker.icon = markerImg
         marker.map = uiView
