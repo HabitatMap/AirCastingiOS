@@ -22,7 +22,7 @@ final class CoreDataSessionStorage: SessionStorage {
         self.context = context
     }
     
-    /// All actions performed on CoreDataMeasurementStreamStorage must be performed
+    /// All actions performed on CoreDataSessionStorage must be performed
     /// within a block passed to this methood.
     /// This ensures thread-safety by dispatching all calls to the queue owned by the NSManagedObjectContext.
     func accessStorage(_ task: @escaping(HiddenCoreDataSessionStorage) -> Void) {

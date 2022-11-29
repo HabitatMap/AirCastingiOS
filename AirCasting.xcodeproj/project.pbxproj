@@ -81,6 +81,7 @@
 		3392B3FE28A3D5D000432B92 /* FetchThresholdAlertsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3392B3FD28A3D5D000432B92 /* FetchThresholdAlertsService.swift */; };
 		3397C81F2787024C0050B333 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3397C81E2787024C0050B333 /* UserDefaults.swift */; };
 		3399394D27DA1722006144AF /* SingleSessionDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3399394C27DA1722006144AF /* SingleSessionDownloader.swift */; };
+		339AC2902934DEBE0083D8FF /* SessionNotesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339AC28F2934DEBE0083D8FF /* SessionNotesStorage.swift */; };
 		339BF3E127D231F000BBCB23 /* StaticSessionHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339BF3E027D231F000BBCB23 /* StaticSessionHeaderViewModel.swift */; };
 		339E1A24292F9A7D003910A5 /* UserTriggeredReconnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339E1A23292F9A7D003910A5 /* UserTriggeredReconnectionController.swift */; };
 		33A7FF1A27C5115700A138D6 /* CompleteScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A7FF1927C5115700A138D6 /* CompleteScreen.swift */; };
@@ -659,6 +660,7 @@
 		3392B3FD28A3D5D000432B92 /* FetchThresholdAlertsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchThresholdAlertsService.swift; sourceTree = "<group>"; };
 		3397C81E2787024C0050B333 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		3399394C27DA1722006144AF /* SingleSessionDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSessionDownloader.swift; sourceTree = "<group>"; };
+		339AC28F2934DEBE0083D8FF /* SessionNotesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionNotesStorage.swift; sourceTree = "<group>"; };
 		339BF3E027D231F000BBCB23 /* StaticSessionHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticSessionHeaderViewModel.swift; sourceTree = "<group>"; };
 		339E1A23292F9A7D003910A5 /* UserTriggeredReconnectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTriggeredReconnectionController.swift; sourceTree = "<group>"; };
 		33A7FF1927C5115700A138D6 /* CompleteScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteScreen.swift; sourceTree = "<group>"; };
@@ -1302,6 +1304,7 @@
 				ACDA5EF4285B43FD00A531E9 /* SessionEntityStore.swift */,
 				33ECC0E12901ACFA00A3BC85 /* AveragingServiceStorage.swift */,
 				3320F30F2927E32100EFFB2D /* MobileSessionStorage.swift */,
+				339AC28F2934DEBE0083D8FF /* SessionNotesStorage.swift */,
 			);
 			path = Storages;
 			sourceTree = "<group>";
@@ -3376,6 +3379,7 @@
 				AC489B5C2603614E00CEEC48 /* MoreInfoPopupView.swift in Sources */,
 				336A909927A4946400851100 /* ReorderingDashboardViewModel.swift in Sources */,
 				AC25C6D62817DA250091C714 /* LogoutController.swift in Sources */,
+				339AC2902934DEBE0083D8FF /* SessionNotesStorage.swift in Sources */,
 				336F86D0282E98E500FEFD61 /* ExternalSessionMapView.swift in Sources */,
 				33A7FF2127C5160A00A138D6 /* StaticSessionHeader.swift in Sources */,
 				DDD24D9526A8569400D4A327 /* EmailForgotPasswordController.swift in Sources */,

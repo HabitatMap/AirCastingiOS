@@ -27,7 +27,6 @@ protocol MeasurementStreamStorageContextUpdate {
     func markStreamForDelete(_ sessionUUID: SessionUUID, sensorsName: [String], completion: () -> Void) throws
     func deleteSession(_ sessionUUID: SessionUUID) throws
     func deleteStreams(_ sessionUUID: SessionUUID) throws
-    func addNote(_ note: Note, for sessionUUID: SessionUUID) throws
     func save() throws
 }
 
@@ -38,9 +37,7 @@ extension HiddenCoreDataMeasurementStreamStorage {
 }
 
 final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
-
     @Injected private var persistenceController: PersistenceController
-    @Injected private var updateSessionParamsService: UpdateSessionParamsService
     private lazy var context: NSManagedObjectContext = persistenceController.editContext
     private lazy var hiddenStorage = HiddenCoreDataMeasurementStreamStorage(context: self.context)
 
@@ -262,82 +259,6 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         } catch {
             Log.error("Error when saving changes in session: \(error.localizedDescription)")
         }
-    }
-    
-    // MARK: - Notes
-
-    enum NoteStorageError: Swift.Error, LocalizedError {
-        case storageEmpty
-        case noteNotFound
-        case malformedStorageState
-        case multipleNotesFound
-
-        var errorDescription: String? {
-            switch self {
-            case .storageEmpty: return "Note storage is empty"
-            case .multipleNotesFound: return "Multiple notes for given ID found"
-            case .noteNotFound: return "No note with given ID found"
-            case .malformedStorageState: return "Data storage is in malformed state"
-            }
-        }
-    }
-
-    func addNote(_ note: Note, for sessionUUID: SessionUUID) throws {
-        let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        let noteEntity = NoteEntity(context: context)
-        noteEntity.lat = note.lat
-        noteEntity.long = note.long
-        noteEntity.text = note.text
-        noteEntity.date = note.date
-        noteEntity.number = Int64(note.number)
-        noteEntity.photoLocation = note.photoLocation
-        sessionEntity.addToNotes(noteEntity)
-    }
-
-    func updateNote(_ note: Note, newText: String, for sessionUUID: SessionUUID) throws {
-        let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        if let note = (sessionEntity.notes?.first(where: { ($0 as! NoteEntity).number == note.number }) as? NoteEntity) {
-            note.text = newText
-        }
-    }
-
-    func deleteNote(_ note: Note, for sessionUUID: SessionUUID) throws {
-        let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        if let note = (sessionEntity.notes?.first(where: { ($0 as! NoteEntity).number == note.number }) as? NoteEntity) {
-            context.delete(note)
-        }
-    }
-
-    func getNotes(for sessionUUID: SessionUUID) throws -> [Note] {
-        let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        return sessionEntity.notes?.map { note -> Note in
-            let n = note as! NoteEntity
-            return Note(date: n.date ?? DateBuilder.getFakeUTCDate(),
-                        text: n.text ?? "",
-                        lat: n.lat,
-                        long: n.long,
-                        photoLocation: n.photoLocation,
-                        number: Int(n.number))
-        } ?? []
-    }
-
-    func fetchSpecifiedNote(for sessionUUID: SessionUUID, number: Int) throws -> Note {
-        let session = try context.existingSession(uuid: sessionUUID)
-        guard let allSessionNotes = session.notes else { throw NoteStorageError.storageEmpty }
-        let matching = try allSessionNotes.filter {
-            guard let note = $0 as? NoteEntity else { throw NoteStorageError.malformedStorageState }
-            return note.number == number
-        }
-        guard matching.count > 0 else { throw NoteStorageError.noteNotFound }
-        guard matching.count == 1 else { throw NoteStorageError.multipleNotesFound }
-        let note = matching[0] as! NoteEntity
-
-        return Note(date: note.date ?? DateBuilder.getFakeUTCDate(),
-                    text: note.text ?? "",
-                    lat: note.lat,
-                    long: note.long,
-                    photoLocation: note.photoLocation,
-                    number: Int(note.number))
     }
     
     private func newSessionEntity() -> SessionEntity {
