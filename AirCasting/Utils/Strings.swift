@@ -168,6 +168,10 @@ struct Strings {
                                                                      comment: "")
         static let linkSharingAlertMessage: String = NSLocalizedString("Try again later",
                                                                        comment: "")
+        static let noStreamsTitle: String = NSLocalizedString("No streams available",
+                                                              comment: "")
+        static let noStreamsMessage: String = NSLocalizedString("Please, try again once streams show up.",
+                                                              comment: "")
         static let emailSharingAlertTitle: String = NSLocalizedString("Request failed",
                                                                       comment: "")
         static let emailSharingAlertMessage: String = NSLocalizedString("Please try again later",
