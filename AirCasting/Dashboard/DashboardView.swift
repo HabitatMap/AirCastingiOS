@@ -63,6 +63,12 @@ struct DashboardView: View {
         }
         .navigationBarTitle(Strings.DashboardView.dashboardText)
         .navigationBarHidden(true)
+        .onReceive(sessionSynchronizer.syncInProgress, perform: { value in
+            // Aim of this, is to show the sync spinner
+            // whenever sync will be triggered from the code.
+            guard value == true, isRefreshing != true else { return }
+            isRefreshing = value
+        })
         .onChange(of: isRefreshing, perform: { newValue in
             guard newValue == true else { return }
             guard !sessionSynchronizer.syncInProgress.value else {
