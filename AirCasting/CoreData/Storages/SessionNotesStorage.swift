@@ -10,6 +10,7 @@ protocol SessionNotesStorage {
 }
 
 protocol HiddenSessionNotesStorage {
+    func save() throws
     func getNotes(for sessionUUID: SessionUUID) throws -> [Note]
     func fetchSpecifiedNote(for sessionUUID: SessionUUID, number: Int) throws -> Note
     func addNote(_ note: Note, for sessionUUID: SessionUUID) throws
@@ -22,7 +23,7 @@ protocol HiddenSessionNotesStorage {
 class DefaultSessionNotesStorage: SessionNotesStorage {
     @Injected private var persistenceController: PersistenceController
     private lazy var context: NSManagedObjectContext = persistenceController.editContext
-    private lazy var hiddenStorage = DefaultHiddenSessionNotesStorage(context: self.context)
+    private lazy var hiddenStorage: HiddenSessionNotesStorage = DefaultHiddenSessionNotesStorage(context: self.context)
 
     /// All actions performed on DefaultSessionNotesStorage must be performed
     /// within a block passed to this methood.
