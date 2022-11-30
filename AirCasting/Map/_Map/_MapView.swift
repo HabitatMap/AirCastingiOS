@@ -6,7 +6,7 @@ import SwiftUI
 import GoogleMaps
 import Combine
 
-protocol UserTracker {
+protocol MapLocationTracker {
     func startTrackingUserPosition(_ newPos: @escaping (CLLocation) -> Void)
     func getLastKnownLocation() -> CLLocation?
 }
@@ -76,17 +76,17 @@ struct _MapView: UIViewRepresentable {
     private let type: MapType
     private let trackingStyle: TrackingStyle
     private let userIndicatorStyle: UserIndicatorStyle
-    private let userTracker: UserTracker
+    private let locationTracker: MapLocationTracker
     private let markers: [Marker]
     private var overlayClosure: ((GMSMapView) -> Void)?
     private var mapDidChangePosition: ((CLLocation) -> Void)?
     
-    init(path: [PathPoint] = [], type: MapType, trackingStyle: TrackingStyle, userIndicatorStyle: UserIndicatorStyle, userTracker: UserTracker, markers: [Marker] = []) {
+    init(path: [PathPoint] = [], type: MapType, trackingStyle: TrackingStyle, userIndicatorStyle: UserIndicatorStyle, locationTracker: MapLocationTracker, markers: [Marker] = []) {
         self.path = path
         self.type = type
         self.trackingStyle = trackingStyle
         self.userIndicatorStyle = userIndicatorStyle
-        self.userTracker = userTracker
+        self.locationTracker = locationTracker
         self.markers = markers
     }
     
@@ -113,7 +113,7 @@ struct _MapView: UIViewRepresentable {
         setupMapDelegate(in: mapView, coordinator: context.coordinator)
         
         if isUserPositionTrackingRequired {
-            userTracker.startTrackingUserPosition { [weak coord = context.coordinator, weak map = mapView] location in
+            locationTracker.startTrackingUserPosition { [weak coord = context.coordinator, weak map = mapView] location in
                 let oldValue = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
                 if (mapView.camera.target.latitude != oldValue.latitude) || (mapView.camera.target.longitude != oldValue.longitude) {
                     coord?.latestUserLocation = location
@@ -286,7 +286,7 @@ struct _MapView: UIViewRepresentable {
     }
     
     private func getStartingPoint(coordinator: Coordinator) -> GMSCameraPosition {
-        let coords: CLLocation = userTracker.getLastKnownLocation() ?? .applePark
+        let coords: CLLocation = locationTracker.getLastKnownLocation() ?? .applePark
         let newCameraPosition = GMSCameraPosition.camera(withLatitude: coords.coordinate.latitude,
                                                          longitude: coords.coordinate.longitude,
                                                          zoom: 16)

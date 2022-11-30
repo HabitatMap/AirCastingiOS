@@ -103,7 +103,7 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
     }
 }
 
-class UserTrackerAdapter: UserTracker {
+class MapLocationTrackerAdapter: MapLocationTracker {
     private let locationTracker: LocationTracker
     private var locationCancellable: AnyCancellable?
     private var didStartTracking: Bool = false
@@ -130,7 +130,7 @@ class UserTrackerAdapter: UserTracker {
     }
 }
 
-struct ConstantTracker: UserTracker {
+struct ConstantTracker: MapLocationTracker {
     let location: CLLocation
     
     func getLastKnownLocation() -> CLLocation? {

@@ -41,7 +41,7 @@ struct CompleteScreen: View {
                          type: .normal,
                          trackingStyle: .latestPathPoint,
                          userIndicatorStyle: .custom(color: .accentColor),
-                         userTracker: ConstantTracker(location: .init(latitude: viewModel.sessionLatitude,
+                         locationTracker: ConstantTracker(location: .init(latitude: viewModel.sessionLatitude,
                                                                       longitude: viewModel.sessionLongitude)))
             } else {
                 SearchAndFollowChartView(viewModel: viewModel.chartViewModel)

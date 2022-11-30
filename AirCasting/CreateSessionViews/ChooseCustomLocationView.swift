@@ -14,7 +14,7 @@ struct ChooseCustomLocationView: View {
     @Binding var creatingSessionFlowContinues: Bool
     @StateObject private var locationTracker = BindableLocationTracker()
     var sessionName: String
-    @Injected private var ApplocationTracker: LocationTracker
+    @Injected private var AppLocationTracker: LocationTracker
     
     @EnvironmentObject private var sessionContext: CreateSessionContext
 
@@ -50,7 +50,7 @@ struct ChooseCustomLocationView: View {
         _MapView(type: .normal,
                  trackingStyle: .user,
                  userIndicatorStyle: .none,
-                 userTracker: locationTracker)
+                 locationTracker: locationTracker)
         .indicateMapLocationChange { newLocation in
             updateTrackerWithNewLocation(.init(latitude: newLocation.coordinate.latitude,
                                                longitude: newLocation.coordinate.longitude))
@@ -99,7 +99,7 @@ struct ChooseCustomLocationView: View {
     private func updateTrackerWithNewLocation(_ loc: CLLocationCoordinate2D?) {
         guard let loc else { return }
         locationTracker.locationSource = loc
-        ApplocationTracker.location.value = .init(latitude: loc.latitude,
+        AppLocationTracker.location.value = .init(latitude: loc.latitude,
                                                   longitude: loc.longitude)
     }
 }

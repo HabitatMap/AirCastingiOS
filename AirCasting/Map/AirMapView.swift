@@ -98,7 +98,7 @@ struct AirMapView: View {
                                      type: .normal,
                                      trackingStyle: .latestPathPoint,
                                      userIndicatorStyle: .custom(color: _MapViewThresholdFormatter.shared.color(points: pathPoints, threshold: threshold)),
-                                     userTracker: UserTrackerAdapter(locationTracker),
+                                     locationTracker: MapLocationTrackerAdapter(locationTracker),
                                      markers: mapNotesVM.notes.asMapMarkers(with: didTapNote))
                             .addingOverlay { mapView in overlayHeatMap(on: mapView, threshold: threshold) }
                         case .fixed:
@@ -108,7 +108,7 @@ struct AirMapView: View {
                                      type: .normal,
                                      trackingStyle: .latestPathPoint,
                                      userIndicatorStyle: .custom(color: _MapViewThresholdFormatter.shared.color(points: pathPoints, threshold: threshold)),
-                                     userTracker: ConstantTracker(location: pathPoints.last?.location ?? .applePark))
+                                     locationTracker: ConstantTracker(location: pathPoints.last?.location ?? .applePark))
                         case .other:
                             // here only mobileDormant type should be considered
                             // - custom dot
@@ -118,7 +118,7 @@ struct AirMapView: View {
                                      type: .normal,
                                      trackingStyle: .wholePath,
                                      userIndicatorStyle: .none,
-                                     userTracker: UserTrackerAdapter(locationTracker),
+                                     locationTracker: MapLocationTrackerAdapter(locationTracker),
                                      markers: mapNotesVM.notes.asMapMarkers(with: didTapNote))
                             .addingOverlay { mapView in overlayHeatMap(on: mapView, threshold: threshold) }
                         }
