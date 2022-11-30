@@ -112,7 +112,7 @@ struct ConfirmCreatingSessionView: View {
                                      type: .normal,
                                      trackingStyle: .user,
                                      userIndicatorStyle: .standard,
-                                     userTracker: UserTrackerAdapter(locationTracker),
+                                     locationTracker: MapLocationTrackerAdapter(locationTracker),
                                      markers: [])
                         }
                     } else if !(sessionContext.isIndoor ?? false) {
@@ -120,7 +120,7 @@ struct ConfirmCreatingSessionView: View {
                                  type: .normal,
                                  trackingStyle: .none,
                                  userIndicatorStyle: .none,
-                                 userTracker: UserTrackerAdapter(locationTracker),
+                                 locationTracker: MapLocationTrackerAdapter(locationTracker),
                                  markers: [])
                         .disabled(true)
                         // It needs to be disabled to prevent user interaction (swiping map) because it is only conformation screen

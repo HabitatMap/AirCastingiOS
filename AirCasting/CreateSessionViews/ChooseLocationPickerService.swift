@@ -20,7 +20,7 @@ class ChooseLocationPickerService: PlacePickerService {
     }
 }
 
-class BindableLocationTracker: UserTracker, ObservableObject {
+class BindableLocationTracker: MapLocationTracker, ObservableObject {
     func getLastKnownLocation() -> CLLocation? {
         
         CLLocation(latitude: locationSource.latitude,
@@ -30,13 +30,13 @@ class BindableLocationTracker: UserTracker, ObservableObject {
     var locationSource: CLLocationCoordinate2D {
         didSet {
             guard oldValue != locationSource else { return }
-            newPosClosure?(.init(latitude: locationSource.latitude,
+            newPositionClosure?(.init(latitude: locationSource.latitude,
                                  longitude: locationSource.longitude))
             objectWillChange.send()
         }
     }
     
-    private var newPosClosure: ((CLLocation) -> Void)?
+    private var newPositionClosure: ((CLLocation) -> Void)?
     
     init() {
         let locationTracker = Resolver.resolve(LocationTracker.self)
@@ -44,7 +44,7 @@ class BindableLocationTracker: UserTracker, ObservableObject {
     }
     
     func startTrackingUserPosition(_ newPos: @escaping (CLLocation) -> Void) {
-        self.newPosClosure = newPos
+        self.newPositionClosure = newPos
         newPos(.init(latitude: locationSource.latitude,
                      longitude: locationSource.longitude))
     }

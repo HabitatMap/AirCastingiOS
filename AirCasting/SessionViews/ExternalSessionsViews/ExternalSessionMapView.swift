@@ -29,7 +29,7 @@ struct ExternalSessionMapView: View {
                              type: .normal,
                              trackingStyle: .latestPathPoint,
                              userIndicatorStyle: .custom(color: _MapViewThresholdFormatter.shared.color(points: pathPoints, threshold: threshold)),
-                             userTracker: ConstantTracker(location: pathPoints.last?.location ?? .applePark))
+                             locationTracker: ConstantTracker(location: pathPoints.last?.location ?? .applePark))
                     StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
                                             threshold: threshold)
                 }.padding(.bottom)
