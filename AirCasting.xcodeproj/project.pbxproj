@@ -39,6 +39,7 @@
 		332B99432938BFB000C0D15D /* SessionCreatingStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332B99422938BFB000C0D15D /* SessionCreatingStorage.swift */; };
 		332B99452938D54A00C0D15D /* SessionFollowingStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332B99442938D54A00C0D15D /* SessionFollowingStorage.swift */; };
 		332B99472938D7DF00C0D15D /* SessionEditingStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332B99462938D7DF00C0D15D /* SessionEditingStorage.swift */; };
+		332B99492938DA4A00C0D15D /* SyncingMeasurementsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332B99482938DA4A00C0D15D /* SyncingMeasurementsStorage.swift */; };
 		332F521425FA38430047236D /* MicrophoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332F521325FA38430047236D /* MicrophoneManager.swift */; };
 		334062442816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */; };
 		33406247281821FA004DA4DA /* ExternalSessionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33406246281821FA004DA4DA /* ExternalSessionsStore.swift */; };
@@ -622,6 +623,7 @@
 		332B99422938BFB000C0D15D /* SessionCreatingStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCreatingStorage.swift; sourceTree = "<group>"; };
 		332B99442938D54A00C0D15D /* SessionFollowingStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionFollowingStorage.swift; sourceTree = "<group>"; };
 		332B99462938D7DF00C0D15D /* SessionEditingStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionEditingStorage.swift; sourceTree = "<group>"; };
+		332B99482938DA4A00C0D15D /* SyncingMeasurementsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncingMeasurementsStorage.swift; sourceTree = "<group>"; };
 		332F521325FA38430047236D /* MicrophoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManager.swift; sourceTree = "<group>"; };
 		334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLocationlessSessionViewModel.swift; sourceTree = "<group>"; };
 		3340624528181376004DA4DA /* AirCasting v5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v5.xcdatamodel"; sourceTree = "<group>"; };
@@ -1323,6 +1325,7 @@
 				332B99422938BFB000C0D15D /* SessionCreatingStorage.swift */,
 				332B99442938D54A00C0D15D /* SessionFollowingStorage.swift */,
 				332B99462938D7DF00C0D15D /* SessionEditingStorage.swift */,
+				332B99482938DA4A00C0D15D /* SyncingMeasurementsStorage.swift */,
 			);
 			path = Storages;
 			sourceTree = "<group>";
@@ -3558,6 +3561,7 @@
 				AC32040425CC067D00A68520 /* CheckBox.swift in Sources */,
 				ACBF1AD2286C618F006DF793 /* XMarkButton.swift in Sources */,
 				3375E8D42791EDC50019A5DE /* CLLocationCoordinate2D.swift in Sources */,
+				332B99492938DA4A00C0D15D /* SyncingMeasurementsStorage.swift in Sources */,
 				33050876276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift in Sources */,
 				33F82FC227F60498001654D8 /* ThresholdsValue+Color.swift in Sources */,
 				B34BB2E628ACFC86009E5927 /* MicrophoneManualCalibrationView.swift in Sources */,

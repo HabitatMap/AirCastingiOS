@@ -12,22 +12,10 @@ protocol MeasurementStreamStorage {
     func accessStorage(_ task: @escaping(HiddenCoreDataMeasurementStreamStorage) -> Void)
 }
 
-protocol MeasurementStreamStorageContextUpdate {
-//    func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws
-    func saveThresholdFor(sensorName: String, thresholdVeryHigh: Int32, thresholdHigh: Int32, thresholdMedium: Int32, thresholdLow: Int32, thresholdVeryLow: Int32) throws
-//    func saveMeasurementStream(_ stream: MeasurementStream, for sessionUUID: SessionUUID) throws -> MeasurementStreamLocalID
-//    @discardableResult func createSession(_ session: Session) throws -> SessionEntity
-//    func createSessionAndMeasurementStream(_ session: Session, _ stream: MeasurementStream) throws
-//    func updateSessionNameAndTags(name: String, tags: String, for sessionUUID: SessionUUID) throws
-//    func updateSessionFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID)
-    func existingMeasurementStream(_ sessionUUID: SessionUUID, name: String) throws -> MeasurementStreamLocalID?
-    func save() throws
-}
-
 extension HiddenCoreDataMeasurementStreamStorage {
-    func addMeasurementValue(_ value: Double, at location: CLLocationCoordinate2D? = nil, toStreamWithID id: MeasurementStreamLocalID, on time: Date = DateBuilder.getRawDate().currentUTCTimeZoneDate) throws {
-        try addMeasurement(Measurement(time: time, value: value, location: location), toStreamWithID: id)
-    }
+//    func addMeasurementValue(_ value: Double, at location: CLLocationCoordinate2D? = nil, toStreamWithID id: MeasurementStreamLocalID, on time: Date = DateBuilder.getRawDate().currentUTCTimeZoneDate) throws {
+//        try addMeasurement(Measurement(time: time, value: value, location: location), toStreamWithID: id)
+//    }
 }
 
 final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
@@ -46,7 +34,7 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
     }
 }
 
-final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageContextUpdate {
+final class HiddenCoreDataMeasurementStreamStorage {
     enum Error: Swift.Error {
         case missingMeasurementStream
         case missingSensorName
@@ -63,34 +51,34 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         try self.context.save()
     }
 
-    func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws {
-        let stream = try context.existingObject(with: id.id) as! MeasurementStreamEntity
+//    func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws {
+//        let stream = try context.existingObject(with: id.id) as! MeasurementStreamEntity
+//
+//        let newMeasurement = MeasurementEntity(context: context)
+//        newMeasurement.location = measurement.location
+//        newMeasurement.time = measurement.time
+//        newMeasurement.value = measurement.value
+//        stream.addToMeasurements(newMeasurement)
+//
+//        let session = stream.session
+//
+//        // otherwise dormant session status changes to active when syncing measurements
+//        if session?.status != .FINISHED {
+//            session?.status = .RECORDING
+//        }
+//    }
 
-        let newMeasurement = MeasurementEntity(context: context)
-        newMeasurement.location = measurement.location
-        newMeasurement.time = measurement.time
-        newMeasurement.value = measurement.value
-        stream.addToMeasurements(newMeasurement)
-
-        let session = stream.session
-
-        // otherwise dormant session status changes to active when syncing measurements
-        if session?.status != .FINISHED {
-            session?.status = .RECORDING
-        }
-    }
-
-    func saveThresholdFor(sensorName: String, thresholdVeryHigh: Int32, thresholdHigh: Int32, thresholdMedium: Int32, thresholdLow: Int32, thresholdVeryLow: Int32) throws {
-        let existingThreshold: SensorThreshold? = try context.existingObject(sensorName: sensorName)
-        if existingThreshold == nil {
-            let threshold: SensorThreshold = try context.newOrExisting(sensorName: sensorName)
-            threshold.thresholdVeryLow = thresholdVeryLow
-            threshold.thresholdLow = thresholdLow
-            threshold.thresholdMedium = thresholdMedium
-            threshold.thresholdHigh = thresholdHigh
-            threshold.thresholdVeryHigh = thresholdVeryHigh
-        }
-    }
+//    func saveThresholdFor(sensorName: String, thresholdVeryHigh: Int32, thresholdHigh: Int32, thresholdMedium: Int32, thresholdLow: Int32, thresholdVeryLow: Int32) throws {
+//        let existingThreshold: SensorThreshold? = try context.existingObject(sensorName: sensorName)
+//        if existingThreshold == nil {
+//            let threshold: SensorThreshold = try context.newOrExisting(sensorName: sensorName)
+//            threshold.thresholdVeryLow = thresholdVeryLow
+//            threshold.thresholdLow = thresholdLow
+//            threshold.thresholdMedium = thresholdMedium
+//            threshold.thresholdHigh = thresholdHigh
+//            threshold.thresholdVeryHigh = thresholdVeryHigh
+//        }
+//    }
 
     func saveMeasurementStream(_ stream: MeasurementStream, for sessionUUID: SessionUUID) throws -> MeasurementStreamLocalID {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
@@ -103,11 +91,11 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         _ = try saveMeasurementStream(for: sessionEntity, context: context, stream)
     }
 
-    func existingMeasurementStream(_ sessionUUID: SessionUUID, name: String) throws -> MeasurementStreamLocalID? {
-        let session = try context.existingSession(uuid: sessionUUID)
-        let stream = session.streamWith(sensorName: name)
-        return stream?.localID
-    }
+//    func existingMeasurementStream(_ sessionUUID: SessionUUID, name: String) throws -> MeasurementStreamLocalID? {
+//        let session = try context.existingSession(uuid: sessionUUID)
+//        let stream = session.streamWith(sensorName: name)
+//        return stream?.localID
+//    }
 
     func getExistingSession(with sessionUUID: SessionUUID) throws -> SessionEntity {
         let session = try context.existingSession(uuid: sessionUUID)
@@ -161,10 +149,10 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
 //        try context.save()
 //    }
     
-    func updateSessionEndTimeWithoutUTCConversion(_ endTime: Date, for sessionUUID: SessionUUID) throws {
-        let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        sessionEntity.endTime = endTime
-    }
+//    func updateSessionEndTimeWithoutUTCConversion(_ endTime: Date, for sessionUUID: SessionUUID) throws {
+//        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+//        sessionEntity.endTime = endTime
+//    }
 
 //    func updateSessionNameAndTags(name: String, tags: String, for sessionUUID: SessionUUID) throws {
 //        let sessionEntity = try context.existingSession(uuid: sessionUUID)

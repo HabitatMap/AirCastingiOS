@@ -85,6 +85,7 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultSessionCreatingStorage() as SessionCreatingStorage }
         main.register { DefaultSessionFollowingStorage() as SessionFollowingStorage }
         main.register { DefaultSessionEditingStorage() as SessionEditingStorage }
+        main.register { DefaultSyncingMeasurementsStorage() as SyncingMeasurementsStorage }
         main.register { (_, _) -> UIStorage in
             let context = Resolver.resolve(PersistenceController.self).editContext
             return CoreDataUIStorage(context: context)
