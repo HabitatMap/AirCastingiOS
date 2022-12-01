@@ -374,6 +374,7 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
     }
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+        Log.verbose("New value for characteristic: \(characteristic.value)")
         characteristicsMappingLock.lock()
         defer { characteristicsMappingLock.unlock()}
         guard let containgObserver = charactieristicsMapping.first(where: { CBUUID(string: $0.key.value) == characteristic.uuid }) else { return }

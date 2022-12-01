@@ -12,6 +12,7 @@ protocol LogoutController {
 final class DefaultLogoutController: LogoutController {
     @Injected private var sessionSynchronizer: SessionSynchronizer
     @Injected private var removeDataController: RemoveDataController
+    @Injected private var microphoneManager: MicrophoneManager
 
     private let responseHandler = AuthorizationHTTPResponseHandler()
     
@@ -20,15 +21,20 @@ final class DefaultLogoutController: LogoutController {
             var subscription: AnyCancellable?
             subscription = sessionSynchronizer.syncInProgress.receive(on: DispatchQueue.main).sink { [weak self] value in
                 guard value == false else { return }
-                self?.removeDataController.removeData()
+                self?.end(onEnd: onEnd)
                 subscription?.cancel()
-                onEnd()
             }
             return
         }
         // For logout we only care about uploading sessions before we remove everything
         sessionSynchronizer.triggerSynchronization(options: [.upload], completion: {
-            DispatchQueue.main.async { self.removeDataController.removeData(); onEnd() }
+            DispatchQueue.main.async { self.end(onEnd: onEnd) }
         })
+    }
+    
+    private func end(onEnd: @escaping () -> Void) {
+        removeDataController.removeData()
+        microphoneManager.stopRecording()
+        onEnd()
     }
 }
