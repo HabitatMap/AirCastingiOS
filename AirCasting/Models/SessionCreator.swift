@@ -58,7 +58,6 @@ final class MobilePeripheralSessionCreator: SessionCreator {
     }
     @Injected private var recorder: BluetoothSessionRecordingController
     @Injected private var userAuthenticationSession: UserAuthenticationSession
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
 
     func createSession(_ sessionContext: CreateSessionContext, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let sessionType = sessionContext.sessionType,

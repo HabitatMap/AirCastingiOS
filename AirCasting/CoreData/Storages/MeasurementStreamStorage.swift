@@ -19,7 +19,7 @@ protocol MeasurementStreamStorageContextUpdate {
 //    @discardableResult func createSession(_ session: Session) throws -> SessionEntity
 //    func createSessionAndMeasurementStream(_ session: Session, _ stream: MeasurementStream) throws
     func updateSessionNameAndTags(name: String, tags: String, for sessionUUID: SessionUUID) throws
-    func updateSessionFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID)
+//    func updateSessionFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID)
     func existingMeasurementStream(_ sessionUUID: SessionUUID, name: String) throws -> MeasurementStreamLocalID?
     func save() throws
 }
@@ -178,22 +178,22 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         sessionEntity.version = Int16(version)
     }
 
-    func updateSessionFollowing(_ sessionFollowing: SessionFollowing, for sessionUUID: SessionUUID) {
-        do {
-            let sessionEntity = try context.existingSession(uuid: sessionUUID)
-            if sessionFollowing == SessionFollowing.following {
-                sessionEntity.followedAt = DateBuilder.getFakeUTCDate()
-            } else {
-                sessionEntity.followedAt = nil
-                if let ui = sessionEntity.userInterface {
-                    context.delete(ui)
-                }
-            }
-            try context.save()
-        } catch {
-            Log.error("Error when saving changes in session: \(error.localizedDescription)")
-        }
-    }
+//    func updateSessionFollowing(_ sessionFollowing: SessionFollowing, for sessionUUID: SessionUUID) {
+//        do {
+//            let sessionEntity = try context.existingSession(uuid: sessionUUID)
+//            if sessionFollowing == SessionFollowing.following {
+//                sessionEntity.followedAt = DateBuilder.getFakeUTCDate()
+//            } else {
+//                sessionEntity.followedAt = nil
+//                if let ui = sessionEntity.userInterface {
+//                    context.delete(ui)
+//                }
+//            }
+//            try context.save()
+//        } catch {
+//            Log.error("Error when saving changes in session: \(error.localizedDescription)")
+//        }
+//    }
     
     private func newSessionEntity() -> SessionEntity {
         let sessionEntity = SessionEntity(context: context)
