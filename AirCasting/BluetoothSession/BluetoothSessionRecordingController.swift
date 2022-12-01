@@ -68,10 +68,6 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
             .configureMobileSession(location: locationTracker.location.value?.coordinate ?? .undefined,
                                     completion: completion)
         
-        // Info: we're not changing the sessions `status` property here to `.RECORDING` because it is currently
-        // being done by the MeasurementStreamStorage class automagically.
-        // This is something we might want to change at some point.
-        
         guard !isRecording else {
             // We want to make sure we are not recording more than one session at once
             // and resumeRecording can be called during automatic reconnect as well
@@ -103,6 +99,7 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
     
     private func recordMeasurements(for activeSession: MobileSession) {
         isRecording = true
+        measurementsSaver.changeStatusToRecording(for: activeSession.session.uuid)
         measurementsRecorder.record(with: activeSession.device) { [weak self] stream in
             self?.measurementsSaver.handlePeripheralMeasurement(stream, sessionUUID: activeSession.session.uuid, locationless: activeSession.session.locationless)
         }
