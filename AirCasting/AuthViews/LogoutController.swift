@@ -13,6 +13,8 @@ final class DefaultLogoutController: LogoutController {
     @Injected private var sessionSynchronizer: SessionSynchronizer
     @Injected private var removeDataController: RemoveDataController
     @Injected private var microphoneManager: MicrophoneManager
+    @Injected private var bluetoothSessionRecorder: BluetoothSessionRecordingController
+    @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
 
     private let responseHandler = AuthorizationHTTPResponseHandler()
     
@@ -35,6 +37,9 @@ final class DefaultLogoutController: LogoutController {
     private func end(onEnd: @escaping () -> Void) {
         removeDataController.removeData()
         microphoneManager.stopRecording()
+        if let activeSessionUUID = activeSessionProvider.activeSession?.session.uuid {
+            bluetoothSessionRecorder.stopRecordingSession(with: activeSessionUUID, databaseChange: {_ in})
+        }
         onEnd()
     }
 }
