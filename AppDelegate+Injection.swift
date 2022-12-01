@@ -76,7 +76,6 @@ extension Resolver: ResolverRegistering {
         .implements(SessionInsertable.self)
         .implements(SessionUpdateable.self)
         .scope(.application)
-        main.register { CoreDataMeasurementStreamStorage() as MeasurementStreamStorage }.scope(.cached)
         main.register { DefaultSessionNotesStorage() as SessionNotesStorage }.scope(.cached)
         main.register { DefaultSessionDeletingStorage() as SessionDeletingStorage }.scope(.cached)
         main.register { DefaultSDSyncMeasurementsStorage() as SDSyncMeasurementsStorage }.scope(.cached)

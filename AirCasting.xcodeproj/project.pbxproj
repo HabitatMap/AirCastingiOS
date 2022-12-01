@@ -118,7 +118,6 @@
 		4F15548B263C44AF00FF3208 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F15548A263C44AF00FF3208 /* Session.swift */; };
 		4F15548F263C819C00FF3208 /* MeasurementEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F15548E263C819C00FF3208 /* MeasurementEntity.swift */; };
 		4F1D57D926454E3700F250AC /* MeasurementStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F1D57D826454E3700F250AC /* MeasurementStream.swift */; };
-		4F2D84EB2647DBE0003D9ED5 /* MeasurementStreamStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F2D84EA2647DBE0003D9ED5 /* MeasurementStreamStorage.swift */; };
 		4F3CDF222652B58100596CD3 /* Measurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3CDF212652B58100596CD3 /* Measurement.swift */; };
 		4F5D3F6F262C862E003AD82E /* KeychainStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5D3F6E262C862E003AD82E /* KeychainStorage.swift */; };
 		4F5D3F73262C91C6003AD82E /* UserAuthenticationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5D3F72262C91C6003AD82E /* UserAuthenticationSession.swift */; };
@@ -707,7 +706,6 @@
 		4F15548A263C44AF00FF3208 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		4F15548E263C819C00FF3208 /* MeasurementEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementEntity.swift; sourceTree = "<group>"; };
 		4F1D57D826454E3700F250AC /* MeasurementStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementStream.swift; sourceTree = "<group>"; };
-		4F2D84EA2647DBE0003D9ED5 /* MeasurementStreamStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementStreamStorage.swift; sourceTree = "<group>"; };
 		4F3CDF212652B58100596CD3 /* Measurement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Measurement.swift; sourceTree = "<group>"; };
 		4F5D3F6E262C862E003AD82E /* KeychainStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStorage.swift; sourceTree = "<group>"; };
 		4F5D3F72262C91C6003AD82E /* UserAuthenticationSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAuthenticationSession.swift; sourceTree = "<group>"; };
@@ -1310,7 +1308,6 @@
 		336F86CC282E64B400FEFD61 /* Storages */ = {
 			isa = PBXGroup;
 			children = (
-				4F2D84EA2647DBE0003D9ED5 /* MeasurementStreamStorage.swift */,
 				DD2DDBAD27B5450100807011 /* UIStorage.swift */,
 				FA396CA028A246BA00F8067C /* SessionStorage.swift */,
 				4F8CDBD3265F8EE000976B25 /* SessionDataEraser.swift */,
@@ -3475,7 +3472,6 @@
 				3367B61727C924B000930E62 /* SearchCompleteScreenMapView.swift in Sources */,
 				DDC3E954275E4C3A0066A5DF /* SettingsViewModel.swift in Sources */,
 				33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */,
-				4F2D84EB2647DBE0003D9ED5 /* MeasurementStreamStorage.swift in Sources */,
 				ACC8838C265284AA00C5DB70 /* CoreDataHook.swift in Sources */,
 				AC8CFF5C25E6866100FB2918 /* SignInView.swift in Sources */,
 				DDDA056627DF3B3A00C6B9B9 /* MapDownloaderSearchedStreams.swift in Sources */,
