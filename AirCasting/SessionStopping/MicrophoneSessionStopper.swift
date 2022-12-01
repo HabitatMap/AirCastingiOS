@@ -7,7 +7,7 @@ import Resolver
 class MicrophoneSessionStopper: SessionStoppable {
     private let uuid: SessionUUID
     @Injected private var microphoneManager: MicrophoneManager
-    @Injected private var measurementStreamStorage: MobileSessionFinishingStorage
+    @Injected private var sessionFinishingStorage: MobileSessionFinishingStorage
     
     init(uuid: SessionUUID) {
         self.uuid = uuid
@@ -16,7 +16,7 @@ class MicrophoneSessionStopper: SessionStoppable {
     func stopSession() throws {
         Log.verbose("Stopping session with uuid \(uuid.rawValue) using microphone session stopper")
         microphoneManager.stopRecording()
-        measurementStreamStorage.accessStorage { [self] storage in
+        sessionFinishingStorage.accessStorage { [self] storage in
             do {
                 try storage.updateSessionEndtime(DateBuilder.getRawDate(), for: self.uuid)
                 try storage.updateSessionStatus(.FINISHED, for: self.uuid)

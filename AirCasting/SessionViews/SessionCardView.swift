@@ -29,7 +29,6 @@ struct SessionCardView: View {
     @StateObject private var graphStatsDataSource: ConveringStatisticsDataSourceDecorator<GraphStatsDataSource>
     @StateObject private var graphStatsViewModel: StatisticsContainerViewModel
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
     @Injected private var uiState: SessionCardUIStateHandler
 
     init(session: SessionEntity,

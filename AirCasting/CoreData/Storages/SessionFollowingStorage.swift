@@ -59,7 +59,6 @@ class DefaultHiddenSessionFollowingStorage: HiddenSessionFollowingStorage {
                     context.delete(ui)
                 }
             }
-            try context.save()
         } catch {
             Log.error("Error when saving changes in session: \(error.localizedDescription)")
         }
