@@ -49,6 +49,7 @@ final class MobileAirBeamSessionRecordingControllerTests: ACTestCase {
 }
 
 class MeasurementsSavingServiceMock: MeasurementsSavingService {
+    func changeStatusToRecording(for sessionUUID: AirCasting.SessionUUID) { }
     func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool) {}
     func createSession(session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {}
 }

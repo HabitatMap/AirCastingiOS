@@ -23,7 +23,7 @@ final class DefaultStandaloneModeContollerTests: ACTestCase {
     func TOBEDONEtest_whenThereIsActiveSession_changesSessionStatusToDisconnected() throws {
         XCTAssertNotNil(activeSessionProvider.activeSession)
         sut.moveActiveSessionToStandaloneMode()
-        XCTAssertEqual([SessionStatus.DISCONNECTED], storage.callHistory)
+        XCTAssertEqual([SessionStatus.DISCONNECTED], storage.hiddenStorage.callHistory)
     }
     
     func TOBEDONEtest_whenThereIsActiveSessionWithLocation_stopLocationTracking() throws {
@@ -42,7 +42,7 @@ final class DefaultStandaloneModeContollerTests: ACTestCase {
         activeSessionProvider.clearActiveSession()
         sut.moveActiveSessionToStandaloneMode()
         XCTAssertEqual([], locationTracker.callHistory)
-        XCTAssertEqual([], storage.callHistory)
+        XCTAssertEqual([], storage.hiddenStorage.callHistory)
         XCTAssertNil(activeSessionProvider.activeSession)
     }
 }
@@ -75,9 +75,15 @@ class LocationTrackerMock: LocationTracker {
 }
 
 class MobileSessionStorageMock: MobileSessionFinishingStorage {
-    var callHistory: [SessionStatus] = []
-    func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) {
-        callHistory.append(sessionStatus)
+    let hiddenStorage = HiddenStorage()
+    func accessStorage(_ task: @escaping (AirCasting.HiddenMobileSessionFinishingStorage) -> Void) {
+        task(hiddenStorage)
     }
-    func updateSessionEndtime(_ endTime: Date, for uuid: AirCasting.SessionUUID) { }
+    
+    class HiddenStorage: HiddenMobileSessionFinishingStorage {
+        var callHistory: [SessionStatus] = []
+        func save() throws {}
+        func updateSessionStatus(_ sessionStatus: AirCasting.SessionStatus, for sessionUUID: AirCasting.SessionUUID) throws { callHistory.append(sessionStatus) }
+        func updateSessionEndtime(_ endTime: Date, for sessionUUID: AirCasting.SessionUUID) throws { }
+    }
 }
