@@ -19,7 +19,7 @@ class DefaultSDSyncMeasurementsStorage: SDSyncMeasurementsStorage {
     @Injected private var persistenceController: PersistenceController
     private lazy var context: NSManagedObjectContext = persistenceController.editContext
     private lazy var hiddenStorage: HiddenSDSyncMeasurementsStorage = DefaultHiddenSDSyncMeasurementsStorage(context: self.context)
-
+    
     /// All actions performed on DefaultSDSyncMeasurementsStorage must be performed
     /// within a block passed to this methood.
     /// This ensures thread-safety by dispatching all calls to the queue owned by the NSManagedObjectContext.
@@ -28,7 +28,8 @@ class DefaultSDSyncMeasurementsStorage: SDSyncMeasurementsStorage {
             task(self.hiddenStorage)
             try? self.hiddenStorage.save()
         }
-    }}
+    }
+}
 
 class DefaultHiddenSDSyncMeasurementsStorage: HiddenSDSyncMeasurementsStorage {
     private let context: NSManagedObjectContext

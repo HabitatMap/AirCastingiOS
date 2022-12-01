@@ -8,7 +8,7 @@ import CoreLocation
 protocol BluetoothSessionRecordingController {
     func startRecording(session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void)
     func resumeRecording(device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void)
-    func stopRecordingSession(with uuid: SessionUUID, databaseChange: (MobileSessionStorage) -> Void)
+    func stopRecordingSession(with uuid: SessionUUID, databaseChange: (MobileSessionFinishingStorage) -> Void)
 }
 
 enum SessionRecordingControllerError: Error {
@@ -17,7 +17,7 @@ enum SessionRecordingControllerError: Error {
 
 class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingController {
     @Injected private var measurementsSaver: MeasurementsSavingService
-    @Injected private var storage: MobileSessionStorage
+    @Injected private var storage: MobileSessionFinishingStorage
     @Injected private var measurementsRecorder: MeasurementsRecordingServices
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
     @Injected private var locationTracker: LocationTracker
@@ -84,7 +84,7 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
         recordMeasurements(for: activeSessionProvider.activeSession!)
     }
     
-    func stopRecordingSession(with uuid: SessionUUID, databaseChange: (MobileSessionStorage) -> Void) {
+    func stopRecordingSession(with uuid: SessionUUID, databaseChange: (MobileSessionFinishingStorage) -> Void) {
         // Database change is performed for both active and disconnected sessions
         databaseChange(storage)
         

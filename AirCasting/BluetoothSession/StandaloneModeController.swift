@@ -17,7 +17,13 @@ final class DefaultStandaloneModeContoller: StandaloneModeController {
         
         sessionRecordingController.stopRecordingSession(with: sessionUUID, databaseChange: {
             Log.info("Changing session status to disconnected for: \(sessionUUID)")
-            $0.updateSessionStatus(.DISCONNECTED, for: sessionUUID)
+            $0.accessStorage {
+                do {
+                    try $0.updateSessionStatus(.DISCONNECTED, for: sessionUUID)
+                } catch {
+                    Log.error("Failed to change session status to DISCONNECTED")
+                }
+            }
         })
     }
 }

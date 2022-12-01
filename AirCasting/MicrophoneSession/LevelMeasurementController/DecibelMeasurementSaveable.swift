@@ -7,7 +7,7 @@ import Resolver
 final class DecibelMeasurementSaveable: MeasurementSaveable {
     private let session: Session
     private var databasePrepared: Bool = false
-    @Injected private var persistence: MeasurementStreamStorage
+    @Injected private var persistence: MobileSessionRecordingStorage
     @Injected private var uiStorage: UIStorage
     @Injected private var locationService: LocationService
     
@@ -36,7 +36,7 @@ final class DecibelMeasurementSaveable: MeasurementSaveable {
                     guard let streamID = try storage.existingMeasurementStream(session.uuid, name: Constants.SensorName.microphone) else {
                         throw DecibelMeasurementSaveableError.streamNotFound
                     }
-                    try storage.addMeasurementValue(value, at: location, toStreamWithID: streamID)
+                    try storage.addMeasurementValue(value, at: location, toStreamWithID: streamID, on: DateBuilder.getRawDate().currentUTCTimeZoneDate)
                 } catch {
                     Log.error("Failed sampling measurement: \(error)")
                 }

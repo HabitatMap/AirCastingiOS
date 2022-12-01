@@ -6,7 +6,7 @@ import Combine
 import Resolver
 
 class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
-    @Injected private var measurementStreamStorage: SessionDeletingStorage
+    @Injected private var deletingStorage: SessionDeletingStorage
     private var session: SessionEntity
     @Injected private var streamRemover: SessionUpdateService
     @Injected private var sessionSynchronizer: SessionSynchronizer
@@ -63,7 +63,7 @@ class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
     }
     
     func deleteSelected() {
-        measurementStreamStorage.accessStorage { [self] storage in
+        deletingStorage.accessStorage { [self] storage in
             do {
                 if self.streamOptions.first!.isSelected {
                     try storage.markSessionForDelete(self.session.uuid)
@@ -94,18 +94,18 @@ class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
     }
     
     private func processStreamDeleting() {
-        self.measurementStreamStorage.accessStorage { [self] storage in
+        self.deletingStorage.accessStorage { [self] storage in
             guard let sessionToPass = try? storage.getExistingSession(with: session.uuid) else { return }
             streamRemover.updateSession(session: sessionToPass) { [self] result in
                 switch result {
                 case .success(let updateData):
-                    self.measurementStreamStorage.accessStorage { storage in
+                    self.deletingStorage.accessStorage { storage in
                         try? storage.deleteStreams(self.session.uuid)
                         try? storage.updateVersion(for: sessionToPass.uuid, to: updateData.version)
                     }
                 case .failure(let error):
                     Log.info("Failed updating session while deleting streams: \(error.localizedDescription)")
-                    self.measurementStreamStorage.accessStorage { storage in
+                    self.deletingStorage.accessStorage { storage in
                         try? storage.deleteStreams(self.session.uuid)
                     }
                 }

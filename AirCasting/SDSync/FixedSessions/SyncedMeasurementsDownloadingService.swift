@@ -9,7 +9,7 @@ protocol SyncedMeasurementsDownloader {
 }
 
 struct SyncedMeasurementsDownloadingService: SyncedMeasurementsDownloader {
-    @Injected private var measurementStreamStorage: SDSyncMeasurementsStorage
+    @Injected private var syncStorage: SDSyncMeasurementsStorage
     @Injected private var measurementsDownloadingService: MeasurementUpdatingService
     let measurementTimeframe: Double = 24 * 60 * 60 // 24 hours in seconds
 
@@ -24,7 +24,7 @@ struct SyncedMeasurementsDownloadingService: SyncedMeasurementsDownloader {
     }
 
     private func prepareSessionsData(_ sessionsUUIDs: [SessionUUID], completion: @escaping ([(uuid: SessionUUID, lastSynced: Date)]) -> Void) {
-        measurementStreamStorage.accessStorage { storage in
+        syncStorage.accessStorage { storage in
             let sessionsData = sessionsUUIDs.map { (uuid: $0, lastSynced: getLastSyncDate(for: $0, storage: storage)) }
             completion(sessionsData)
         }
@@ -50,7 +50,7 @@ struct SyncedMeasurementsDownloadingService: SyncedMeasurementsDownloader {
     }
 
     private func removeDoubledMeasurements(_ sessionUUID: SessionUUID) {
-        measurementStreamStorage.accessStorage { storage in
+        syncStorage.accessStorage { storage in
             do {
                 try storage.removeDuplicatedMeasurements(for: sessionUUID)
             } catch {

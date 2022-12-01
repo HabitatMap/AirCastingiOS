@@ -16,7 +16,7 @@ final class DefaultStandaloneModeContollerTests: ACTestCase {
     override func setUp() {
         super.setUp()
         Resolver.test.register { self.locationTracker as LocationTracker }
-        Resolver.test.register { self.storage as MobileSessionStorage }
+        Resolver.test.register { self.storage as MobileSessionFinishingStorage }
         Resolver.test.register { self.activeSessionProvider as ActiveMobileSessionProvidingService }
     }
     
@@ -74,7 +74,7 @@ class LocationTrackerMock: LocationTracker {
     }
 }
 
-class MobileSessionStorageMock: MobileSessionStorage {
+class MobileSessionStorageMock: MobileSessionFinishingStorage {
     var callHistory: [SessionStatus] = []
     func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) {
         callHistory.append(sessionStatus)
