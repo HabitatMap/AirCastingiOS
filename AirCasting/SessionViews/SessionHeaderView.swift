@@ -124,7 +124,7 @@ private extension SessionHeaderView {
     var sessionHeader: some View {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
-                dateAndTime
+                SessionTime(session: session)
                     .font(Fonts.moderateRegularHeading4)
                     .foregroundColor(Color.aircastingTimeGray)
                 Spacer()
@@ -134,10 +134,6 @@ private extension SessionHeaderView {
         }
         .alert(item: $alert, content: { $0.makeAlert() })
         .foregroundColor(.aircastingGray)
-    }
-
-    var dateAndTime: some View {
-        adaptTimeAndDate()
     }
     
     var nameLabelAndExpandButton: some View {
@@ -264,15 +260,6 @@ private extension SessionHeaderView {
     
     var thresholdAlertSheet: some View {
         ThresholdAlertSheet(session: session, isActive: $showThresholdAlertModal)
-    }
-
-    func adaptTimeAndDate() -> Text {
-        let formatter: DateIntervalFormatter = DateFormatters.SessionCardView.shared.utcDateIntervalFormatter
-        guard let start = session.startTime else { return Text("") }
-        let end = session.endTime ?? DateBuilder.getFakeUTCDate()
-        
-        let string = formatter.string(from: start, to: end)
-        return Text(string)
     }
     
     private func finishSessionAlertAction() {
