@@ -38,7 +38,8 @@ final class DefaultLogoutController: LogoutController {
         removeDataController.removeData()
         microphoneManager.stopRecording()
         if let activeSessionUUID = activeSessionProvider.activeSession?.session.uuid {
-            bluetoothSessionRecorder.stopRecordingSession(with: activeSessionUUID, databaseChange: {_ in})
+            // We don't want to save active sessions in the database when the user logs out
+            bluetoothSessionRecorder.stopRecordingSession(with: activeSessionUUID, databaseChange: { _ in })
         }
         onEnd()
     }
