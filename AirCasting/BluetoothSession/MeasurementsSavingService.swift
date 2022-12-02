@@ -14,7 +14,6 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
     @Injected private var uiStorage: UIStorage
     private var peripheralMeasurementManager = PeripheralMeasurementTimeLocationManager()
-    private var databasePrepared: Bool = false
     
     class PeripheralMeasurementTimeLocationManager {
         @Injected private var locationTracker: LocationTracker
@@ -47,7 +46,6 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
                         Log.error("\(error)")
                     }
                 }
-                self.databasePrepared = true
                 completion(.success(()))
             } catch {
                 Log.info("\(error)")
@@ -57,7 +55,6 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
     }
     
     func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool) {
-        guard databasePrepared else { return }
         if peripheralMeasurementManager.collectedValuesCount == 5 { peripheralMeasurementManager.startNewValuesRound(locationless: locationless) }
         
         updateStreams(stream: measurement, sessionUUID: sessionUUID, location: peripheralMeasurementManager.currentLocation, time: peripheralMeasurementManager.currentTime)

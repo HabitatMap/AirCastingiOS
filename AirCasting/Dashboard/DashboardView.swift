@@ -18,6 +18,7 @@ struct DashboardView: View {
     @EnvironmentObject var reorderButton: ReorderButton
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     @State var isRefreshing: Bool
+    @Binding var measurementsDownloadingInProgress: Bool
     @State private var alert: AlertInfo?
     @InjectedObject private var userSettings: UserSettings
     @Injected private var networkChecker: NetworkChecker
@@ -27,13 +28,18 @@ struct DashboardView: View {
     private var sessions: [Sessionable] {
         coreDataHook.sessions
     }
+    
+    private var noDormantNorFixedSessions: Bool {
+        !sessions.contains(where: { $0.isFixed || !$0.isActive })
+    }
 
-    init(coreDataHook: CoreDataHook) {
+    init(coreDataHook: CoreDataHook, measurementsDownloadingInProgress: Binding<Bool>) {
         let navBarAppearance = UINavigationBar.appearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
         _coreDataHook = StateObject(wrappedValue: coreDataHook)
         self.sessionSynchronizer = Resolver.resolve(SessionSynchronizer.self)
         _isRefreshing = .init(wrappedValue: sessionSynchronizer.syncInProgress.value)
+        _measurementsDownloadingInProgress = .init(projectedValue: measurementsDownloadingInProgress)
     }
 
     var body: some View {
@@ -48,7 +54,7 @@ struct DashboardView: View {
                 sessionTypePicker
                 TabView(selection: $selectedSection.section) {
                     ForEach(DashboardSection.allCases, id: \.self) {
-                        SessionsListView(selectedSection: $0, isRefreshing: $isRefreshing, context: persistenceController.viewContext)
+                        SessionsListView(selectedSection: $0, isRefreshing: $isRefreshing, measurementsDownloadingInProgress: $measurementsDownloadingInProgress, context: persistenceController.viewContext)
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
@@ -61,6 +67,12 @@ struct DashboardView: View {
         }
         .navigationBarTitle(Strings.DashboardView.dashboardText)
         .navigationBarHidden(true)
+        .onReceive(sessionSynchronizer.syncInProgress, perform: { value in
+            // Aim of this, is to show the sync spinner
+            // whenever sync will be triggered from the code and no session is presented on screen.
+            guard value == true, isRefreshing != true, noDormantNorFixedSessions else { return }
+            isRefreshing = value
+        })
         .onChange(of: isRefreshing, perform: { newValue in
             guard newValue == true else { return }
             guard !sessionSynchronizer.syncInProgress.value else {

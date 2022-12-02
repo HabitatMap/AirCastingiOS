@@ -8,6 +8,7 @@ import Combine
 enum ShareSessionError: Error {
     case noSessionURL
     case requestError
+    case noStreamsAlert
 }
 
 enum ShareSessionResult {
@@ -81,6 +82,10 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     }
     
     func shareLinkTapped() {
+        guard areStreamsAvailable() else {
+            self.getAlert(.noStreamsAlert)
+            return
+        }
         getSharingLink()
         guard sharingLink != nil else {
             getAlert(.noSessionURL)
@@ -107,6 +112,22 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
         }
     }
     
+    func shareEmailTapped() {
+        if isEmailValid() {
+            showInvalidEmailError = false
+            sendRequest()
+        } else {
+            showInvalidEmailError = true
+        }
+    }
+    
+    func getSharePage() -> ActivityViewController? {
+        guard sharingLink != nil else { return nil }
+        return ActivityViewController(sharingFile: false, itemToShare: sharingLink!) { activityType, completed, returnedItems, error in
+            self.sharingFinished()
+        }
+    }
+    
     private func fireUploadingSession(onEnd: @escaping () -> Void) throws {
         if sessionSynchronizer.syncInProgress.value {
             var subscription: AnyCancellable?
@@ -128,20 +149,8 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
         return emailTest.evaluate(with: email)
     }
     
-    func shareEmailTapped() {
-        if isEmailValid() {
-            showInvalidEmailError = false
-            sendRequest()
-        } else {
-            showInvalidEmailError = true
-        }
-    }
-    
-    func getSharePage() -> ActivityViewController? {
-        guard sharingLink != nil else { return nil }
-        return ActivityViewController(sharingFile: false, itemToShare: sharingLink!) { activityType, completed, returnedItems, error in
-            self.sharingFinished()
-        }
+    private func areStreamsAvailable() -> Bool {
+        !session.allStreams.isEmpty
     }
     
     private func sendRequest() {
@@ -181,6 +190,8 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
                 self.alert = InAppAlerts.failedSharingAlert()
             case .requestError:
                 self.alert = InAppAlerts.failedSharingAlert()
+            case .noStreamsAlert:
+                self.alert = InAppAlerts.noStreamsAlert()
             }
         }
     }

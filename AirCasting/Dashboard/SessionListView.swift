@@ -14,14 +14,16 @@ struct SessionsListView: View {
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) private var thresholds
     @StateObject private var coreDataHook: CoreDataHook
     @Binding private var isRefreshing: Bool
+    @Binding private var measurementsDownloadingInProgress: Bool
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
     private let listCoordinateSpaceName = "listCoordinateSpace"
     private let selectedSection: DashboardSection
 
-    init(selectedSection: DashboardSection, isRefreshing: Binding<Bool>, context: NSManagedObjectContext) {
+    init(selectedSection: DashboardSection, isRefreshing: Binding<Bool>, measurementsDownloadingInProgress: Binding<Bool>, context: NSManagedObjectContext) {
         self.selectedSection = selectedSection
         _isRefreshing = .init(projectedValue: isRefreshing)
+        _measurementsDownloadingInProgress = .init(projectedValue: measurementsDownloadingInProgress)
         _coreDataHook = .init(wrappedValue: .init(context: context))
     }
     
@@ -43,6 +45,10 @@ struct SessionsListView: View {
             ScrollView {
                 if selectedSection.allowsRefreshing {
                     RefreshControl(coordinateSpace: .named(listCoordinateSpaceName), isRefreshing: $isRefreshing)
+                }
+                if selectedSection.shouldShowMeasurementDownloadProgress && measurementsDownloadingInProgress {
+                    ProgressView(Strings.SessionListView.downloading)
+                        .padding(.top)
                 }
                 LazyVStack(spacing: 8) {
                     ForEach(coreDataHook.sessions.filter { $0.uuid != "" && !$0.gotDeleted }, id: \.uuid) { session in
