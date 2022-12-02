@@ -28,6 +28,10 @@ struct DashboardView: View {
     private var sessions: [Sessionable] {
         coreDataHook.sessions
     }
+    
+    private var noDormantNorFixedSessions: Bool {
+        !sessions.contains(where: { $0.isFixed || !$0.isActive })
+    }
 
     init(coreDataHook: CoreDataHook, measurementsDownloadingInProgress: Binding<Bool>) {
         let navBarAppearance = UINavigationBar.appearance()
@@ -63,6 +67,12 @@ struct DashboardView: View {
         }
         .navigationBarTitle(Strings.DashboardView.dashboardText)
         .navigationBarHidden(true)
+        .onReceive(sessionSynchronizer.syncInProgress, perform: { value in
+            // Aim of this, is to show the sync spinner
+            // whenever sync will be triggered from the code and no session is presented on screen.
+            guard value == true, isRefreshing != true, noDormantNorFixedSessions else { return }
+            isRefreshing = value
+        })
         .onChange(of: isRefreshing, perform: { newValue in
             guard newValue == true else { return }
             guard !sessionSynchronizer.syncInProgress.value else {
