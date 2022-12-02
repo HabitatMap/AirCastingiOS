@@ -111,6 +111,15 @@ struct InAppAlerts {
                   ])
     }
     
+    static func noStreamsAlert() -> AlertInfo {
+        AlertInfo(title: Strings.SessionShare.noStreamsTitle,
+                  message: Strings.SessionShare.noStreamsMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: nil)
+                  ])
+    }
+    
     static func shareFileRequestSent() -> AlertInfo {
         AlertInfo(
             title: Strings.SessionHeaderView.shareFileAlertTitle,
