@@ -112,12 +112,13 @@ class MapLocationTrackerAdapter: MapLocationTracker {
         self.locationTracker = locationTracker
     }
     
-    func startTrackingUserPosition(_ newPos: @escaping (CLLocation) -> Void) {
+    func startTrackingUserPosition(_ newPos: @escaping (CLLocation) -> Void) -> MapLocationTrackerStoper {
         locationTracker.start()
         didStartTracking = true
         locationCancellable = locationTracker.location.sink {
             newPos($0 ?? .applePark)
         }
+        return Stoper(locationTracker: locationTracker)
     }
     
     func getLastKnownLocation() -> CLLocation? {
@@ -128,6 +129,16 @@ class MapLocationTrackerAdapter: MapLocationTracker {
         guard didStartTracking else { return }
         locationTracker.stop()
     }
+    
+    
+    private struct Stoper: MapLocationTrackerStoper {
+        
+        let locationTracker: LocationTracker
+        
+        func stopTrackingUserPosition() {
+            locationTracker.stop()
+        }
+    }
 }
 
 struct ConstantTracker: MapLocationTracker {
@@ -137,7 +148,18 @@ struct ConstantTracker: MapLocationTracker {
         location
     }
     
-    func startTrackingUserPosition(_ newPos: @escaping (CLLocation) -> Void) {
+    func startTrackingUserPosition(_ newPos: @escaping (CLLocation) -> Void) -> MapLocationTrackerStoper {
         newPos(location)
+        return Stoper()
+    }
+    
+    func stopTrackingUserPosition() {
+        // nothing - that's ok
+    }
+    
+    private struct Stoper: MapLocationTrackerStoper {
+        func stopTrackingUserPosition() {
+            
+        }
     }
 }

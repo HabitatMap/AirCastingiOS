@@ -7,8 +7,13 @@ import GoogleMaps
 import Combine
 
 protocol MapLocationTracker {
-    func startTrackingUserPosition(_ newPos: @escaping (CLLocation) -> Void)
+    func startTrackingUserPosition(_ newPos: @escaping (CLLocation) -> Void) -> MapLocationTrackerStoper
     func getLastKnownLocation() -> CLLocation?
+    
+}
+
+protocol MapLocationTrackerStoper {
+    func stopTrackingUserPosition()
 }
 
 extension _MapView {
@@ -66,6 +71,7 @@ extension _MapView {
         fileprivate var suspendTracking: Bool = false
         fileprivate var gmsMarkers: [GMSMarker] = []
         fileprivate var previousFrameMarkers: [Marker] = []
+        fileprivate var trackingToken: MapLocationTrackerStoper?
     }
 }
 
@@ -80,6 +86,7 @@ struct _MapView: UIViewRepresentable {
     private let markers: [Marker]
     private var overlayClosure: ((GMSMapView) -> Void)?
     private var mapDidChangePosition: ((CLLocation) -> Void)?
+    private var myLocationHandler: (() -> Void)?
     
     init(path: [PathPoint] = [], type: MapType, trackingStyle: TrackingStyle, userIndicatorStyle: UserIndicatorStyle, locationTracker: MapLocationTracker, markers: [Marker] = []) {
         self.path = path
@@ -104,6 +111,13 @@ struct _MapView: UIViewRepresentable {
         return mutableSelf
     }
     
+    func onMyLocationButtonTapped(_ closure: @escaping () -> Void) -> Self {
+        var mutableSelf = self
+        mutableSelf.myLocationHandler = closure
+        return mutableSelf
+    }
+    
+    
     func makeUIView(context: Context) -> GMSMapView {
         let startingPoint = getStartingPoint(coordinator: context.coordinator)
         let mapView = GMSMapView(frame: .zero, camera: startingPoint)
@@ -113,7 +127,7 @@ struct _MapView: UIViewRepresentable {
         setupMapDelegate(in: mapView, coordinator: context.coordinator)
         
         if isUserPositionTrackingRequired {
-            locationTracker.startTrackingUserPosition { [weak coord = context.coordinator, weak map = mapView] location in
+            context.coordinator.trackingToken = locationTracker.startTrackingUserPosition { [weak coord = context.coordinator, weak map = mapView] location in
                 let oldValue = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
                 if (mapView.camera.target.latitude != oldValue.latitude) || (mapView.camera.target.longitude != oldValue.longitude) {
                     coord?.latestUserLocation = location
@@ -213,6 +227,14 @@ struct _MapView: UIViewRepresentable {
     
     private func handleLocationButtonTapped(in view: GMSMapView, coordinator: Coordinator) {
         coordinator.suspendTracking = false
+        guard let myLocationHandler else {
+            defaultMyLocationButtonBehavior(in: view, coordinator: coordinator)
+            return
+        }
+        myLocationHandler()
+    }
+    
+    private func defaultMyLocationButtonBehavior(in view: GMSMapView, coordinator: Coordinator) {
         switch trackingStyle {
         case .none:
             centerMapOnUserPosition(in: view, coordinator: coordinator)
@@ -328,6 +350,10 @@ struct _MapView: UIViewRepresentable {
                 guard let coordinate = location?.coordinate else { return }
                 mapView?.animate(toLocation: coordinate)
             }
+    }
+    
+    static func dismantleUIView(_ uiView: GMSMapView, coordinator: Coordinator) {
+        coordinator.trackingToken?.stopTrackingUserPosition()
     }
 }
 

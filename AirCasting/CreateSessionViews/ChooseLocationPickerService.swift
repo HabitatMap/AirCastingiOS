@@ -21,31 +21,56 @@ class ChooseLocationPickerService: PlacePickerService {
 }
 
 class BindableLocationTracker: MapLocationTracker, ObservableObject {
-    func getLastKnownLocation() -> CLLocation? {
-        
-        CLLocation(latitude: locationSource.latitude,
-                   longitude: locationSource.longitude)
-    }
     
-    var locationSource: CLLocationCoordinate2D {
+    private let locationTracker = Resolver.resolve(LocationTracker.self)
+    private var newPositionClosure: ((CLLocation) -> Void)?
+    
+    var ovverridenLocation: CLLocationCoordinate2D? {
         didSet {
-            guard oldValue != locationSource else { return }
-            newPositionClosure?(.init(latitude: locationSource.latitude,
-                                 longitude: locationSource.longitude))
-            objectWillChange.send()
+           callObservers()
         }
     }
     
-    private var newPositionClosure: ((CLLocation) -> Void)?
-    
     init() {
-        let locationTracker = Resolver.resolve(LocationTracker.self)
-        locationSource = locationTracker.location.value?.coordinate ?? .init(latitude: 0, longitude: 0)
+        locationTracker.start()
+        ovverridenLocation = locationTracker.location.value?.coordinate ?? .init(latitude: 0, longitude: 0)
     }
     
-    func startTrackingUserPosition(_ newPos: @escaping (CLLocation) -> Void) {
+    deinit {
+        let locationTracker = Resolver.resolve(LocationTracker.self)
+        locationTracker.stop()
+    }
+    
+    func startTrackingUserPosition(_ newPos: @escaping (CLLocation) -> Void) -> MapLocationTrackerStoper {
         self.newPositionClosure = newPos
-        newPos(.init(latitude: locationSource.latitude,
-                     longitude: locationSource.longitude))
+        callObservers()
+        return Stoper()
+    }
+    
+    func getLastKnownLocation() -> CLLocation? {
+        let location = getLocation()
+        return .init(latitude: location.latitude,
+                     longitude: location.longitude)
+    }
+    
+    private func callObservers() {
+        let location = getLocation()
+        
+        newPositionClosure?(.init(latitude: location.latitude,
+                                  longitude: location.longitude))
+        objectWillChange.send()
+    }
+    
+    private func getLocation() -> CLLocationCoordinate2D {
+        guard let ovverridenLocation = self.ovverridenLocation else {
+            return self.locationTracker.location.value?.coordinate ?? .init(latitude: 0, longitude: 0)
+        }
+        return ovverridenLocation
+    }
+    
+    private struct Stoper: MapLocationTrackerStoper {
+        func stopTrackingUserPosition() {
+            
+        }
     }
 }

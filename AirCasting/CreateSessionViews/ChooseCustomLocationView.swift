@@ -41,7 +41,8 @@ struct ChooseCustomLocationView: View {
                                                              location: $location))
         }
         .onChange(of: location, perform: { newLocation in
-           updateTrackerWithNewLocation(newLocation)
+            guard let newLocation else { return }
+            locationTracker.ovverridenLocation = newLocation
         })
         .padding()
     }
@@ -52,10 +53,11 @@ struct ChooseCustomLocationView: View {
                  userIndicatorStyle: .none,
                  locationTracker: locationTracker)
         .indicateMapLocationChange { newLocation in
-            updateTrackerWithNewLocation(.init(latitude: newLocation.coordinate.latitude,
-                                               longitude: newLocation.coordinate.longitude))
             location = .init(latitude: newLocation.coordinate.latitude,
                              longitude: newLocation.coordinate.longitude)
+        }
+        .onMyLocationButtonTapped {
+            locationTracker.ovverridenLocation = nil
         }
     }
 
@@ -88,19 +90,16 @@ struct ChooseCustomLocationView: View {
     var confirmCreatingSessionLink: some View {
         NavigationLink(
             destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                                    sessionName: sessionName),
+                                                    sessionName: sessionName,
+                                                    initialLocation: location.map({
+                                                        .init(latitude: $0.latitude,
+                                                              longitude: $0.longitude)
+                                                    })),
             isActive: $isConfirmCreatingSessionActive,
             label: {
                 EmptyView()
             }
         )
-    }
-    
-    private func updateTrackerWithNewLocation(_ loc: CLLocationCoordinate2D?) {
-        guard let loc else { return }
-        locationTracker.locationSource = loc
-        AppLocationTracker.location.value = .init(latitude: loc.latitude,
-                                                  longitude: loc.longitude)
     }
 }
 
