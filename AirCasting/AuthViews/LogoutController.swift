@@ -19,28 +19,28 @@ final class DefaultLogoutController: LogoutController {
     private let responseHandler = AuthorizationHTTPResponseHandler()
     
     func logout(onEnd: @escaping () -> Void) throws {
+        finishRecordingActiveSessions()
         if sessionSynchronizer.syncInProgress.value {
             var subscription: AnyCancellable?
             subscription = sessionSynchronizer.syncInProgress.receive(on: DispatchQueue.main).sink { [weak self] value in
                 guard value == false else { return }
-                self?.end(onEnd: onEnd)
+                self?.removeDataController.removeData()
                 subscription?.cancel()
+                onEnd()
             }
             return
         }
         // For logout we only care about uploading sessions before we remove everything
         sessionSynchronizer.triggerSynchronization(options: [.upload], completion: {
-            DispatchQueue.main.async { self.end(onEnd: onEnd) }
+            DispatchQueue.main.async { self.removeDataController.removeData(); onEnd() }
         })
     }
     
-    private func end(onEnd: @escaping () -> Void) {
-        removeDataController.removeData()
+    private func finishRecordingActiveSessions() {
         microphoneManager.stopRecording()
         if let activeSessionUUID = activeSessionProvider.activeSession?.session.uuid {
             // We don't want to save active sessions in the database when the user logs out
             bluetoothSessionRecorder.stopRecordingSession(with: activeSessionUUID, databaseChange: { _ in })
         }
-        onEnd()
     }
 }
