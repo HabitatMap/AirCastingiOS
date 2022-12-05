@@ -15,34 +15,34 @@ struct SessionTime: View {
         if session.isActive, let stream = sessionStreams.first {
             DynamicSessionTime(session: session, stream: stream)
         } else {
-            staticTimeAndDate()
+            Text(staticTimeAndDate())
         }
     }
     
-    func staticTimeAndDate() -> Text {
+    func staticTimeAndDate() -> String {
         let formatter: DateIntervalFormatter = DateFormatters.SessionCardView.shared.utcDateIntervalFormatter
-        guard let start = session.startTime else { return Text("") }
+        guard let start = session.startTime else { return "" }
         let end = session.endTime ?? DateBuilder.getFakeUTCDate()
         
         let string = formatter.string(from: start, to: end)
-        return Text(string)
-    }
-}
-
-struct DynamicSessionTime: View {
-    @ObservedObject var session: SessionEntity
-    @ObservedObject var stream: MeasurementStreamEntity
-    
-    var body: some View {
-        Text(formatedTimeAndDate())
-    }
-    
-    func formatedTimeAndDate() -> String {
-        let formatter: DateIntervalFormatter = DateFormatters.SessionCardView.shared.utcDateIntervalFormatter
-        guard let start = session.startTime else { return "" }
-        let end = session.endTime ?? stream.lastMeasurementTime ?? DateBuilder.getFakeUTCDate()
-        
-        let string = formatter.string(from: start, to: end)
         return string
+    }
+    
+    private struct DynamicSessionTime: View {
+        @ObservedObject var session: SessionEntity
+        @ObservedObject var stream: MeasurementStreamEntity
+        
+        var body: some View {
+            Text(formatedTimeAndDate())
+        }
+        
+        func formatedTimeAndDate() -> String {
+            let formatter: DateIntervalFormatter = DateFormatters.SessionCardView.shared.utcDateIntervalFormatter
+            guard let start = session.startTime else { return "" }
+            let end = session.endTime ?? stream.lastMeasurementTime ?? DateBuilder.getFakeUTCDate()
+            
+            let string = formatter.string(from: start, to: end)
+            return string
+        }
     }
 }
