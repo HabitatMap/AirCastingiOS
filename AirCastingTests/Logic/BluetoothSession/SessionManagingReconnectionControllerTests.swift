@@ -31,7 +31,15 @@ class StandaloneModeControllerMock: StandaloneModeController {
 }
 
 class BluetoothSessionRecordingControllerMock: BluetoothSessionRecordingController {
-    func startRecording(session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {}
-    func resumeRecording(device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {}
-    func stopRecordingSession(with uuid: AirCasting.SessionUUID, databaseChange: (AirCasting.MobileSessionStorage) -> Void) {}
+    enum HistoryItem {
+        case start
+        case resume
+        case stop
+    }
+    
+    var callsHistory: [HistoryItem] = []
+    
+    func startRecording(session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) { callsHistory.append(.start) }
+    func resumeRecording(device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) { callsHistory.append(.resume) }
+    func stopRecordingSession(with uuid: AirCasting.SessionUUID, databaseChange: (AirCasting.MobileSessionStorage) -> Void) { callsHistory.append(.stop) }
 }

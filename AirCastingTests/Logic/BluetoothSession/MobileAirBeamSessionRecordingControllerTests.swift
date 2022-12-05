@@ -4,6 +4,7 @@
 import XCTest
 import Resolver
 import CoreLocation
+import Combine
 @testable import AirCasting
 
 final class MobileAirBeamSessionRecordingControllerTests: ACTestCase {
@@ -85,4 +86,39 @@ class AirBeamConfiguratorMock: AirBeamConfigurator {
                                    completion: @escaping (Result<Void, Error>) -> Void) {}
     func configureSDSync(completion: @escaping (Result<Void, Error>) -> Void) {}
     func clearSDCard(completion: @escaping (Result<Void, Error>) -> Void) {}
+}
+
+class LocationTrackerMock: LocationTracker {
+    enum HistoryItem {
+        case start
+        case stop
+    }
+    var callHistory: [HistoryItem] = []
+    var location: CurrentValueSubject<CLLocation?, Never> = .init(nil)
+    func start() {
+        callHistory.append(.start)
+    }
+    func stop() {
+        callHistory.append(.stop)
+    }
+}
+
+class ActiveMobileSessionProvidingServiceMock: ActiveMobileSessionProvidingService {
+    private(set) var activeSession: MobileSession? = MobileSession(device: .init(name: "Device", uuid: "1234"), session: Session.mobileAirBeamMock)
+    
+    func setActiveSession(session: Session, device: NewBluetoothManager.BluetoothDevice) {
+        activeSession = MobileSession(device: device, session: session)
+    }
+    
+    func clearActiveSession() {
+        activeSession = nil
+    }
+}
+
+class MobileSessionStorageMock: MobileSessionStorage {
+    var callHistory: [SessionStatus] = []
+    func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) {
+        callHistory.append(sessionStatus)
+    }
+    func updateSessionEndtime(_ endTime: Date, for uuid: AirCasting.SessionUUID) { }
 }
