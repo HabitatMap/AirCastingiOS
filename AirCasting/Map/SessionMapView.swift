@@ -17,7 +17,7 @@ class HeatmapContainer: ObservableObject {
     var heatMap: Heatmap?
 }
 
-struct AirMapView: View {
+struct SessionMapView: View {
     @Environment(\.scenePhase) var scenePhase
 
     @InjectedObject private var userSettings: UserSettings
@@ -121,12 +121,6 @@ struct AirMapView: View {
                                      markers: mapNotesVM.notes.asMapMarkers(with: didTapNote))
                             .addingOverlay { mapView in overlayHeatMap(on: mapView, threshold: threshold) }
                         }
-                        #warning("TODO: Implement calculating stats only for visible path points")
-                        // This doesn't work properly and it needs to be fixed, so I'm commenting it out
-                        //                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
-                        //                                mapStatsDataSource?.visiblePathPoints = visiblePoints
-                        //                                statsContainerViewModel?.adjustForNewData()
-                        // Statistics container shouldn't be presented in mobile dormant tab
                         if !(session.type == .mobile && session.isActive == false) {
                             StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
                                                     threshold: threshold)
@@ -174,7 +168,7 @@ struct AirMapView: View {
 }
 
 import GoogleMaps
-fileprivate extension AirMapView {
+fileprivate extension SessionMapView {
     private func overlayHeatMap(on mapView: GMSMapView, threshold: SensorThreshold) {
         heatmapContainer.heatMap?.remove()
         let mapWidth = mapView.frame.width
