@@ -8,38 +8,53 @@ import Combine
 @testable import AirCasting
 
 final class SessionManagingReconnectionControllerTests: ACTestCase {
-    let sut = DefaultStandaloneModeContoller()
+    lazy var sut = SessionManagingReconnectionController()
     var activeSessionProvider = ActiveMobileSessionProvidingServiceMock()
-    let standaloneController = StandaloneModeControllerMock()
+    let standaloneController = StandaloneModeControllerSpy()
     var bluetoothSessionController = BluetoothSessionRecordingControllerMock()
     
     override func setUp() {
         super.setUp()
         Resolver.test.register { self.activeSessionProvider as ActiveMobileSessionProvidingService }
+        Resolver.test.register { self.standaloneController as StandaloneModeController }
         Resolver.test.register { self.bluetoothSessionController as BluetoothSessionRecordingController }
     }
 
-    func TOBEDONEtestExample() throws {
-        
+    func testShouldReconnect_withActiveSessionWithTheDevice_returnsTrue() {
+        let device = NewBluetoothManager.BluetoothDevice(name: "Device", uuid: "123")
+        activeSessionProvider.setActiveSession(session: .mobileAirBeamMock, device: device)
+        XCTAssertTrue(sut.shouldReconnect(to: device))
+    }
+    
+    func testShouldReconnect_withActiveSessionWithDifferentDevice_returnsFalse() {
+        let device = NewBluetoothManager.BluetoothDevice(name: "Device", uuid: "123")
+        activeSessionProvider.setActiveSession(session: .mobileAirBeamMock, device: .init(name: "Device2", uuid: "456"))
+        XCTAssertFalse(sut.shouldReconnect(to: device))
+    }
+    
+    func testShouldReconnect_withNoActiveSession_returnsFalse() {
+        let device = NewBluetoothManager.BluetoothDevice(name: "Device", uuid: "123")
+        activeSessionProvider.clearActiveSession()
+        XCTAssertFalse(sut.shouldReconnect(to: device))
+    }
+    
+    func testDidReconnect_resumesRecordingWithRightDevice() {
+        let device = NewBluetoothManager.BluetoothDevice(name: "Device", uuid: "123")
+        sut.didReconnect(to: device)
+        XCTAssertEqual(bluetoothSessionController.callsHistory, [.resume(device: device)])
+    }
+    
+    func testDidFailtToReconnect_movesSessionToStandaloneMode() {
+        let device = NewBluetoothManager.BluetoothDevice(name: "Device", uuid: "123")
+        activeSessionProvider.setActiveSession(session: .mobileAirBeamMock, device: device)
+        sut.didFailToReconnect(to: device)
+        XCTAssertEqual(standaloneController.moveToStandaloneModeCount, 1)
     }
 }
 
-class StandaloneModeControllerMock: StandaloneModeController {
+class StandaloneModeControllerSpy: StandaloneModeController {
+    var moveToStandaloneModeCount = 0
     func moveActiveSessionToStandaloneMode() {
-        
+        moveToStandaloneModeCount += 1
     }
-}
-
-class BluetoothSessionRecordingControllerMock: BluetoothSessionRecordingController {
-    enum HistoryItem {
-        case start
-        case resume
-        case stop
-    }
-    
-    var callsHistory: [HistoryItem] = []
-    
-    func startRecording(session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) { callsHistory.append(.start) }
-    func resumeRecording(device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) { callsHistory.append(.resume) }
-    func stopRecordingSession(with uuid: AirCasting.SessionUUID, databaseChange: (AirCasting.MobileSessionStorage) -> Void) { callsHistory.append(.stop) }
 }

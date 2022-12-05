@@ -95,7 +95,7 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
         var uuid: String
         
         static func == (lhs: NewBluetoothManager.BluetoothDevice, rhs: NewBluetoothManager.BluetoothDevice) -> Bool {
-            lhs.peripheral == rhs.peripheral
+            lhs.uuid == rhs.uuid
         }
         
         fileprivate init(peripheral: CBPeripheral) {
@@ -104,6 +104,7 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
             uuid = peripheral.identifier.description
         }
         
+        // For testing
         init(name: String?, uuid: String) {
             self.name = name
             self.uuid = uuid
