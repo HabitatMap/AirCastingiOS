@@ -29,9 +29,10 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
         guard !isRecording else {
             // We want to make sure we are not recording more than one session at once
             completion(.failure(SessionRecordingControllerError.sessionAlreadyInProgress))
-            assertionFailure("Tried to record a session when there was another session being recorded")
+            Log.error("Tried to record a session when there was another session being recorded")
             return
         }
+        // Step 1: Configure AB for mobile session
         Resolver.resolve(AirBeamConfigurator.self, args: device)
             .configureMobileSession(location: session.location ?? CLLocationCoordinate2D(latitude: 200, longitude: 200)) { [self] result in
                 switch result {
@@ -66,23 +67,31 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
     
     func resumeRecording(device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
         Resolver.resolve(AirBeamConfigurator.self, args: device)
-            .configureMobileSession(location: locationTracker.location.value?.coordinate ?? .undefined,
-                                    completion: completion)
-        
-        // Info: we're not changing the sessions `status` property here to `.RECORDING` because it is currently
-        // being done by the MeasurementStreamStorage class automagically.
-        // This is something we might want to change at some point.
-        
-        guard !isRecording else {
-            // We want to make sure we are not recording more than one session at once
-            // and resumeRecording can be called during automatic reconnect as well
-            return
-        }
-        
-        if !(activeSessionProvider.activeSession?.session.locationless ?? true) {
-            self.locationTracker.start()
-        }
-        recordMeasurements(for: activeSessionProvider.activeSession!)
+            .configureMobileSession(location: locationTracker.location.value?.coordinate ?? .undefined) { [weak self] result in
+                switch result {
+                case .success():
+                    defer { completion(.success(())) }
+                    // Info: we're not changing the sessions `status` property here to `.RECORDING` because it is currently
+                    // being done by the MeasurementStreamStorage class automagically.
+                    // This is something we might want to change at some point.
+                    
+                    guard let self else { return }
+                    guard !self.isRecording else {
+                        // We want to make sure we are not recording more than one session at once
+                        // and resumeRecording can be called during automatic reconnect as well
+                        return
+                    }
+                    
+                    guard let activeSession = self.activeSessionProvider.activeSession else { return }
+                    
+                    if !activeSession.session.locationless {
+                        self.locationTracker.start()
+                    }
+                    self.recordMeasurements(for: activeSession)
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
     }
     
     func stopRecordingSession(with uuid: SessionUUID, databaseChange: (MobileSessionStorage) -> Void) {
