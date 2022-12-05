@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import Resolver
 
 /// Use d by the `FileLogger` for opening log files
 protocol FileLoggerStore {
@@ -19,11 +20,10 @@ protocol FileLoggerFileHandle {
 /// A logger that outputs logs into a file
 class FileLogger: Logger {
     private let fileHandle: FileLoggerFileHandle
-    private let formatter: LogFormatter
+    @Injected private var formatter: LogFormatter
     
-    init(formatter: LogFormatter, store: FileLoggerStore) {
-        self.formatter = formatter
-        self.fileHandle = store.openOrCreateLogFile()
+    init() {
+        self.fileHandle = Resolver.resolve(FileLoggerStore.self).openOrCreateLogFile()
     }
     
     func log(_ message: @escaping @autoclosure () -> String, type: LogLevel, file: String = #fileID, function: String = #function, line: Int = #line) {

@@ -8,11 +8,67 @@ import DeviceKit
 import Firebase
 
 extension Resolver: ResolverRegistering {
+    public static let fileLoggerQueue = DispatchQueue(label: "com.habitatmap.filelogger", qos: .utility, attributes: [], autoreleaseFrequency: .workItem, target: nil)
     public static func registerAllServices() {
         // We do Firebase config here as this is actually the first place that gets called in the app.
         FirebaseApp.configure()
         
-        // TODO: Reintroduce garbage collection
+        // MARK: Logging
+        main.register { (_, _) -> Logger in
+            var composite = CompositeLogger()
+#if DEBUG
+            composite.add(LoggerBuilder(type: .debug).build())
+#endif
+#if BETA || RELEASE
+            composite.add(LoggerBuilder(type: .file)
+                            .addMinimalLevel(.info)
+                            .dispatchOn(fileLoggerQueue)
+                            .build())
+            composite.add(LoggerBuilder(type: .crashlytics)
+                            .addMinimalLevel(.info)
+                            .build())
+            composite.add(LoggerBuilder(type: .crashlyticsError)
+                            .addMinimalLevel(.error)
+                            .build())
+#endif
+            return composite
+        }.scope(.application)
+        
+        main.register { PrintLogger() }.scope(.application)
+        main.register { FileLogger() }.scope(.application)
+        main.register { CrashlyticsErrorLogger() }.scope(.application)
+        main.register { CrashlyticsLogger() }.scope(.application)
+        
+        main.register {
+            DocumentsFileLoggerStore(logDirectory: "logs",
+                                     logFilename: "log.txt",
+                                     maxLogs: 30000,
+                                     overflowThreshold: 500) as FileLoggerStore
+        }
+        .implements(FileLoggerResettable.self)
+        .implements(LogfileProvider.self)
+        .scope(.application)
+        
+        main.register {
+            SimpleLogFormatter() as LogFormatter
+        }
+        
+        main.register { (_, _) -> FileLoggerHeaderProvider in
+            let loggerDateFormatter = DateFormatter(format: "MM-dd-y HH:mm:ss", timezone: .utc, locale: Locale(identifier: "en_US"))
+            return AirCastingLogoFileLoggerHeaderProvider(logVersion: "1.0",
+                                                          created: loggerDateFormatter.string(from: DateBuilder.getRawDate()),
+                                                          device: "\(Device.current)",
+                                                          os: "\(Device.current.systemName ?? "??") \(Device.current.systemVersion ?? "??")") as FileLoggerHeaderProvider
+        }
+        
+        // MARK: Garbage collection
+        main.register { (_, _) -> GarbageCollector in
+            let collector = GarbageCollector()
+            let logsHolder = FileLoggerDisposer(disposeQueue: fileLoggerQueue)
+            collector.addHolder(logsHolder)
+            return collector
+        }.scope(.application)
+        
         // MARK: Persistence
         main.register { PersistenceController(inMemory: false) }
         .implements(SessionsFetchable.self)

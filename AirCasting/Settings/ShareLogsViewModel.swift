@@ -11,7 +11,7 @@ protocol LogfileProvider {
 class ShareLogsViewModel: ObservableObject {
     @Published var shareSheetPresented: Bool = false
     var file: URL? { logFileProvider.logFileURLForSharing() }
-    private var logFileProvider: LogfileProvider { LoggerBuilder.shared.store }
+    @Injected private var logFileProvider: LogfileProvider
     
     func shareLogsButtonTapped() {
         shareSheetPresented = true

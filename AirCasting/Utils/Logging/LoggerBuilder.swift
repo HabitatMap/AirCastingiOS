@@ -2,7 +2,7 @@
 //
 
 import Foundation
-import DeviceKit
+import Resolver
 
 /// Utility class to simplify logger creation process.
 class LoggerBuilder {
@@ -13,35 +13,15 @@ class LoggerBuilder {
         case crashlyticsError
     }
     
-    private init() { }
+    private var partialLogger: Logger
     
-    static let shared = LoggerBuilder()
-    
-    private var partialLogger: Logger!
-    private let formatter: LogFormatter = SimpleLogFormatter()
-    private let headerProvider: FileLoggerHeaderProvider = {
-        let loggerDateFormatter = DateFormatter(format: "MM-dd-y HH:mm:ss", timezone: .utc, locale: Locale(identifier: "en_US"))
-        return AirCastingLogoFileLoggerHeaderProvider(logVersion: "1.0",
-                                                      created: loggerDateFormatter.string(from: DateBuilder.getRawDate()),
-                                                      device: "\(Device.current)",
-                                                      os: "\(Device.current.systemName ?? "??") \(Device.current.systemVersion ?? "??")") as FileLoggerHeaderProvider
-    }()
-    lazy var store: DocumentsFileLoggerStore = DocumentsFileLoggerStore(logDirectory: "logs",
-                                                                        logFilename: "log.txt",
-                                                                        maxLogs: 30000,
-                                                                        overflowThreshold: 500,
-                                                                        headerProvider: headerProvider)
-    
-    // TODO: Refactor this so it doesn't require withType to be called
-    @discardableResult
-    func withType(_ type: LoggerType) -> Self {
+    init(type: LoggerType) {
         switch type {
-        case .debug: partialLogger = createDebugLogger()
-        case .file: partialLogger = createFileLogger()
-        case .crashlytics: partialLogger = createCrashlyticsLogger()
-        case .crashlyticsError: partialLogger = createCrashlyticsErrorLogger()
+        case .debug: partialLogger = Self.createDebugLogger()
+        case .file: partialLogger = Self.createFileLogger()
+        case .crashlytics: partialLogger = Self.createCrashlyticsLogger()
+        case .crashlyticsError: partialLogger = Self.createCrashlyticsErrorLogger()
         }
-        return self
     }
     
     @discardableResult
@@ -61,19 +41,19 @@ class LoggerBuilder {
     }
     
     
-    private func createDebugLogger() -> Logger {
-        PrintLogger()
+    private static func createDebugLogger() -> Logger {
+        Resolver.resolve(PrintLogger.self)
     }
     
-    private func createFileLogger() -> Logger {
-        FileLogger(formatter: formatter, store: store)
+    private static func createFileLogger() -> Logger {
+        Resolver.resolve(FileLogger.self)
     }
     
-    private func createCrashlyticsLogger() -> Logger {
-        CrashlyticsLogger(formatter: formatter)
+    private static func createCrashlyticsLogger() -> Logger {
+        Resolver.resolve(CrashlyticsLogger.self)
     }
     
-    private func createCrashlyticsErrorLogger() -> Logger {
-        CrashlyticsErrorLogger()
+    private static func createCrashlyticsErrorLogger() -> Logger {
+        Resolver.resolve(CrashlyticsErrorLogger.self)
     }
 }

@@ -1,4 +1,5 @@
 import Foundation
+import Resolver
 
 class DocumentsFileLoggerStore: FileLoggerStore, FileLoggerResettable, LogfileProvider {
     private weak var currentHandle: LogHandle?
@@ -6,15 +7,14 @@ class DocumentsFileLoggerStore: FileLoggerStore, FileLoggerResettable, LogfilePr
     private let logFilename: String
     private let maxLogs: UInt
     private let overflowThreshold: UInt
-    private let headerProvider: FileLoggerHeaderProvider
+    @Injected private var headerProvider: FileLoggerHeaderProvider
     
     /// For `maxLogs` and `overflowThreshold`docs please refer to the `LogHandle`
-    init(logDirectory: String, logFilename: String, maxLogs: UInt, overflowThreshold: UInt, headerProvider: FileLoggerHeaderProvider) {
+    init(logDirectory: String, logFilename: String, maxLogs: UInt, overflowThreshold: UInt) {
         self.logDirectory = logDirectory
         self.logFilename = logFilename
         self.maxLogs = maxLogs
         self.overflowThreshold = overflowThreshold
-        self.headerProvider = headerProvider
     }
     
     func openOrCreateLogFile() -> FileLoggerFileHandle {

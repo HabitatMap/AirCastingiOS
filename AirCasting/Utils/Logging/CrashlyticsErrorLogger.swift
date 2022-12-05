@@ -3,6 +3,7 @@
 
 import Foundation
 import FirebaseCrashlytics
+import Resolver
 
 class CrashlyticsErrorLogger: Logger {
     private let crashlyticsDateFormatter = DateFormatter(format: "MM-dd-y HH:mm:ss.SSS", timezone: .utc)
