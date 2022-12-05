@@ -36,13 +36,12 @@ struct ChooseCustomLocationView: View {
             confirmButton
         }
         .background(confirmCreatingSessionLink)
-        .sheet(isPresented: $isLocationPopupPresented) {
+        .sheet(isPresented: $isLocationPopupPresented, onDismiss: {
+            guard let newLocation = location else { return }
+            locationTracker.ovverridenLocation = newLocation
+        }, content: {
             PlacePicker(service: ChooseLocationPickerService(address: $locationName,
                                                              location: $location))
-        }
-        .onChange(of: location, perform: { newLocation in
-            guard let newLocation else { return }
-            locationTracker.ovverridenLocation = newLocation
         })
         .padding()
     }
@@ -51,7 +50,8 @@ struct ChooseCustomLocationView: View {
         _MapView(type: .normal,
                  trackingStyle: .user,
                  userIndicatorStyle: .none,
-                 locationTracker: locationTracker)
+                 locationTracker: locationTracker,
+                 stickHardToTheUser: true)
         .indicateMapLocationChange { newLocation in
             location = .init(latitude: newLocation.coordinate.latitude,
                              longitude: newLocation.coordinate.longitude)

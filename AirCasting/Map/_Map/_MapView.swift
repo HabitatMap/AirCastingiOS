@@ -84,17 +84,19 @@ struct _MapView: UIViewRepresentable {
     private let userIndicatorStyle: UserIndicatorStyle
     private let locationTracker: MapLocationTracker
     private let markers: [Marker]
+    private let stickHardToTheUser: Bool
     private var overlayClosure: ((GMSMapView) -> Void)?
     private var mapDidChangePosition: ((CLLocation) -> Void)?
     private var myLocationHandler: (() -> Void)?
     
-    init(path: [PathPoint] = [], type: MapType, trackingStyle: TrackingStyle, userIndicatorStyle: UserIndicatorStyle, locationTracker: MapLocationTracker, markers: [Marker] = []) {
+    init(path: [PathPoint] = [], type: MapType, trackingStyle: TrackingStyle, userIndicatorStyle: UserIndicatorStyle, locationTracker: MapLocationTracker, markers: [Marker] = [], stickHardToTheUser: Bool = false) {
         self.path = path
         self.type = type
         self.trackingStyle = trackingStyle
         self.userIndicatorStyle = userIndicatorStyle
         self.locationTracker = locationTracker
         self.markers = markers
+        self.stickHardToTheUser = stickHardToTheUser
     }
     
     // This is part of a hack that allows us to stich heatmap mechanism
@@ -128,11 +130,8 @@ struct _MapView: UIViewRepresentable {
         
         if isUserPositionTrackingRequired {
             context.coordinator.trackingToken = locationTracker.startTrackingUserPosition { [weak coord = context.coordinator, weak map = mapView] location in
-                let oldValue = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-                if (mapView.camera.target.latitude != oldValue.latitude) || (mapView.camera.target.longitude != oldValue.longitude) {
-                    coord?.latestUserLocation = location
-                    context.coordinator.suspendTracking = false
-                }
+                coord?.latestUserLocation = location
+                if stickHardToTheUser { context.coordinator.suspendTracking = false }
                 guard let map, let coord else { return }
                 setupUserIndicatorStyle(with: userIndicatorStyle, in: map, with: coord)
             }
@@ -249,13 +248,13 @@ struct _MapView: UIViewRepresentable {
     
     private func centerMapOnUserPosition(in view: GMSMapView, coordinator: Coordinator) {
         guard let latestUserLocation = coordinator.latestUserLocation else { return }
-        let userPos = GMSCameraPosition(target: latestUserLocation.coordinate, zoom: 16.0) // TODO: Configure later
+        let userPos = GMSCameraPosition(target: latestUserLocation.coordinate, zoom: 16.0)
         view.animate(to: userPos)
     }
     
     private func centerMapOnLatestPathPoint(in view: GMSMapView, coordinator: Coordinator) {
         guard let lastPathPoint = path.last else { return }
-        let userPos = GMSCameraPosition(target: .init(latitude: lastPathPoint.lat, longitude: lastPathPoint.long), zoom: 16.0) // TODO: Configure later
+        let userPos = GMSCameraPosition(target: .init(latitude: lastPathPoint.lat, longitude: lastPathPoint.long), zoom: 16.0)
         view.animate(to: userPos)
     }
     
@@ -344,16 +343,6 @@ struct _MapView: UIViewRepresentable {
         polyline.strokeColor = .accentColor
         polyline.strokeWidth = CGFloat(3)
         polyline.map = uiView
-    }
-    
-    private func followUser(in mapView: GMSMapView, coordinator: Coordinator) {
-        mapView.isMyLocationEnabled = true
-        // TODO: Check on device if we can use the `LocationTracker` instead
-        coordinator.myLocationSink = mapView.publisher(for: \.myLocation)
-            .sink { [weak mapView] (location) in
-                guard let coordinate = location?.coordinate else { return }
-                mapView?.animate(toLocation: coordinate)
-            }
     }
     
     static func dismantleUIView(_ uiView: GMSMapView, coordinator: Coordinator) {
