@@ -124,7 +124,7 @@ private extension SessionHeaderView {
     var sessionHeader: some View {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
-                SessionTime(session: session)
+                SessionTimeView(session: session)
                     .font(Fonts.moderateRegularHeading4)
                     .foregroundColor(Color.aircastingTimeGray)
                 Spacer()

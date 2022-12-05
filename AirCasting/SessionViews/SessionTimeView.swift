@@ -4,7 +4,7 @@
 import Foundation
 import SwiftUI
 
-struct SessionTime: View {
+struct SessionTimeView: View {
     @ObservedObject var session: SessionEntity
     
     private var sessionStreams: [MeasurementStreamEntity] {
