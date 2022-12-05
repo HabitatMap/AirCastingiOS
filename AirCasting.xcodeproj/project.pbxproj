@@ -212,8 +212,7 @@
 		AC8D6C6E25C056B400ED74D1 /* PathPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8D6C6D25C056B400ED74D1 /* PathPoint.swift */; };
 		AC8D6C7225C0574800ED74D1 /* LocationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8D6C7125C0574800ED74D1 /* LocationTracker.swift */; };
 		AC93B8DA25BEDC46003D0A0D /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC93B8D925BEDC46003D0A0D /* Array.swift */; };
-		AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */; };
-		AC93B8FE25C02E0B003D0A0D /* GoogleMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */; };
+		AC93B8E725BEFE4F003D0A0D /* SessionMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC93B8E625BEFE4F003D0A0D /* SessionMapView.swift */; };
 		AC960C7825DD39F500EC95DD /* ABConnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC960C7725DD39F500EC95DD /* ABConnectedView.swift */; };
 		AC96DBEA2742705100D5E8E0 /* ThresholdsSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96DBE92742705100D5E8E0 /* ThresholdsSettingsViewModel.swift */; };
 		AC986BE52886F4EB00E736B0 /* darkStyle.json in Resources */ = {isa = PBXBuildFile; fileRef = AC986BE42886F4EB00E736B0 /* darkStyle.json */; };
@@ -223,7 +222,6 @@
 		AC9F526C2652A360003CF61F /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F52692652A360003CF61F /* DashboardView.swift */; };
 		AC9F526D2652A360003CF61F /* EmptyMobileDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F526A2652A360003CF61F /* EmptyMobileDashboardView.swift */; };
 		AC9F526E2652A360003CF61F /* AirSectionPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */; };
-		ACAC936D27EAFF7900829F82 /* CreatingSessionMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACAC936C27EAFF7900829F82 /* CreatingSessionMapView.swift */; };
 		ACB7084C271EC50F00BA3816 /* Integer+ArraySlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACB7084B271EC50F00BA3816 /* Integer+ArraySlice.swift */; };
 		ACBB05102761F1C400A6B3FB /* SDStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBB050F2761F1C400A6B3FB /* SDStream.swift */; };
 		ACBB05132761F21500A6B3FB /* SDCardFixedSessionsSavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBB05122761F21500A6B3FB /* SDCardFixedSessionsSavingService.swift */; };
@@ -799,8 +797,7 @@
 		AC8D6C6D25C056B400ED74D1 /* PathPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathPoint.swift; sourceTree = "<group>"; };
 		AC8D6C7125C0574800ED74D1 /* LocationTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTracker.swift; sourceTree = "<group>"; };
 		AC93B8D925BEDC46003D0A0D /* Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
-		AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirMapView.swift; sourceTree = "<group>"; };
-		AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleMapView.swift; sourceTree = "<group>"; };
+		AC93B8E625BEFE4F003D0A0D /* SessionMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionMapView.swift; sourceTree = "<group>"; };
 		AC960C7725DD39F500EC95DD /* ABConnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABConnectedView.swift; sourceTree = "<group>"; };
 		AC96DBE92742705100D5E8E0 /* ThresholdsSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdsSettingsViewModel.swift; sourceTree = "<group>"; };
 		AC986BE42886F4EB00E736B0 /* darkStyle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = darkStyle.json; sourceTree = "<group>"; };
@@ -810,7 +807,6 @@
 		AC9F52692652A360003CF61F /* DashboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		AC9F526A2652A360003CF61F /* EmptyMobileDashboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyMobileDashboardView.swift; sourceTree = "<group>"; };
 		AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AirSectionPickerView.swift; sourceTree = "<group>"; };
-		ACAC936C27EAFF7900829F82 /* CreatingSessionMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatingSessionMapView.swift; sourceTree = "<group>"; };
 		ACB7084B271EC50F00BA3816 /* Integer+ArraySlice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Integer+ArraySlice.swift"; sourceTree = "<group>"; };
 		ACBB050F2761F1C400A6B3FB /* SDStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDStream.swift; sourceTree = "<group>"; };
 		ACBB05122761F21500A6B3FB /* SDCardFixedSessionsSavingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDCardFixedSessionsSavingService.swift; sourceTree = "<group>"; };
@@ -1856,9 +1852,7 @@
 				AC986BE42886F4EB00E736B0 /* darkStyle.json */,
 				750A51D62754D3E800D6F4E7 /* Heatmap */,
 				DD8DE68A2785B939009B1726 /* MapNotesViewModel.swift */,
-				AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */,
-				AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */,
-				ACAC936C27EAFF7900829F82 /* CreatingSessionMapView.swift */,
+				AC93B8E625BEFE4F003D0A0D /* SessionMapView.swift */,
 				AC8D6C7125C0574800ED74D1 /* LocationTracker.swift */,
 				AC8D6C6D25C056B400ED74D1 /* PathPoint.swift */,
 				AC8D6C6925C049E300ED74D1 /* Environment.swift */,
@@ -3416,7 +3410,7 @@
 				AC4A6A6A267CB3890001F639 /* AirCastingGraph.swift in Sources */,
 				DD197FA727BE439200340672 /* MapDownloaderUnitSymbol.swift in Sources */,
 				DD197FA727BE439200340672 /* MapDownloaderUnitSymbol.swift in Sources */,
-				AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */,
+				AC93B8E725BEFE4F003D0A0D /* SessionMapView.swift in Sources */,
 				DD9EBFD8279EEAB300192CB5 /* DataBuilder.swift in Sources */,
 				B323942028CA8D5400AC1546 /* CalibratableMicrophoneDecorator.swift in Sources */,
 				ACCEB21C2763A2230040140B /* ClearingSDCardViewModel.swift in Sources */,
@@ -3591,7 +3585,6 @@
 				ACDA5EF5285B43FD00A531E9 /* SessionEntityStore.swift in Sources */,
 				4F1D57D926454E3700F250AC /* MeasurementStream.swift in Sources */,
 				B3FD77BF267C94AF00E97CC2 /* SessionDownstream.swift in Sources */,
-				ACAC936D27EAFF7900829F82 /* CreatingSessionMapView.swift in Sources */,
 				AC6D56A225AEF55C00D221BA /* GraphView.swift in Sources */,
 				AC4EC6C125B6F18A00C1E312 /* EditButtonView.swift in Sources */,
 				AC049F8B2608DCB000398197 /* Session+Mock.swift in Sources */,

@@ -17,7 +17,7 @@ class HeatmapContainer: ObservableObject {
     var heatMap: Heatmap?
 }
 
-struct AirMapView: View {
+struct SessionMapView: View {
     @Environment(\.scenePhase) var scenePhase
 
     @InjectedObject private var userSettings: UserSettings
@@ -170,7 +170,7 @@ struct AirMapView: View {
 }
 
 import GoogleMaps
-fileprivate extension AirMapView {
+fileprivate extension SessionMapView {
     private func overlayHeatMap(on mapView: GMSMapView, threshold: SensorThreshold) {
         heatmapContainer.heatMap?.remove()
         let mapWidth = mapView.frame.width
