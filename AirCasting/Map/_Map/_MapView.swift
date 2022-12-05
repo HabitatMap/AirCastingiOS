@@ -265,7 +265,11 @@ struct _MapView: UIViewRepresentable {
             bounds.includingCoordinate(.init(latitude: point.lat, longitude: point.long))
         }
         let cameraUpdate = GMSCameraUpdate.fit(pathPointsBoundingBox, withPadding: 1.0)
-        view.moveCamera(cameraUpdate)
+        DispatchQueue.main.async {
+            view.moveCamera(cameraUpdate)
+            guard view.camera.zoom > 16 else { return }
+            view.animate(toZoom: 16)
+        }
     }
     
     private var isUserPositionTrackingRequired: Bool {
@@ -337,7 +341,7 @@ struct _MapView: UIViewRepresentable {
         
         let polyline = coordinator.polyline
         polyline.path = newPath
-        polyline.strokeColor = .accentColor // TODO: Change it (styling)
+        polyline.strokeColor = .accentColor
         polyline.strokeWidth = CGFloat(3)
         polyline.map = uiView
     }
