@@ -33,6 +33,7 @@
 		3320F30329269A5400EFFB2D /* SessionManagingReconnectionControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F30229269A5400EFFB2D /* SessionManagingReconnectionControllerTests.swift */; };
 		3320F30929269AB000EFFB2D /* MobileAirBeamSessionRecordingControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F30829269AB000EFFB2D /* MobileAirBeamSessionRecordingControllerTests.swift */; };
 		3320F3102927E32100EFFB2D /* MobileSessionStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F30F2927E32100EFFB2D /* MobileSessionStorage.swift */; };
+		332B994B293A427B00C0D15D /* SessionTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332B994A293A427B00C0D15D /* SessionTimeView.swift */; };
 		332BA32B293E181F000BA5F0 /* BluetoothSessionRecordingControllerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332BA32A293E181F000BA5F0 /* BluetoothSessionRecordingControllerMock.swift */; };
 		332F521425FA38430047236D /* MicrophoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332F521325FA38430047236D /* MicrophoneManager.swift */; };
 		334062442816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */; };
@@ -613,6 +614,7 @@
 		3320F30229269A5400EFFB2D /* SessionManagingReconnectionControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManagingReconnectionControllerTests.swift; sourceTree = "<group>"; };
 		3320F30829269AB000EFFB2D /* MobileAirBeamSessionRecordingControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAirBeamSessionRecordingControllerTests.swift; sourceTree = "<group>"; };
 		3320F30F2927E32100EFFB2D /* MobileSessionStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSessionStorage.swift; sourceTree = "<group>"; };
+		332B994A293A427B00C0D15D /* SessionTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTimeView.swift; sourceTree = "<group>"; };
 		332BA32A293E181F000BA5F0 /* BluetoothSessionRecordingControllerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothSessionRecordingControllerMock.swift; sourceTree = "<group>"; };
 		332F521325FA38430047236D /* MicrophoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManager.swift; sourceTree = "<group>"; };
 		334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLocationlessSessionViewModel.swift; sourceTree = "<group>"; };
@@ -1692,6 +1694,7 @@
 				AC9EB64326ECB0C000B1F780 /* SessionCartViewModel */,
 				DDEE3A492697473C0098CCA9 /* EditSessionButton */,
 				3328F11E266786C600B72D61 /* Chart */,
+				332B994A293A427B00C0D15D /* SessionTimeView.swift */,
 			);
 			path = SessionViews;
 			sourceTree = "<group>";
@@ -3553,6 +3556,7 @@
 				AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */,
 				B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */,
 				FAF3B4E128057EC100F0F4B0 /* MeasurementType.swift in Sources */,
+				332B994B293A427B00C0D15D /* SessionTimeView.swift in Sources */,
 				334EF27E28E5CE7E000DD51E /* SDSyncMobileSessionStorage.swift in Sources */,
 				B3C3F8B92695A295003E2CB4 /* StatisticsContainerViewModelable.swift in Sources */,
 				AC32040425CC067D00A68520 /* CheckBox.swift in Sources */,
