@@ -33,7 +33,8 @@ class DefaultSessionNotesStorage: SessionNotesStorage {
             task(self.hiddenStorage)
             try? self.hiddenStorage.save()
         }
-    }}
+    }
+}
 
 class DefaultHiddenSessionNotesStorage: HiddenSessionNotesStorage {
     private let context: NSManagedObjectContext

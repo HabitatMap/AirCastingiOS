@@ -30,7 +30,6 @@ class DefaultSessionCreatingStorage: SessionCreatingStorage {
     }
 }
 
-
 class DefaultHiddenSessionCreatingStorage: HiddenSessionCreatingStorage {
     @Injected private var updateSessionParamsService: UpdateSessionParamsService
     private let context: NSManagedObjectContext

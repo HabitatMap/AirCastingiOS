@@ -34,7 +34,6 @@ class DefaultSyncingMeasurementsStorage: SyncingMeasurementsStorage {
     }
 }
 
-
 class DefaultHiddenSyncingMeasurementsStorage: HiddenSyncingMeasurementsStorage {
     @Injected private var updateSessionParamsService: UpdateSessionParamsService
     private let context: NSManagedObjectContext

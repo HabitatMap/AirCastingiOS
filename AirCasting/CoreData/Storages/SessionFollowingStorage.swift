@@ -30,7 +30,6 @@ class DefaultSessionFollowingStorage: SessionFollowingStorage {
     }
 }
 
-
 class DefaultHiddenSessionFollowingStorage: HiddenSessionFollowingStorage {
     @Injected private var updateSessionParamsService: UpdateSessionParamsService
     private let context: NSManagedObjectContext

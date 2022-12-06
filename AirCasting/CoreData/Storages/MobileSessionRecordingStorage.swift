@@ -36,7 +36,6 @@ class DefaultMobileSessionRecordingStorage: MobileSessionRecordingStorage {
     }
 }
 
-
 class DefaultHiddenMobileSessionRecordingStorage: HiddenMobileSessionRecordingStorage {
     @Injected private var updateSessionParamsService: UpdateSessionParamsService
     private let context: NSManagedObjectContext

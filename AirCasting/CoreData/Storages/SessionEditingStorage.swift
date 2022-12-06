@@ -32,7 +32,6 @@ class DefaultSessionEditingStorage: SessionEditingStorage {
     }
 }
 
-
 class DefaultHiddenSessionEditingStorage: HiddenSessionEditingStorage {
     @Injected private var updateSessionParamsService: UpdateSessionParamsService
     private let context: NSManagedObjectContext

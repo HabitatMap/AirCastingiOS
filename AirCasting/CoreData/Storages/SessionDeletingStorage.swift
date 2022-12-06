@@ -31,7 +31,8 @@ class DefaultSessionDeletingStorage: SessionDeletingStorage {
             task(self.hiddenStorage)
             try? self.hiddenStorage.save()
         }
-    }}
+    }
+}
 
 class DefaultHiddenSessionDeletingStorage: HiddenSessionDeletingStorage {
     private let context: NSManagedObjectContext

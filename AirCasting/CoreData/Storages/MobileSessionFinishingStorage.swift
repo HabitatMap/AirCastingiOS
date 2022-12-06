@@ -31,7 +31,6 @@ class DefaultMobileSessionFinishingStorage: MobileSessionFinishingStorage {
     }
 }
 
-
 class DefaultHiddenMobileSessionFinishingStorage: HiddenMobileSessionFinishingStorage {
     private let context: NSManagedObjectContext
 
