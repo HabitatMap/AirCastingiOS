@@ -259,16 +259,55 @@ struct _MapView: UIViewRepresentable {
     }
     
     private func centerMapOnWholePath(in view: GMSMapView, coordinator: Coordinator) {
+        // The idea here is to provide a working centering mechanism.
+        // What's more important, it must set some kind of reliable `zoom` value (most of the time we use 16.0)
+        // One problems occurs here - when we use only `GMSCoordinateBounds`, then we are very close to the map
+        // The reason behind that, is the fact that most of the users won't have long-long road trips
+        // and our bounds stick exactly to the path painted on the map.
+        // Solution is, to first center on the middle point with zoom 16.0
+        // if it won't be enough (most of the time it should be enough) use bounds related centering.
+        guard isMapVisibleOnTheScreen(view: view) else { return }
+        centerOnTheMiddlePathPoint(view: view)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) {
+            // This waits till the above animation is completed, otherwise it is useless
+            if !allPointWithinBounds(view: view) {
+                centerWithinPathBounds(view: view)
+            }
+        }
+    }
+    
+    private func isMapVisibleOnTheScreen(view: GMSMapView) -> Bool {
+        // There is a point in time, when the map is not yet available on the screen,
+        // this happens, along with the initialization.
+        // When this happens, every point of visible region is set to -180.0.
+        let visibleRegion = view.projection.visibleRegion()
+        return (visibleRegion.farLeft != .init(latitude: -180, longitude: -180) ||
+                visibleRegion.nearLeft != .init(latitude: -180, longitude: -180) ||
+                visibleRegion.farRight != .init(latitude: -180, longitude: -180) ||
+                visibleRegion.nearRight != .init(latitude: -180, longitude: -180))
+    }
+    
+    private func centerOnTheMiddlePathPoint(view: GMSMapView) {
+        let middleElement = path[path.middleItemIndex]
+        let userPos = GMSCameraPosition(target: .init(latitude: middleElement.lat,
+                                                      longitude: middleElement.long), zoom: 16.0)
+        view.animate(to: userPos)
+    }
+    
+    private func allPointWithinBounds(view: GMSMapView) -> Bool {
+        let visibleRegion = view.projection.visibleRegion()
+        return path.allSatisfy({ GMSCoordinateBounds(region: visibleRegion).contains(.init(latitude: $0.lat,
+                                                                                           longitude: $0.long)) })
+    }
+    
+    private func centerWithinPathBounds(view: GMSMapView) {
         let initialBounds = GMSCoordinateBounds()
         let pathPointsBoundingBox = path.reduce(initialBounds) { bounds, point in
             bounds.includingCoordinate(.init(latitude: point.lat, longitude: point.long))
         }
         let cameraUpdate = GMSCameraUpdate.fit(pathPointsBoundingBox, withPadding: 1.0)
-        DispatchQueue.main.async {
-            view.moveCamera(cameraUpdate)
-            guard view.camera.zoom > 16 else { return }
-            view.animate(toZoom: 16)
-        }
+        view.moveCamera(cameraUpdate)
     }
     
     private var isUserPositionTrackingRequired: Bool {
