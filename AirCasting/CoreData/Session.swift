@@ -167,9 +167,3 @@ extension Session {
               status: status)
     }
 }
-
-extension Session {
-    static let mobileAirBeamMock = Session(uuid: "123", type: .mobile, name: "Mobile Session", deviceType: .AIRBEAM3, location: .undefined, startTime: DateBuilder.getFakeUTCDate())
-    
-    static let mobileAirBeamLocationlessMock = Session(uuid: "123", type: .mobile, name: "Mobile Session", deviceType: .AIRBEAM3, location: .undefined, startTime: DateBuilder.getFakeUTCDate(), contribute: false, locationless: true)
-}
