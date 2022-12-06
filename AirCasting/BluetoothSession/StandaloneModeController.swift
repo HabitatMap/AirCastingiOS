@@ -25,11 +25,11 @@ final class DefaultStandaloneModeContoller: StandaloneModeController {
 final class UserInitiatedStandaloneModeController: StandaloneModeController {
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
     private let standaloneController: StandaloneModeController = Resolver.resolve(StandaloneModeController.self, args: StandaloneOrigin.device)
-    @Injected private var bluetootConnector: BluetoothConnectionHandler
+    @Injected private var bluetoothConnector: BluetoothConnectionHandler
 
     func moveActiveSessionToStandaloneMode() {
         guard let device = activeSessionProvider.activeSession?.device else { return }
-        bluetootConnector.disconnect(from: device)
+        try? bluetoothConnector.disconnect(from: device)
         standaloneController.moveActiveSessionToStandaloneMode()
     }
 }

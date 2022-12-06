@@ -19,7 +19,7 @@ final class DefaultStandaloneModeContollerTests: ACTestCase {
     }
     
     func test_whenThereIsActiveSessionWithLocation_stopRecordingSession() throws {
-        activeSessionProvider.setActiveSession(session: Session.mobileAirBeamMock, device: .init(name: "Device", uuid: "1234"))
+        activeSessionProvider.setActiveSession(session: Session.mobileAirBeamMock, device: BluetoothDeviceMock(name: "Device", uuid: "1234"))
         XCTAssertNotNil(activeSessionProvider.activeSession)
         sut.moveActiveSessionToStandaloneMode()
         XCTAssertEqual([BluetoothSessionRecordingControllerMock.HistoryItem.stop(uuid: Session.mobileAirBeamMock.uuid)], sessionRecordingController.callsHistory)

@@ -8,4 +8,4 @@ protocol BluetoothConnectionObservable {
     func removeConnectionObserver(_ observer: BluetoothConnectionObserver)
 }
 
-extension NewBluetoothManager: BluetoothConnectionObservable {}
+extension BluetoothManager: BluetoothConnectionObservable {}

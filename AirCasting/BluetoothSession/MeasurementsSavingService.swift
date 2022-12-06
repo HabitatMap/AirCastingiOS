@@ -7,7 +7,7 @@ import CoreLocation
 
 protocol MeasurementsSavingService {
     func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool)
-    func createSession(session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void)
+    func createSession(session: Session, device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 class DefaultMeasurementsSaver: MeasurementsSavingService {
@@ -31,7 +31,7 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         func incrementCounter() { collectedValuesCount += 1 }
     }
     
-    func createSession(session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
+    func createSession(session: Session, device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
         measurementStreamStorage.accessStorage { [weak self] storage in
             do {
                 guard let self else { return }

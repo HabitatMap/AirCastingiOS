@@ -107,6 +107,8 @@
 		33F604B12824180900B48C63 /* ExternalSessionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F604B02824180900B48C63 /* ExternalSessionHeader.swift */; };
 		33F82FC227F60498001654D8 /* ThresholdsValue+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F82FC127F60498001654D8 /* ThresholdsValue+Color.swift */; };
 		33F87611286343D70073A3D4 /* DownloadableImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F87610286343D70073A3D4 /* DownloadableImage.swift */; };
+		33F96EA8293E7F4F00FE7F0A /* BluetoothDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F96EA7293E7F4F00FE7F0A /* BluetoothDevice.swift */; };
+		33F96EAA293F846B00FE7F0A /* BluetoothDeviceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F96EA9293F846B00FE7F0A /* BluetoothDeviceMock.swift */; };
 		33FD502227A144B300162384 /* SingleMeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD502127A144B300162384 /* SingleMeasurementView.swift */; };
 		4F15548B263C44AF00FF3208 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F15548A263C44AF00FF3208 /* Session.swift */; };
 		4F15548F263C819C00FF3208 /* MeasurementEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F15548E263C819C00FF3208 /* MeasurementEntity.swift */; };
@@ -334,7 +336,7 @@
 		B34BB2EB28AD0BCE009E5927 /* MicrophoneManualCalibrationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34BB2EA28AD0BCE009E5927 /* MicrophoneManualCalibrationViewModelTests.swift */; };
 		B34BB2EF28AD200D009E5927 /* AlertInfo+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34BB2EE28AD200D009E5927 /* AlertInfo+Equatable.swift */; };
 		B34D4648275B12A000194E51 /* CrashlyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34D4647275B12A000194E51 /* CrashlyticsLogger.swift */; };
-		B34F2FF52909609A0070C446 /* NewBluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F2FF42909609A0070C446 /* NewBluetoothManager.swift */; };
+		B34F2FF52909609A0070C446 /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F2FF42909609A0070C446 /* BluetoothManager.swift */; };
 		B34F2FF7290960BF0070C446 /* BluetoothCommunicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F2FF6290960BF0070C446 /* BluetoothCommunicator.swift */; };
 		B35A09A12845615F00F9837B /* UnitFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B35A09A02845615F00F9837B /* UnitFormatter.swift */; };
 		B35C190628B67D600097DC7C /* CrashlyticsErrorLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B35C190528B67D600097DC7C /* CrashlyticsErrorLogger.swift */; };
@@ -687,6 +689,8 @@
 		33F604B02824180900B48C63 /* ExternalSessionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalSessionHeader.swift; sourceTree = "<group>"; };
 		33F82FC127F60498001654D8 /* ThresholdsValue+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThresholdsValue+Color.swift"; sourceTree = "<group>"; };
 		33F87610286343D70073A3D4 /* DownloadableImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadableImage.swift; sourceTree = "<group>"; };
+		33F96EA7293E7F4F00FE7F0A /* BluetoothDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothDevice.swift; sourceTree = "<group>"; };
+		33F96EA9293F846B00FE7F0A /* BluetoothDeviceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothDeviceMock.swift; sourceTree = "<group>"; };
 		33FD502127A144B300162384 /* SingleMeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleMeasurementView.swift; sourceTree = "<group>"; };
 		3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirCastingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4327910762891E7B1AE9102E /* Pods-AirCastingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCastingTests.debug.xcconfig"; path = "Target Support Files/Pods-AirCastingTests/Pods-AirCastingTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -921,7 +925,7 @@
 		B34BB2EA28AD0BCE009E5927 /* MicrophoneManualCalibrationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManualCalibrationViewModelTests.swift; sourceTree = "<group>"; };
 		B34BB2EE28AD200D009E5927 /* AlertInfo+Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlertInfo+Equatable.swift"; sourceTree = "<group>"; };
 		B34D4647275B12A000194E51 /* CrashlyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashlyticsLogger.swift; sourceTree = "<group>"; };
-		B34F2FF42909609A0070C446 /* NewBluetoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewBluetoothManager.swift; sourceTree = "<group>"; };
+		B34F2FF42909609A0070C446 /* BluetoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
 		B34F2FF6290960BF0070C446 /* BluetoothCommunicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothCommunicator.swift; sourceTree = "<group>"; };
 		B35A09A02845615F00F9837B /* UnitFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitFormatter.swift; sourceTree = "<group>"; };
 		B35C190528B67D600097DC7C /* CrashlyticsErrorLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashlyticsErrorLogger.swift; sourceTree = "<group>"; };
@@ -1215,7 +1219,7 @@
 		3320F2E22922657C00EFFB2D /* Bluetooth */ = {
 			isa = PBXGroup;
 			children = (
-				B34F2FF42909609A0070C446 /* NewBluetoothManager.swift */,
+				B34F2FF42909609A0070C446 /* BluetoothManager.swift */,
 				B34F2FF6290960BF0070C446 /* BluetoothCommunicator.swift */,
 				B38D06112909769200EF62A5 /* BluetoothDeviceState.swift */,
 				DD55C38F26BAA73F0069838F /* BluetoothPermisionsChecker.swift */,
@@ -1226,6 +1230,7 @@
 				3320F2EF29250CD000EFFB2D /* BluetoothScanner.swift */,
 				3320F2F129250CEC00EFFB2D /* BluetoothStateHandler.swift */,
 				3320F2FD292692F000EFFB2D /* BluetoothPeripheralConnectionChecker.swift */,
+				33F96EA7293E7F4F00FE7F0A /* BluetoothDevice.swift */,
 			);
 			path = Bluetooth;
 			sourceTree = "<group>";
@@ -1264,6 +1269,7 @@
 			isa = PBXGroup;
 			children = (
 				332BA32A293E181F000BA5F0 /* BluetoothSessionRecordingControllerMock.swift */,
+				33F96EA9293F846B00FE7F0A /* BluetoothDeviceMock.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -3246,6 +3252,7 @@
 				FA5F782F289A8C0E0016DF79 /* MapDownloaderSensorTypeTests.swift in Sources */,
 				B30BAC212694AEAA00AE0476 /* GraphStatsDataSourceTests.swift in Sources */,
 				4FEEAED3262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift in Sources */,
+				33F96EAA293F846B00FE7F0A /* BluetoothDeviceMock.swift in Sources */,
 				FA5F782D289A8BF60016DF79 /* MapDownloaderMeasurementTypeTests.swift in Sources */,
 				B30BABFD2693532700AE0476 /* MeasurementsStatisticsControllerTests.swift in Sources */,
 				FA5F7831289A8C140016DF79 /* MapDownloaderUnitSymbolTests.swift in Sources */,
@@ -3428,6 +3435,7 @@
 				3362B4ED25E69987008D61BA /* CreateSessionDetailsView.swift in Sources */,
 				B3EBB10626A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift in Sources */,
 				AC08A662266E2AEC0081697C /* ABMeasurementsView.swift in Sources */,
+				33F96EA8293E7F4F00FE7F0A /* BluetoothDevice.swift in Sources */,
 				335B54BF28BD01C300BA92D2 /* CustomSwipeAction.swift in Sources */,
 				FA4F1B75281809B2002711B4 /* AirBeamStreamSuffixes.swift in Sources */,
 				B3ED03C32729A8E300513522 /* AirCastingNotifications.swift in Sources */,
@@ -3653,7 +3661,7 @@
 				B369CF32275A7A1500B71D81 /* OverridingFeatureFlagProvider.swift in Sources */,
 				338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */,
 				33E63A86288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift in Sources */,
-				B34F2FF52909609A0070C446 /* NewBluetoothManager.swift in Sources */,
+				B34F2FF52909609A0070C446 /* BluetoothManager.swift in Sources */,
 				DD009D662698844A009F0443 /* DeleteView.swift in Sources */,
 				3320F3102927E32100EFFB2D /* MobileSessionStorage.swift in Sources */,
 				DD197FAE27BE857D00340672 /* MapDownloaderSearchedSessions.swift in Sources */,

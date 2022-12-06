@@ -5,9 +5,9 @@ import Foundation
 
 protocol BluetoothScanner {
     func startScanning(scanningWindow: Int,
-                       onDeviceDiscovered: @escaping (NewBluetoothManager.BluetoothDevice) -> Void,
+                       onDeviceDiscovered: @escaping (any BluetoothDevice) -> Void,
                        onScanningFinished: (() -> Void)?)
     func stopScan()
 }
 
-extension NewBluetoothManager: BluetoothScanner {}
+extension BluetoothManager: BluetoothScanner {}

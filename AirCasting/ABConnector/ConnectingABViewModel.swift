@@ -15,11 +15,11 @@ class AirbeamConnectionViewModel: ObservableObject {
     @Published var shouldDismiss: Bool = false
     @Published var alert: AlertInfo? = nil
     
-    private let device: NewBluetoothManager.BluetoothDevice
+    private let device: any BluetoothDevice
     private let sessionContext: CreateSessionContext
     
     required init(sessionContext: CreateSessionContext,
-                  device: NewBluetoothManager.BluetoothDevice) {
+                  device: any BluetoothDevice) {
         self.device = device
         self.sessionContext = sessionContext
         self.configurator = Resolver.resolve(AirBeamConfigurator.self, args: device)

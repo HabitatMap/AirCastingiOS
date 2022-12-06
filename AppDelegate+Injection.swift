@@ -186,7 +186,7 @@ extension Resolver: ResolverRegistering {
         main.register { MobileAirBeamSessionRecordingController() as BluetoothSessionRecordingController }
             .scope(.application)
         main.register { AirbeamMeasurementsRecordingServices() as MeasurementsRecordingServices }
-        main.register { NewBluetoothManager() }
+        main.register { BluetoothManager() }
         .implements(BluetoothCommunicator.self)
         .implements(BluetoothPermisionsChecker.self)
         .implements(BluetoothPeripheralConnectionChecker.self)

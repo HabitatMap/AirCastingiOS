@@ -9,14 +9,14 @@ import Combine
 
 final class MobileAirBeamSessionRecordingControllerTests: ACTestCase {
     lazy var sut = MobileAirBeamSessionRecordingController()
-    let device = NewBluetoothManager.BluetoothDevice(name: "Device", uuid: "123")
+    let device = BluetoothDeviceMock(name: "Device", uuid: "123")
     private var measurementsSaver = MeasurementsSavingServiceMock()
     private var storage = MobileSessionStorageMock()
     private var measurementsRecorder =  MeasurementsRecordingServicesMock()
     private var activeSessionProvider = ActiveMobileSessionProvidingServiceMock()
     private var locationTracker = LocationTrackerMock()
     private var btManager = BluetoothConnectionHandlerMock()
-    private var configurator = AirBeamConfiguratorMock(device: .init(name: "Device", uuid: "123"))
+    private var configurator = AirBeamConfiguratorMock(device: BluetoothDeviceMock(name: "Device", uuid: "123"))
     
     override func setUp() {
         super.setUp()
@@ -146,7 +146,7 @@ class MeasurementsSavingServiceMock: MeasurementsSavingService {
     func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool) {
         
     }
-    func createSession(session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
+    func createSession(session: Session, device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
         createSessionCalls += 1
         completion(createSessionResult)
     }
@@ -159,7 +159,7 @@ class MeasurementsRecordingServicesMock: MeasurementsRecordingServices {
     }
     var callsHistory: [HistoryItem] = []
     
-    func record(with device: NewBluetoothManager.BluetoothDevice, completion: @escaping (ABMeasurementStream) -> Void) {
+    func record(with device: any BluetoothDevice, completion: @escaping (ABMeasurementStream) -> Void) {
         callsHistory.append(.record)
     }
     func stopRecording() {
@@ -169,13 +169,13 @@ class MeasurementsRecordingServicesMock: MeasurementsRecordingServices {
 
 class BluetoothConnectionHandlerMock: BluetoothConnectionHandler {
     var disconnectCalls = 0
-    func connect(to device: NewBluetoothManager.BluetoothDevice, timeout: TimeInterval, completion: @escaping NewBluetoothManager.ConnectionCallback) {}
-    func disconnect(from device: NewBluetoothManager.BluetoothDevice) { disconnectCalls += 1}
-    func discoverCharacteristics(for device: NewBluetoothManager.BluetoothDevice, timeout: TimeInterval, completion: @escaping NewBluetoothManager.CharacteristicsDicoveryCallback) {}
+    func connect(to device: any BluetoothDevice, timeout: TimeInterval, completion: @escaping BluetoothManager.ConnectionCallback) {}
+    func disconnect(from device: any BluetoothDevice) { disconnectCalls += 1}
+    func discoverCharacteristics(for device: any BluetoothDevice, timeout: TimeInterval, completion: @escaping BluetoothManager.CharacteristicsDicoveryCallback) {}
 }
 
 class AirBeamConfiguratorMock: AirBeamConfigurator {
-    private let device: NewBluetoothManager.BluetoothDevice
+    private let device: any BluetoothDevice
     enum HistoryItem {
         case configureMobileSession
     }
@@ -183,7 +183,7 @@ class AirBeamConfiguratorMock: AirBeamConfigurator {
     var callsHistory: [HistoryItem] = []
     var fakeResult: Result<Void, Error> = .success(())
     
-    init(device: NewBluetoothManager.BluetoothDevice) {
+    init(device: any BluetoothDevice) {
         self.device = device
     }
     
@@ -223,9 +223,9 @@ class LocationTrackerMock: LocationTracker {
 }
 
 class ActiveMobileSessionProvidingServiceMock: ActiveMobileSessionProvidingService {
-    private(set) var activeSession: MobileSession? = MobileSession(device: .init(name: "Device", uuid: "1234"), session: Session.mobileAirBeamMock)
+    private(set) var activeSession: MobileSession? = MobileSession(device: BluetoothDeviceMock(name: "Device", uuid: "1234"), session: Session.mobileAirBeamMock)
     
-    func setActiveSession(session: Session, device: NewBluetoothManager.BluetoothDevice) {
+    func setActiveSession(session: Session, device: any BluetoothDevice) {
         activeSession = MobileSession(device: device, session: session)
     }
     

@@ -12,7 +12,7 @@ public enum BluetoothDeviceAuthorizationState {
     case allowedAlways
 }
 
-final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerDelegate, CBPeripheralDelegate {
+final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerDelegate, CBPeripheralDelegate {
     lazy private var centralManager: CBCentralManager = {
         let centralManager = CBCentralManager()
         centralManager.delegate = self
@@ -85,35 +85,23 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
     
     // MARK: Scanning
     
-    private typealias DiscoveryCallback = (BluetoothDevice) -> Void
+    private typealias DiscoveryCallback = (Device) -> Void
     private var deviceDiscoveryCallbacks: [DiscoveryCallback] = []
     
-    class BluetoothDevice: Equatable {
-        fileprivate let peripheral: CBPeripheral!
-        let id = UUID()
+    private struct Device: BluetoothDevice {
+        fileprivate let peripheral: CBPeripheral
         var name: String?
         var uuid: String
         
-        static func == (lhs: NewBluetoothManager.BluetoothDevice, rhs: NewBluetoothManager.BluetoothDevice) -> Bool {
-            lhs.uuid == rhs.uuid
-        }
-        
-        fileprivate init(peripheral: CBPeripheral) {
+        init(peripheral: CBPeripheral) {
             self.peripheral = peripheral
             name = peripheral.name
             uuid = peripheral.identifier.description
         }
-        
-        // For testing
-        init(name: String?, uuid: String) {
-            self.name = name
-            self.uuid = uuid
-            peripheral = nil
-        }
     }
     
     func startScanning(scanningWindow: Int = 30,
-                       onDeviceDiscovered: @escaping (BluetoothDevice) -> Void,
+                       onDeviceDiscovered: @escaping (any BluetoothDevice) -> Void,
                        onScanningFinished: (() -> Void)?) {
         queue.async {
             Log.verbose("Started scanning for BT devices with scanning time: \(scanningWindow)s")
@@ -140,7 +128,7 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         queue.async {
             self.deviceDiscoveryCallbacks.forEach { callback in
-                self.callbackQueue.async { callback(BluetoothDevice(peripheral: peripheral)) }
+                self.callbackQueue.async { callback(Device(peripheral: peripheral)) }
             }
         }
     }
@@ -162,7 +150,7 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
         }
     }
     
-    private func callConnectionObserversWithDisconnect(for device: BluetoothDevice) {
+    private func callConnectionObserversWithDisconnect(for device: Device) {
         self.connectionObservers.forEach { observer in
             callbackQueue.async { observer.didDisconnect(device: device) }
         }
@@ -179,7 +167,8 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
         case unknown
     }
     
-    func connect(to device: BluetoothDevice, timeout: TimeInterval, completion: @escaping ConnectionCallback) {
+    func connect(to device: any BluetoothDevice, timeout: TimeInterval, completion: @escaping ConnectionCallback) throws {
+        guard let device = device as? Device else { Log.error("BluetoothManager received unexpected device type (expected BluetooothManager.Device, received \(type(of: device))"); throw WrongDeviceType()}
         queue.async {
             Log.verbose("Starting connection to BT device \(device.peripheral.name ?? "unnamed")")
             guard !(device.peripheral.state == .connecting) else {
@@ -205,13 +194,15 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
         }
     }
     
-    func disconnect(from device: BluetoothDevice) {
+    func disconnect(from device: any BluetoothDevice) throws {
+        guard let device = device as? Device else { Log.error("BluetoothManager received unexpected device type (expected BluetooothManager.Device, received \(type(of: device))"); throw WrongDeviceType()}
         self.centralManager.cancelPeripheralConnection(device.peripheral)
     }
     
-    func discoverCharacteristics(for device: BluetoothDevice,
+    func discoverCharacteristics(for device: any BluetoothDevice,
                                  timeout: TimeInterval,
-                                 completion: @escaping CharacteristicsDicoveryCallback) {
+                                 completion: @escaping CharacteristicsDicoveryCallback) throws {
+        guard let device = device as? Device else { Log.error("BluetoothManager received unexpected device type (expected BluetooothManager.Device, received \(type(of: device))"); throw WrongDeviceType()}
         queue.async {
             device.peripheral.discoverServices(nil)
             self.characteristicsDicoveryCallbacks[device.peripheral, default: []].append(completion)
@@ -219,8 +210,11 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
         }
     }
     
-    func isDeviceConnected(device: BluetoothDevice) -> Bool {
-        device.peripheral.state == .connected
+    struct WrongDeviceType: Error {}
+    
+    func isDeviceConnected(device: any BluetoothDevice) throws -> Bool {
+        guard let device = device as? Device else { Log.error("BluetoothManager received unexpected device type (expected BluetooothManager.Device, received \(type(of: device))"); throw WrongDeviceType()}
+        return device.peripheral.state == .connected
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
@@ -273,10 +267,10 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
     private class CharacteristicObserver {
         let identifier = UUID()
         var triggerCounter = 0
-        var device: BluetoothDevice
+        var device: Device
         let action: CharacteristicObserverAction
         
-        init(action: @escaping CharacteristicObserverAction, device: BluetoothDevice) {
+        init(action: @escaping CharacteristicObserverAction, device: Device) {
             self.action = action
             self.device = device
         }
@@ -301,10 +295,11 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
         }
     }
     
-    func subscribeToCharacteristic(for device: BluetoothDevice,
+    func subscribeToCharacteristic(for device: any BluetoothDevice,
                                    characteristic: CharacteristicUUID,
                                    timeout: TimeInterval? = nil,
-                                   notify: @escaping CharacteristicObserverAction) -> AnyHashable {
+                                   notify: @escaping CharacteristicObserverAction) throws -> AnyHashable {
+        guard let device = device as? Device else { Log.error("BluetoothManager received unexpected device type (expected BluetooothManager.Device, received \(type(of: device))"); throw WrongDeviceType()}
         let observer = CharacteristicObserver(action: notify, device: device)
         if let timeout = timeout { scheduleTimeout(timeout, for: observer) }
         characteristicsMappingLock.lock()
@@ -395,7 +390,8 @@ final class NewBluetoothManager: NSObject, BluetoothCommunicator, CBCentralManag
     typealias writingValueCallback = (Result<Void, Error>) -> Void
     private var writingValueCallbacks: [CBCharacteristic: [writingValueCallback]] = [:]
     
-    func sendMessage(data: Data, to device: BluetoothDevice, serviceID: String, characteristicID: String, completion: @escaping writingValueCallback) {
+    func sendMessage(data: Data, to device: any BluetoothDevice, serviceID: String, characteristicID: String, completion: @escaping writingValueCallback) throws {
+        guard let device = device as? Device else { Log.error("BluetoothManager received unexpected device type (expected BluetooothManager.Device, received \(type(of: device))"); throw WrongDeviceType()}
         let serviceUUID = CBUUID(string: serviceID)
         let characteristicUUID = CBUUID(string: characteristicID)
         guard let characteristic = getCharacteristic(serviceID: serviceUUID,

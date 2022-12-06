@@ -5,7 +5,7 @@ import Foundation
 import Resolver
 
 protocol MeasurementsRecordingServices {
-    func record(with device: NewBluetoothManager.BluetoothDevice, completion: @escaping (ABMeasurementStream) -> Void)
+    func record(with device: any BluetoothDevice, completion: @escaping (ABMeasurementStream) -> Void)
     func stopRecording()
 }
 
@@ -21,20 +21,24 @@ class AirbeamMeasurementsRecordingServices: MeasurementsRecordingServices {
     
     private var characteristicsObservers: [AnyHashable] = []
     
-    func record(with device: NewBluetoothManager.BluetoothDevice, completion: @escaping (ABMeasurementStream) -> Void) {
-        measurementsCharacteristics.forEach {
-            let observer = bluetoothManager.subscribeToCharacteristic(for: device, characteristic: .init(value: $0)) { result in
-                switch result {
-                case .success(let data):
-                    guard let measurementData = data else { return }
-                    if let parsedMeasurement = self.parseData(data: measurementData) {
-                        completion(parsedMeasurement)
+    func record(with device: any BluetoothDevice, completion: @escaping (ABMeasurementStream) -> Void) {
+        do {
+            try measurementsCharacteristics.forEach {
+                let observer = try bluetoothManager.subscribeToCharacteristic(for: device, characteristic: .init(value: $0)) { result in
+                    switch result {
+                    case .success(let data):
+                        guard let measurementData = data else { return }
+                        if let parsedMeasurement = self.parseData(data: measurementData) {
+                            completion(parsedMeasurement)
+                        }
+                    default:
+                        break
                     }
-                default:
-                    break
                 }
+                characteristicsObservers.append(observer)
             }
-            characteristicsObservers.append(observer)
+        } catch {
+            Log.error("Failed to subscribe to characteristics: \(error)")
         }
     }
     

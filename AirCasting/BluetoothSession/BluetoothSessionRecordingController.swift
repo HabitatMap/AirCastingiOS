@@ -6,8 +6,8 @@ import Resolver
 import CoreLocation
 
 protocol BluetoothSessionRecordingController {
-    func startRecording(session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void)
-    func resumeRecording(device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void)
+    func startRecording(session: Session, device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void)
+    func resumeRecording(device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void)
     func stopRecordingSession(with uuid: SessionUUID, databaseChange: (MobileSessionStorage) -> Void)
 }
 
@@ -24,7 +24,7 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
     @Injected private var btManager: BluetoothConnectionHandler
     private var isRecording = false
     
-    func startRecording(session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
+    func startRecording(session: Session, device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
         // Step 1: Configure AB
         guard !isRecording else {
             // We want to make sure we are not recording more than one session at once
@@ -65,7 +65,7 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
             }
     }
     
-    func resumeRecording(device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
+    func resumeRecording(device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
         Resolver.resolve(AirBeamConfigurator.self, args: device)
             .configureMobileSession(location: locationTracker.location.value?.coordinate ?? .undefined) { [weak self] result in
                 switch result {
@@ -101,7 +101,7 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
         // The code below the guard is performed only for active sessions
         guard let activeSession = activeSessionProvider.activeSession, activeSession.session.uuid == uuid else { return }
         
-        btManager.disconnect(from: activeSession.device)
+        try? btManager.disconnect(from: activeSession.device)
         if !activeSession.session.locationless {
             locationTracker.stop()
         }

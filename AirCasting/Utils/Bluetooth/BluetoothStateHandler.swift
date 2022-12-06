@@ -9,4 +9,4 @@ protocol BluetoothStateHandler {
     func forceBluetoothPermissionPopup()
 }
 
-extension NewBluetoothManager: BluetoothStateHandler {}
+extension BluetoothManager: BluetoothStateHandler {}
