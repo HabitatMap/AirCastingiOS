@@ -26,7 +26,7 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
     var isClearingCompleted: Published<Bool>.Publisher { $isClearingCompletedValue }
 
     var isSDClearProcess: Bool
-    private let device: NewBluetoothManager.BluetoothDevice
+    private let device: any BluetoothDevice
     @Injected private var airBeamConnectionController: AirBeamConnectionController
     @Injected private var sdSyncController: SDSyncController
     private var error = ClearingSDCardError.undefined
@@ -36,7 +36,7 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
     @Published var presentNextScreen: Bool = false
     
     
-    init(isSDClearProcess: Bool, device: NewBluetoothManager.BluetoothDevice) {
+    init(isSDClearProcess: Bool, device: any BluetoothDevice) {
         self.isSDClearProcess = isSDClearProcess
         self.device = device
     }

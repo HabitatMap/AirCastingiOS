@@ -10,11 +10,11 @@ class SessionManagingReconnectionController: ReconnectionControllerDelegate {
         reconnectionController.delegate = self
     }
     
-    func shouldReconnect(to device: NewBluetoothManager.BluetoothDevice) -> Bool {
-        activeSessionProvider.activeSession?.device == device
+    func shouldReconnect(to device: any BluetoothDevice) -> Bool {
+        activeSessionProvider.activeSession?.device.uuid == device.uuid
     }
     
-    func didReconnect(to device: NewBluetoothManager.BluetoothDevice) {
+    func didReconnect(to device: any BluetoothDevice) {
         bluetoothSessionController.resumeRecording(device: device) { result in
             switch result {
             case .success: Log.info("Reconnection successful")
@@ -23,8 +23,8 @@ class SessionManagingReconnectionController: ReconnectionControllerDelegate {
         }
     }
     
-    func didFailToReconnect(to device: NewBluetoothManager.BluetoothDevice) {
-        guard activeSessionProvider.activeSession?.device == device else { return }
+    func didFailToReconnect(to device: any BluetoothDevice) {
+        guard activeSessionProvider.activeSession?.device.uuid == device.uuid else { return }
         standaloneController.moveActiveSessionToStandaloneMode()
     }
 }

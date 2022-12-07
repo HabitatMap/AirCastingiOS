@@ -32,7 +32,7 @@ struct AirBeam3Configurator: AirBeamConfigurator {
     }
     @Injected private var userAuthenticationSession: UserAuthenticationSession
     @Injected private var btManager: BluetoothPeripheralConfigurator
-    private let device: NewBluetoothManager.BluetoothDevice
+    private let device: any BluetoothDevice
     private let hexMessageBuilder = HexMessagesBuilder()
     private let dateFormatter: DateFormatter = DateFormatters.AirBeam3Configurator.usLocaleFullDateDateFormatter
     
@@ -40,7 +40,7 @@ struct AirBeam3Configurator: AirBeamConfigurator {
     private let configurationCharacteristicUUID = "0000ffde-0000-1000-8000-00805f9b34fb"
     private let serviceUUID = "0000ffdd-0000-1000-8000-00805f9b34fb"
 
-    init(device: NewBluetoothManager.BluetoothDevice) {
+    init(device: any BluetoothDevice) {
         self.device = device
     }
     
@@ -194,6 +194,10 @@ private extension AirBeam3Configurator {
     }
     
     private func sendConfigMessage(data: Data, completion: @escaping (Result<Void, Error>) -> Void) {
-        btManager.sendMessage(data: data, to: device, serviceID: serviceUUID, characteristicID: configurationCharacteristicUUID, completion: completion)
+        do {
+            try btManager.sendMessage(data: data, to: device, serviceID: serviceUUID, characteristicID: configurationCharacteristicUUID, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
     }
 }

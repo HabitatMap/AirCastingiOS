@@ -11,7 +11,7 @@ struct ConnectingABView: View {
     @State private var showNextScreen: Bool = false
     @Environment(\.presentationMode) var presentationMode
     
-    init(sessionContext: CreateSessionContext, device: NewBluetoothManager.BluetoothDevice, creatingSessionFlowContinues: Binding<Bool>) {
+    init(sessionContext: CreateSessionContext, device: any BluetoothDevice, creatingSessionFlowContinues: Binding<Bool>) {
         _viewModel = .init(wrappedValue: AirbeamConnectionViewModel(sessionContext: sessionContext, device: device))
         self._creatingSessionFlowContinues = .init(projectedValue: creatingSessionFlowContinues)
     }

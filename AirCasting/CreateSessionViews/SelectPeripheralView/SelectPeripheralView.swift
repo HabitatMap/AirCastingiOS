@@ -11,7 +11,7 @@ import Resolver
 
 struct SelectPeripheralView: View {
     @StateObject var viewModel = SelectPeripheralViewModel()
-    @State private var selection: NewBluetoothManager.BluetoothDevice? = nil
+    @State private var selection: (any BluetoothDevice)? = nil
     var SDClearingRouteProcess: Bool
     @EnvironmentObject var sessionContext: CreateSessionContext
     @Binding var creatingSessionFlowContinues: Bool
@@ -64,14 +64,14 @@ struct SelectPeripheralView: View {
         }
     }
     
-    func displayDeviceButton(devices: [NewBluetoothManager.BluetoothDevice]) -> some View {
-        ForEach(devices, id: \.id) { availableDevice in
+    func displayDeviceButton(devices: [any BluetoothDevice]) -> some View {
+        ForEach(devices, id: \.uuid) { availableDevice in
             Button(action: {
                 selection = availableDevice
                 sessionContext.device = availableDevice
             }) {
                 HStack(spacing: 20) {
-                    CheckBox(isSelected: selection == availableDevice)
+                    CheckBox(isSelected: selection?.uuid == availableDevice.uuid)
                     showDevice(name: availableDevice.name ?? "")
                 }
             }

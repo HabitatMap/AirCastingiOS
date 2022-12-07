@@ -8,13 +8,13 @@ protocol StandaloneModeController {
 final class DefaultStandaloneModeContoller: StandaloneModeController {
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
     @Injected private var sessionRecordingController: BluetoothSessionRecordingController
-    
+
     func moveActiveSessionToStandaloneMode() {
         guard let sessionUUID = activeSessionProvider.activeSession?.session.uuid else {
             Log.warning("Tried to disconnect when no active session")
             return
         }
-        
+
         sessionRecordingController.stopRecordingSession(with: sessionUUID, databaseChange: {
             Log.info("Changing session status to disconnected for: \(sessionUUID)")
             $0.accessStorage {
@@ -31,11 +31,11 @@ final class DefaultStandaloneModeContoller: StandaloneModeController {
 final class UserInitiatedStandaloneModeController: StandaloneModeController {
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
     private let standaloneController: StandaloneModeController = Resolver.resolve(StandaloneModeController.self, args: StandaloneOrigin.device)
-    @Injected private var bluetootConnector: BluetoothConnectionHandler
-    
+    @Injected private var bluetoothConnector: BluetoothConnectionHandler
+
     func moveActiveSessionToStandaloneMode() {
         guard let device = activeSessionProvider.activeSession?.device else { return }
-        bluetootConnector.disconnect(from: device)
+        try? bluetoothConnector.disconnect(from: device)
         standaloneController.moveActiveSessionToStandaloneMode()
     }
 }

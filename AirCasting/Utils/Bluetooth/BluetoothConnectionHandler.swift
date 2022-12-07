@@ -4,9 +4,9 @@
 import Foundation
 
 protocol BluetoothConnectionHandler {
-    func connect(to device: NewBluetoothManager.BluetoothDevice, timeout: TimeInterval, completion: @escaping NewBluetoothManager.ConnectionCallback)
-    func disconnect(from device: NewBluetoothManager.BluetoothDevice)
-    func discoverCharacteristics(for device: NewBluetoothManager.BluetoothDevice, timeout: TimeInterval, completion: @escaping NewBluetoothManager.CharacteristicsDicoveryCallback)
+    func connect(to device: any BluetoothDevice, timeout: TimeInterval, completion: @escaping BluetoothManager.ConnectionCallback) throws
+    func disconnect(from device: any BluetoothDevice) throws
+    func discoverCharacteristics(for device: any BluetoothDevice, timeout: TimeInterval, completion: @escaping BluetoothManager.CharacteristicsDicoveryCallback) throws
 }
 
-extension NewBluetoothManager: BluetoothConnectionHandler {}
+extension BluetoothManager: BluetoothConnectionHandler {}

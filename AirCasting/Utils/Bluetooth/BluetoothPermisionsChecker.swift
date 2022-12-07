@@ -8,4 +8,4 @@ protocol BluetoothPermisionsChecker {
     func isBluetoothDenied() -> Bool
 }
 
-extension NewBluetoothManager: BluetoothPermisionsChecker {}
+extension BluetoothManager: BluetoothPermisionsChecker {}

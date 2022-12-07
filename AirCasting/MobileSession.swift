@@ -4,6 +4,6 @@
 import Foundation
 
 struct MobileSession {
-    let device: NewBluetoothManager.BluetoothDevice
+    let device: any BluetoothDevice
     let session: Session
 }

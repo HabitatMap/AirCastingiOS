@@ -4,5 +4,5 @@
 import Foundation
 
 protocol BluetoothConnectionObserver: AnyObject {
-    func didDisconnect(device: NewBluetoothManager.BluetoothDevice)
+    func didDisconnect(device: any BluetoothDevice)
 }

@@ -7,8 +7,8 @@ import Resolver
 class SelectPeripheralViewModel: ObservableObject {
     @Injected var btManager: BluetoothScanner
     @Published var isScanning = false
-    @Published var airbeams = [NewBluetoothManager.BluetoothDevice]()
-    @Published var otherDevices = [NewBluetoothManager.BluetoothDevice]()
+    @Published var airbeams = [any BluetoothDevice]()
+    @Published var otherDevices = [any BluetoothDevice]()
     
     func viewAppeared() {
         scan()
@@ -38,13 +38,13 @@ class SelectPeripheralViewModel: ObservableObject {
             })
     }
     
-    private func addDevice(_ device: NewBluetoothManager.BluetoothDevice) {
+    private func addDevice(_ device: any BluetoothDevice) {
         DispatchQueue.main.async {
             if device.name?.contains("AirBeam") == true {
-                guard !self.airbeams.contains(device) else { return }
+                guard !self.airbeams.contains(where: { $0.uuid == device.uuid }) else { return }
                 self.airbeams.append(device)
             } else if !(device.name?.isEmpty ?? true) {
-                guard !self.otherDevices.contains(device) else { return }
+                guard !self.otherDevices.contains(where: { $0.uuid == device.uuid }) else { return }
                 self.otherDevices.append(device)
             }
         }

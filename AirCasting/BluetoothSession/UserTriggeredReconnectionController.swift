@@ -27,7 +27,7 @@ class DefaultUserTriggeredReconnectionController: UserTriggeredReconnectionContr
             return
         }
         
-        var discoveredDevices: [NewBluetoothManager.BluetoothDevice] = []
+        var discoveredDevices: [any BluetoothDevice] = []
         btScanner.startScanning(scanningWindow: 5, onDeviceDiscovered: { discoveredDevices.append($0) }, onScanningFinished: { [weak self] in
             guard let device = discoveredDevices.first(where: { $0.uuid == deviceUUID }) else {
                 completion(.failure(.deviceNotDiscovered))
@@ -45,28 +45,36 @@ class DefaultUserTriggeredReconnectionController: UserTriggeredReconnectionContr
         })
     }
     
-    private func connect(to device: NewBluetoothManager.BluetoothDevice, session: Session, completion: @escaping (Result<Void, UserTriggeredReconnectionError>) -> Void) {
-        bluetootConnector.connect(to: device, timeout: 10) {[weak self] result in
-            switch result {
-            case .success:
-                Log.info("Reconnected to a peripheral: \(String(describing: device.name))")
-                self?.bluetootConnector.discoverCharacteristics(for: device, timeout: 10) { result in
-                    switch result {
-                    case .success:
-                        Log.info("Discovered characteristics for: \(String(describing: device.name))")
-                        completion(.success(()))
-                    case .failure(_):
-                        Log.info("Faile to discover characteristics for: \(String(describing: device.name))")
+    private func connect(to device: any BluetoothDevice, session: Session, completion: @escaping (Result<Void, UserTriggeredReconnectionError>) -> Void) {
+        do {
+            try bluetootConnector.connect(to: device, timeout: 10) {[weak self] result in
+                switch result {
+                case .success:
+                    Log.info("Reconnected to a peripheral: \(String(describing: device.name))")
+                    do {
+                        try self?.bluetootConnector.discoverCharacteristics(for: device, timeout: 10) { result in
+                            switch result {
+                            case .success:
+                                Log.info("Discovered characteristics for: \(String(describing: device.name))")
+                                completion(.success(()))
+                            case .failure(_):
+                                Log.info("Faile to discover characteristics for: \(String(describing: device.name))")
+                                completion(.failure(.failedToConnect))
+                            }
+                        }
+                    } catch {
                         completion(.failure(.failedToConnect))
                     }
+                case .failure(_):
+                    completion(.failure(.failedToConnect))
                 }
-            case .failure(_):
-                completion(.failure(.failedToConnect))
             }
+        } catch {
+            completion(.failure(.failedToConnect))
         }
     }
     
-    private func resume(_ session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, UserTriggeredReconnectionError>) -> Void) {
+    private func resume(_ session: Session, device: any BluetoothDevice, completion: @escaping (Result<Void, UserTriggeredReconnectionError>) -> Void) {
         activeSessionProvider.setActiveSession(session: session, device: device)
         sessionRecorder.resumeRecording(device: device) { result in
             switch result {
