@@ -119,6 +119,7 @@
 		33F96EA8293E7F4F00FE7F0A /* BluetoothDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F96EA7293E7F4F00FE7F0A /* BluetoothDevice.swift */; };
 		33F96EAA293F846B00FE7F0A /* BluetoothDeviceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F96EA9293F846B00FE7F0A /* BluetoothDeviceMock.swift */; };
 		33F96EAC293F86F000FE7F0A /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F96EAB293F86F000FE7F0A /* Session.swift */; };
+		33F96EAE294090C500FE7F0A /* MobileSessionFinishingStorageMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F96EAD294090C500FE7F0A /* MobileSessionFinishingStorageMock.swift */; };
 		33FD502227A144B300162384 /* SingleMeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD502127A144B300162384 /* SingleMeasurementView.swift */; };
 		4F15548B263C44AF00FF3208 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F15548A263C44AF00FF3208 /* Session.swift */; };
 		4F15548F263C819C00FF3208 /* MeasurementEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F15548E263C819C00FF3208 /* MeasurementEntity.swift */; };
@@ -710,6 +711,7 @@
 		33F96EA7293E7F4F00FE7F0A /* BluetoothDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothDevice.swift; sourceTree = "<group>"; };
 		33F96EA9293F846B00FE7F0A /* BluetoothDeviceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothDeviceMock.swift; sourceTree = "<group>"; };
 		33F96EAB293F86F000FE7F0A /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		33F96EAD294090C500FE7F0A /* MobileSessionFinishingStorageMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSessionFinishingStorageMock.swift; sourceTree = "<group>"; };
 		33FD502127A144B300162384 /* SingleMeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleMeasurementView.swift; sourceTree = "<group>"; };
 		3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirCastingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4327910762891E7B1AE9102E /* Pods-AirCastingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCastingTests.debug.xcconfig"; path = "Target Support Files/Pods-AirCastingTests/Pods-AirCastingTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1289,6 +1291,7 @@
 				332BA32A293E181F000BA5F0 /* BluetoothSessionRecordingControllerMock.swift */,
 				33F96EA9293F846B00FE7F0A /* BluetoothDeviceMock.swift */,
 				33F96EAB293F86F000FE7F0A /* Session.swift */,
+				33F96EAD294090C500FE7F0A /* MobileSessionFinishingStorageMock.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -3275,6 +3278,7 @@
 				332066A42891730E00798AC1 /* ShareSessionFileTest.swift in Sources */,
 				B33DB5702685FCFB00ED1344 /* SynchronizationTestMocks.swift in Sources */,
 				B3E26A2A26780D96001A8E4C /* SynchronizationControllerTestHelpers.swift in Sources */,
+				33F96EAE294090C500FE7F0A /* MobileSessionFinishingStorageMock.swift in Sources */,
 				B34BB2EB28AD0BCE009E5927 /* MicrophoneManualCalibrationViewModelTests.swift in Sources */,
 				FA5F782F289A8C0E0016DF79 /* MapDownloaderSensorTypeTests.swift in Sources */,
 				B30BAC212694AEAA00AE0476 /* GraphStatsDataSourceTests.swift in Sources */,

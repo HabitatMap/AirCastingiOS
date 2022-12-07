@@ -11,6 +11,7 @@ final class DefaultStandaloneModeContollerTests: ACTestCase {
     lazy var sut = DefaultStandaloneModeContoller()
     var activeSessionProvider = ActiveMobileSessionProvidingServiceMock()
     var sessionRecordingController = BluetoothSessionRecordingControllerMock()
+    var storage = MobileSessionFinishingStorageMock()
 
     override func setUp() {
         super.setUp()
@@ -32,19 +33,5 @@ final class DefaultStandaloneModeContollerTests: ACTestCase {
         sut.moveActiveSessionToStandaloneMode()
         XCTAssertEqual([], sessionRecordingController.callsHistory)
         XCTAssertNil(activeSessionProvider.activeSession)
-    }
-}
-
-class MobileSessionStorageMock: MobileSessionFinishingStorage {
-    let hiddenStorage = HiddenStorage()
-    func accessStorage(_ task: @escaping (AirCasting.HiddenMobileSessionFinishingStorage) -> Void) {
-        task(hiddenStorage)
-    }
-
-    class HiddenStorage: HiddenMobileSessionFinishingStorage {
-        var callHistory: [SessionStatus] = []
-        func save() throws {}
-        func updateSessionStatus(_ sessionStatus: AirCasting.SessionStatus, for sessionUUID: AirCasting.SessionUUID) throws { callHistory.append(sessionStatus) }
-        func updateSessionEndtime(_ endTime: Date, for sessionUUID: AirCasting.SessionUUID) throws { }
     }
 }

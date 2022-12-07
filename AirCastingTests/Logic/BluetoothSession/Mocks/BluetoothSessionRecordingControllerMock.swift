@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import Resolver
 @testable import AirCasting
 
 class BluetoothSessionRecordingControllerMock: BluetoothSessionRecordingController {
@@ -22,28 +23,10 @@ class BluetoothSessionRecordingControllerMock: BluetoothSessionRecordingControll
     
     var callsHistory: [HistoryItem] = []
     
-    var mockStorage = MockStorage()
-    
     func startRecording(session: Session, device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) { callsHistory.append(.start(session: session, device: device)) }
     func resumeRecording(device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) { callsHistory.append(.resume(device: device)) }
-    func stopRecordingSession(with uuid: AirCasting.SessionUUID, databaseChange: (AirCasting.MobileSessionStorage) -> Void) {
+    func stopRecordingSession(with uuid: AirCasting.SessionUUID, databaseChange: (AirCasting.MobileSessionFinishingStorage) -> Void) {
         callsHistory.append(.stop(uuid: uuid))
-        databaseChange(mockStorage)
-    }
-    
-    class MockStorage: MobileSessionStorage {
-        enum HistoryItem {
-            case updateSessionStatus(sessionStatus: SessionStatus)
-            case updateEndTime
-        }
-        
-        var callsHistory: [HistoryItem] = []
-        func updateSessionStatus(_ sessionStatus: AirCasting.SessionStatus, for sessionUUID: AirCasting.SessionUUID) {
-            callsHistory.append(.updateSessionStatus(sessionStatus: sessionStatus))
-        }
-        
-        func updateSessionEndtime(_ endTime: Date, for uuid: AirCasting.SessionUUID) {
-            callsHistory.append(.updateEndTime)
-        }
+        databaseChange(Resolver.resolve(MobileSessionFinishingStorage.self))
     }
 }

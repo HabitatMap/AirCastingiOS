@@ -11,7 +11,7 @@ final class MobileAirBeamSessionRecordingControllerTests: ACTestCase {
     lazy var sut = MobileAirBeamSessionRecordingController()
     let device = BluetoothDeviceMock(name: "Device", uuid: "123")
     private var measurementsSaver = MeasurementsSavingServiceMock()
-    private var storage = MobileSessionStorageMock()
+    private var storage = MobileSessionFinishingStorageMock()
     private var measurementsRecorder =  MeasurementsRecordingServicesMock()
     private var activeSessionProvider = ActiveMobileSessionProvidingServiceMock()
     private var locationTracker = LocationTrackerMock()
@@ -79,26 +79,31 @@ final class MobileAirBeamSessionRecordingControllerTests: ACTestCase {
         sut.startRecording(session: .mobileAirBeamMock, device: device, completion: { _ in })
         XCTAssertEqual(measurementsRecorder.callsHistory, [.record])
     }
+    
+    func testStartRecording_successfullSessionCreationWithLocation_setsStatusToRecording() throws {
+        sut.startRecording(session: .mobileAirBeamMock, device: device, completion: { _ in })
+        XCTAssertEqual(measurementsSaver.changeStatusToRecordingCalls, 1)
+    }
 
-    func testStopRecording_whenSessionInBeingRecorded_disconnectsDevice() throws {
+    func testStopRecording_whenSessionIsBeingRecorded_disconnectsDevice() throws {
         sut.startRecording(session: .mobileAirBeamMock, device: device, completion: { _ in })
         sut.stopRecordingSession(with: Session.mobileAirBeamMock.uuid, databaseChange: { _ in })
         XCTAssertEqual(btManager.disconnectCalls, 1)
     }
 
-    func testStopRecording_whenSessionInBeingRecorded_stopsLocationTracking() throws {
+    func testStopRecording_whenSessionIsBeingRecorded_stopsLocationTracking() throws {
         sut.startRecording(session: .mobileAirBeamMock, device: device, completion: { _ in })
         sut.stopRecordingSession(with: Session.mobileAirBeamMock.uuid, databaseChange: { _ in })
         XCTAssertEqual(locationTracker.callsHistory, [.start, .stop])
     }
 
-    func testStopRecording_whenSessionInBeingRecorded_clearsActiveSession() throws {
+    func testStopRecording_whenSessionIsBeingRecorded_clearsActiveSession() throws {
         sut.startRecording(session: .mobileAirBeamMock, device: device, completion: { _ in })
         sut.stopRecordingSession(with: Session.mobileAirBeamMock.uuid, databaseChange: { _ in })
         XCTAssertNil(activeSessionProvider.activeSession)
     }
 
-    func testStopRecording_whenSessionInBeingRecorded_stopsRecording() throws {
+    func testStopRecording_whenSessionIsBeingRecorded_stopsRecording() throws {
         sut.startRecording(session: .mobileAirBeamMock, device: device, completion: { _ in })
         sut.stopRecordingSession(with: Session.mobileAirBeamMock.uuid, databaseChange: { _ in })
         XCTAssertEqual(measurementsRecorder.callsHistory, [.record, .stopRecording])
@@ -123,6 +128,20 @@ final class MobileAirBeamSessionRecordingControllerTests: ACTestCase {
         })
         XCTAssertEqual(measurementsRecorder.callsHistory, [.record])
     }
+    
+    func testResumeRecording_whenNoSessionIsBeingRecorded_setsSessionStatusToRecording() throws {
+        activeSessionProvider.setActiveSession(session: .mobileAirBeamMock, device: device)
+        sut.resumeRecording(device: device, completion: { result in
+            switch result {
+            case .success():
+                return
+            case .failure(_):
+                XCTFail()
+                return
+            }
+        })
+        XCTAssertEqual(measurementsSaver.changeStatusToRecordingCalls, 1)
+    }
 
     func testResumeRecording_whenNoSessionIsBeingRecorded_startsLocationTrackingAndCompletesWithSuccess() throws {
         activeSessionProvider.setActiveSession(session: .mobileAirBeamMock, device: device)
@@ -142,13 +161,17 @@ final class MobileAirBeamSessionRecordingControllerTests: ACTestCase {
 class MeasurementsSavingServiceMock: MeasurementsSavingService {
     var createSessionResult: Result<Void, Error> = .success(())
     var createSessionCalls = 0
+    var changeStatusToRecordingCalls = 0
 
-    func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool) {
-
-    }
+    func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool) { }
+    
     func createSession(session: Session, device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
         createSessionCalls += 1
         completion(createSessionResult)
+    }
+    
+    func changeStatusToRecording(for sessionUUID: AirCasting.SessionUUID) {
+        changeStatusToRecordingCalls += 1
     }
 }
 
@@ -162,6 +185,7 @@ class MeasurementsRecordingServicesMock: MeasurementsRecordingServices {
     func record(with device: any BluetoothDevice, completion: @escaping (ABMeasurementStream) -> Void) {
         callsHistory.append(.record)
     }
+    
     func stopRecording() {
         callsHistory.append(.stopRecording)
     }
@@ -232,12 +256,4 @@ class ActiveMobileSessionProvidingServiceMock: ActiveMobileSessionProvidingServi
     func clearActiveSession() {
         activeSession = nil
     }
-}
-
-class MobileSessionStorageMock: MobileSessionStorage {
-    var callHistory: [SessionStatus] = []
-    func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) {
-        callHistory.append(sessionStatus)
-    }
-    func updateSessionEndtime(_ endTime: Date, for uuid: AirCasting.SessionUUID) { }
 }
