@@ -10,7 +10,7 @@ final class AirBeamCellularSessionCreator: SessionCreator {
         case invalidCreateSessionContext(CreateSessionContext)
     }
     @Injected private var userAuthenticationSession: UserAuthenticationSession
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var sessionStorage: SessionCreatingStorage
     @Injected private var uiStore: UIStorage
     private let createSessionService: CreateSessionAPIService
     
@@ -64,12 +64,12 @@ final class AirBeamCellularSessionCreator: SessionCreator {
         
         createSessionService.createEmptyFixedWifiSession(input: .init(session: params,
                                                                       compression: true),
-                                                         completion: { [measurementStreamStorage] result in
+                                                         completion: { [sessionStorage] result in
                                                             #warning("TODO: https://github.com/HabitatMap/AirCastingiOS/pull/221/files#r707437312")
                                                             DispatchQueue.main.async {
                                                                 switch result {
                                                                 case .success(let output):
-                                                                    measurementStreamStorage.accessStorage { storage in
+                                                                    sessionStorage.accessStorage { storage in
                                                                         do {
                                                                             let sessionWithURL = session.withUrlLocation(output.location)
                                                                             try storage.createSession(sessionWithURL)

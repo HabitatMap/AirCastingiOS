@@ -13,8 +13,6 @@ final class DefaultRemoveOldMeasurementsService: RemoveOldMeasurements {
         case noStreamInSession
     }
     
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
-    
     /// In fixed and external sessions we need to remove measurements older than 24h, and we treat 24 like a date.
     /// We know the time of the last measurement and based on that we are subtracking 24h in seconds.
     func removeOldestMeasurements(in context: NSManagedObjectContext, from sessionUUID: SessionUUID) throws {

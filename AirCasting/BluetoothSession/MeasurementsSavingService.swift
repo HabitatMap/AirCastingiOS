@@ -8,10 +8,11 @@ import CoreLocation
 protocol MeasurementsSavingService {
     func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool)
     func createSession(session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void)
+    func changeStatusToRecording(for sessionUUID: SessionUUID)
 }
 
 class DefaultMeasurementsSaver: MeasurementsSavingService {
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var persistence: MobileSessionRecordingStorage
     @Injected private var uiStorage: UIStorage
     private var peripheralMeasurementManager = PeripheralMeasurementTimeLocationManager()
     
@@ -32,7 +33,7 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
     }
     
     func createSession(session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
-        measurementStreamStorage.accessStorage { [weak self] storage in
+        persistence.accessStorage { [weak self] storage in
             do {
                 guard let self = self else { return }
                 let sessionReturned = try storage.createSession(session)
@@ -61,8 +62,18 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         peripheralMeasurementManager.incrementCounter()
     }
     
+    func changeStatusToRecording(for sessionUUID: SessionUUID) {
+        persistence.accessStorage {
+            do {
+                try $0.updateSessionStatus(.RECORDING, for: sessionUUID)
+            } catch {
+                Log.error("Failed to change session status to recording")
+            }
+        }
+    }
+    
     private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, location: CLLocationCoordinate2D?, time: Date) {
-        measurementStreamStorage.accessStorage { storage in
+        persistence.accessStorage { storage in
             do {
                 let existingStreamID = try storage.existingMeasurementStream(sessionUUID, name: stream.sensorName)
                 guard let id = existingStreamID else {
@@ -77,7 +88,7 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         }
     }
     
-    private func createSessionStream(_ stream: ABMeasurementStream, _ sessionUUID: SessionUUID, storage: HiddenCoreDataMeasurementStreamStorage) throws -> MeasurementStreamLocalID {
+    private func createSessionStream(_ stream: ABMeasurementStream, _ sessionUUID: SessionUUID, storage: HiddenMobileSessionRecordingStorage) throws -> MeasurementStreamLocalID {
         let sessionStream = MeasurementStream(id: nil,
                                               sensorName: stream.sensorName,
                                               sensorPackageName: stream.packageName,

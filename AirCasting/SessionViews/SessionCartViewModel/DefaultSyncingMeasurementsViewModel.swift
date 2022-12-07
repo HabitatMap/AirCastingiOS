@@ -18,7 +18,7 @@ protocol SyncingMeasurementsViewModel: ObservableObject {
 final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel, ObservableObject {
     
     var sessionDownloader: MeasurementsDownloadable
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var persistence: SyncingMeasurementsStorage
     var task: Cancellable?
     var session: SessionEntity
     @Published var showLoadingIndicator = true
@@ -32,7 +32,7 @@ final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel, O
     func syncMeasurements() {
         showLoadingIndicator = true
         
-        task = sessionDownloader.downloadSessionWithMeasurement(uuid: session.uuid) { [measurementStreamStorage] result in
+        task = sessionDownloader.downloadSessionWithMeasurement(uuid: session.uuid) { [persistence] result in
             switch result {
             case .success(let data):
                 let dataBaseStreams = data.streams.values.map { value in
@@ -43,7 +43,7 @@ final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel, O
                 
                 // TODO: Move all this logic to a service/controller
                 // https://github.com/HabitatMap/AirCastingiOS/issues/606
-                measurementStreamStorage.accessStorage { storage in
+                persistence.accessStorage { storage in
                     if let endTime = data.endTime {
                         do {
                             try storage.updateSessionEndTimeWithoutUTCConversion(endTime, for: data.uuid)
@@ -55,7 +55,7 @@ final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel, O
                         Log.info("Downloaded \(stream.measurements.count) measurements for \(stream.sensorName)")
                         let sensorName = stream.sensorName
                         do {
-                            let streamID = try storage.existingMeasurementStream(sessionId, name: sensorName)
+                            let streamEntity = try storage.existingMeasurementStream(sessionId, name: sensorName)
                             stream.measurements.forEach { measurement in
                                 let location: CLLocationCoordinate2D? = {
                                     guard let latitude = measurement.latitude,
@@ -63,10 +63,10 @@ final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel, O
                                     return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
                                 }()
                                 do {
-                                    guard let streamID = streamID else { return }
+                                    guard let streamEntity else { return }
                                     try storage.addMeasurementValue(measurement.value,
                                                                     at:  location,
-                                                                    toStreamWithID: streamID,
+                                                                    toStream: streamEntity,
                                                                     on: measurement.time)
                                 } catch {
                                     Log.info("\(error)")

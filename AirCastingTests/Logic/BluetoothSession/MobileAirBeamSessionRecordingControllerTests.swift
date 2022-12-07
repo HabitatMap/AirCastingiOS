@@ -19,7 +19,7 @@ final class MobileAirBeamSessionRecordingControllerTests: ACTestCase {
     override func setUp() {
         super.setUp()
         Resolver.test.register { self.measurementsSaver as MeasurementsSavingService }
-        Resolver.test.register { self.storage as MobileSessionStorage }
+        Resolver.test.register { self.storage as MobileSessionFinishingStorage }
         Resolver.test.register { self.measurementsRecorder as MeasurementsRecordingServices }
         Resolver.test.register { self.activeSessionProvider as ActiveMobileSessionProvidingService }
         Resolver.test.register { self.locationTracker as LocationTracker }
@@ -49,6 +49,7 @@ final class MobileAirBeamSessionRecordingControllerTests: ACTestCase {
 }
 
 class MeasurementsSavingServiceMock: MeasurementsSavingService {
+    func changeStatusToRecording(for sessionUUID: AirCasting.SessionUUID) { }
     func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool) {}
     func createSession(session: Session, device: NewBluetoothManager.BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {}
 }
