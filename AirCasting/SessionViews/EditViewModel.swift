@@ -25,7 +25,7 @@ class EditSessionViewModel: EditViewModel {
     @Published var shouldShowError = false
     @Published var shouldDismiss = false
     @Published var alert: AlertInfo?
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var sessionStorage: SessionEditingStorage
     @Injected private var sessionDownloader: SingleSessionDownloader
     @Injected private var sessionUpdateService: SessionUpdateService
     @Injected private var networkChecker: NetworkChecker
@@ -52,7 +52,7 @@ class EditSessionViewModel: EditViewModel {
         
         let name = sessionName
         let tags = sessionTags
-        measurementStreamStorage.accessStorage { [self] storage in
+        sessionStorage.accessStorage { [self] storage in
             do {
                 try storage.updateSessionNameAndTags(name: name,
                                                      tags: tags,
@@ -68,7 +68,7 @@ class EditSessionViewModel: EditViewModel {
                 sessionUpdateService.updateSession(session: session) { result in
                     switch result {
                     case .success(let session):
-                        self.measurementStreamStorage.accessStorage { storage in
+                        self.sessionStorage.accessStorage { storage in
                             do {
                                 try storage.updateVersion(for: self.sessionUUID, to: session.version)
                                 Log.info("Updated session version to: \(session.version)")
@@ -122,7 +122,7 @@ class EditSessionViewModel: EditViewModel {
     }
 
     private func updateSessionNameAndTagsWithBackendData(name: String, tags: String, closure: @escaping () -> ()) {
-        self.measurementStreamStorage.accessStorage { [self] storage in
+        self.sessionStorage.accessStorage { [self] storage in
             do {
                 try storage.updateSessionNameAndTags(name: name,
                                                      tags: tags,

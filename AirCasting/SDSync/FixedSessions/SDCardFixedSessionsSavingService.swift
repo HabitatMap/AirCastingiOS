@@ -12,7 +12,7 @@ enum UploadingError: Error {
 
 class SDCardFixedSessionsUploadingService {
     @Injected private var fileLineReader: FileLineReader
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var sessionStorage: SessionStorage
     @Injected private var apiService: UploadFixedSessionAPIService
     private let parser = SDCardMeasurementsParser()
     
@@ -120,7 +120,7 @@ class SDCardFixedSessionsUploadingService {
         var doesSessionExist = false
         let dispatchGroup = DispatchGroup()
         dispatchGroup.enter()
-        measurementStreamStorage.accessStorage { storage in
+        sessionStorage.accessStorage { storage in
             doesSessionExist = (try? storage.getExistingSession(with: sessionUUID)) != nil
             dispatchGroup.leave()
         }

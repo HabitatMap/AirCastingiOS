@@ -76,7 +76,15 @@ extension Resolver: ResolverRegistering {
         .implements(SessionInsertable.self)
         .implements(SessionUpdateable.self)
         .scope(.application)
-        main.register { CoreDataMeasurementStreamStorage() as MeasurementStreamStorage }.scope(.cached)
+        main.register { DefaultSessionNotesStorage() as SessionNotesStorage }.scope(.cached)
+        main.register { DefaultSessionDeletingStorage() as SessionDeletingStorage }.scope(.cached)
+        main.register { DefaultSDSyncMeasurementsStorage() as SDSyncMeasurementsStorage }.scope(.cached)
+        main.register { DefaultMobileSessionRecordingStorage() as MobileSessionRecordingStorage }.scope(.cached)
+        main.register { DefaultMobileSessionFinishingStorage() as MobileSessionFinishingStorage }
+        main.register { DefaultSessionCreatingStorage() as SessionCreatingStorage }
+        main.register { DefaultSessionFollowingStorage() as SessionFollowingStorage }
+        main.register { DefaultSessionEditingStorage() as SessionEditingStorage }
+        main.register { DefaultSyncingMeasurementsStorage() as SyncingMeasurementsStorage }
         main.register { (_, _) -> UIStorage in
             let context = Resolver.resolve(PersistenceController.self).editContext
             return CoreDataUIStorage(context: context)
@@ -95,7 +103,6 @@ extension Resolver: ResolverRegistering {
         }.scope(.cached)
         main.register { DefaultFileLineReader() as FileLineReader }
         main.register { SessionDataEraser() as DataEraser }
-        main.register { DefaultMobileSessionStorageBridge() as MobileSessionStorage }
 
         // MARK: - Networking
         main.register { URLSession.shared as APIClient }.scope(.application)

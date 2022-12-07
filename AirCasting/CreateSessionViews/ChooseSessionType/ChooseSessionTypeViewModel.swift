@@ -41,7 +41,7 @@ class ChooseSessionTypeViewModel: ObservableObject {
     func setPowerABLink(using new: Bool) { DispatchQueue.main.async { self.isPowerABLinkActive = new }}
     func setBluetoothLink(using new: Bool) { DispatchQueue.main.async { self.isTurnBluetoothOnLinkActive = new }}
     func setMobileLink(using new: Bool) { DispatchQueue.main.async { self.isMobileLinkActive = new } }
-    func setLocationLink(using new: Bool) { isTurnLocationOnLinkActive = new }
+    func setLocationLink(using new: Bool) { DispatchQueue.main.async { self.isTurnLocationOnLinkActive = new }}
     
     func handleMobileSessionState() {
         createNewSession(isSessionFixed: false)
