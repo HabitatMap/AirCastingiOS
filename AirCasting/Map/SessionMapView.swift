@@ -37,16 +37,6 @@ struct SessionMapView: View {
         case other
     }
     
-    var mapSessionType: Self.AirMapSessionType {
-        if session.isActive {
-            return .active
-        } else if session.isFixed {
-            return .fixed
-        } else {
-            return .other
-        }
-    }
-    
     init(session: SessionEntity,
          thresholds: ABMeasurementsViewThreshold,
          statsContainerViewModel: StateObject<StatisticsContainerViewModel>,
@@ -116,8 +106,9 @@ struct SessionMapView: View {
                             _MapView(path: pathPoints,
                                      type: .normal,
                                      trackingStyle: .wholePath,
+                                     myLocationButtonBehavior: .latestPathPoint,
                                      userIndicatorStyle: .none,
-                                     locationTracker: MapLocationTrackerAdapter(locationTracker),
+                                     locationTracker: ConstantTracker(location: pathPoints.last?.location ?? .applePark),
                                      markers: mapNotesVM.notes.asMapMarkers(with: didTapNote))
                             .addingOverlay { mapView in overlayHeatMap(on: mapView, threshold: threshold) }
                         }
@@ -156,6 +147,15 @@ struct SessionMapView: View {
         }
         .padding(.bottom)
         .background(Color.aircastingBackground.ignoresSafeArea())
+    }
+    
+    private var mapSessionType: Self.AirMapSessionType {
+        if session.isActive {
+            return .active
+        } else if session.isFixed {
+            return .fixed
+        }
+        return .other
     }
 
     private func getValue(of measurement: MeasurementEntity) -> Double {

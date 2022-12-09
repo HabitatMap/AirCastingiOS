@@ -81,6 +81,7 @@ struct _MapView: UIViewRepresentable {
     private let path: [PathPoint]
     private let type: MapType
     private let trackingStyle: TrackingStyle
+    private let myLocationButtonBehavior: TrackingStyle
     private let userIndicatorStyle: UserIndicatorStyle
     private let locationTracker: MapLocationTracker
     private let markers: [Marker]
@@ -89,10 +90,11 @@ struct _MapView: UIViewRepresentable {
     private var mapDidChangePosition: ((CLLocation) -> Void)?
     private var myLocationHandler: (() -> Void)?
     
-    init(path: [PathPoint] = [], type: MapType, trackingStyle: TrackingStyle, userIndicatorStyle: UserIndicatorStyle, locationTracker: MapLocationTracker, markers: [Marker] = [], stickHardToTheUser: Bool = false) {
+    init(path: [PathPoint] = [], type: MapType, trackingStyle: TrackingStyle, myLocationButtonBehavior: TrackingStyle? = nil, userIndicatorStyle: UserIndicatorStyle, locationTracker: MapLocationTracker, markers: [Marker] = [], stickHardToTheUser: Bool = false) {
         self.path = path
         self.type = type
         self.trackingStyle = trackingStyle
+        self.myLocationButtonBehavior = myLocationButtonBehavior ?? trackingStyle
         self.userIndicatorStyle = userIndicatorStyle
         self.locationTracker = locationTracker
         self.markers = markers
@@ -234,7 +236,7 @@ struct _MapView: UIViewRepresentable {
     }
     
     private func defaultMyLocationButtonBehavior(in view: GMSMapView, coordinator: Coordinator) {
-        switch trackingStyle {
+        switch myLocationButtonBehavior {
         case .none:
             centerMapOnUserPosition(in: view, coordinator: coordinator)
         case .user:
@@ -259,21 +261,10 @@ struct _MapView: UIViewRepresentable {
     }
     
     private func centerMapOnWholePath(in view: GMSMapView, coordinator: Coordinator) {
-        // The idea here is to provide a working centering mechanism.
-        // What's more important, it must set some kind of reliable `zoom` value (most of the time we use 16.0)
-        // One problems occurs here - when we use only `GMSCoordinateBounds`, then we are very close to the map
-        // The reason behind that, is the fact that most of the users won't have long-long road trips
-        // and our bounds stick exactly to the path painted on the map.
-        // Solution is, to first center on the middle point with zoom 16.0
-        // if it won't be enough (most of the time it should be enough) use bounds related centering.
         guard isMapVisibleOnTheScreen(view: view) else { return }
-        centerOnTheMiddlePathPoint(view: view)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) {
-            // This waits till the above animation is completed, otherwise it is useless
-            if !allPointWithinBounds(view: view) {
-                centerWithinPathBounds(view: view)
-            }
+        if !allPointWithinBounds(view: view) {
+            centerWithinPathBounds(view: view)
         }
     }
     
@@ -287,13 +278,7 @@ struct _MapView: UIViewRepresentable {
                 visibleRegion.farRight != .init(latitude: -180, longitude: -180) ||
                 visibleRegion.nearRight != .init(latitude: -180, longitude: -180))
     }
-    
-    private func centerOnTheMiddlePathPoint(view: GMSMapView) {
-        let middleElement = path[path.middleItemIndex]
-        let userPos = GMSCameraPosition(target: .init(latitude: middleElement.lat,
-                                                      longitude: middleElement.long), zoom: 16.0)
-        view.animate(to: userPos)
-    }
+
     
     private func allPointWithinBounds(view: GMSMapView) -> Bool {
         let visibleRegion = view.projection.visibleRegion()
@@ -308,6 +293,9 @@ struct _MapView: UIViewRepresentable {
         }
         let cameraUpdate = GMSCameraUpdate.fit(pathPointsBoundingBox, withPadding: 1.0)
         view.moveCamera(cameraUpdate)
+        if view.camera.zoom > 16.0 {
+            view.moveCamera(GMSCameraUpdate.zoom(to: 16.0))
+        }
     }
     
     private var isUserPositionTrackingRequired: Bool {
