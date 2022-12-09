@@ -12,7 +12,6 @@ extension Resolver: ResolverRegistering {
         // We do Firebase config here as this is actually the first place that gets called in the app.
         FirebaseApp.configure()
         
-        // TODO: Reintroduce garbage collection
         main.register { PersistenceController(inMemory: false) }
         .implements(SessionsFetchable.self)
         .implements(SessionRemovable.self)
