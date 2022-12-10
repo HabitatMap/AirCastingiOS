@@ -45,7 +45,7 @@ class FileLoggerTests: ACTestCase {
         let formatterMock = LogFormatterMock()
         Resolver.register { storeSpy as FileLoggerStore }
         Resolver.register { formatterMock as LogFormatter }
-        return (FileLogger(), storeSpy, formatterMock)
+        return (FileLogger(formatter: formatterMock, store: storeSpy), storeSpy, formatterMock)
     }
 }
 
