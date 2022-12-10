@@ -234,7 +234,7 @@ private extension SessionCardView {
     }
 
     private var mapNavigationLink: some View {
-         let mapView = AirMapView(session: session,
+         let mapView = SessionMapView(session: session,
                                   thresholds: .init(value: thresholds),
                                   statsContainerViewModel: _mapStatsViewModel,
                                   showLoadingIndicator: $showLoadingIndicator,

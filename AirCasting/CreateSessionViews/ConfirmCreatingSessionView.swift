@@ -24,13 +24,15 @@ struct ConfirmCreatingSessionView: View {
     @EnvironmentObject private var tabSelection: TabBarSelection
     @Binding var creatingSessionFlowContinues: Bool
 
+    let initialLocation: CLLocation?
     var sessionName: String
     private var sessionType: String { (sessionContext.sessionType ?? .fixed).description.lowercased() }
     private var shouldTrackLocation: Bool { sessionContext.sessionType == .mobile && !sessionContext.locationless }
     
-    init(creatingSessionFlowContinues: Binding<Bool>, sessionName: String) {
+    init(creatingSessionFlowContinues: Binding<Bool>, sessionName: String, initialLocation: CLLocation? = nil) {
         _creatingSessionFlowContinues = .init(projectedValue: creatingSessionFlowContinues)
         self.sessionName = sessionName
+        self.initialLocation = initialLocation
     }
 
     var body: some View {
@@ -108,11 +110,21 @@ struct ConfirmCreatingSessionView: View {
                 ZStack {
                     if sessionContext.sessionType == .mobile {
                         if !sessionContext.locationless {
-                            CreatingSessionMapView(isMyLocationEnabled: true)
+                            _MapView(path: [],
+                                     type: .normal,
+                                     trackingStyle: .user,
+                                     userIndicatorStyle: .standard,
+                                     locationTracker: MapLocationTrackerAdapter(locationTracker),
+                                     markers: [])
                         }
                     } else if !(sessionContext.isIndoor ?? false) {
-                        CreatingSessionMapView(isMyLocationEnabled: false, startingLocation: sessionContext.startingLocation)
-                            .disabled(true)
+                        _MapView(path: [],
+                                 type: .normal,
+                                 trackingStyle: .none,
+                                 userIndicatorStyle: .none,
+                                 locationTracker: ConstantTracker(location: initialLocation!),
+                                 markers: [])
+                        .disabled(true)
                         // It needs to be disabled to prevent user interaction (swiping map) because it is only conformation screen
                         dot
                     }

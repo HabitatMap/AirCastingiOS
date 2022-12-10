@@ -19,18 +19,26 @@ struct GridCalculator {
         self.latGridSize = latGridSize
     }
     
+    // * *
+    // + *
     func southWestLatLng() -> CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: southLatitude(), longitude: westLongitude())
     }
     
+    // * *
+    // * +
     func southEastLatLng() -> CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: southLatitude(), longitude: eastLongitude())
     }
     
+    // * +
+    // * *
     func northEastLatLng() -> CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: northLatitude(), longitude: eastLongitude())
     }
     
+    // + *
+    // * *
     func northWestLatLng() -> CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: northLatitude(), longitude: westLongitude())
     }

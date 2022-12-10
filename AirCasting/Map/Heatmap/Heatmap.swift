@@ -101,7 +101,7 @@ struct Heatmap {
                 return (middleX + 1, middleY + 1)
             }
         }
-        // if this is the last square checked and point is not in its bounds, return null
+        // if this is the last square checked and point is not in its bounds, return nil
         if (indexXstart == indexXend && indexYstart == indexYend) {
             return nil
         }
@@ -118,7 +118,7 @@ struct Heatmap {
             return nil
         }
         
-        if  let middleLon = middleLon {
+        if let middleLon = middleLon {
             let longitude = pathPoint.location.longitude
             if (longitude >= middleLon) {
                 newIndexXstart = middleX + 1
@@ -127,7 +127,7 @@ struct Heatmap {
             }
         }
         
-        if  let middleLat = middleLat {
+        if let middleLat = middleLat {
             let latitude = pathPoint.location.latitude
             if (latitude >= middleLat) {
                 newIndexYstart = middleY + 1

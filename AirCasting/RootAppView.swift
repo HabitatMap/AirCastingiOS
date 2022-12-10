@@ -16,7 +16,7 @@ struct RootAppView: View {
     @StateObject private var signInPersistanceObserved = SignInPersistance.shared
     
     var body: some View {
-        ZStack {
+        ZStack {            
             if userAuthenticationSession.isLoggedIn && userState.currentState != .loggingOut {
                 MainAppView()
                     .onAppear {
