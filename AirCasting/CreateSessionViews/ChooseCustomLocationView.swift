@@ -43,6 +43,11 @@ struct ChooseCustomLocationView: View {
             PlacePicker(service: ChooseLocationPickerService(address: $locationName,
                                                              location: $location))
         })
+        .onDisappear {
+            // On locationTracker init, AppLocationTracker starts monitoring
+            // here we finish the process as its deinit is not working
+            AppLocationTracker.stop()
+        }
         .padding()
     }
 
