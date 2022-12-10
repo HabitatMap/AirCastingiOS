@@ -111,6 +111,15 @@ struct InAppAlerts {
                   ])
     }
     
+    static func noStreamsAlert() -> AlertInfo {
+        AlertInfo(title: Strings.SessionShare.noStreamsTitle,
+                  message: Strings.SessionShare.noStreamsMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: nil)
+                  ])
+    }
+    
     static func shareFileRequestSent() -> AlertInfo {
         AlertInfo(
             title: Strings.SessionHeaderView.shareFileAlertTitle,
@@ -152,10 +161,28 @@ struct InAppAlerts {
         )
     }
     
-    static func cannotReconnectSession(sessionName: String?) -> AlertInfo {
+    static func anotherSessionInProgress() -> AlertInfo {
         AlertInfo(
-            title: Strings.SessionHeaderView.cannotReconnectAlertTitle,
-            message: Strings.SessionHeaderView.cannotReconnectAlertMessage,
+            title: Strings.ReconnectSessionCardView.failedTitle,
+            message: Strings.ReconnectSessionCardView.anotherSessionMessage,
+            buttons: [.default(title: Strings.Commons.gotIt,
+                         action: nil)]
+        )
+    }
+    
+    static func failedToDiscoverDevice() -> AlertInfo {
+        AlertInfo(
+            title: Strings.ReconnectSessionCardView.failedTitle,
+            message: Strings.ReconnectSessionCardView.deviceNotDiscoveredMessage,
+            buttons: [.default(title: Strings.Commons.gotIt,
+                         action: nil)]
+        )
+    }
+    
+    static func failedToConnectWithDevice() -> AlertInfo {
+        AlertInfo(
+            title: Strings.ReconnectSessionCardView.failedTitle,
+            message: Strings.ReconnectSessionCardView.connectionFailureMessage,
             buttons: [.default(title: Strings.Commons.gotIt,
                          action: nil)]
         )
@@ -340,7 +367,8 @@ struct InAppAlerts {
     
     static func thresholdsValuesSettingsWarning() -> AlertInfo {
         AlertInfo(
-            title: Strings.InAppAlerts.thresholdsValuesSettingsTitle, message: Strings.InAppAlerts.thresholdsValuesSettingsMessage,
+            title: Strings.InAppAlerts.thresholdsValuesSettingsTitle,
+            message: Strings.InAppAlerts.thresholdsValuesSettingsMessage,
             buttons: [
                 .default(title: Strings.Commons.gotIt,
                          action: nil),
@@ -350,7 +378,8 @@ struct InAppAlerts {
     
     static func logoutWarningAlert(action: @escaping (() -> Void)) -> AlertInfo {
         AlertInfo(
-            title: Strings.InAppAlerts.logoutWarningTitle, message: Strings.InAppAlerts.logoutWarningMessage,
+            title: Strings.InAppAlerts.logoutWarningTitle,
+            message: Strings.InAppAlerts.logoutWarningMessage,
             buttons: [
                 .default(title: Strings.InAppAlerts.logoutWarningConfirmButton,
                          action: action),
@@ -359,7 +388,7 @@ struct InAppAlerts {
         )
     }
     
-    static func genericErrorAlert(action: @escaping (() -> Void)) -> AlertInfo {
+    static func genericErrorAlert(action: (() -> Void)? = nil) -> AlertInfo {
         AlertInfo(
             title: Strings.InAppAlerts.genericErrorAlertTitle, message: Strings.InAppAlerts.genericErrorAlertMessage,
             buttons: [

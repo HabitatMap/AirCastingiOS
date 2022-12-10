@@ -168,6 +168,10 @@ struct Strings {
                                                                      comment: "")
         static let linkSharingAlertMessage: String = NSLocalizedString("Try again later",
                                                                        comment: "")
+        static let noStreamsTitle: String = NSLocalizedString("No streams available",
+                                                              comment: "")
+        static let noStreamsMessage: String = NSLocalizedString("Please, try again once streams show up.",
+                                                              comment: "")
         static let emailSharingAlertTitle: String = NSLocalizedString("Request failed",
                                                                       comment: "")
         static let emailSharingAlertMessage: String = NSLocalizedString("Please try again later",
@@ -799,12 +803,17 @@ struct Strings {
         static let following: String = NSLocalizedString("Following", comment: "")
     }
     
+    enum SessionListView {
+        static let downloading: String = NSLocalizedString("Downloading...",
+                                                             comment: "")
+    }
+    
     enum Chart {
         static let emptyChartMessage = NSLocalizedString("Waiting for the first average value", comment: "")
     }
 
     enum RefreshControl {
-        static let progressViewTest: String = NSLocalizedString("Syncing...",
+        static let progressViewText: String = NSLocalizedString("Syncing...",
                                                                 comment: "")
     }
     
@@ -826,7 +835,19 @@ struct Strings {
                                                    comment: "")
         static let reconnectLabel = NSLocalizedString("Reconnect",
                                                                 comment: "")
+        static let connectingLabel = NSLocalizedString("Connecting...",
+                                                                comment: "")
+        static let connectedLabel = NSLocalizedString("Finalizing...",
+                                                                comment: "")
         static let finishSessionLabel = NSLocalizedString("Finish session",
+                                                                    comment: "")
+        static let failedTitle = NSLocalizedString("Failed to reconnect",
+                                                                    comment: "")
+        static let anotherSessionMessage = NSLocalizedString("There is another mobile session in progress. Finish it in order to reconnect.",
+                                                                    comment: "")
+        static let deviceNotDiscoveredMessage = NSLocalizedString("It seems your device is not turned on or it is too far from your phone. Make sure your AirBeam is turned on and close to your phone and try again.",
+                                                                    comment: "")
+        static let connectionFailureMessage = NSLocalizedString("Something interrupted the connection with the devcie. Please toggle power on your device and try again.",
                                                                     comment: "")
     }
     

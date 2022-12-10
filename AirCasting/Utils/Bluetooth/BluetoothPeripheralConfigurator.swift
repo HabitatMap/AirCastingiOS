@@ -4,7 +4,7 @@
 import Foundation
 
 protocol BluetoothPeripheralConfigurator {
-    func sendMessage(data: Data, to device: NewBluetoothManager.BluetoothDevice, serviceID: String, characteristicID: String, completion: @escaping NewBluetoothManager.writingValueCallback)
+    func sendMessage(data: Data, to device: any BluetoothDevice, serviceID: String, characteristicID: String, completion: @escaping BluetoothManager.writingValueCallback) throws
 }
 
-extension NewBluetoothManager: BluetoothPeripheralConfigurator {}
+extension BluetoothManager: BluetoothPeripheralConfigurator {}

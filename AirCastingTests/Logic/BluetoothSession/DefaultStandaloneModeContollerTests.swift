@@ -8,76 +8,30 @@ import Combine
 @testable import AirCasting
 
 final class DefaultStandaloneModeContollerTests: ACTestCase {
-    let sut = DefaultStandaloneModeContoller()
+    lazy var sut = DefaultStandaloneModeContoller()
     var activeSessionProvider = ActiveMobileSessionProvidingServiceMock()
-    var locationTracker = LocationTrackerMock()
-    var storage = MobileSessionStorageMock()
-    
+    var sessionRecordingController = BluetoothSessionRecordingControllerMock()
+    var storage = MobileSessionFinishingStorageMock()
+
     override func setUp() {
         super.setUp()
-        Resolver.test.register { self.locationTracker as LocationTracker }
-        Resolver.test.register { self.storage as MobileSessionStorage }
+        Resolver.test.register { self.sessionRecordingController as BluetoothSessionRecordingController }
+        Resolver.test.register { self.storage as MobileSessionFinishingStorage }
         Resolver.test.register { self.activeSessionProvider as ActiveMobileSessionProvidingService }
     }
-    
-    func TOBEDONEtest_whenThereIsActiveSession_changesSessionStatusToDisconnected() throws {
+
+    func test_whenThereIsActiveSessionWithLocation_stopRecordingSession() throws {
+        activeSessionProvider.setActiveSession(session: Session.mobileAirBeamMock, device: BluetoothDeviceMock(name: "Device", uuid: "1234"))
         XCTAssertNotNil(activeSessionProvider.activeSession)
         sut.moveActiveSessionToStandaloneMode()
-        XCTAssertEqual([SessionStatus.DISCONNECTED], storage.callHistory)
+        XCTAssertEqual([BluetoothSessionRecordingControllerMock.HistoryItem.stop(uuid: Session.mobileAirBeamMock.uuid)], sessionRecordingController.callsHistory)
+        XCTAssertEqual([SessionStatus.DISCONNECTED], storage.hiddenStorage.callHistory)
     }
-    
-    func TOBEDONEtest_whenThereIsActiveSessionWithLocation_stopLocationTracking() throws {
-        XCTAssertNotNil(activeSessionProvider.activeSession)
-        sut.moveActiveSessionToStandaloneMode()
-        XCTAssertEqual([LocationTrackerMock.HistoryItem.stop], locationTracker.callHistory)
-    }
-    
-    func TOBEDONEtest_whenThereIsActiveSession_clearActiveSession() throws {
-        XCTAssertNotNil(activeSessionProvider.activeSession)
-        sut.moveActiveSessionToStandaloneMode()
-        XCTAssertNil(activeSessionProvider.activeSession)
-    }
-    
+
     func test_whenThereIsNoActiveSession_doesntDoAnything() throws {
         activeSessionProvider.clearActiveSession()
         sut.moveActiveSessionToStandaloneMode()
-        XCTAssertEqual([], locationTracker.callHistory)
-        XCTAssertEqual([], storage.callHistory)
+        XCTAssertEqual([], sessionRecordingController.callsHistory)
         XCTAssertNil(activeSessionProvider.activeSession)
     }
-}
-
-class ActiveMobileSessionProvidingServiceMock: ActiveMobileSessionProvidingService {
-    private(set) var activeSession: MobileSession?
-    
-    func setActiveSession(session: Session, device: NewBluetoothManager.BluetoothDevice) {
-        activeSession = MobileSession(device: device, session: session)
-    }
-    
-    func clearActiveSession() {
-        activeSession = nil
-    }
-}
-
-class LocationTrackerMock: LocationTracker {
-    enum HistoryItem {
-        case start
-        case stop
-    }
-    var callHistory: [HistoryItem] = []
-    var location: CurrentValueSubject<CLLocation?, Never> = .init(nil)
-    func start() {
-        callHistory.append(.start)
-    }
-    func stop() {
-        callHistory.append(.start)
-    }
-}
-
-class MobileSessionStorageMock: MobileSessionStorage {
-    var callHistory: [SessionStatus] = []
-    func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) {
-        callHistory.append(sessionStatus)
-    }
-    func updateSessionEndtime(_ endTime: Date, for uuid: AirCasting.SessionUUID) { }
 }

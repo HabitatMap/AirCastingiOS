@@ -10,7 +10,7 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
         case invalidCreateSessionContext(CreateSessionContext)
     }
     @Injected private var userAuthenticationSession: UserAuthenticationSession
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var persistence: SessionCreatingStorage
     @Injected private var uiStore: UIStorage
     private let createSessionService: CreateSessionAPIService
     
@@ -71,11 +71,11 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                                                     longitude: sessionContext.startingLocation?.longitude)
         createSessionService.createEmptyFixedWifiSession(input: .init(session: params,
                                                                       compression: true),
-                                                         completion: { [measurementStreamStorage] result in
+                                                         completion: { [persistence] result in
                                                             DispatchQueue.main.async {
                                                                 switch result {
                                                                 case .success(let output):
-                                                                    measurementStreamStorage.accessStorage { storage in
+                                                                    persistence.accessStorage { storage in
                                                                         do {
                                                                             let sessionWithURL = session.withUrlLocation(output.location)
                                                                             try storage.createSession(sessionWithURL)

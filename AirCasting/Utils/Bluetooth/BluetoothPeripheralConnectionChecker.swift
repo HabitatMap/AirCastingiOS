@@ -4,7 +4,7 @@
 import Foundation
 
 protocol BluetoothPeripheralConnectionChecker {
-    func isDeviceConnected(device: NewBluetoothManager.BluetoothDevice) -> Bool
+    func isDeviceConnected(device: any BluetoothDevice) throws -> Bool
 }
 
-extension NewBluetoothManager: BluetoothPeripheralConnectionChecker {}
+extension BluetoothManager: BluetoothPeripheralConnectionChecker {}

@@ -30,8 +30,8 @@ enum AirBeamServicesConnectionResult: Equatable {
 }
 
 protocol ConnectingAirBeamServices {
-    func connect(to device: NewBluetoothManager.BluetoothDevice, timeout: TimeInterval, completion: @escaping (AirBeamServicesConnectionResult) -> Void)
-    func disconnect(from device: NewBluetoothManager.BluetoothDevice)
+    func connect(to device: any BluetoothDevice, timeout: TimeInterval, completion: @escaping (AirBeamServicesConnectionResult) -> Void)
+    func disconnect(from device: any BluetoothDevice)
 }
 
 class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
@@ -40,37 +40,45 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
     private var connectionToken: AnyObject?
     private var airBeamCharacteristics = ["FFDE", "FFDF", "FFE1", "FFE3", "FFE4", "FFE5", "FFE6"]
 
-    func connect(to device: NewBluetoothManager.BluetoothDevice, timeout: TimeInterval, completion: @escaping (AirBeamServicesConnectionResult) -> Void) {
+    func connect(to device: any BluetoothDevice, timeout: TimeInterval, completion: @escaping (AirBeamServicesConnectionResult) -> Void) {
         Log.info("Starting Airbeam connection")
-        btManager.connect(to: device, timeout: timeout) { result in
-            do {
-                _ = try result.get()
-                self.btManager.discoverCharacteristics(for: device, timeout: timeout) { characteristicsResult in
-                    switch characteristicsResult {
-                    case .success(let characteristics):
-                        completion(self.isCompatibile(characteristics.map(\.UUID)) ? .success : .incompatibleDevice)
-                    case .failure(let error):
-                        Log.error("Failed to discover characteristics: \(error)")
-                        completion(.timeout)
+        do {
+            try btManager.connect(to: device, timeout: timeout) { result in
+                do {
+                    _ = try result.get()
+                    try self.btManager.discoverCharacteristics(for: device, timeout: timeout) { characteristicsResult in
+                        switch characteristicsResult {
+                        case .success(let characteristics):
+                            completion(self.isCompatibile(characteristics.map(\.UUID)) ? .success : .incompatibleDevice)
+                        case .failure(let error):
+                            Log.error("Failed to discover characteristics: \(error)")
+                            completion(.timeout)
+                        }
                     }
+                } catch let bluetoothError as BluetoothManager.BluetoothDriverError {
+                    switch bluetoothError {
+                    case .timeout:
+                        completion(.timeout)
+                    case .deviceBusy:
+                        completion(.deviceBusy)
+                    case .unknown:
+                        completion(.unknown(nil))
+                    }
+                } catch {
+                    completion(.unknown(error))
                 }
-            } catch let bluetoothError as NewBluetoothManager.BluetoothDriverError {
-                switch bluetoothError {
-                case .timeout:
-                    completion(.timeout)
-                case .deviceBusy:
-                    completion(.deviceBusy)
-                case .unknown:
-                    completion(.unknown(nil))
-                }
-            } catch {
-                completion(.unknown(error))
             }
+        } catch {
+            completion(.unknown(error))
         }
     }
     
-    func disconnect(from device: NewBluetoothManager.BluetoothDevice) {
-        btManager.disconnect(from: device)
+    func disconnect(from device: any BluetoothDevice) {
+        do {
+            try btManager.disconnect(from: device)
+        } catch {
+            Log.error("Failed to disconnect: \(error)")
+        }
     }
     
     private func isCompatibile(_ uuids: [String]) -> Bool {

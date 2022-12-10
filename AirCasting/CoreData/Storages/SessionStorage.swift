@@ -9,6 +9,7 @@ protocol SessionStorage {
 
 protocol SessionStorageContextUpdate {
     func clearBluetoothPeripheralUUID(_ sessionUUID: SessionUUID) throws
+    func getExistingSession(with sessionUUID: SessionUUID) throws -> SessionEntity
     func save() throws
 }
 
@@ -22,7 +23,7 @@ final class CoreDataSessionStorage: SessionStorage {
         self.context = context
     }
     
-    /// All actions performed on CoreDataMeasurementStreamStorage must be performed
+    /// All actions performed on CoreDataSessionStorage must be performed
     /// within a block passed to this methood.
     /// This ensures thread-safety by dispatching all calls to the queue owned by the NSManagedObjectContext.
     func accessStorage(_ task: @escaping(HiddenCoreDataSessionStorage) -> Void) {
@@ -45,6 +46,11 @@ final class HiddenCoreDataSessionStorage: SessionStorageContextUpdate {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         guard let bluetoothConnection = sessionEntity.bluetoothConnection else { return }
         bluetoothConnection.peripheralUUID = ""
+    }
+    
+    func getExistingSession(with sessionUUID: SessionUUID) throws -> SessionEntity {
+        let session = try context.existingSession(uuid: sessionUUID)
+        return session
     }
 
     func save() throws {

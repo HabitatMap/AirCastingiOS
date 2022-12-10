@@ -32,7 +32,16 @@
 		3320F301292698FD00EFFB2D /* DefaultStandaloneModeContollerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F300292698FD00EFFB2D /* DefaultStandaloneModeContollerTests.swift */; };
 		3320F30329269A5400EFFB2D /* SessionManagingReconnectionControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F30229269A5400EFFB2D /* SessionManagingReconnectionControllerTests.swift */; };
 		3320F30929269AB000EFFB2D /* MobileAirBeamSessionRecordingControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F30829269AB000EFFB2D /* MobileAirBeamSessionRecordingControllerTests.swift */; };
-		3320F3102927E32100EFFB2D /* MobileSessionStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F30F2927E32100EFFB2D /* MobileSessionStorage.swift */; };
+		3320F3102927E32100EFFB2D /* MobileSessionFinishingStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320F30F2927E32100EFFB2D /* MobileSessionFinishingStorage.swift */; };
+		332B993D2937B37000C0D15D /* SessionDeletingStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332B993C2937B37000C0D15D /* SessionDeletingStorage.swift */; };
+		332B993F2937B96C00C0D15D /* SDSyncMeasurementsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332B993E2937B96C00C0D15D /* SDSyncMeasurementsStorage.swift */; };
+		332B99412937C39100C0D15D /* MobileSessionRecordingStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332B99402937C39100C0D15D /* MobileSessionRecordingStorage.swift */; };
+		332B99432938BFB000C0D15D /* SessionCreatingStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332B99422938BFB000C0D15D /* SessionCreatingStorage.swift */; };
+		332B99452938D54A00C0D15D /* SessionFollowingStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332B99442938D54A00C0D15D /* SessionFollowingStorage.swift */; };
+		332B99472938D7DF00C0D15D /* SessionEditingStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332B99462938D7DF00C0D15D /* SessionEditingStorage.swift */; };
+		332B99492938DA4A00C0D15D /* SyncingMeasurementsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332B99482938DA4A00C0D15D /* SyncingMeasurementsStorage.swift */; };
+		332B994B293A427B00C0D15D /* SessionTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332B994A293A427B00C0D15D /* SessionTimeView.swift */; };
+		332BA32B293E181F000BA5F0 /* BluetoothSessionRecordingControllerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332BA32A293E181F000BA5F0 /* BluetoothSessionRecordingControllerMock.swift */; };
 		332F521425FA38430047236D /* MicrophoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332F521325FA38430047236D /* MicrophoneManager.swift */; };
 		334062442816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */; };
 		33406247281821FA004DA4DA /* ExternalSessionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33406246281821FA004DA4DA /* ExternalSessionsStore.swift */; };
@@ -80,7 +89,9 @@
 		3392B3FE28A3D5D000432B92 /* FetchThresholdAlertsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3392B3FD28A3D5D000432B92 /* FetchThresholdAlertsService.swift */; };
 		3397C81F2787024C0050B333 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3397C81E2787024C0050B333 /* UserDefaults.swift */; };
 		3399394D27DA1722006144AF /* SingleSessionDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3399394C27DA1722006144AF /* SingleSessionDownloader.swift */; };
+		339AC2902934DEBE0083D8FF /* SessionNotesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339AC28F2934DEBE0083D8FF /* SessionNotesStorage.swift */; };
 		339BF3E127D231F000BBCB23 /* StaticSessionHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339BF3E027D231F000BBCB23 /* StaticSessionHeaderViewModel.swift */; };
+		339E1A24292F9A7D003910A5 /* UserTriggeredReconnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339E1A23292F9A7D003910A5 /* UserTriggeredReconnectionController.swift */; };
 		33A7FF1A27C5115700A138D6 /* CompleteScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A7FF1927C5115700A138D6 /* CompleteScreen.swift */; };
 		33A7FF1D27C511A200A138D6 /* CompleteScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A7FF1C27C511A200A138D6 /* CompleteScreenViewModel.swift */; };
 		33A7FF2127C5160A00A138D6 /* StaticSessionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A7FF2027C5160A00A138D6 /* StaticSessionHeader.swift */; };
@@ -104,11 +115,14 @@
 		33F604B12824180900B48C63 /* ExternalSessionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F604B02824180900B48C63 /* ExternalSessionHeader.swift */; };
 		33F82FC227F60498001654D8 /* ThresholdsValue+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F82FC127F60498001654D8 /* ThresholdsValue+Color.swift */; };
 		33F87611286343D70073A3D4 /* DownloadableImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F87610286343D70073A3D4 /* DownloadableImage.swift */; };
+		33F96EA8293E7F4F00FE7F0A /* BluetoothDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F96EA7293E7F4F00FE7F0A /* BluetoothDevice.swift */; };
+		33F96EAA293F846B00FE7F0A /* BluetoothDeviceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F96EA9293F846B00FE7F0A /* BluetoothDeviceMock.swift */; };
+		33F96EAC293F86F000FE7F0A /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F96EAB293F86F000FE7F0A /* Session.swift */; };
+		33F96EAE294090C500FE7F0A /* MobileSessionFinishingStorageMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F96EAD294090C500FE7F0A /* MobileSessionFinishingStorageMock.swift */; };
 		33FD502227A144B300162384 /* SingleMeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD502127A144B300162384 /* SingleMeasurementView.swift */; };
 		4F15548B263C44AF00FF3208 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F15548A263C44AF00FF3208 /* Session.swift */; };
 		4F15548F263C819C00FF3208 /* MeasurementEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F15548E263C819C00FF3208 /* MeasurementEntity.swift */; };
 		4F1D57D926454E3700F250AC /* MeasurementStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F1D57D826454E3700F250AC /* MeasurementStream.swift */; };
-		4F2D84EB2647DBE0003D9ED5 /* MeasurementStreamStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F2D84EA2647DBE0003D9ED5 /* MeasurementStreamStorage.swift */; };
 		4F3CDF222652B58100596CD3 /* Measurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3CDF212652B58100596CD3 /* Measurement.swift */; };
 		4F5D3F6F262C862E003AD82E /* KeychainStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5D3F6E262C862E003AD82E /* KeychainStorage.swift */; };
 		4F5D3F73262C91C6003AD82E /* UserAuthenticationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5D3F72262C91C6003AD82E /* UserAuthenticationSession.swift */; };
@@ -329,7 +343,7 @@
 		B34BB2EB28AD0BCE009E5927 /* MicrophoneManualCalibrationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34BB2EA28AD0BCE009E5927 /* MicrophoneManualCalibrationViewModelTests.swift */; };
 		B34BB2EF28AD200D009E5927 /* AlertInfo+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34BB2EE28AD200D009E5927 /* AlertInfo+Equatable.swift */; };
 		B34D4648275B12A000194E51 /* CrashlyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34D4647275B12A000194E51 /* CrashlyticsLogger.swift */; };
-		B34F2FF52909609A0070C446 /* NewBluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F2FF42909609A0070C446 /* NewBluetoothManager.swift */; };
+		B34F2FF52909609A0070C446 /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F2FF42909609A0070C446 /* BluetoothManager.swift */; };
 		B34F2FF7290960BF0070C446 /* BluetoothCommunicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F2FF6290960BF0070C446 /* BluetoothCommunicator.swift */; };
 		B35A09A12845615F00F9837B /* UnitFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B35A09A02845615F00F9837B /* UnitFormatter.swift */; };
 		B35C190628B67D600097DC7C /* CrashlyticsErrorLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B35C190528B67D600097DC7C /* CrashlyticsErrorLogger.swift */; };
@@ -607,7 +621,16 @@
 		3320F300292698FD00EFFB2D /* DefaultStandaloneModeContollerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultStandaloneModeContollerTests.swift; sourceTree = "<group>"; };
 		3320F30229269A5400EFFB2D /* SessionManagingReconnectionControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManagingReconnectionControllerTests.swift; sourceTree = "<group>"; };
 		3320F30829269AB000EFFB2D /* MobileAirBeamSessionRecordingControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAirBeamSessionRecordingControllerTests.swift; sourceTree = "<group>"; };
-		3320F30F2927E32100EFFB2D /* MobileSessionStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSessionStorage.swift; sourceTree = "<group>"; };
+		3320F30F2927E32100EFFB2D /* MobileSessionFinishingStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSessionFinishingStorage.swift; sourceTree = "<group>"; };
+		332B993C2937B37000C0D15D /* SessionDeletingStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDeletingStorage.swift; sourceTree = "<group>"; };
+		332B993E2937B96C00C0D15D /* SDSyncMeasurementsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncMeasurementsStorage.swift; sourceTree = "<group>"; };
+		332B99402937C39100C0D15D /* MobileSessionRecordingStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSessionRecordingStorage.swift; sourceTree = "<group>"; };
+		332B99422938BFB000C0D15D /* SessionCreatingStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCreatingStorage.swift; sourceTree = "<group>"; };
+		332B99442938D54A00C0D15D /* SessionFollowingStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionFollowingStorage.swift; sourceTree = "<group>"; };
+		332B99462938D7DF00C0D15D /* SessionEditingStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionEditingStorage.swift; sourceTree = "<group>"; };
+		332B99482938DA4A00C0D15D /* SyncingMeasurementsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncingMeasurementsStorage.swift; sourceTree = "<group>"; };
+		332B994A293A427B00C0D15D /* SessionTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTimeView.swift; sourceTree = "<group>"; };
+		332BA32A293E181F000BA5F0 /* BluetoothSessionRecordingControllerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothSessionRecordingControllerMock.swift; sourceTree = "<group>"; };
 		332F521325FA38430047236D /* MicrophoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManager.swift; sourceTree = "<group>"; };
 		334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLocationlessSessionViewModel.swift; sourceTree = "<group>"; };
 		3340624528181376004DA4DA /* AirCasting v5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v5.xcdatamodel"; sourceTree = "<group>"; };
@@ -657,7 +680,9 @@
 		3392B3FD28A3D5D000432B92 /* FetchThresholdAlertsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchThresholdAlertsService.swift; sourceTree = "<group>"; };
 		3397C81E2787024C0050B333 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		3399394C27DA1722006144AF /* SingleSessionDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSessionDownloader.swift; sourceTree = "<group>"; };
+		339AC28F2934DEBE0083D8FF /* SessionNotesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionNotesStorage.swift; sourceTree = "<group>"; };
 		339BF3E027D231F000BBCB23 /* StaticSessionHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticSessionHeaderViewModel.swift; sourceTree = "<group>"; };
+		339E1A23292F9A7D003910A5 /* UserTriggeredReconnectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTriggeredReconnectionController.swift; sourceTree = "<group>"; };
 		33A7FF1927C5115700A138D6 /* CompleteScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteScreen.swift; sourceTree = "<group>"; };
 		33A7FF1C27C511A200A138D6 /* CompleteScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteScreenViewModel.swift; sourceTree = "<group>"; };
 		33A7FF2027C5160A00A138D6 /* StaticSessionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticSessionHeader.swift; sourceTree = "<group>"; };
@@ -682,13 +707,16 @@
 		33F604B02824180900B48C63 /* ExternalSessionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalSessionHeader.swift; sourceTree = "<group>"; };
 		33F82FC127F60498001654D8 /* ThresholdsValue+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThresholdsValue+Color.swift"; sourceTree = "<group>"; };
 		33F87610286343D70073A3D4 /* DownloadableImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadableImage.swift; sourceTree = "<group>"; };
+		33F96EA7293E7F4F00FE7F0A /* BluetoothDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothDevice.swift; sourceTree = "<group>"; };
+		33F96EA9293F846B00FE7F0A /* BluetoothDeviceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothDeviceMock.swift; sourceTree = "<group>"; };
+		33F96EAB293F86F000FE7F0A /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		33F96EAD294090C500FE7F0A /* MobileSessionFinishingStorageMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSessionFinishingStorageMock.swift; sourceTree = "<group>"; };
 		33FD502127A144B300162384 /* SingleMeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleMeasurementView.swift; sourceTree = "<group>"; };
 		3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirCastingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4327910762891E7B1AE9102E /* Pods-AirCastingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCastingTests.debug.xcconfig"; path = "Target Support Files/Pods-AirCastingTests/Pods-AirCastingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		4F15548A263C44AF00FF3208 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		4F15548E263C819C00FF3208 /* MeasurementEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementEntity.swift; sourceTree = "<group>"; };
 		4F1D57D826454E3700F250AC /* MeasurementStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementStream.swift; sourceTree = "<group>"; };
-		4F2D84EA2647DBE0003D9ED5 /* MeasurementStreamStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementStreamStorage.swift; sourceTree = "<group>"; };
 		4F3CDF212652B58100596CD3 /* Measurement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Measurement.swift; sourceTree = "<group>"; };
 		4F5D3F6E262C862E003AD82E /* KeychainStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStorage.swift; sourceTree = "<group>"; };
 		4F5D3F72262C91C6003AD82E /* UserAuthenticationSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAuthenticationSession.swift; sourceTree = "<group>"; };
@@ -914,7 +942,7 @@
 		B34BB2EA28AD0BCE009E5927 /* MicrophoneManualCalibrationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManualCalibrationViewModelTests.swift; sourceTree = "<group>"; };
 		B34BB2EE28AD200D009E5927 /* AlertInfo+Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlertInfo+Equatable.swift"; sourceTree = "<group>"; };
 		B34D4647275B12A000194E51 /* CrashlyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashlyticsLogger.swift; sourceTree = "<group>"; };
-		B34F2FF42909609A0070C446 /* NewBluetoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewBluetoothManager.swift; sourceTree = "<group>"; };
+		B34F2FF42909609A0070C446 /* BluetoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
 		B34F2FF6290960BF0070C446 /* BluetoothCommunicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothCommunicator.swift; sourceTree = "<group>"; };
 		B35A09A02845615F00F9837B /* UnitFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitFormatter.swift; sourceTree = "<group>"; };
 		B35C190528B67D600097DC7C /* CrashlyticsErrorLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashlyticsErrorLogger.swift; sourceTree = "<group>"; };
@@ -1210,7 +1238,7 @@
 		3320F2E22922657C00EFFB2D /* Bluetooth */ = {
 			isa = PBXGroup;
 			children = (
-				B34F2FF42909609A0070C446 /* NewBluetoothManager.swift */,
+				B34F2FF42909609A0070C446 /* BluetoothManager.swift */,
 				B34F2FF6290960BF0070C446 /* BluetoothCommunicator.swift */,
 				B38D06112909769200EF62A5 /* BluetoothDeviceState.swift */,
 				DD55C38F26BAA73F0069838F /* BluetoothPermisionsChecker.swift */,
@@ -1221,6 +1249,7 @@
 				3320F2EF29250CD000EFFB2D /* BluetoothScanner.swift */,
 				3320F2F129250CEC00EFFB2D /* BluetoothStateHandler.swift */,
 				3320F2FD292692F000EFFB2D /* BluetoothPeripheralConnectionChecker.swift */,
+				33F96EA7293E7F4F00FE7F0A /* BluetoothDevice.swift */,
 			);
 			path = Bluetooth;
 			sourceTree = "<group>";
@@ -1236,6 +1265,7 @@
 		3320F2FF2926987600EFFB2D /* BluetoothSession */ = {
 			isa = PBXGroup;
 			children = (
+				332BA329293E1806000BA5F0 /* Mocks */,
 				3320F300292698FD00EFFB2D /* DefaultStandaloneModeContollerTests.swift */,
 				3320F30229269A5400EFFB2D /* SessionManagingReconnectionControllerTests.swift */,
 				3320F30829269AB000EFFB2D /* MobileAirBeamSessionRecordingControllerTests.swift */,
@@ -1252,6 +1282,17 @@
 				B39AAE1B27C0F28F00D2F3C0 /* ChartView.swift */,
 			);
 			name = Chart;
+			sourceTree = "<group>";
+		};
+		332BA329293E1806000BA5F0 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				332BA32A293E181F000BA5F0 /* BluetoothSessionRecordingControllerMock.swift */,
+				33F96EA9293F846B00FE7F0A /* BluetoothDeviceMock.swift */,
+				33F96EAB293F86F000FE7F0A /* Session.swift */,
+				33F96EAD294090C500FE7F0A /* MobileSessionFinishingStorageMock.swift */,
+			);
+			path = Mocks;
 			sourceTree = "<group>";
 		};
 		332F521825FA38B90047236D /* MicrophoneSession */ = {
@@ -1291,14 +1332,21 @@
 		336F86CC282E64B400FEFD61 /* Storages */ = {
 			isa = PBXGroup;
 			children = (
-				4F2D84EA2647DBE0003D9ED5 /* MeasurementStreamStorage.swift */,
 				DD2DDBAD27B5450100807011 /* UIStorage.swift */,
 				FA396CA028A246BA00F8067C /* SessionStorage.swift */,
 				4F8CDBD3265F8EE000976B25 /* SessionDataEraser.swift */,
 				33406246281821FA004DA4DA /* ExternalSessionsStore.swift */,
 				ACDA5EF4285B43FD00A531E9 /* SessionEntityStore.swift */,
 				33ECC0E12901ACFA00A3BC85 /* AveragingServiceStorage.swift */,
-				3320F30F2927E32100EFFB2D /* MobileSessionStorage.swift */,
+				3320F30F2927E32100EFFB2D /* MobileSessionFinishingStorage.swift */,
+				332B99402937C39100C0D15D /* MobileSessionRecordingStorage.swift */,
+				339AC28F2934DEBE0083D8FF /* SessionNotesStorage.swift */,
+				332B993C2937B37000C0D15D /* SessionDeletingStorage.swift */,
+				332B993E2937B96C00C0D15D /* SDSyncMeasurementsStorage.swift */,
+				332B99422938BFB000C0D15D /* SessionCreatingStorage.swift */,
+				332B99442938D54A00C0D15D /* SessionFollowingStorage.swift */,
+				332B99462938D7DF00C0D15D /* SessionEditingStorage.swift */,
+				332B99482938DA4A00C0D15D /* SyncingMeasurementsStorage.swift */,
 			);
 			path = Storages;
 			sourceTree = "<group>";
@@ -1306,6 +1354,7 @@
 		33831B17291548980097020C /* BluetoothSession */ = {
 			isa = PBXGroup;
 			children = (
+				339E1A23292F9A7D003910A5 /* UserTriggeredReconnectionController.swift */,
 				33BA3366266E4B9600899343 /* MobileSession */,
 				33831B18291549A60097020C /* BluetoothSessionRecordingController.swift */,
 				33831B1A29154E7E0097020C /* ReconnectionController.swift */,
@@ -1667,6 +1716,7 @@
 				AC9EB64326ECB0C000B1F780 /* SessionCartViewModel */,
 				DDEE3A492697473C0098CCA9 /* EditSessionButton */,
 				3328F11E266786C600B72D61 /* Chart */,
+				332B994A293A427B00C0D15D /* SessionTimeView.swift */,
 			);
 			path = SessionViews;
 			sourceTree = "<group>";
@@ -3234,13 +3284,17 @@
 				332066A42891730E00798AC1 /* ShareSessionFileTest.swift in Sources */,
 				B33DB5702685FCFB00ED1344 /* SynchronizationTestMocks.swift in Sources */,
 				B3E26A2A26780D96001A8E4C /* SynchronizationControllerTestHelpers.swift in Sources */,
+				33F96EAE294090C500FE7F0A /* MobileSessionFinishingStorageMock.swift in Sources */,
 				B34BB2EB28AD0BCE009E5927 /* MicrophoneManualCalibrationViewModelTests.swift in Sources */,
 				FA5F782F289A8C0E0016DF79 /* MapDownloaderSensorTypeTests.swift in Sources */,
 				B30BAC212694AEAA00AE0476 /* GraphStatsDataSourceTests.swift in Sources */,
 				4FEEAED3262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift in Sources */,
+				33F96EAC293F86F000FE7F0A /* Session.swift in Sources */,
+				33F96EAA293F846B00FE7F0A /* BluetoothDeviceMock.swift in Sources */,
 				FA5F782D289A8BF60016DF79 /* MapDownloaderMeasurementTypeTests.swift in Sources */,
 				B30BABFD2693532700AE0476 /* MeasurementsStatisticsControllerTests.swift in Sources */,
 				FA5F7831289A8C140016DF79 /* MapDownloaderUnitSymbolTests.swift in Sources */,
+				332BA32B293E181F000BA5F0 /* BluetoothSessionRecordingControllerMock.swift in Sources */,
 				B33DB56E2685FB2400ED1344 /* LocalizedErrorStub.swift in Sources */,
 				B34BB2EF28AD200D009E5927 /* AlertInfo+Equatable.swift in Sources */,
 				B33B161027AF0B3600138FFA /* DocumentsFileLoggerStoreTests.swift in Sources */,
@@ -3321,6 +3375,7 @@
 				33F604A728227FD700B48C63 /* ExternalSessionWithStreamsAndMeasurements.swift in Sources */,
 				DD80AE2727BA74A100D9B123 /* SearchPickerService.swift in Sources */,
 				ACBB05102761F1C400A6B3FB /* SDStream.swift in Sources */,
+				332B99452938D54A00C0D15D /* SessionFollowingStorage.swift in Sources */,
 				B3A8CEA628340E2500DC3B38 /* LocationService.swift in Sources */,
 				DD72DC4226A99D5000325FE5 /* ShareSessionView.swift in Sources */,
 				DD49FB6F27904119004A1CA8 /* DatabaseNote.swift in Sources */,
@@ -3379,6 +3434,7 @@
 				AC489B5C2603614E00CEEC48 /* MoreInfoPopupView.swift in Sources */,
 				336A909927A4946400851100 /* ReorderingDashboardViewModel.swift in Sources */,
 				AC25C6D62817DA250091C714 /* LogoutController.swift in Sources */,
+				339AC2902934DEBE0083D8FF /* SessionNotesStorage.swift in Sources */,
 				336F86D0282E98E500FEFD61 /* ExternalSessionMapView.swift in Sources */,
 				33A7FF2127C5160A00A138D6 /* StaticSessionHeader.swift in Sources */,
 				DDD24D9526A8569400D4A327 /* EmailForgotPasswordController.swift in Sources */,
@@ -3404,6 +3460,7 @@
 				334062442816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift in Sources */,
 				B3FFBA2B273DC0690095BA4A /* RefreshControl.swift in Sources */,
 				DDDCEC3B27D0DA7100B3757C /* GeoSquare.swift in Sources */,
+				332B993F2937B96C00C0D15D /* SDSyncMeasurementsStorage.swift in Sources */,
 				332020A8283CF724003E07F3 /* SessionEntity+Sessionable.swift in Sources */,
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
 				AC4A6A6A267CB3890001F639 /* AirCastingGraph.swift in Sources */,
@@ -3419,6 +3476,7 @@
 				3362B4ED25E69987008D61BA /* CreateSessionDetailsView.swift in Sources */,
 				B3EBB10626A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift in Sources */,
 				AC08A662266E2AEC0081697C /* ABMeasurementsView.swift in Sources */,
+				33F96EA8293E7F4F00FE7F0A /* BluetoothDevice.swift in Sources */,
 				335B54BF28BD01C300BA92D2 /* CustomSwipeAction.swift in Sources */,
 				FA4F1B75281809B2002711B4 /* AirBeamStreamSuffixes.swift in Sources */,
 				B3ED03C32729A8E300513522 /* AirCastingNotifications.swift in Sources */,
@@ -3450,7 +3508,6 @@
 				FAB34933281AB208001F6E58 /* URLRequest.swift in Sources */,
 				DDC3E954275E4C3A0066A5DF /* SettingsViewModel.swift in Sources */,
 				33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */,
-				4F2D84EB2647DBE0003D9ED5 /* MeasurementStreamStorage.swift in Sources */,
 				ACC8838C265284AA00C5DB70 /* CoreDataHook.swift in Sources */,
 				AC8CFF5C25E6866100FB2918 /* SignInView.swift in Sources */,
 				DDDA056627DF3B3A00C6B9B9 /* MapDownloaderSearchedStreams.swift in Sources */,
@@ -3531,11 +3588,13 @@
 				AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */,
 				B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */,
 				FAF3B4E128057EC100F0F4B0 /* MeasurementType.swift in Sources */,
+				332B994B293A427B00C0D15D /* SessionTimeView.swift in Sources */,
 				334EF27E28E5CE7E000DD51E /* SDSyncMobileSessionStorage.swift in Sources */,
 				B3C3F8B92695A295003E2CB4 /* StatisticsContainerViewModelable.swift in Sources */,
 				AC32040425CC067D00A68520 /* CheckBox.swift in Sources */,
 				ACBF1AD2286C618F006DF793 /* XMarkButton.swift in Sources */,
 				3375E8D42791EDC50019A5DE /* CLLocationCoordinate2D.swift in Sources */,
+				332B99492938DA4A00C0D15D /* SyncingMeasurementsStorage.swift in Sources */,
 				33050876276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift in Sources */,
 				33F82FC227F60498001654D8 /* ThresholdsValue+Color.swift in Sources */,
 				B34BB2E628ACFC86009E5927 /* MicrophoneManualCalibrationView.swift in Sources */,
@@ -3611,6 +3670,7 @@
 				DDB448282732AA4B00F11340 /* AirCastingGraphSimplifier.swift in Sources */,
 				AC6D567F25AC54A400D221BA /* UIKitChartView.swift in Sources */,
 				ACCEB2222763A2230040140B /* BackendSyncCompletedViewModel.swift in Sources */,
+				332B993D2937B37000C0D15D /* SessionDeletingStorage.swift in Sources */,
 				DD839E15269F33A6006A8625 /* LocationState.swift in Sources */,
 				B3EAF01C27B03CDC00290222 /* ChartDatabaseObserver.swift in Sources */,
 				B3FD77BE267C94AF00E97CC2 /* SessionSynchronizationStore.swift in Sources */,
@@ -3625,6 +3685,7 @@
 				3320F2F029250CD000EFFB2D /* BluetoothScanner.swift in Sources */,
 				DD197FAB27BE448200340672 /* MapDownloaderQuery.swift in Sources */,
 				B367A591274E9EAA004C605B /* DefaultFeatureFlagProvider.swift in Sources */,
+				332B99472938D7DF00C0D15D /* SessionEditingStorage.swift in Sources */,
 				DDDBD48826D3BEC000EAA0A1 /* EmptyFixedDashboardView.swift in Sources */,
 				FA724D912927AC9F00C9EFE3 /* _MapViewThresholdFormatter.swift in Sources */,
 				FAF3B4DD28057A3300F0F4B0 /* SensorType.swift in Sources */,
@@ -3644,11 +3705,12 @@
 				B369CF32275A7A1500B71D81 /* OverridingFeatureFlagProvider.swift in Sources */,
 				338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */,
 				33E63A86288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift in Sources */,
-				B34F2FF52909609A0070C446 /* NewBluetoothManager.swift in Sources */,
+				B34F2FF52909609A0070C446 /* BluetoothManager.swift in Sources */,
 				DD009D662698844A009F0443 /* DeleteView.swift in Sources */,
-				3320F3102927E32100EFFB2D /* MobileSessionStorage.swift in Sources */,
+				3320F3102927E32100EFFB2D /* MobileSessionFinishingStorage.swift in Sources */,
 				DD197FAE27BE857D00340672 /* MapDownloaderSearchedSessions.swift in Sources */,
 				DD197FAE27BE857D00340672 /* MapDownloaderSearchedSessions.swift in Sources */,
+				332B99412937C39100C0D15D /* MobileSessionRecordingStorage.swift in Sources */,
 				B3FD77BA267C94AF00E97CC2 /* SessionSynchronizer.swift in Sources */,
 				B30BAC062694A99300AE0476 /* GraphStatsDataSource.swift in Sources */,
 				DD430B002670BC6F00F1BF2E /* GetStarted.swift in Sources */,
@@ -3704,7 +3766,9 @@
 				DDBA6137276B3AD700E3FEF9 /* AddNoteView.swift in Sources */,
 				B30BAC0B2694A9CB00AE0476 /* StandardStatisticsCalculator.swift in Sources */,
 				B38E6CCE26C5F81B00C21C45 /* MicrophoneSessionStopper.swift in Sources */,
+				339E1A24292F9A7D003910A5 /* UserTriggeredReconnectionController.swift in Sources */,
 				B3EBB10326A05551002BD81F /* ForgotPasswordViewModel.swift in Sources */,
+				332B99432938BFB000C0D15D /* SessionCreatingStorage.swift in Sources */,
 				ACCEB2212763A2230040140B /* SDRestartABViewModel.swift in Sources */,
 				B3FD30B0283180FE00C33656 /* TimerScheduler.swift in Sources */,
 				B34F2FF7290960BF0070C446 /* BluetoothCommunicator.swift in Sources */,
@@ -3932,7 +3996,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -3960,7 +4024,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;
@@ -4048,7 +4112,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;
@@ -4093,7 +4157,7 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
@@ -4112,7 +4176,7 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
@@ -4131,7 +4195,7 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;

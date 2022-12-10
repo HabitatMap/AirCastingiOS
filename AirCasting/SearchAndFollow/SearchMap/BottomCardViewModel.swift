@@ -16,7 +16,7 @@ class BottomCardViewModel: ObservableObject {
     }
     
     func getIsModalScreenPresented() -> Bool { isModalScreenPresented }
-    func setIsModalScreenPresented(using v: Bool) { isModalScreenPresented = v }
+    func setIsModalScreenPresented(using v: Bool) { DispatchQueue.main.async { self.isModalScreenPresented = v } }
     
     func sessionCardTapped() {
         setIsModalScreenPresented(using: true)

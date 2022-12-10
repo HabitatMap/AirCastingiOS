@@ -15,7 +15,7 @@ final class CreateSessionContext: ObservableObject {
     var sessionTags: String?
     var sessionUUID: SessionUUID?
     var sessionType: SessionType?
-    var device: NewBluetoothManager.BluetoothDevice?
+    var device: (any BluetoothDevice)?
     var wifiSSID: String?
     var wifiPassword: String?
     var isIndoor: Bool?

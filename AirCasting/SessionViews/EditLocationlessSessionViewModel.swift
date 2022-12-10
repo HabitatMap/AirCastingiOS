@@ -11,7 +11,7 @@ class EditLocationlessSessionViewModel: EditViewModel {
     @Published var shouldShowError = false
     @Published var shouldDismiss = false
     @Published var alert: AlertInfo?
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var sessionStorage: SessionEditingStorage
     private let sessionUUID: SessionUUID
     
     init(sessionUUID: SessionUUID, sessionName: String, sessionTags: String) {
@@ -27,7 +27,7 @@ class EditLocationlessSessionViewModel: EditViewModel {
         }
         let name = sessionName
         let tags = sessionTags
-        measurementStreamStorage.accessStorage { [weak self] storage in
+        sessionStorage.accessStorage { [weak self] storage in
             guard let self = self else { return }
             do {
                 try storage.updateSessionNameAndTags(name: name,

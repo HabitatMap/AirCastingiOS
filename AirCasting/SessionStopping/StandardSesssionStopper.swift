@@ -15,7 +15,16 @@ class StandardSesssionStopper: SessionStoppable {
     
     func stopSession() {
         Log.verbose("Stopping session with uuid \(uuid.rawValue) using standard session stopper")
-        sessionRecorder.stopRecordingSession(with: uuid)
+        sessionRecorder.stopRecordingSession(with: uuid) {
+            $0.accessStorage {
+                do {
+                    try $0.updateSessionStatus(.FINISHED, for: self.uuid)
+                    try $0.updateSessionEndtime(DateBuilder.getRawDate(), for: self.uuid)
+                } catch {
+                    Log.error("Failed to make changes in database when stopping session")
+                }
+            }
+        }
         self.sessionStorage.accessStorage { storage in
             do {
                 try storage.clearBluetoothPeripheralUUID(self.uuid)

@@ -12,10 +12,14 @@ protocol LogoutController {
 final class DefaultLogoutController: LogoutController {
     @Injected private var sessionSynchronizer: SessionSynchronizer
     @Injected private var removeDataController: RemoveDataController
+    @Injected private var microphoneManager: MicrophoneManager
+    @Injected private var bluetoothSessionRecorder: BluetoothSessionRecordingController
+    @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
 
     private let responseHandler = AuthorizationHTTPResponseHandler()
     
     func logout(onEnd: @escaping () -> Void) throws {
+        finishRecordingActiveSessions()
         if sessionSynchronizer.syncInProgress.value {
             var subscription: AnyCancellable?
             subscription = sessionSynchronizer.syncInProgress.receive(on: DispatchQueue.main).sink { [weak self] value in
@@ -30,5 +34,12 @@ final class DefaultLogoutController: LogoutController {
         sessionSynchronizer.triggerSynchronization(options: [.upload], completion: {
             DispatchQueue.main.async { self.removeDataController.removeData(); onEnd() }
         })
+    }
+    
+    private func finishRecordingActiveSessions() {
+        microphoneManager.stopRecording()
+        guard let activeSessionUUID = activeSessionProvider.activeSession?.session.uuid else { return }
+        // We don't want to save active sessions in the database when the user logs out
+        bluetoothSessionRecorder.stopRecordingSession(with: activeSessionUUID, databaseChange: { _ in })
     }
 }

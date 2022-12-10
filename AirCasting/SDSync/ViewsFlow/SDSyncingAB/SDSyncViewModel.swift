@@ -30,14 +30,14 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     @Published var shouldDismiss: Bool = false
     @Published var alert: AlertInfo?
 
-    private let device: NewBluetoothManager.BluetoothDevice
+    private let device: any BluetoothDevice
     @Injected private var airBeamConnectionController: AirBeamConnectionController
     @Injected private var btConnectionChecker: BluetoothPeripheralConnectionChecker
     @Injected private var sdSyncController: SDSyncController
     private let sessionContext: CreateSessionContext
 
     init(sessionContext: CreateSessionContext,
-         device: NewBluetoothManager.BluetoothDevice) {
+         device: any BluetoothDevice) {
         self.device = device
         self.sessionContext = sessionContext
     }
@@ -70,7 +70,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                 guard let self = self else { return }
                 switch result {
                 case .success():
-                    guard self.btConnectionChecker.isDeviceConnected(device: self.device) else {
+                    guard (try? self.btConnectionChecker.isDeviceConnected(device: self.device)) ?? false else {
                         Log.info("[SD SYNC] Device disconnected. Attempting reconnect")
                         self.reconnectWithAirbeamAndClearCard()
                         return

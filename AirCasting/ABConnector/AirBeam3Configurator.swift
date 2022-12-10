@@ -11,7 +11,7 @@ import Resolver
 
 protocol AirBeamConfigurator {
     func configureMobileSession(location: CLLocationCoordinate2D, completion: @escaping (Result<Void, Error>) -> Void)
-    func configureFixed(uuid: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void)
+    func configureSession(uuid: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void)
     func configureFixedCellularSession(uuid: SessionUUID,
                                        location: CLLocationCoordinate2D,
                                        date: Date,
@@ -32,7 +32,7 @@ struct AirBeam3Configurator: AirBeamConfigurator {
     }
     @Injected private var userAuthenticationSession: UserAuthenticationSession
     @Injected private var btManager: BluetoothPeripheralConfigurator
-    private let device: NewBluetoothManager.BluetoothDevice
+    private let device: any BluetoothDevice
     private let hexMessageBuilder = HexMessagesBuilder()
     private let dateFormatter: DateFormatter = DateFormatters.AirBeam3Configurator.usLocaleFullDateDateFormatter
     
@@ -40,7 +40,7 @@ struct AirBeam3Configurator: AirBeamConfigurator {
     private let configurationCharacteristicUUID = "0000ffde-0000-1000-8000-00805f9b34fb"
     private let serviceUUID = "0000ffdd-0000-1000-8000-00805f9b34fb"
 
-    init(device: NewBluetoothManager.BluetoothDevice) {
+    init(device: any BluetoothDevice) {
         self.device = device
     }
     
@@ -112,7 +112,7 @@ struct AirBeam3Configurator: AirBeamConfigurator {
     
     // To configure fixed session we need to send authMessage first
     // We're generating unique String for session UUID and sending it with users auth token to the AB
-    func configureFixed(uuid: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void) {
+    func configureSession(uuid: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let token = userAuthenticationSession.token else {
             completion(.failure(AirBeam3ConfiguratorError.missingAuthenticationToken))
             return
@@ -194,6 +194,10 @@ private extension AirBeam3Configurator {
     }
     
     private func sendConfigMessage(data: Data, completion: @escaping (Result<Void, Error>) -> Void) {
-        btManager.sendMessage(data: data, to: device, serviceID: serviceUUID, characteristicID: configurationCharacteristicUUID, completion: completion)
+        do {
+            try btManager.sendMessage(data: data, to: device, serviceID: serviceUUID, characteristicID: configurationCharacteristicUUID, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
     }
 }

@@ -17,10 +17,10 @@ protocol BluetoothCommunicator {
     ///   - timeout: a timeout after which the error is produced
     ///   - notify: block called each time characteristic changes (either changes value or throws an error)
     /// - Returns: Opaque token to use when un-registering
-    func subscribeToCharacteristic(for device: NewBluetoothManager.BluetoothDevice,
+    func subscribeToCharacteristic(for device: any BluetoothDevice,
                                    characteristic: CharacteristicUUID,
                                    timeout: TimeInterval?,
-                                   notify: @escaping CharacteristicObserverAction) -> AnyHashable
+                                   notify: @escaping CharacteristicObserverAction) throws -> AnyHashable
     
     /// Removes an entry from observing characteristic
     /// - Parameters:
@@ -31,7 +31,7 @@ protocol BluetoothCommunicator {
 }
 
 extension BluetoothCommunicator {
-    func subscribeToCharacteristic(for device: NewBluetoothManager.BluetoothDevice, characteristic: CharacteristicUUID, notify: @escaping CharacteristicObserverAction) -> AnyHashable {
-        subscribeToCharacteristic(for: device, characteristic: characteristic, timeout: nil, notify: notify)
+    func subscribeToCharacteristic(for device: any BluetoothDevice, characteristic: CharacteristicUUID, notify: @escaping CharacteristicObserverAction) throws -> AnyHashable {
+        try subscribeToCharacteristic(for: device, characteristic: characteristic, timeout: nil, notify: notify)
     }
 }
