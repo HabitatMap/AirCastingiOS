@@ -130,7 +130,6 @@ class MapLocationTrackerAdapter: MapLocationTracker {
         locationTracker.stop()
     }
     
-    
     private struct Stoper: MapLocationTrackerStoper {
         
         let locationTracker: LocationTracker

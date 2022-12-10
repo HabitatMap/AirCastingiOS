@@ -31,7 +31,7 @@ struct SessionMapView: View {
     @Injected private var locationTracker: LocationTracker
     @StateObject private var heatmapContainer = HeatmapContainer()
     
-    enum AirMapSessionType {
+    enum SessionMapSessionType {
         case fixed
         case active
         case other
@@ -149,7 +149,7 @@ struct SessionMapView: View {
         .background(Color.aircastingBackground.ignoresSafeArea())
     }
     
-    private var mapSessionType: Self.AirMapSessionType {
+    private var mapSessionType: Self.SessionMapSessionType {
         if session.isActive {
             return .active
         } else if session.isFixed {
