@@ -131,11 +131,9 @@ struct _MapView: UIViewRepresentable {
         setupMapDelegate(in: mapView, coordinator: context.coordinator)
         
         if isUserPositionTrackingRequired {
-            context.coordinator.trackingToken = locationTracker.startTrackingUserPosition { [weak coord = context.coordinator, weak map = mapView] location in
+            context.coordinator.trackingToken = locationTracker.startTrackingUserPosition { [weak coord = context.coordinator] location in
                 coord?.latestUserLocation = location
                 if stickHardToTheUser { context.coordinator.suspendTracking = false }
-                guard let map, let coord else { return }
-                setupUserIndicatorStyle(with: userIndicatorStyle, in: map, with: coord)
             }
         }
         
