@@ -8,7 +8,6 @@ import CoreLocation
 protocol MeasurementsSavingService {
     func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool)
     func createSession(session: Session, device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void)
-    func changeStatusToRecording(for sessionUUID: SessionUUID)
 }
 
 class DefaultMeasurementsSaver: MeasurementsSavingService {
@@ -60,16 +59,6 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
 
         updateStreams(stream: measurement, sessionUUID: sessionUUID, location: peripheralMeasurementManager.currentLocation, time: peripheralMeasurementManager.currentTime)
         peripheralMeasurementManager.incrementCounter()
-    }
-
-    func changeStatusToRecording(for sessionUUID: SessionUUID) {
-        persistence.accessStorage {
-            do {
-                try $0.updateSessionStatus(.RECORDING, for: sessionUUID)
-            } catch {
-                Log.error("Failed to change session status to recording")
-            }
-        }
     }
 
     private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, location: CLLocationCoordinate2D?, time: Date) {

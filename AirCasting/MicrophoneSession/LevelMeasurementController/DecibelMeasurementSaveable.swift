@@ -37,8 +37,6 @@ final class DecibelMeasurementSaveable: MeasurementSaveable {
                         throw DecibelMeasurementSaveableError.streamNotFound
                     }
                     try storage.addMeasurementValue(value, at: location, toStreamWithID: streamID, on: DateBuilder.getRawDate().currentUTCTimeZoneDate)
-                    guard session.status != .RECORDING else { return }
-                    try storage.updateSessionStatus(.RECORDING, for: session.uuid)
                 } catch {
                     Log.error("Failed sampling measurement: \(error)")
                 }

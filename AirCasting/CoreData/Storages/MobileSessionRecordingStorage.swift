@@ -88,12 +88,20 @@ class DefaultHiddenMobileSessionRecordingStorage: HiddenMobileSessionRecordingSt
     
     private func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws {
         let stream = try context.existingObject(with: id.id) as! MeasurementStreamEntity
-
+        
         let newMeasurement = MeasurementEntity(context: context)
         newMeasurement.location = measurement.location
         newMeasurement.time = measurement.time
         newMeasurement.value = measurement.value
         stream.addToMeasurements(newMeasurement)
+        
+        let session = stream.session
+        
+        // TODO: CHANGE THAT ?
+        // otherwise dormant session status changes to active when syncing measurements
+        if session?.status != .FINISHED {
+            session?.status = .RECORDING
+        }
     }
     
     private func newSessionEntity() -> SessionEntity {
