@@ -10,7 +10,6 @@ class _MapViewThresholdFormatter {
     
     func color(points: [_MapView.PathPoint], threshold: SensorThreshold) -> UIColor {
         let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
-        
         guard let point = points.last else { return .white }
         let measurement = formatter.value(from: point.value)
         return getProperColor(value: measurement, threshold: threshold)

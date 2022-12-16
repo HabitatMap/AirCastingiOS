@@ -37,7 +37,7 @@ struct GridSquare {
         self.polygon = GMSPolygon(path: rect)
     }
     
-    mutating func addMeasurement(_ pathPoint: PathPoint) {
+    mutating func addMeasurement(_ pathPoint: HeatMapPoint) {
         sum += pathPoint.measurement
         number += 1
         calculateAverage()

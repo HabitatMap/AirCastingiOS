@@ -12,7 +12,7 @@ class MapStatsDataSource: MeasurementsStatisticsDataSource, ObservableObject {
     
     var onForceReload: (() -> Void)?
     
-    var visiblePathPoints: [PathPoint]
+    var visiblePathPoints: [_MapView.PathPoint]
     
     init() {
         self.visiblePathPoints = []

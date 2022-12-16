@@ -53,8 +53,12 @@ struct SessionMapView: View {
     private var pathPoints: [_MapView.PathPoint] {
         return selectedStream?.allMeasurements?.compactMap {
             guard let location = $0.location else { return nil }
-            return .init(lat: location.latitude, long: location.longitude, value: $0.value)
+            return .init(lat: location.latitude, long: location.longitude, value: round(getValue(of: $0)))
         } ?? []
+    }
+    
+    private var curentThreshold: SensorThreshold? {
+        thresholds.value.threshold(for: selectedStream?.sensorName ?? "")
     }
 
     var body: some View {
@@ -75,7 +79,7 @@ struct SessionMapView: View {
                                                                                session: session))
             .padding([.bottom, .leading, .trailing])
 
-            if let threshold = thresholds.value.threshold(for: selectedStream?.sensorName ?? "") {
+            if let threshold = curentThreshold {
                 if !showLoadingIndicator {
                     ZStack(alignment: .topLeading) {
                         switch mapSessionType {
@@ -86,17 +90,19 @@ struct SessionMapView: View {
                             _MapView(path: pathPoints,
                                      type: .normal,
                                      trackingStyle: .latestPathPoint,
-                                     userIndicatorStyle: .custom(color: _MapViewThresholdFormatter.shared.color(points: pathPoints, threshold: threshold)),
+                                     userIndicatorStyle: .custom(color: _MapViewThresholdFormatter.shared.color(points: pathPoints,
+                                                                                                                threshold: threshold)),
                                      locationTracker: MapLocationTrackerAdapter(locationTracker),
                                      markers: mapNotesVM.notes.asMapMarkers(with: didTapNote))
-                            .addingOverlay { mapView in overlayHeatMap(on: mapView, threshold: threshold) }
+                            .addingOverlay { mapView in overlayHeatMap(on: mapView) }
                         case .fixed:
                             // - custom dot
                             // - no path drawing
                             _MapView(path: pathPoints,
                                      type: .normal,
                                      trackingStyle: .latestPathPoint,
-                                     userIndicatorStyle: .custom(color: _MapViewThresholdFormatter.shared.color(points: pathPoints, threshold: threshold)),
+                                     userIndicatorStyle: .custom(color: _MapViewThresholdFormatter.shared.color(points: pathPoints,
+                                                                                                                threshold: threshold)),
                                      locationTracker: ConstantTracker(location: pathPoints.last?.location ?? .applePark))
                         case .other:
                             // here only mobileDormant type should be considered
@@ -110,7 +116,7 @@ struct SessionMapView: View {
                                      userIndicatorStyle: .none,
                                      locationTracker: ConstantTracker(location: pathPoints.last?.location ?? .applePark),
                                      markers: mapNotesVM.notes.asMapMarkers(with: didTapNote))
-                            .addingOverlay { mapView in overlayHeatMap(on: mapView, threshold: threshold) }
+                            .addingOverlay { mapView in overlayHeatMap(on: mapView) }
                         }
                         if !(session.type == .mobile && session.isActive == false) {
                             StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
@@ -169,16 +175,24 @@ struct SessionMapView: View {
 
 import GoogleMaps
 fileprivate extension SessionMapView {
-    private func overlayHeatMap(on mapView: GMSMapView, threshold: SensorThreshold) {
+    
+    private var heatmapPoints: [HeatMapPoint] {
+        return selectedStream?.allMeasurements?.compactMap {
+            guard let location = $0.location else { return nil }
+            return .init(location: location, measurement: round(getValue(of: $0)))
+        } ?? []
+    }
+    
+    private func overlayHeatMap(on mapView: GMSMapView) {
         heatmapContainer.heatMap?.remove()
         let mapWidth = mapView.frame.width
         let mapHeight = mapView.frame.height
-        guard mapWidth > 0, mapHeight > 0 else { return }
-        heatmapContainer.heatMap = Heatmap(mapView, sensorThreshold: threshold, mapWidth: Int(mapWidth), mapHeight: Int(mapHeight))
-        heatmapContainer.heatMap?.drawHeatMap(pathPoints: pathPoints.map { .init(location: .init(latitude: $0.lat,
-                                                                                                 longitude: $0.long),
-                                                                                 measurementTime: DateBuilder.distantPast(),
-                                                                                 measurement: $0.value) })
+        guard mapWidth > 0, mapHeight > 0, let threshold = curentThreshold else { return }
+        heatmapContainer.heatMap = Heatmap(mapView,
+                                           sensorThreshold: threshold,
+                                           mapWidth: Int(mapWidth),
+                                           mapHeight: Int(mapHeight))
+        heatmapContainer.heatMap?.drawHeatMap(pathPoints: heatmapPoints)
     }
 }
 
