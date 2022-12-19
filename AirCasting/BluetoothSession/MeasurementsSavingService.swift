@@ -18,6 +18,7 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
 
     class PeripheralMeasurementTimeLocationManager {
         @Injected private var locationTracker: LocationTracker
+        private let calendar = Calendar.current
 
         private(set) var collectedValuesCount: Int = 5
         private(set) var currentTime: Date = DateBuilder.getFakeUTCDate()
@@ -25,11 +26,21 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
 
         func startNewValuesRound(locationless: Bool) {
             currentLocation = !locationless ? locationTracker.location.value?.coordinate : .undefined
-            currentTime = DateBuilder.getFakeUTCDate()
+            getNewTimestamp()
             collectedValuesCount = 0
         }
 
         func incrementCounter() { collectedValuesCount += 1 }
+        
+        private func getNewTimestamp() {
+            let newTime = DateBuilder.getFakeUTCDate()
+            guard newTime > currentTime else {
+                let manuallyIncrementedTime = calendar.date(byAdding: .second, value: 1, to: currentTime)
+                currentTime = manuallyIncrementedTime ?? DateBuilder.getFakeUTCDate()
+                return
+            }
+            currentTime = newTime
+        }
     }
 
     func createSession(session: Session, device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
