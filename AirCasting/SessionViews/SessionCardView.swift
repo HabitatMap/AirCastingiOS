@@ -240,6 +240,7 @@ private extension SessionCardView {
                                   showLoadingIndicator: $showLoadingIndicator,
                                   selectedStream: $selectedStream)
             .foregroundColor(.aircastingDarkGray)
+            .onDisappear { isMapButtonActive = false }
 
          return NavigationLink(destination: mapView,
                                isActive: $isMapButtonActive,
@@ -255,6 +256,7 @@ private extension SessionCardView {
                                    statsContainerViewModel: graphStatsViewModel,
                                    graphStatsDataSource: graphStatsDataSource.dataSource)
              .foregroundColor(.aircastingDarkGray)
+             .onDisappear { isGraphButtonActive = false }
 
          return NavigationLink(destination: graphView,
                                isActive: $isGraphButtonActive,
