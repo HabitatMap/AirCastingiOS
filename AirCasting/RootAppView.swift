@@ -16,7 +16,7 @@ struct RootAppView: View {
     @StateObject private var signInPersistanceObserved = SignInPersistance.shared
     
     var body: some View {
-        ZStack {
+        ZStack {            
             if userAuthenticationSession.isLoggedIn && userState.currentState != .loggingOut {
                 MainAppView()
                     .onAppear {
@@ -40,7 +40,7 @@ struct RootAppView: View {
                 .navigationViewStyle(.stack)
             }
         }
-        .environment(\.managedObjectContext, Resolver.resolve(PersistenceController.self).viewContext) //TODO: Where is this used??
+        .environment(\.managedObjectContext, Resolver.resolve(PersistenceController.self).viewContext) // This is necessary. Otherwise we get following warning: 'Context in environment is not connected to a persistent store coordinator'
         .onAppWentToBackground {
             signInPersistanceObserved.clearSavedStatesWithCredentials()
         }

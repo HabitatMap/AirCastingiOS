@@ -2,7 +2,6 @@
 //
 
 import Foundation
-import CoreBluetooth
 import Resolver
 
 enum ProceedToView {
@@ -23,7 +22,7 @@ class ChooseSessionTypeViewModel: ObservableObject {
     @Published var alert: AlertInfo?
     @Injected private var networkChecker: NetworkChecker
     @Injected private var locationAuthorization: LocationAuthorization
-    @Injected private var bluetoothHandler: BluetoothHandler
+    @Injected private var bluetoothHandler: BluetoothPermisionsChecker
     @InjectedObject private var userSettings: UserSettings
     @Injected private var urlProvider: URLProvider
     private let sessionContext: CreateSessionContext
@@ -36,13 +35,13 @@ class ChooseSessionTypeViewModel: ObservableObject {
         self.sessionContext = sessionContext
     }
     
-    func setSearchAndFollow(using new: Bool) { isSearchAndFollowLinkActive = new }
-    func setInfoPresented(using new: Bool) { isInfoPresented = new }
-    func setStartSync(using new: Bool) { startSync = new }
-    func setPowerABLink(using new: Bool) { isPowerABLinkActive = new }
-    func setBluetoothLink(using new: Bool) { isTurnBluetoothOnLinkActive = new }
-    func setMobileLink(using new: Bool) { isMobileLinkActive = new }
-    func setLocationLink(using new: Bool) { isTurnLocationOnLinkActive = new }
+    func setSearchAndFollow(using new: Bool) { DispatchQueue.main.async { self.isSearchAndFollowLinkActive = new }}
+    func setInfoPresented(using new: Bool) { DispatchQueue.main.async { self.isInfoPresented = new }}
+    func setStartSync(using new: Bool) { DispatchQueue.main.async { self.startSync = new }}
+    func setPowerABLink(using new: Bool) { DispatchQueue.main.async { self.isPowerABLinkActive = new }}
+    func setBluetoothLink(using new: Bool) { DispatchQueue.main.async { self.isTurnBluetoothOnLinkActive = new }}
+    func setMobileLink(using new: Bool) { DispatchQueue.main.async { self.isMobileLinkActive = new } }
+    func setLocationLink(using new: Bool) { DispatchQueue.main.async { self.isTurnLocationOnLinkActive = new }}
     
     func handleMobileSessionState() {
         createNewSession(isSessionFixed: false)

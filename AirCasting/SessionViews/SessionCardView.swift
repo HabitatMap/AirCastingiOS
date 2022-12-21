@@ -29,7 +29,6 @@ struct SessionCardView: View {
     @StateObject private var graphStatsDataSource: ConveringStatisticsDataSourceDecorator<GraphStatsDataSource>
     @StateObject private var graphStatsViewModel: StatisticsContainerViewModel
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
     @Injected private var uiState: SessionCardUIStateHandler
 
     init(session: SessionEntity,
@@ -60,7 +59,7 @@ struct SessionCardView: View {
     }
 
     var body: some View {
-        if session.isInStandaloneMode && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
+        if session.isInStandaloneMode {
             standaloneSessionCard
         } else {
             sessionCard
@@ -118,7 +117,10 @@ struct SessionCardView: View {
     }
 
     var standaloneSessionCard: some View {
-        StandaloneSessionCardView(session: session)
+        if featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
+            return AnyView(StandaloneSessionCardView(session: session))
+        }
+        return AnyView(ReconnectSessionCardView(viewModel: .init(session: session)))
     }
 
     private func selectDefaultStreamIfNeeded(streams: [MeasurementStreamEntity]) {
@@ -224,7 +226,6 @@ private extension SessionCardView {
 
         let controller = MeasurementsStatisticsController(dataSource: dataSource,
                                                           calculator: StandardStatisticsCalculator(),
-                                                          scheduledTimer: ScheduledTimerSetter(),
                                                           desiredStats: MeasurementStatistics.Statistic.allCases,
                                                           computeStatisticsInterval: computeStatisticsInterval)
         let viewModel = StatisticsContainerViewModel(statsInput: controller)
@@ -233,12 +234,13 @@ private extension SessionCardView {
     }
 
     private var mapNavigationLink: some View {
-         let mapView = AirMapView(session: session,
+         let mapView = SessionMapView(session: session,
                                   thresholds: .init(value: thresholds),
                                   statsContainerViewModel: _mapStatsViewModel,
                                   showLoadingIndicator: $showLoadingIndicator,
                                   selectedStream: $selectedStream)
             .foregroundColor(.aircastingDarkGray)
+            .onDisappear { isMapButtonActive = false }
 
          return NavigationLink(destination: mapView,
                                isActive: $isMapButtonActive,
@@ -254,6 +256,7 @@ private extension SessionCardView {
                                    statsContainerViewModel: graphStatsViewModel,
                                    graphStatsDataSource: graphStatsDataSource.dataSource)
              .foregroundColor(.aircastingDarkGray)
+             .onDisappear { isGraphButtonActive = false }
 
          return NavigationLink(destination: graphView,
                                isActive: $isGraphButtonActive,

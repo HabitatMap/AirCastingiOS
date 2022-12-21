@@ -2,6 +2,7 @@
 //
 
 import XCTest
+import Resolver
 @testable import AirCasting
 
 class MeasurementsStatisticsControllerTests: ACTestCase {
@@ -9,6 +10,11 @@ class MeasurementsStatisticsControllerTests: ACTestCase {
     let dataSourceMock = DataSourceMock()
     let calculatorMock = CalculatorMock()
     let timerMock = ScheduledTimerSettableMock()
+    
+    override func setUp() {
+        super.setUp()
+        Resolver.test.register { self.timerMock as ScheduledTimerSettable }
+    }
     
     func test_whenVisibleDataChanges_calculatesOnlyDesiredStats() {
         let desiredStats: [MeasurementStatistics.Statistic] = [.average, .high]
@@ -70,17 +76,20 @@ class MeasurementsStatisticsControllerTests: ACTestCase {
         XCTAssertEqual(calculatorMock.history.first!.measurements, dataSourceMock.visibleMeasurements)
     }
     
-    func test_timerSetup_sets1SecondIntervals() {
-        let _ = controller()
-        XCTAssertEqual(timerMock.latestTimer!, 1.0, accuracy: 0.001)
+    func test_whenContinueousModeIsEnabled_itCreatesATimer() {
+        let controller = controller(interval: 1)
+        controller.continuousModeEnabled = true
+        XCTAssertEqual(outputSpy.history.count, 0)
+        timerMock.fireTimer()
+        XCTAssertEqual(outputSpy.history.count, 1)
     }
     
-    func test_whenTimerFires_itRefreshesData() {
-        let controller = controller()
-        controller.computeStatistics()
-        XCTAssertEqual(outputSpy.history.count, 1)
-        timerMock.fireTimer()
-        XCTAssertEqual(outputSpy.history.count, 2)
+    func test_whenContinueousModeIsDisabled_itDestroysATimer() {
+        let controller = controller(interval: 1)
+        controller.continuousModeEnabled = true
+        XCTAssertEqual(timerMock.invalidationHistory, 0)
+        controller.continuousModeEnabled = false
+        XCTAssertEqual(timerMock.invalidationHistory, 1)
     }
     
     func test_whenDataSourceRequestsForceRefresh_itRefreshesData() {
@@ -93,11 +102,11 @@ class MeasurementsStatisticsControllerTests: ACTestCase {
     
     // MARK: - Private helpers
     
-    private func controller(for stats: [MeasurementStatistics.Statistic] = MeasurementStatistics.Statistic.allCases) -> MeasurementsStatisticsController {
+    private func controller(for stats: [MeasurementStatistics.Statistic] = MeasurementStatistics.Statistic.allCases, interval: Double? = 1) -> MeasurementsStatisticsController {
         let controller = MeasurementsStatisticsController(dataSource: dataSourceMock,
                                                           calculator: calculatorMock,
-                                                          scheduledTimer: timerMock,
-                                                          desiredStats: stats, computeStatisticsInterval: 1)
+                                                          desiredStats: stats,
+                                                          computeStatisticsInterval: interval)
         controller.output = outputSpy
         return controller
     }

@@ -19,7 +19,7 @@ class BackendSyncCompletedViewModelDefault: BackendSyncCompletedViewModel, Obser
     
     @Published var presentRestartNextScreen: Bool = false
     @Published var presentBTNextScreen: Bool = false
-    @Injected private var bluetoothHandler: BluetoothHandler
+    @Injected private var bluetoothHandler: BluetoothPermisionsChecker
     
     func continueButtonTapped() {
         switch sessionNextStep() {

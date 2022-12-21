@@ -12,14 +12,29 @@ class ScheduledTimerSettableMock: ScheduledTimerSettable {
     
     var latestTimer: TimeInterval?
     
+    var invalidationHistory = 0
+    
     func setupRepeatingTimer(for timeInterval: TimeInterval, block: @escaping () -> Void) -> Cancellable {
         self.block = block
         self.latestTimer = timeInterval
-        return EmptyCancellable()
+        return TimerCancellableMock(timer: self)
     }
     
     func fireTimer() {
         block?()
+    }
+    
+    private class TimerCancellableMock: Cancellable {
+        func cancel() { }
+        
+        let timer: ScheduledTimerSettableMock
+        
+        init(timer: ScheduledTimerSettableMock) {
+            self.timer = timer
+        }
+        deinit {
+            timer.invalidationHistory += 1
+        }
     }
 }
 

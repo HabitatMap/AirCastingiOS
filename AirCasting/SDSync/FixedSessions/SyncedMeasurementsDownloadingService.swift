@@ -9,12 +9,11 @@ protocol SyncedMeasurementsDownloader {
 }
 
 struct SyncedMeasurementsDownloadingService: SyncedMeasurementsDownloader {
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var syncStorage: SDSyncMeasurementsStorage
     @Injected private var measurementsDownloadingService: MeasurementUpdatingService
     let measurementTimeframe: Double = 24 * 60 * 60 // 24 hours in seconds
 
     func download(sessionsUUIDs: [SessionUUID]) {
-
         prepareSessionsData(sessionsUUIDs) { sessionsData in
             sessionsData.forEach { session in
                 measurementsDownloadingService.downloadMeasurements(for: session.uuid, lastSynced: session.lastSynced) {
@@ -25,13 +24,13 @@ struct SyncedMeasurementsDownloadingService: SyncedMeasurementsDownloader {
     }
 
     private func prepareSessionsData(_ sessionsUUIDs: [SessionUUID], completion: @escaping ([(uuid: SessionUUID, lastSynced: Date)]) -> Void) {
-        measurementStreamStorage.accessStorage { storage in
+        syncStorage.accessStorage { storage in
             let sessionsData = sessionsUUIDs.map { (uuid: $0, lastSynced: getLastSyncDate(for: $0, storage: storage)) }
             completion(sessionsData)
         }
     }
 
-    private func getLastSyncDate(for sessionUUID: SessionUUID, storage: HiddenCoreDataMeasurementStreamStorage) -> Date {
+    private func getLastSyncDate(for sessionUUID: SessionUUID, storage: HiddenSDSyncMeasurementsStorage) -> Date {
         if let existingSession = try? storage.getExistingSession(with: sessionUUID) {
             if let sessionEndTimeSeconds = existingSession.endTime?.timeIntervalSince1970 {
                 let last24hours = DateBuilder.getDateWithTimeIntervalSince1970((sessionEndTimeSeconds - measurementTimeframe))
@@ -51,7 +50,7 @@ struct SyncedMeasurementsDownloadingService: SyncedMeasurementsDownloader {
     }
 
     private func removeDoubledMeasurements(_ sessionUUID: SessionUUID) {
-        measurementStreamStorage.accessStorage { storage in
+        syncStorage.accessStorage { storage in
             do {
                 try storage.removeDuplicatedMeasurements(for: sessionUUID)
             } catch {

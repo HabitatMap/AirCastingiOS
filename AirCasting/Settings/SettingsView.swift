@@ -13,9 +13,8 @@ struct SettingsView: View {
     @StateObject private var viewModel: SettingsViewModel
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     @InjectedObject private var userSettings: UserSettings
-    @InjectedObject private var bluetoothManager: BluetoothManager
     private let sessionContext: CreateSessionContext
-    #if DEBUG || BETA
+    #if BETA
     @StateObject private var shareLogsViewModel = ShareLogsViewModel()
     #endif
     
@@ -50,7 +49,7 @@ struct SettingsView: View {
                 }
             }
             .environmentObject(viewModel.sessionContext)
-            #if BETA || DEBUG
+            #if BETA
             .sheet(isPresented: $shareLogsViewModel.shareSheetPresented) {
                 ActivityViewController(sharingFile: true, itemToShare: shareLogsViewModel.file!, servicesToShareItem: nil) { _,_,_,_ in
                     shareLogsViewModel.sharingFinished()
@@ -87,7 +86,7 @@ struct SettingsView: View {
                         }
                 })
             .environmentObject(viewModel.sessionContext)
-            #if BETA || DEBUG
+            #if BETA
             .sheet(isPresented: $shareLogsViewModel.shareSheetPresented) {
                 ActivityViewController(sharingFile: true, itemToShare: shareLogsViewModel.file!, servicesToShareItem: nil) { _,_,_,_ in
                     shareLogsViewModel.sharingFinished()
@@ -107,7 +106,9 @@ struct SettingsView: View {
                 #if BETA || DEBUG
                 Section() {
                     navigateToAppConfigurationButton
+                    #if BETA
                     shareLogsButton
+                    #endif
                     Text(Strings.Settings.crashlyticsSectionTitle)
                     crashButton
                     createErrorButton
@@ -327,11 +328,13 @@ struct SettingsView: View {
             .font(Fonts.muliBoldHeading1)
     }
     
+    #if BETA
     private var shareLogsButton: some View {
         Button(Strings.Settings.shareLogs) {
             shareLogsViewModel.shareLogsButtonTapped()
         }
     }
+    #endif
     
     private var crashButton: some View {
         Button(Strings.Settings.crashTheApp) {

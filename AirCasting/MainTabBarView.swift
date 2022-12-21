@@ -6,7 +6,6 @@
 //
 
 import CoreData
-import CoreBluetooth
 import SwiftUI
 import Resolver
 
@@ -15,7 +14,6 @@ struct MainTabBarView: View {
     @State var homeImage: String = HomeIcon.selected.string
     @State var settingsImage: String = SettingsIcon.unselected.string
     @State var plusImage: String = PlusIcon.unselected.string
-    @InjectedObject private var bluetoothManager: BluetoothManager
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
     @StateObject var selectedSection = SelectedSection()
     @StateObject var reorderButton = ReorderButton()
@@ -27,6 +25,7 @@ struct MainTabBarView: View {
     @StateObject var coreDataHook: CoreDataHook
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     @Environment(\.colorScheme) var colorScheme
+    @State var measurementsDownloadingInProgress = false
     
     private var sessions: [Sessionable] {
         coreDataHook.sessions
@@ -56,7 +55,12 @@ struct MainTabBarView: View {
             
         }
         .onAppCameToForeground {
-            measurementUpdatingService.updateAllSessionsMeasurements()
+            measurementsDownloadingInProgress = true
+            measurementUpdatingService.updateAllSessionsMeasurements() {
+                DispatchQueue.main.async {
+                    measurementsDownloadingInProgress = false
+                }
+            }
         }
         .onAppear {
             UITabBar.appearance().backgroundColor = .aircastingBackground
@@ -64,6 +68,12 @@ struct MainTabBarView: View {
             appearance.backgroundImage = UIImage()
             appearance.shadowImage = UIImage.mainTabBarShadow
             UITabBar.appearance().standardAppearance = appearance
+            measurementsDownloadingInProgress = true
+            measurementUpdatingService.updateAllSessionsMeasurements() {
+                DispatchQueue.main.async {
+                    measurementsDownloadingInProgress = false
+                }
+            }
             measurementUpdatingService.start()
         }
         .onChange(of: tabSelection.selection, perform: { _ in
@@ -71,12 +81,6 @@ struct MainTabBarView: View {
             tabSelection.selection == .settings ? (settingsImage = SettingsIcon.selected.string) : (settingsImage = SettingsIcon.unselected.string)
             tabSelection.selection == .createSession ? (plusImage = PlusIcon.selected.string) : (plusImage = PlusIcon.unselected.string)
             
-        })
-        .onChange(of: bluetoothManager.mobileSessionReconnected, perform: { _ in
-            if bluetoothManager.mobileSessionReconnected {
-                bluetoothManager.mobilePeripheralSessionManager.configureAB()
-                bluetoothManager.mobileSessionReconnected.toggle()
-            }
         })
         .environmentObject(selectedSection)
         .environmentObject(tabSelection)
@@ -92,7 +96,7 @@ private extension MainTabBarView {
     // Tab Bar views
     private var dashboardTab: some View {
         NavigationView {
-            DashboardView(coreDataHook: coreDataHook)
+            DashboardView(coreDataHook: coreDataHook, measurementsDownloadingInProgress: $measurementsDownloadingInProgress)
         }.navigationViewStyle(StackNavigationViewStyle())
             .tabItem {
                 createTabBarImage(homeImage)
@@ -218,6 +222,13 @@ enum DashboardSection: String, CaseIterable {
         switch self {
         case .fixed, .mobileDormant: return true
         case .following, .mobileActive: return false
+        }
+    }
+    
+    var shouldShowMeasurementDownloadProgress: Bool {
+        switch self {
+        case .following: return true
+        case .mobileDormant, .mobileActive, .fixed: return false
         }
     }
 }

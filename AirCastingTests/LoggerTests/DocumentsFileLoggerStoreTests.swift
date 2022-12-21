@@ -132,7 +132,7 @@ class DocumentsFileLoggerStoreTests: FileLoggerTestCase {
     // MARK: - Private helpers
     
     private func createSUT(maxLogs: UInt = 1000, overflowThreshold: UInt = 0) -> DocumentsFileLoggerStore {
-        return DocumentsFileLoggerStore(logDirectory: logDir.lastPathComponent, logFilename: logFile.lastPathComponent, maxLogs: maxLogs, overflowThreshold: overflowThreshold)
+        return DocumentsFileLoggerStore(logDirectory: logDir.lastPathComponent, logFilename: logFile.lastPathComponent, maxLogs: maxLogs, overflowThreshold: overflowThreshold, headerProvider: headerProvider)
     }
     
     @discardableResult

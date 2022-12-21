@@ -10,10 +10,11 @@ struct ChooseCustomLocationView: View {
     @State private var isConfirmCreatingSessionActive: Bool = false
     @State private var locationName = ""
     @State private var location: CLLocationCoordinate2D?
-    @State var placePickerIsUpdating: Bool = false
     @State var isLocationPopupPresented = false
     @Binding var creatingSessionFlowContinues: Bool
+    @StateObject private var locationTracker = BindableLocationTracker()
     var sessionName: String
+    @Injected private var AppLocationTracker: LocationTracker
     
     @EnvironmentObject private var sessionContext: CreateSessionContext
 
@@ -21,7 +22,8 @@ struct ChooseCustomLocationView: View {
         VStack(spacing: 40) {
             ProgressView(value: 0.85)
             titleLabel
-            createTextfield(placeholder: Strings.ChooseCustomLocationView.sessionLocation, binding: $locationName)
+            createTextfield(placeholder: Strings.ChooseCustomLocationView.sessionLocation,
+                            binding: $locationName)
                 .font(Fonts.moderateRegularHeading2)
                 .disabled(true)
                 .onTapGesture {
@@ -34,23 +36,34 @@ struct ChooseCustomLocationView: View {
             confirmButton
         }
         .background(confirmCreatingSessionLink)
-        .sheet(isPresented: $isLocationPopupPresented) {
-            PlacePicker(service: ChooseLocationPickerService(address: $locationName, location: $location))
-        }
-        .onChange(of: isLocationPopupPresented, perform: { present in
-            // The reason for this is to prevent map from multiple times refreshing after first map update
-            placePickerIsUpdating = !present
+        .sheet(isPresented: $isLocationPopupPresented, onDismiss: {
+            guard let newLocation = location else { return }
+            locationTracker.ovverridenLocation = newLocation
+        }, content: {
+            PlacePicker(service: ChooseLocationPickerService(address: $locationName,
+                                                             location: $location))
         })
+        .onDisappear {
+            // On locationTracker init, AppLocationTracker starts monitoring
+            // here we finish the process as its deinit is not working
+            AppLocationTracker.stop()
+        }
         .padding()
     }
 
     var mapGoogle: some View {
-        GoogleMapView(pathPoints: [],
-                      placePickerIsUpdating: $placePickerIsUpdating,
-                      isUserInteracting: Binding.constant(true),
-                      mapNotes: .constant([]),
-                      isMapOnPickerScreen: true,
-                      placePickerLocation: $location)
+        _MapView(type: .normal,
+                 trackingStyle: .user,
+                 userIndicatorStyle: .none,
+                 locationTracker: locationTracker,
+                 stickHardToTheUser: true)
+        .indicateMapLocationChange { newLocation in
+            location = .init(latitude: newLocation.coordinate.latitude,
+                             longitude: newLocation.coordinate.longitude)
+        }
+        .onMyLocationButtonTapped {
+            locationTracker.ovverridenLocation = nil
+        }
     }
 
     var dot: some View {
@@ -82,11 +95,21 @@ struct ChooseCustomLocationView: View {
     var confirmCreatingSessionLink: some View {
         NavigationLink(
             destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                                    sessionName: sessionName),
+                                                    sessionName: sessionName,
+                                                    initialLocation: location.map({
+                                                        .init(latitude: $0.latitude,
+                                                              longitude: $0.longitude)
+                                                    })),
             isActive: $isConfirmCreatingSessionActive,
             label: {
                 EmptyView()
             }
         )
+    }
+}
+
+extension CLLocationCoordinate2D: Equatable {
+    public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
+        lhs.longitude == rhs.longitude && lhs.latitude == rhs.latitude
     }
 }

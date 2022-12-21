@@ -2,9 +2,8 @@
 //
 
 import Foundation
-import CoreBluetooth
 
 struct MobileSession {
-    let peripheral: CBPeripheral
+    let device: any BluetoothDevice
     let session: Session
 }

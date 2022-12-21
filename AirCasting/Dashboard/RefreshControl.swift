@@ -15,7 +15,7 @@ struct RefreshControl: View {
                 startRefreshing()
             }
             ZStack(alignment: .center) {
-                if isRefreshing { ProgressView(Strings.RefreshControl.progressViewTest) } else { mimicPullToRefreshAnimation(with: geometry) }
+                if isRefreshing { ProgressView(Strings.RefreshControl.progressViewText) } else { mimicPullToRefreshAnimation(with: geometry) }
             }
             .frame(width: geometry.size.width)
         }

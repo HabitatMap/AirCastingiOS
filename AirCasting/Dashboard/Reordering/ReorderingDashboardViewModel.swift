@@ -11,10 +11,10 @@ class ReorderingDashboardViewModel: ObservableObject {
     @Published var currentlyDraggedSession: Sessionable?
     @Injected private var uiStorage: UIStorage
     @Injected private var externalSessionsStore: ExternalSessionsStore
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var sessionFollowingStorage: SessionFollowingStorage
     
     init(sessions: [Sessionable], thresholds: [SensorThreshold]) {
-        self.sessions = sessions
+        self.sessions = sessions.filter { $0.uuid != "" && !$0.gotDeleted }
         self.thresholds = thresholds
     }
     
@@ -47,7 +47,7 @@ class ReorderingDashboardViewModel: ObservableObject {
     }
     
     private func unfollowFixedSession(with uuid: SessionUUID) {
-        measurementStreamStorage.accessStorage { storage in
+        sessionFollowingStorage.accessStorage { storage in
             storage.updateSessionFollowing(.notFollowing, for: uuid)
             self.uiStorage.accessStorage { uiStorage in
                 uiStorage.setOrderToZero(for: uuid)

@@ -23,7 +23,7 @@ extension NSManagedObjectContext {
                                     NSDate(timeIntervalSince1970: thresholdInSeconds), stream)
         do {
             let measurements = try self.fetch(req)
-            measurements.forEach { Log.info("Removing measurement: \($0)"); self.delete($0) }
+            measurements.forEach { Log.info("Removing measurement for stream: \($0.measurementStream.sensorName ?? "no name") from \(String(describing: $0.time))"); self.delete($0) }
             try! self.save()
         } catch {
             throw error
@@ -90,7 +90,7 @@ extension NSManagedObjectContext {
         return nil
     }
 
-    // Checks if session/measurement exists, if not, creates a new one
+    // Checks if session/measurementStream exists, if not, creates a new one
     func newOrExisting<T: NSManagedObject & Identifiable>(id: T.ID) throws -> T  {
         let className = NSStringFromClass(T.classForCoder())
         let fetchRequest = NSFetchRequest<T>(entityName: className)

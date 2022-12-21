@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import CoreBluetooth
 import AirCastingStyling
 import Resolver
 
@@ -17,9 +16,9 @@ struct SelectDeviceView: View {
     @State private var isPowerABLinkActive: Bool = false
     @State private var isMicLinkActive: Bool = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
-    @InjectedObject private var bluetoothManager: BluetoothManager
     @Injected private var microphone: Microphone
     @Injected private var microphonePermissions: MicrophonePermissions
+    @Injected private var bluetoothHandler: BluetoothPermisionsChecker
     @Binding var creatingSessionFlowContinues : Bool
     @Binding var sdSyncContinues : Bool
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
@@ -57,7 +56,6 @@ struct SelectDeviceView: View {
         })
         .onAppear() {
             selected = 0
-            #warning("Handle that mobileWasTapped is somehow public")
             emptyDashboardButtonTapped.mobileWasTapped = false
         }
         .background(Color.aircastingBackground.ignoresSafeArea())
@@ -74,7 +72,7 @@ struct SelectDeviceView: View {
             // it doesn't have to be airbeam, it can be any device, but it doesn't influence anything, it's just needed for views flow
             sessionContext.deviceType = DeviceType.AIRBEAM3
             selected = 1
-            if CBCentralManager.authorization != .denied && bluetoothManager.centralManagerState == .poweredOn {
+            if !bluetoothHandler.isBluetoothDenied() {
                 isPowerABLinkActive = true
             } else {
                 isTurnOnBluetoothLinkActive = true

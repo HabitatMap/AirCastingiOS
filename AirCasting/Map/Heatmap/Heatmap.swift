@@ -51,7 +51,7 @@ struct Heatmap {
         initGrid()
     }
     
-    mutating func drawHeatMap(pathPoints: [PathPoint]) {
+    mutating func drawHeatMap(pathPoints: [HeatMapPoint]) {
         for pathPoint in pathPoints {
             assignMeasurementToSquare(pathPoint)
         }
@@ -81,14 +81,14 @@ struct Heatmap {
         setGridSquare(x, y, nil)
     }
     
-    private mutating func assignMeasurementToSquare(_ pathPoint: PathPoint) {
+    private mutating func assignMeasurementToSquare(_ pathPoint: HeatMapPoint) {
         guard let squareXY = getSquareXY(pathPoint, indexXstart: 0, indexXend: gridSizeX - 1, indexYstart: 0, indexYend: gridSizeY - 1) else { return }
         var gridSquare = getGridSquare(x: squareXY.0, y: squareXY.1)
         gridSquare?.addMeasurement(pathPoint)
         setGridSquare(x: squareXY.0, y: squareXY.1, gridSquare: gridSquare)
     }
     
-    private func getSquareXY(_ pathPoint: PathPoint, indexXstart: Int, indexXend: Int, indexYstart: Int, indexYend: Int) -> (Int, Int)? {
+    private func getSquareXY(_ pathPoint: HeatMapPoint, indexXstart: Int, indexXend: Int, indexYstart: Int, indexYend: Int) -> (Int, Int)? {
         let middleX = indexXstart  + (indexXend - indexXstart) / 2
         let middleY = indexYstart  + (indexYend - indexYstart) / 2
         let middleSquare = getGridSquare(x: middleX + 1, y: middleY + 1)
@@ -101,7 +101,7 @@ struct Heatmap {
                 return (middleX + 1, middleY + 1)
             }
         }
-        // if this is the last square checked and point is not in its bounds, return null
+        // if this is the last square checked and point is not in its bounds, return nil
         if (indexXstart == indexXend && indexYstart == indexYend) {
             return nil
         }
@@ -118,7 +118,7 @@ struct Heatmap {
             return nil
         }
         
-        if  let middleLon = middleLon {
+        if let middleLon = middleLon {
             let longitude = pathPoint.location.longitude
             if (longitude >= middleLon) {
                 newIndexXstart = middleX + 1
@@ -127,7 +127,7 @@ struct Heatmap {
             }
         }
         
-        if  let middleLat = middleLat {
+        if let middleLat = middleLat {
             let latitude = pathPoint.location.latitude
             if (latitude >= middleLat) {
                 newIndexYstart = middleY + 1

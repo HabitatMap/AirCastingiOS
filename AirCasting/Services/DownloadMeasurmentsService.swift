@@ -14,7 +14,7 @@ import CoreLocation
 protocol MeasurementUpdatingService {
     func start()
     func downloadMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, completion: @escaping () -> Void)
-    func updateAllSessionsMeasurements()
+    func updateAllSessionsMeasurements(completion: @escaping () -> Void)
 }
 
 final class DownloadMeasurementsService: MeasurementUpdatingService {
@@ -23,11 +23,8 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     private var timerSink: Cancellable?
     private var lastFetchCancellableTask: Cancellable?
     @Injected private var removeOldServiceDefault: RemoveOldMeasurements
-
-
-    #warning("Add locking here so updates won't bump on one another")
+    
     func start() {
-        updateAllSessionsMeasurements()
         timerSink = Timer.publish(every: 60, on: .current, in: .common).autoconnect().sink { [weak self] tick in
             guard !(self?.persistenceController.uiSuspended ?? true) else { return }
             Log.info("Timer triggered for fixed sessions measurements download")
@@ -40,17 +37,26 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
             self?.processServiceResponse($0, for: sessionUUID, isExternal: false, completion: completion)
         }
     }
-
-    private func updateMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, isExternal: Bool) {
+    
+    private func updateMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, isExternal: Bool, completion: @escaping () -> Void) {
         lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: sessionUUID, lastSync: lastSynced) { [weak self] in
-            self?.processServiceResponse($0, for: sessionUUID, isExternal: isExternal)
+            self?.processServiceResponse($0, for: sessionUUID, isExternal: isExternal, completion: completion)
         }
     }
-
-    func updateAllSessionsMeasurements() {
+    
+    func updateAllSessionsMeasurements(completion: @escaping () -> Void = {}) {
         getAllSessionsData() { [unowned self] sessionsData in
             Log.info("Scheduled measurements update triggered (session count: \(sessionsData.count))")
-            sessionsData.forEach { self.updateMeasurements(for: $0.uuid, lastSynced: $0.lastSynced, isExternal: $0.isExternal) }
+            let group = DispatchGroup()
+            sessionsData.forEach { _ in group.enter() }
+            sessionsData.forEach {
+                self.updateMeasurements(for: $0.uuid, lastSynced: $0.lastSynced, isExternal: $0.isExternal) { group.leave() }
+            }
+            
+            group.notify(queue: DispatchQueue.global()) {
+                Log.info("Measurements downloading completed")
+                completion()
+            }
         }
     }
 
@@ -97,23 +103,25 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     }
 
     private func processServiceResponse(_ response: Result<FixedSession.FixedMeasurementOutput, Error>,
-                                        for sessionUUID: SessionUUID, isExternal: Bool, completion: () -> Void = {}) {
+                                        for sessionUUID: SessionUUID, isExternal: Bool, completion: @escaping () -> Void = {}) {
         switch response {
         case .success(let response):
-            processServiceOutput(response, for: sessionUUID, isExternal: isExternal)
-            completion()
+            processServiceOutput(response, for: sessionUUID, isExternal: isExternal, completion: completion)
         case .failure(let error):
-            Log.warning("Failed to fetch measurements for uuid '\(sessionUUID). Session external: \(isExternal)' \(error)")
+            Log.error("Failed to fetch measurements for uuid '\(sessionUUID). Session external: \(isExternal)' \(error)")
+            completion()
         }
     }
 
     private func processServiceOutput(_ output: FixedSession.FixedMeasurementOutput,
                                       for sessionUUID: SessionUUID,
-                                      isExternal: Bool) {
+                                      isExternal: Bool,
+                                      completion: @escaping () -> Void = {}) {
         Log.info("Processing download measurements response for: \(sessionUUID)")
         let context = persistenceController.editContext
         context.perform {
             do {
+                defer { completion() }
                 if !isExternal {
                     Log.info("Processing regular session response")
                     let session: SessionEntity = try context.newOrExisting(uuid: output.uuid)

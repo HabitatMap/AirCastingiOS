@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import CoreBluetooth
 import CoreData
 import AVFoundation
 import CoreLocation
@@ -16,7 +15,7 @@ final class CreateSessionContext: ObservableObject {
     var sessionTags: String?
     var sessionUUID: SessionUUID?
     var sessionType: SessionType?
-    var peripheral: CBPeripheral?
+    var device: (any BluetoothDevice)?
     var wifiSSID: String?
     var wifiPassword: String?
     var isIndoor: Bool?
@@ -30,7 +29,7 @@ final class CreateSessionContext: ObservableObject {
         sessionTags = sessionContext.sessionTags
         sessionUUID = sessionContext.sessionUUID
         sessionType = sessionContext.sessionType
-        peripheral = sessionContext.peripheral
+        device = sessionContext.device
         wifiSSID = sessionContext.wifiSSID
         wifiPassword = sessionContext.wifiPassword
         isIndoor = sessionContext.isIndoor

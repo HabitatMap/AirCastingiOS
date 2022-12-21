@@ -27,15 +27,20 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
     // when no object really needs location. This is why we're using this counter
     private var locationStartReference: Int = 0
     private let referenceLock = NSRecursiveLock()
-    private(set) var locationState: LocationState = .denied
+    private(set) var locationState: LocationState = .denied {
+        didSet {
+            guard locationState != oldValue, locationState == .granted else { return }
+            self.locationManager.requestLocation()
+        }
+    }
     
     var location: CurrentValueSubject<CLLocation?, Never> = .init(nil)
     
     init(locationManager: CLLocationManager) {
         self.locationManager = locationManager
         super.init()
-        self.updateAuthorizationState()
         self.locationManager.delegate = self
+        self.updateAuthorizationState()
     }
     
     func start() {
@@ -46,6 +51,7 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
         }
         locationStartReference += 1
         Log.info("Started location tracking (refcount: \(locationStartReference))")
+        assert(locationStartReference >= 0)
     }
     
     func stop() {
@@ -56,6 +62,7 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
             location.value = nil
         }
         Log.info("Stopped location tracking (refcount: \(locationStartReference))")
+        assert(locationStartReference >= 0)
     }
     
     func requestAuthorization() {
@@ -88,6 +95,70 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
             locationState = .denied
         @unknown default:
             fatalError()
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        Log.warning("Location fetch failed with error: \(error.localizedDescription)")
+    }
+}
+
+class MapLocationTrackerAdapter: MapLocationTracker {
+    private let locationTracker: LocationTracker
+    private var locationCancellable: AnyCancellable?
+    private var didStartTracking: Bool = false
+    
+    init(_ locationTracker: LocationTracker) {
+        self.locationTracker = locationTracker
+    }
+    
+    func startTrackingUserPosition(_ newPos: @escaping (CLLocation) -> Void) -> MapLocationTrackerStoper {
+        locationTracker.start()
+        didStartTracking = true
+        locationCancellable = locationTracker.location.sink {
+            newPos($0 ?? .applePark)
+        }
+        return Stoper(locationTracker: locationTracker)
+    }
+    
+    func getLastKnownLocation() -> CLLocation? {
+        locationTracker.location.value
+    }
+    
+    deinit {
+        guard didStartTracking else { return }
+        locationTracker.stop()
+    }
+    
+    private struct Stoper: MapLocationTrackerStoper {
+        
+        let locationTracker: LocationTracker
+        
+        func stopTrackingUserPosition() {
+            locationTracker.stop()
+        }
+    }
+}
+
+struct ConstantTracker: MapLocationTracker {
+    let location: CLLocation
+    
+    func getLastKnownLocation() -> CLLocation? {
+        location
+    }
+    
+    func startTrackingUserPosition(_ newPos: @escaping (CLLocation) -> Void) -> MapLocationTrackerStoper {
+        newPos(location)
+        return Stoper()
+    }
+    
+    func stopTrackingUserPosition() {
+        // nothing - that's ok
+    }
+    
+    private struct Stoper: MapLocationTrackerStoper {
+        func stopTrackingUserPosition() {
+            
         }
     }
 }

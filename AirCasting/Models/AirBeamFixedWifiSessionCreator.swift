@@ -10,7 +10,7 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
         case invalidCreateSessionContext(CreateSessionContext)
     }
     @Injected private var userAuthenticationSession: UserAuthenticationSession
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var persistence: SessionCreatingStorage
     @Injected private var uiStore: UIStorage
     private let createSessionService: CreateSessionAPIService
     
@@ -46,7 +46,7 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
         // then send AB auth data to connect to web session and data needed to start recording
         guard let name = session.name,
               let startTime = session.startTime,
-              let peripheral = sessionContext.peripheral,
+              let device = sessionContext.device,
               let wifiSSID = sessionContext.wifiSSID,
               let wifiPassword = sessionContext.wifiPassword,
               let contribute = sessionContext.contribute
@@ -71,25 +71,36 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                                                     longitude: sessionContext.startingLocation?.longitude)
         createSessionService.createEmptyFixedWifiSession(input: .init(session: params,
                                                                       compression: true),
-                                                         completion: { [measurementStreamStorage] result in
+                                                         completion: { [persistence] result in
                                                             DispatchQueue.main.async {
                                                                 switch result {
                                                                 case .success(let output):
-                                                                    measurementStreamStorage.accessStorage { storage in
+                                                                    persistence.accessStorage { storage in
                                                                         do {
                                                                             let sessionWithURL = session.withUrlLocation(output.location)
                                                                             try storage.createSession(sessionWithURL)
                                                                             self.uiStore.accessStorage({ storage in
                                                                                 storage.giveHighestOrder(to: sessionWithURL.uuid)
                                                                             })
-                                                                            try AirBeam3Configurator(peripheral: peripheral).configureFixedWifiSession(
+                                                                            Log.info("Created fixed Wifi session \(output)")
+                                                                            // TODO: Potentially in both fixed session creators the logic for configuring AB could be performed before the session gets created.
+                                                                            Resolver.resolve(AirBeamConfigurator.self, args: device)
+                                                                                .configureFixedWifiSession(
                                                                                                         uuid: sessionUUID,
                                                                                                         location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
                                                                                                         date: DateBuilder.getFakeUTCDate(),
                                                                                                         wifiSSID: wifiSSID,
-                                                                                                        wifiPassword: wifiPassword)
-                                                                            Log.warning("Created fixed Wifi session \(output)")
-                                                                            completion(.success(()))
+                                                                                                        wifiPassword: wifiPassword) { result in
+                                                                                                            switch result {
+                                                                                                            case .success():
+                                                                                                                Log.info("Successfully configured AB")
+                                                                                                                completion(.success(()))
+                                                                                                                return
+                                                                                                            case .failure(let error):
+                                                                                                                Log.error("Failed to configure AB: \(error)")
+                                                                                                                completion(.failure(error))
+                                                                                                            }
+                                                                                                        }
                                                                         } catch {
                                                                             completion(.failure(error))
                                                                         }

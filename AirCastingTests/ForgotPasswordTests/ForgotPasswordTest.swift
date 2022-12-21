@@ -7,16 +7,16 @@ import XCTest
 class ForgotPasswordViewModelTest: ACTestCase {
     
     private var defaultForgotPasswordViewModel: DefaultForgotPasswordViewModel!
+    private let controller = MockForgotPasswordController()
     
     override func setUp() {
-        defaultForgotPasswordViewModel = DefaultForgotPasswordViewModel(controller: MockForgotPasswordController())
+        defaultForgotPasswordViewModel = DefaultForgotPasswordViewModel(controller: controller)
     }
     
     func test_isEmailChanging() {
         defaultForgotPasswordViewModel.emailChanged(to: "test@email.com")
-//        XCTAssertEqual(controllerMock.history.last, "test@email.com")
-        #warning("Test not finished - concerned")
-        //https://github.com/HabitatMap/AirCastingiOS/pull/67#discussion_r672974549
+        defaultForgotPasswordViewModel.sendNewPassword()
+        XCTAssertEqual(controller.loginsHistory.last, "test@email.com")
     }
     
     func test_varsConformsToStringsStruct() {

@@ -16,7 +16,7 @@ protocol NotesHandler: AnyObject {
 
 @objc
 class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDelegate {
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var storage: SessionNotesStorage
     var sessionUUID: SessionUUID
     @Injected private var locationTracker: LocationTracker
     @Injected private var sessionUpdateService: SessionUpdateService
@@ -46,7 +46,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
     func addNote(noteText: String, photo: URL?, withLocation: Bool) {
         let latitude = withLocation ? locationTracker.location.value?.coordinate.latitude ?? 20.0 : 20.0
         let longitude = withLocation ? locationTracker.location.value?.coordinate.longitude ?? 20.0 : 20.0
-        measurementStreamStorage.accessStorage { [self] storage in
+        storage.accessStorage { [self] storage in
             do {
                 let currentNumber = try storage.getNotes(for: sessionUUID).map(\.number).sorted(by: < ).last
                 try storage.addNote(Note(date: DateBuilder.getFakeUTCDate(),
@@ -63,14 +63,14 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
     }
 
     func deleteNote(note: Note, completion: @escaping () -> Void) {
-        measurementStreamStorage.accessStorage { storage in
+        storage.accessStorage { storage in
             do {
                 try storage.deleteNote(note, for: self.sessionUUID)
                 self.fetchSession(storage: storage) { session in
                     self.sessionUpdateService.updateSession(session: session) { result in
                         switch result {
                         case .success(let updateData):
-                            self.measurementStreamStorage.accessStorage { storage in
+                            self.storage.accessStorage { storage in
                                 try? storage.updateVersion(for: self.sessionUUID, to: updateData.version)
                                 Log.info("Notes successfully updated")
                                 completion()
@@ -88,14 +88,14 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
     }
 
     func updateNote(note: Note, newText: String, completion: @escaping () -> Void) {
-        measurementStreamStorage.accessStorage { [self] storage in
+        storage.accessStorage { [self] storage in
             do {
                 try storage.updateNote(note, newText: newText, for: sessionUUID)
                 fetchSession(storage: storage) { session in
                     self.sessionUpdateService.updateSession(session: session) { result in
                         switch result {
                         case .success(let updateData):
-                            self.measurementStreamStorage.accessStorage {storage in
+                            self.storage.accessStorage {storage in
                                 try? storage.updateVersion(for: self.sessionUUID, to: updateData.version)
                                 Log.info("Notes successfully updated")
                                 completion()
@@ -113,7 +113,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
     }
 
     func getNotes(completion: @escaping ([Note]) -> Void) {
-        measurementStreamStorage.accessStorage { [self] storage in
+        storage.accessStorage { [self] storage in
             do {
                 completion(try storage.getNotes(for: sessionUUID))
             } catch {
@@ -123,7 +123,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
     }
 
     func fetchSpecifiedNote(number: Int, completion: @escaping (Note) -> Void) {
-        measurementStreamStorage.accessStorage { [self] storage in
+        storage.accessStorage { [self] storage in
             do {
                 completion(try storage.fetchSpecifiedNote(for: sessionUUID, number: number))
             } catch {
@@ -135,7 +135,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
 
 // MARK: Internal methods
 extension NotesHandlerDefault {
-    private func fetchSession(storage: HiddenCoreDataMeasurementStreamStorage, completion: @escaping (SessionEntity) -> Void) {
+    private func fetchSession(storage: HiddenSessionNotesStorage, completion: @escaping (SessionEntity) -> Void) {
         do {
             completion(try storage.getExistingSession(with: sessionUUID))
         } catch {

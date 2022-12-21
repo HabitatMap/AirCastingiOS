@@ -50,7 +50,6 @@ class FixedSession {
         let time: Date
         let stream_id: Int
         let milliseconds: Double
-        //TODO: Fix this. We need to make it optional, because when we get measurements for sessions from SD Card, their measuredValue is nil
         let measured_value: Double?
     }
 }

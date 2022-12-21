@@ -37,7 +37,12 @@ struct CompleteScreen: View {
                     .padding(.vertical)
             }
             if viewModel.isMapSelected {
-                SearchCompleteScreenMapView(longitude: viewModel.sessionLongitude, latitude: viewModel.sessionLatitude)
+                _MapView(path: [.init(lat: viewModel.sessionLatitude, long: viewModel.sessionLongitude, value: 0.0)],
+                         type: .normal,
+                         trackingStyle: .latestPathPoint,
+                         userIndicatorStyle: .custom(color: .accentColor),
+                         locationTracker: ConstantTracker(location: .init(latitude: viewModel.sessionLatitude,
+                                                                      longitude: viewModel.sessionLongitude)))
             } else {
                 SearchAndFollowChartView(viewModel: viewModel.chartViewModel)
                 chartDescription

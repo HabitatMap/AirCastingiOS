@@ -14,7 +14,7 @@ class TurnOnLocationViewModel: ObservableObject {
     var isSDClearProcess: Bool
 
     @Injected private var locationAuthorization: LocationAuthorization
-    @Injected private var bluetoothHandler: BluetoothHandler
+    @Injected private var bluetoothHandler: BluetoothPermisionsChecker
     private let sessionContext: CreateSessionContext
     
     var shouldShowAlert: Bool {

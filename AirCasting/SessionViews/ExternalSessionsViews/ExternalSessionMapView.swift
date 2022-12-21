@@ -10,11 +10,12 @@ struct ExternalSessionMapView: View {
     @ObservedObject var thresholds: ABMeasurementsViewThreshold
     @Binding var selectedStream: MeasurementStreamEntity?
     @StateObject var statsContainerViewModel: StatisticsContainerViewModel
+    @Injected private var locationTracker: LocationTracker
     
-    private var pathPoints: [PathPoint] {
+    private var pathPoints: [_MapView.PathPoint] {
         return selectedStream?.allMeasurements?.compactMap {
             guard let location = $0.location else { return nil }
-            return PathPoint(location: location, measurementTime: $0.time, measurement: round(getValue(of: $0)))
+            return .init(lat: location.latitude, long: location.longitude, value: $0.value)
         } ?? []
     }
     
@@ -24,15 +25,11 @@ struct ExternalSessionMapView: View {
                 .padding([.bottom, .leading, .trailing])
             if let threshold = thresholds.value.threshold(for: selectedStream?.sensorName ?? "") {
                 ZStack(alignment: .topLeading) {
-                    GoogleMapView(pathPoints: pathPoints,
-                                  threshold: threshold,
-                                  placePickerIsUpdating: Binding.constant(false),
-                                  isUserInteracting: Binding.constant(true),
-                                  isSessionActive: false,
-                                  isSessionFixed: true,
-                                  noteMarketTapped: Binding.constant(false),
-                                  noteNumber: Binding.constant(0),
-                                  mapNotes: Binding.constant([]))
+                    _MapView(path: pathPoints,
+                             type: .normal,
+                             trackingStyle: .latestPathPoint,
+                             userIndicatorStyle: .custom(color: _MapViewThresholdFormatter.shared.color(points: pathPoints, threshold: threshold)),
+                             locationTracker: ConstantTracker(location: pathPoints.last?.location ?? .applePark))
                     StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
                                             threshold: threshold)
                 }.padding(.bottom)
@@ -47,6 +44,13 @@ struct ExternalSessionMapView: View {
                     .padding([.bottom, .leading, .trailing])
             }
             Spacer()
+        }
+        .onAppear {
+            statsContainerViewModel.adjustForNewData()
+            statsContainerViewModel.continuousModeEnabled = true
+        }
+        .onDisappear {
+            statsContainerViewModel.continuousModeEnabled = false
         }
         .navigationBarTitleDisplayMode(.inline)
         .padding(.bottom)

@@ -62,8 +62,7 @@ extension SessionsSynchronization.SessionStoreSessionData {
                                                                                unitSymbol: "dB",
                                                                                deleted: false,
                                                                                measurements: [
-                                                                                .init(id: 1234,
-                                                                                      time: measurementTime,
+                                                                                .init(time: measurementTime,
                                                                                       value: 12.02,
                                                                                       latitude: 51.04,
                                                                                       longitude: 50.12)
