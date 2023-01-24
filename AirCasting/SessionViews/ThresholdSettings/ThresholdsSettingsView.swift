@@ -22,18 +22,22 @@ struct ThresholdsSettingsView: View {
     }
     
     var body: some View {
-        if #available(iOS 15.0, *) {
-            mainBody
-                .toolbar {
-                    ToolbarItemGroup(placement: .keyboard) {
-                        Spacer()
-                        Button(Strings.SessionCart.keyboardToolbarDoneButton) { hideKeyboard() }
+        ZStack {
+            XMarkButton()
+            if #available(iOS 15.0, *) {
+                mainBody
+                    .toolbar {
+                        ToolbarItemGroup(placement: .keyboard) {
+                            Spacer()
+                            Button(Strings.SessionCart.keyboardToolbarDoneButton) { hideKeyboard() }
+                        }
                     }
-                }
-        } else {
-            mainBody
-                .onTapGesture { hideKeyboard() }
+            } else {
+                mainBody
+                    .onTapGesture { hideKeyboard() }
+            }
         }
+        .background(Color.formBackgroundColor.ignoresSafeArea())
     }
                                                                  
     func showDescriptionLabel(text: String) -> some View {
@@ -85,6 +89,17 @@ struct ThresholdsSettingsView: View {
     }
     
     var mainBody: some View {
+        VStack {
+            if #available(iOS 16.0, *) {
+                mainForm
+                    .scrollContentBackground(.hidden)
+            } else {
+                mainForm
+            }
+        }
+    }
+    
+    var mainForm: some View {
         Form {
             Group {
                 VStack(alignment: .leading, spacing: 16) {
@@ -135,13 +150,14 @@ struct ThresholdsSettingsView: View {
             .listRowBackground(Color.formBackgroundColor)
             .buttonStyle(BorderlessButtonStyle())
         }
+        .padding(.top, 40)
         .onAppear {
             thresholdSettingsViewModel.thresholdVeryLow = string(thresholdValues.veryLow)
             thresholdSettingsViewModel.thresholdLow = string(thresholdValues.low)
             thresholdSettingsViewModel.thresholdMedium = string(thresholdValues.medium)
             thresholdSettingsViewModel.thresholdHigh = string(thresholdValues.high)
             thresholdSettingsViewModel.thresholdVeryHigh = string(thresholdValues.veryHigh)
-            UITableView.appearance().backgroundColor = UIColor(Color.formBackgroundColor)
+            UITableView.appearance().backgroundColor = UIColor(Color.clear)
         }
         .alert(item: $thresholdSettingsViewModel.alert, content: { $0.makeAlert() })
     }

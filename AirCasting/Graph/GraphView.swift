@@ -14,6 +14,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     // This pair doesn't belong here, it should be elegantly handled by VM when refactored
     @State private var selectedNote: Note?
     @State private var showNoteEdit: Bool = false
+    @State private var showThresholdsMenu = false
     @Binding var selectedStream: MeasurementStreamEntity?
     @StateObject var statsContainerViewModel: StatsViewModelType
     let graphStatsDataSource: GraphStatsDataSource
@@ -59,12 +60,15 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                                         threshold: threshold)
                             }
                         }
-                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: formatter.formattedBinding(),
-                                                                           initialThresholds: selectedStream.thresholds,
-                                                                           threshold: threshold)) {
+                        .sheet(isPresented: $showThresholdsMenu) {
+                            ThresholdsSettingsView(thresholdValues: formatter.formattedBinding(),
+                                                                               initialThresholds: selectedStream.thresholds,
+                                                                               threshold: threshold)
+                        }
+                        Button(action: { showThresholdsMenu = true  }, label: {
                             EditButtonView()
                                 .padding([.horizontal, .top])
-                        }
+                        })
                     }
                     
                     ThresholdsSliderView(threshold: threshold)
