@@ -7,6 +7,7 @@ struct ExternalGraphView<StatsViewModelType>: View where StatsViewModelType: Sta
     let graphStatsDataSource: GraphStatsDataSource
     @Binding var selectedStream: MeasurementStreamEntity?
     @StateObject var statsContainerViewModel: StatsViewModelType
+    @State private var showThresholdsMenu = false
     
     var body: some View {
         VStack(alignment: .trailing) {
@@ -27,12 +28,15 @@ struct ExternalGraphView<StatsViewModelType>: View where StatsViewModelType: Sta
                             StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
                                                     threshold: threshold)
                         }
-                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: formatter.formattedBinding(),
-                                                                           initialThresholds: selectedStream.thresholds,
-                                                                           threshold: threshold)) {
+                        .sheet(isPresented: $showThresholdsMenu) {
+                            ThresholdsSettingsView(thresholdValues: formatter.formattedBinding(),
+                                                                               initialThresholds: selectedStream.thresholds,
+                                                                               threshold: threshold)
+                        }
+                        Button(action: { showThresholdsMenu = true  }, label: {
                             EditButtonView()
                                 .padding([.horizontal, .top])
-                        }
+                        })
                     }
                     ThresholdsSliderView(threshold: threshold)
                         .padding()

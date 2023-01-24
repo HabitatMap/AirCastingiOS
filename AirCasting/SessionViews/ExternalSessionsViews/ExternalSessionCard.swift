@@ -170,6 +170,7 @@ private extension ExternalSessionCard {
                                           selectedStream: $selectedStream,
                                           statsContainerViewModel: graphStatsViewModel)
             .foregroundColor(.aircastingDarkGray)
+            .onDisappear { isGraphButtonActive = false }
         
         return NavigationLink(destination: graphView,
                               isActive: $isGraphButtonActive,
@@ -184,6 +185,7 @@ private extension ExternalSessionCard {
                                              selectedStream: $selectedStream,
                                              statsContainerViewModel: mapStatsViewModel)
             .foregroundColor(.aircastingDarkGray)
+            .onDisappear { isMapButtonActive = false }
         
         return NavigationLink(destination: mapView,
                               isActive: $isMapButtonActive,
