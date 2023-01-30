@@ -70,6 +70,7 @@ final class DefaultHiddenAveragingServiceStorage: HiddenAveragingServiceStorage 
     
     func save() throws {
         try self.context.save()
+        context.refreshAllObjects()
     }
     
     private func fetchRequestForUnaveragedMeasurements(currentWindow: AveragingWindow, stream: MeasurementStreamEntity) -> NSFetchRequest<MeasurementEntity> {
