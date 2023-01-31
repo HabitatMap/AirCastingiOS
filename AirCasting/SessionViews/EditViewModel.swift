@@ -25,7 +25,7 @@ class EditSessionViewModel: EditViewModel {
     @Published var shouldShowError = false
     @Published var shouldDismiss = false
     @Published var alert: AlertInfo?
-    @Injected private var sessionStorage: SessionEditingStorage
+    @Injected private var sessionStorage: TestMeasurementStreamStorage
     @Injected private var sessionDownloader: SingleSessionDownloader
     @Injected private var sessionUpdateService: SessionUpdateService
     @Injected private var networkChecker: NetworkChecker

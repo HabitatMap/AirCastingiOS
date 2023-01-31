@@ -18,7 +18,7 @@ protocol SyncingMeasurementsViewModel: ObservableObject {
 final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel, ObservableObject {
     
     var sessionDownloader: MeasurementsDownloadable
-    @Injected private var persistence: SyncingMeasurementsStorage
+    @Injected private var persistence: TestMeasurementStreamStorage
     var task: Cancellable?
     var session: SessionEntity
     @Published var showLoadingIndicator = true

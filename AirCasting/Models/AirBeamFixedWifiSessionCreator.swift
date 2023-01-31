@@ -10,7 +10,7 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
         case invalidCreateSessionContext(CreateSessionContext)
     }
     @Injected private var userAuthenticationSession: UserAuthenticationSession
-    @Injected private var persistence: SessionCreatingStorage
+    @Injected private var persistence: TestMeasurementStreamStorage
     @Injected private var uiStore: UIStorage
     private let createSessionService: CreateSessionAPIService
     

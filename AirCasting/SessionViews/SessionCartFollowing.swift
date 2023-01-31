@@ -20,7 +20,7 @@ extension SessionFollowing {
  }
 
 class MeasurementStreamStorageFollowingSettable: SessionFollowingSettable {
-    @Injected private var sessionFollowingStorage: SessionFollowingStorage
+    @Injected private var sessionFollowingStorage: TestMeasurementStreamStorage
     @Injected private var uiStorage: UIStorage
     private let session: SessionEntity
     

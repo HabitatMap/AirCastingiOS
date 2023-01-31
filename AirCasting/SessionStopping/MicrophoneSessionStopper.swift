@@ -7,7 +7,7 @@ import Resolver
 class MicrophoneSessionStopper: SessionStoppable {
     private let uuid: SessionUUID
     @Injected private var microphoneManager: MicrophoneManager
-    @Injected private var sessionFinishingStorage: MobileSessionFinishingStorage
+    @Injected private var sessionFinishingStorage: TestMeasurementStreamStorage
     
     init(uuid: SessionUUID) {
         self.uuid = uuid

@@ -6,7 +6,7 @@ import Combine
 import Resolver
 
 class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
-    @Injected private var deletingStorage: SessionDeletingStorage
+    @Injected private var deletingStorage: TestMeasurementStreamStorage
     private var session: SessionEntity
     @Injected private var streamRemover: SessionUpdateService
     @Injected private var sessionSynchronizer: SessionSynchronizer

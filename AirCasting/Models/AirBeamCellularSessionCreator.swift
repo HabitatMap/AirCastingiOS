@@ -10,7 +10,7 @@ final class AirBeamCellularSessionCreator: SessionCreator {
         case invalidCreateSessionContext(CreateSessionContext)
     }
     @Injected private var userAuthenticationSession: UserAuthenticationSession
-    @Injected private var sessionStorage: SessionCreatingStorage
+    @Injected private var sessionStorage: TestMeasurementStreamStorage
     @Injected private var uiStore: UIStorage
     private let createSessionService: CreateSessionAPIService
     

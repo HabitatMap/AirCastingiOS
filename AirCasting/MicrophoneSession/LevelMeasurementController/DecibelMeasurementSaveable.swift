@@ -7,7 +7,7 @@ import Resolver
 final class DecibelMeasurementSaveable: MeasurementSaveable {
     private let session: Session
     private var databasePrepared: Bool = false
-    @Injected private var persistence: MobileSessionRecordingStorage
+    @Injected private var persistence: TestMeasurementStreamStorage
     @Injected private var uiStorage: UIStorage
     @Injected private var locationService: LocationService
     
@@ -33,7 +33,7 @@ final class DecibelMeasurementSaveable: MeasurementSaveable {
             persistence.accessStorage { [weak self] storage in
                 do {
                     guard let session = self?.session else { return }
-                    guard let streamID = try storage.existingMeasurementStream(session.uuid, name: Constants.SensorName.microphone) else {
+                    guard let streamID = try storage.existingMeasurementStreamLocalID(session.uuid, name: Constants.SensorName.microphone) else {
                         throw DecibelMeasurementSaveableError.streamNotFound
                     }
                     try storage.addMeasurementValue(value, at: location, toStreamWithID: streamID, on: DateBuilder.getRawDate().currentUTCTimeZoneDate)

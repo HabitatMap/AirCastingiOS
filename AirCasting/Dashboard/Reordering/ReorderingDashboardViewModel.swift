@@ -11,7 +11,7 @@ class ReorderingDashboardViewModel: ObservableObject {
     @Published var currentlyDraggedSession: Sessionable?
     @Injected private var uiStorage: UIStorage
     @Injected private var externalSessionsStore: ExternalSessionsStore
-    @Injected private var sessionFollowingStorage: SessionFollowingStorage
+    @Injected private var sessionFollowingStorage: TestMeasurementStreamStorage
     
     init(sessions: [Sessionable], thresholds: [SensorThreshold]) {
         self.sessions = sessions.filter { $0.uuid != "" && !$0.gotDeleted }

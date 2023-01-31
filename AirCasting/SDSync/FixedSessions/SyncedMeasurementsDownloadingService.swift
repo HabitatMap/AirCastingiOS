@@ -9,7 +9,7 @@ protocol SyncedMeasurementsDownloader {
 }
 
 struct SyncedMeasurementsDownloadingService: SyncedMeasurementsDownloader {
-    @Injected private var syncStorage: SDSyncMeasurementsStorage
+    @Injected private var syncStorage: TestMeasurementStreamStorage
     @Injected private var measurementsDownloadingService: MeasurementUpdatingService
     let measurementTimeframe: Double = 24 * 60 * 60 // 24 hours in seconds
 
@@ -30,7 +30,7 @@ struct SyncedMeasurementsDownloadingService: SyncedMeasurementsDownloader {
         }
     }
 
-    private func getLastSyncDate(for sessionUUID: SessionUUID, storage: HiddenSDSyncMeasurementsStorage) -> Date {
+    private func getLastSyncDate(for sessionUUID: SessionUUID, storage: HiddenTestMeasurementStreamStorage) -> Date {
         if let existingSession = try? storage.getExistingSession(with: sessionUUID) {
             if let sessionEndTimeSeconds = existingSession.endTime?.timeIntervalSince1970 {
                 let last24hours = DateBuilder.getDateWithTimeIntervalSince1970((sessionEndTimeSeconds - measurementTimeframe))

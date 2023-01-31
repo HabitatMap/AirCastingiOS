@@ -18,15 +18,7 @@ extension Resolver: ResolverRegistering {
         .implements(SessionInsertable.self)
         .implements(SessionUpdateable.self)
         .scope(.application)
-        main.register { DefaultSessionNotesStorage() as SessionNotesStorage }.scope(.cached)
-        main.register { DefaultSessionDeletingStorage() as SessionDeletingStorage }.scope(.cached)
-        main.register { DefaultSDSyncMeasurementsStorage() as SDSyncMeasurementsStorage }.scope(.cached)
-        main.register { DefaultMobileSessionRecordingStorage() as MobileSessionRecordingStorage }.scope(.cached)
-        main.register { DefaultMobileSessionFinishingStorage() as MobileSessionFinishingStorage }
-        main.register { DefaultSessionCreatingStorage() as SessionCreatingStorage }
-        main.register { DefaultSessionFollowingStorage() as SessionFollowingStorage }
-        main.register { DefaultSessionEditingStorage() as SessionEditingStorage }
-        main.register { DefaultSyncingMeasurementsStorage() as SyncingMeasurementsStorage }
+        main.register { DefaultTestMeasurementStreamStorage() as TestMeasurementStreamStorage }.scope(.cached)
         main.register { (_, _) -> UIStorage in
             let context = Resolver.resolve(PersistenceController.self).editContext
             return CoreDataUIStorage(context: context)

@@ -12,7 +12,7 @@ protocol MeasurementsSavingService {
 }
 
 class DefaultMeasurementsSaver: MeasurementsSavingService {
-    @Injected private var persistence: MobileSessionRecordingStorage
+    @Injected private var persistence: TestMeasurementStreamStorage
     @Injected private var uiStorage: UIStorage
     private var peripheralMeasurementManager = PeripheralMeasurementTimeLocationManager()
 
@@ -75,7 +75,7 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
     private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, location: CLLocationCoordinate2D?, time: Date) {
         persistence.accessStorage { storage in
             do {
-                let existingStreamID = try storage.existingMeasurementStream(sessionUUID, name: stream.sensorName)
+                let existingStreamID = try storage.existingMeasurementStreamLocalID(sessionUUID, name: stream.sensorName)
                 guard let id = existingStreamID else {
                     let streamId = try self.createSessionStream(stream, sessionUUID, storage: storage)
                     try storage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: streamId, on: time)
@@ -88,7 +88,7 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         }
     }
 
-    private func createSessionStream(_ stream: ABMeasurementStream, _ sessionUUID: SessionUUID, storage: HiddenMobileSessionRecordingStorage) throws -> MeasurementStreamLocalID {
+    private func createSessionStream(_ stream: ABMeasurementStream, _ sessionUUID: SessionUUID, storage: HiddenTestMeasurementStreamStorage) throws -> MeasurementStreamLocalID {
         let sessionStream = MeasurementStream(id: nil,
                                               sensorName: stream.sensorName,
                                               sensorPackageName: stream.packageName,

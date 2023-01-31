@@ -11,7 +11,7 @@ class EditLocationlessSessionViewModel: EditViewModel {
     @Published var shouldShowError = false
     @Published var shouldDismiss = false
     @Published var alert: AlertInfo?
-    @Injected private var sessionStorage: SessionEditingStorage
+    @Injected private var sessionStorage: TestMeasurementStreamStorage
     private let sessionUUID: SessionUUID
     
     init(sessionUUID: SessionUUID, sessionName: String, sessionTags: String) {

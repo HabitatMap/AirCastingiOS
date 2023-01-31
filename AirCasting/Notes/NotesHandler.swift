@@ -16,7 +16,7 @@ protocol NotesHandler: AnyObject {
 
 @objc
 class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDelegate {
-    @Injected private var storage: SessionNotesStorage
+    @Injected private var storage: TestMeasurementStreamStorage
     var sessionUUID: SessionUUID
     @Injected private var locationTracker: LocationTracker
     @Injected private var sessionUpdateService: SessionUpdateService
@@ -135,7 +135,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
 
 // MARK: Internal methods
 extension NotesHandlerDefault {
-    private func fetchSession(storage: HiddenSessionNotesStorage, completion: @escaping (SessionEntity) -> Void) {
+    private func fetchSession(storage: HiddenTestMeasurementStreamStorage, completion: @escaping (SessionEntity) -> Void) {
         do {
             completion(try storage.getExistingSession(with: sessionUUID))
         } catch {
