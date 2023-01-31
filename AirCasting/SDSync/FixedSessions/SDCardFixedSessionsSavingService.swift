@@ -12,7 +12,7 @@ enum UploadingError: Error {
 
 class SDCardFixedSessionsUploadingService {
     @Injected private var fileLineReader: FileLineReader
-    @Injected private var sessionStorage: SessionStorage
+    @Injected private var sessionStorage: TestMeasurementStreamStorage
     @Injected private var apiService: UploadFixedSessionAPIService
     private let parser = SDCardMeasurementsParser()
     

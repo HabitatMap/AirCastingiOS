@@ -41,6 +41,7 @@ protocol HiddenTestMeasurementStreamStorage {
     func observerForMobileSessions() -> NSFetchedResultsController<SessionEntity>
     func fetchUnaveragedMeasurements(currentWindow: AveragingWindow, stream: MeasurementStreamEntity) throws -> [MeasurementEntity]
     func deleteMeasurements(_ measurements: [MeasurementEntity])
+    func clearBluetoothPeripheralUUID(_ sessionUUID: SessionUUID) throws
 }
 
 class DefaultTestMeasurementStreamStorage: TestMeasurementStreamStorage {
@@ -387,5 +388,11 @@ class DefaultHiddenTestMeasurementStreamStorage: HiddenTestMeasurementStreamStor
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "time", ascending: true)]
         fetchRequest.predicate = NSPredicate(format: "averagingWindow != %d AND measurementStream == %@", currentWindow.rawValue, stream)
         return fetchRequest
+    }
+    
+    func clearBluetoothPeripheralUUID(_ sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        guard let bluetoothConnection = sessionEntity.bluetoothConnection else { return }
+        bluetoothConnection.peripheralUUID = ""
     }
 }

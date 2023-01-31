@@ -533,7 +533,6 @@
 		FA21BC9629027D4E002E981C /* ReconnectSessionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA21BC9529027D4E002E981C /* ReconnectSessionCardView.swift */; };
 		FA2438EF28F98EA40028B126 /* DeviceKit in Frameworks */ = {isa = PBXBuildFile; productRef = FA2438EE28F98EA40028B126 /* DeviceKit */; };
 		FA26E9E928107150008EE514 /* SearchParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA26E9E828107150008EE514 /* SearchParameter.swift */; };
-		FA396CA128A246BA00F8067C /* SessionStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA396CA028A246BA00F8067C /* SessionStorage.swift */; };
 		FA3AB51428853FBF00DB9A2B /* ConnectionProtectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3AB51328853FBF00DB9A2B /* ConnectionProtectable.swift */; };
 		FA3AB5162885403B00DB9A2B /* BluetoothConnectionProtector.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3AB5152885403B00DB9A2B /* BluetoothConnectionProtector.swift */; };
 		FA45FEFE2844D53700F9C25F /* ExternalGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA45FEFD2844D53700F9C25F /* ExternalGraphView.swift */; };
@@ -1119,7 +1118,6 @@
 		FA1C30BC2861BA5F0034C1C9 /* SignInPersistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInPersistance.swift; sourceTree = "<group>"; };
 		FA21BC9529027D4E002E981C /* ReconnectSessionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconnectSessionCardView.swift; sourceTree = "<group>"; };
 		FA26E9E828107150008EE514 /* SearchParameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchParameter.swift; sourceTree = "<group>"; };
-		FA396CA028A246BA00F8067C /* SessionStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStorage.swift; sourceTree = "<group>"; };
 		FA3AB51328853FBF00DB9A2B /* ConnectionProtectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionProtectable.swift; sourceTree = "<group>"; };
 		FA3AB5152885403B00DB9A2B /* BluetoothConnectionProtector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothConnectionProtector.swift; sourceTree = "<group>"; };
 		FA45FEFD2844D53700F9C25F /* ExternalGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalGraphView.swift; sourceTree = "<group>"; };
@@ -1315,7 +1313,6 @@
 			isa = PBXGroup;
 			children = (
 				DD2DDBAD27B5450100807011 /* UIStorage.swift */,
-				FA396CA028A246BA00F8067C /* SessionStorage.swift */,
 				4F8CDBD3265F8EE000976B25 /* SessionDataEraser.swift */,
 				33406246281821FA004DA4DA /* ExternalSessionsStore.swift */,
 				ACDA5EF4285B43FD00A531E9 /* SessionEntityStore.swift */,
@@ -3366,7 +3363,6 @@
 				B3BDD35D28CB6C5B00913622 /* CLLocation+Helpers.swift in Sources */,
 				AC006D29275F52CB00E99019 /* CSVMeasurementStream.swift in Sources */,
 				B3C6D0832890631900A25F5F /* LocationServiceAdapter.swift in Sources */,
-				FA396CA128A246BA00F8067C /* SessionStorage.swift in Sources */,
 				B376DD23268091B80083FD2F /* BodyEncodingError.swift in Sources */,
 				DDB44C252704AF830027176E /* ActiveSessionsAveragingController.swift in Sources */,
 				336A909727A492A000851100 /* DropViewDelegate.swift in Sources */,
