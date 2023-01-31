@@ -120,7 +120,6 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         Log.info("Processing download measurements response for: \(sessionUUID)")
         let context = persistenceController.editContext
         context.perform {
-            context.refreshAllObjects()
             do {
                 defer { completion() }
                 if !isExternal {

@@ -62,7 +62,6 @@ class DefaultHiddenSessionNotesStorage: HiddenSessionNotesStorage {
     func save() throws {
         guard context.hasChanges else { return }
         try self.context.save()
-        context.refreshAllObjects()
     }
     
     func getNotes(for sessionUUID: SessionUUID) throws -> [Note] {
