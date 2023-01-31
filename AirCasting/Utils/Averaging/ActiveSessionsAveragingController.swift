@@ -46,7 +46,7 @@ enum TimeThreshold: Int {
 }
 
 final class ActiveSessionsAveragingController: NSObject {
-    @Injected var storage: AveragingServiceStorage
+    @Injected var storage: TestMeasurementStreamStorage
     @Injected private var averagingService: MeasurementsAveragingService
     private var timers: [SessionUUID : AnyCancellable] = [:]
     private var fetchedResultsController: NSFetchedResultsController<SessionEntity>?
@@ -106,7 +106,7 @@ final class ActiveSessionsAveragingController: NSObject {
         timers[uuid] = timer
     }
     
-    private func perform(storage: HiddenAveragingServiceStorage, session: SessionEntity, averagingWindow: AveragingWindow) {
+    private func perform(storage: HiddenTestMeasurementStreamStorage, session: SessionEntity, averagingWindow: AveragingWindow) {
         Log.info("Performing averaging for \(session.uuid) [\(session.name ?? "unnamed")]")
         session.allStreams.forEach { stream in
             guard let measurements = try? storage.fetchUnaveragedMeasurements(currentWindow: averagingWindow, stream: stream) else { return }

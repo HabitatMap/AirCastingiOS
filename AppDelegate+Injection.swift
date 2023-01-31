@@ -31,10 +31,6 @@ extension Resolver: ResolverRegistering {
             let context = Resolver.resolve(PersistenceController.self).editContext
             return DefaultSessionEntityStore(context: context)
         }
-        main.register { (_, _) -> AveragingServiceStorage in
-            let context = Resolver.resolve(PersistenceController.self).editContext
-            return DefaultAveragingServiceStorage(context: context)
-        }.scope(.cached)
         main.register { DefaultFileLineReader() as FileLineReader }
         main.register { SessionDataEraser() as DataEraser }
 

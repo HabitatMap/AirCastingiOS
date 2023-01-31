@@ -37,6 +37,10 @@ protocol HiddenTestMeasurementStreamStorage {
     
     func saveThresholdFor(sensorName: String, thresholdVeryHigh: Int32, thresholdHigh: Int32, thresholdMedium: Int32, thresholdLow: Int32, thresholdVeryLow: Int32) throws
     func addMeasurementValue(_ value: Double, at location: CLLocationCoordinate2D?, toStream stream: MeasurementStreamEntity, on time: Date) throws
+    
+    func observerForMobileSessions() -> NSFetchedResultsController<SessionEntity>
+    func fetchUnaveragedMeasurements(currentWindow: AveragingWindow, stream: MeasurementStreamEntity) throws -> [MeasurementEntity]
+    func deleteMeasurements(_ measurements: [MeasurementEntity])
 }
 
 class DefaultTestMeasurementStreamStorage: TestMeasurementStreamStorage {
@@ -355,5 +359,33 @@ class DefaultHiddenTestMeasurementStreamStorage: HiddenTestMeasurementStreamStor
         newMeasurement.time = measurement.time
         newMeasurement.value = measurement.value
         stream.addToMeasurements(newMeasurement)
+    }
+    
+    func observerForMobileSessions() -> NSFetchedResultsController<SessionEntity> {
+        let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "type == %@ AND status == %i",
+                                        SessionType.mobile.rawValue,
+                                        SessionStatus.RECORDING.rawValue)
+        request.sortDescriptors = [NSSortDescriptor(key: "type", ascending: true)]
+        let frc = NSFetchedResultsController(fetchRequest: request,
+                                             managedObjectContext: context,
+                                             sectionNameKeyPath: nil, cacheName: nil)
+        return frc
+    }
+    
+    func fetchUnaveragedMeasurements(currentWindow: AveragingWindow, stream: MeasurementStreamEntity) throws -> [MeasurementEntity] {
+        let fetchRequest = fetchRequestForUnaveragedMeasurements(currentWindow: currentWindow, stream: stream)
+        return try context.fetch(fetchRequest)
+    }
+    
+    func deleteMeasurements(_ measurements: [MeasurementEntity]) {
+        measurements.forEach(context.delete(_:))
+    }
+    
+    private func fetchRequestForUnaveragedMeasurements(currentWindow: AveragingWindow, stream: MeasurementStreamEntity) -> NSFetchRequest<MeasurementEntity> {
+        let fetchRequest = MeasurementEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "time", ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "averagingWindow != %d AND measurementStream == %@", currentWindow.rawValue, stream)
+        return fetchRequest
     }
 }
