@@ -22,10 +22,8 @@ extension NSManagedObjectContext {
         req.predicate = NSPredicate(format: "time < %@ AND measurementStream == %@",
                                     NSDate(timeIntervalSince1970: thresholdInSeconds), stream)
         do {
-            self.refreshAllObjects()
             let measurements = try self.fetch(req)
             measurements.forEach { Log.info("Removing measurement for stream: \($0.measurementStream.sensorName ?? "no name") from \(String(describing: $0.time))"); self.delete($0) }
-            try! self.save()
         } catch {
             throw error
         }
