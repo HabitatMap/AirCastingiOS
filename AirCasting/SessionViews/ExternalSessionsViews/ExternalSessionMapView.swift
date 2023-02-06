@@ -11,6 +11,7 @@ struct ExternalSessionMapView: View {
     @Binding var selectedStream: MeasurementStreamEntity?
     @StateObject var statsContainerViewModel: StatisticsContainerViewModel
     @Injected private var locationTracker: LocationTracker
+    @State private var showThresholdsMenu = false
     
     private var pathPoints: [_MapView.PathPoint] {
         return selectedStream?.allMeasurements?.compactMap {
@@ -33,11 +34,16 @@ struct ExternalSessionMapView: View {
                     StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
                                             threshold: threshold)
                 }.padding(.bottom)
-                if let selectedStream = selectedStream {
-                    NavigationLink(destination: ThresholdsSettingsView(thresholdValues: threshold.thresholdsBinding,
-                                                                       initialThresholds: selectedStream.thresholds, threshold: threshold)) {
+                if let selectedStream = selectedStream, let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold) {
+                    Button(action: { showThresholdsMenu = true  }, label: {
                         EditButtonView()
-                    }.padding([.bottom, .leading, .trailing])
+                            .padding([.bottom, .leading, .trailing])
+                    })
+                    .sheet(isPresented: $showThresholdsMenu) {
+                        ThresholdsSettingsView(thresholdValues: formatter.formattedBinding(),
+                                                                           initialThresholds: selectedStream.thresholds,
+                                                                           threshold: threshold)
+                    }
                 }
                 ThresholdsSliderView(threshold: threshold)
                 // Fixes labels covered by tabbar

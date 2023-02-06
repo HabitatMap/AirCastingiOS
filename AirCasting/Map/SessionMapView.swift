@@ -28,6 +28,7 @@ struct SessionMapView: View {
     @Binding var showLoadingIndicator: Bool
     @Binding var selectedStream: MeasurementStreamEntity?
     @State var currentlyPresentedNoteDetails: MapNote? = nil // If set to nil, hide modal, if not nil show modal
+    @State private var showThresholdsMenu = false
     @Injected private var locationTracker: LocationTracker
     @StateObject private var heatmapContainer = HeatmapContainer()
     
@@ -125,11 +126,15 @@ struct SessionMapView: View {
                     }.padding(.bottom)
 
                     if let selectedStream = selectedStream, let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold) {
-                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: formatter.formattedBinding(),
-                                                                           initialThresholds: selectedStream.thresholds,
-                                                                           threshold: threshold)) {
+                        Button(action: { showThresholdsMenu = true  }, label: {
                             EditButtonView()
-                        }.padding([.bottom, .leading, .trailing])
+                                .padding([.bottom, .leading, .trailing])
+                        })
+                        .sheet(isPresented: $showThresholdsMenu) {
+                            ThresholdsSettingsView(thresholdValues: formatter.formattedBinding(),
+                                                                               initialThresholds: selectedStream.thresholds,
+                                                                               threshold: threshold)
+                        }
                     }
                     ThresholdsSliderView(threshold: threshold)
                     // Fixes labels covered by tabbar
