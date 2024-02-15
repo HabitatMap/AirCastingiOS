@@ -6,27 +6,23 @@ PODS:
   - GoogleMaps/Maps (6.2.1):
     - GoogleMaps/Base
   - GooglePlaces (6.2.1)
-  - GzipSwift (5.1.1)
 
 DEPENDENCIES:
   - DeviceKit (~> 4.5.0)
   - GoogleMaps (= 6.2.1)
   - GooglePlaces (= 6.2.1)
-  - GzipSwift
 
 SPEC REPOS:
   trunk:
     - DeviceKit
     - GoogleMaps
     - GooglePlaces
-    - GzipSwift
 
 SPEC CHECKSUMS:
   DeviceKit: c622fc19f795f3e0b4d75d6d11b26604338cdab3
   GoogleMaps: 20d7b12be49a14287f797e88e0e31bc4156aaeb4
   GooglePlaces: 94974aa119573d5acc2a35a699948dac838abd73
-  GzipSwift: 893f3e48e597a1a4f62fafcb6514220fcf8287fa
 
-PODFILE CHECKSUM: 78563172735ad9140c661863c27c3d20db92dde2
+PODFILE CHECKSUM: 2d7d2e50328059b1c04217943f685c1b02f3c408
 
 COCOAPODS: 1.11.3
