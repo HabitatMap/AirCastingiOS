@@ -3841,7 +3841,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.15.0;
+				MARKETING_VERSION = 1.16.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCastingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -3864,7 +3864,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.15.0;
+				MARKETING_VERSION = 1.16.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCastingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -4012,7 +4012,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.15.0;
+				MARKETING_VERSION = 1.16.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4041,7 +4041,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.15.0;
+				MARKETING_VERSION = 1.16.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "HabitatMap AppStore";
@@ -4132,7 +4132,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.15.0;
+				MARKETING_VERSION = 1.16.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "AirCasting Ad hoc distribution";
@@ -4156,7 +4156,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.15.0;
+				MARKETING_VERSION = 1.16.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCastingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -4174,7 +4174,7 @@
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.15.0;
+				MARKETING_VERSION = 1.16.0;
 				PRODUCT_BUNDLE_IDENTIFIER = habitatMap.AirCastingUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -4193,7 +4193,7 @@
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.15.0;
+				MARKETING_VERSION = 1.16.0;
 				PRODUCT_BUNDLE_IDENTIFIER = habitatMap.AirCastingUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -4212,7 +4212,7 @@
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.15.0;
+				MARKETING_VERSION = 1.16.0;
 				PRODUCT_BUNDLE_IDENTIFIER = habitatMap.AirCastingUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
