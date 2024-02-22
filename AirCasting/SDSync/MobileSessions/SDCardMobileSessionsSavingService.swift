@@ -37,7 +37,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     @Injected private var averagingService: MeasurementsAveragingService
     @Injected private var persistenceController: PersistenceController
     private var databaseStorage = SDSyncMobileSessionsDatabaseStorage()
-    private lazy var context: NSManagedObjectContext = persistenceController.createContext()
+    private lazy var context: NSManagedObjectContext = persistenceController.editContext
     private let parser = SDCardMeasurementsParser()
     
     func saveDataToDb(filesDirectoryURL: URL, deviceID: String, completion: @escaping (Result<Void, Error>) -> Void) {
