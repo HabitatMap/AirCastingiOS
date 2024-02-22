@@ -236,6 +236,7 @@
 		AC9F526C2652A360003CF61F /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F52692652A360003CF61F /* DashboardView.swift */; };
 		AC9F526D2652A360003CF61F /* EmptyMobileDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F526A2652A360003CF61F /* EmptyMobileDashboardView.swift */; };
 		AC9F526E2652A360003CF61F /* AirSectionPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */; };
+		ACB3F7712B7DEDA300069302 /* Gzip in Frameworks */ = {isa = PBXBuildFile; productRef = ACB3F7702B7DEDA300069302 /* Gzip */; };
 		ACB7084C271EC50F00BA3816 /* Integer+ArraySlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACB7084B271EC50F00BA3816 /* Integer+ArraySlice.swift */; };
 		ACBB05102761F1C400A6B3FB /* SDStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBB050F2761F1C400A6B3FB /* SDStream.swift */; };
 		ACBB05132761F21500A6B3FB /* SDCardFixedSessionsSavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBB05122761F21500A6B3FB /* SDCardFixedSessionsSavingService.swift */; };
@@ -732,7 +733,7 @@
 		4FB39DFC2621B53C00E5E564 /* AirCastingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AirCastingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FB39E002621B53C00E5E564 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4FB39E082621B55D00E5E564 /* FixedSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSessionTests.swift; sourceTree = "<group>"; };
-		4FB39E0E2621B5C100E5E564 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		4FB39E0E2621B5C100E5E564 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		4FB39E352621B77D00E5E564 /* APIClientMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClientMock.swift; sourceTree = "<group>"; };
 		4FB39E392621BE7F00E5E564 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		4FB39E3F2622252700E5E564 /* XCTestCase+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Extensions.swift"; sourceTree = "<group>"; };
@@ -1186,6 +1187,7 @@
 			files = (
 				B35E04C1278C922A00227D8D /* Resolver in Frameworks */,
 				B37DA29B283189DD002A9708 /* FirebaseMessaging in Frameworks */,
+				ACB3F7712B7DEDA300069302 /* Gzip in Frameworks */,
 				ACF600BE2678D7F4005DD97C /* SwiftSimplify in Frameworks */,
 				AC5226C3270C50520048A585 /* Algorithms in Frameworks */,
 				B37DA29D283189DD002A9708 /* FirebaseRemoteConfigSwift in Frameworks */,
@@ -3006,6 +3008,7 @@
 				B37DA29C283189DD002A9708 /* FirebaseRemoteConfigSwift */,
 				FABFB85D28BE64A700C8B157 /* Charts */,
 				FA2438EE28F98EA40028B126 /* DeviceKit */,
+				ACB3F7702B7DEDA300069302 /* Gzip */,
 			);
 			productName = AirCasting;
 			productReference = AC7EB37225A6FB3A00A7F2AF /* AirCasting.app */;
@@ -3063,12 +3066,13 @@
 			mainGroup = AC7EB36925A6FB3A00A7F2AF;
 			packageReferences = (
 				ACF600BC2678D7F4005DD97C /* XCRemoteSwiftPackageReference "SwiftSimplify" */,
-				AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms.git" */,
+				AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 				B35E04BF278C922A00227D8D /* XCRemoteSwiftPackageReference "Resolver" */,
 				3375E8D02791E7100019A5DE /* XCRemoteSwiftPackageReference "ZipArchive" */,
 				B37DA295283189DD002A9708 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				FABFB85C28BE64A700C8B157 /* XCRemoteSwiftPackageReference "Charts" */,
 				FA2438ED28F98EA40028B126 /* XCRemoteSwiftPackageReference "DeviceKit" */,
+				ACB3F76F2B7DEDA300069302 /* XCRemoteSwiftPackageReference "GzipSwift" */,
 			);
 			productRefGroup = AC7EB37325A6FB3A00A7F2AF /* Products */;
 			projectDirPath = "";
@@ -3920,7 +3924,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -3977,7 +3981,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -4003,7 +4007,7 @@
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -4025,12 +4029,14 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -4039,6 +4045,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "HabitatMap AppStore";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Ad Hoc Profile";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -4093,7 +4100,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -4113,12 +4120,14 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -4127,6 +4136,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "AirCasting Ad hoc distribution";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Ad Hoc Profile";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -4266,12 +4276,20 @@
 				version = 2.4.2;
 			};
 		};
-		AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms.git" */ = {
+		AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-algorithms.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.0.0;
+			};
+		};
+		ACB3F76F2B7DEDA300069302 /* XCRemoteSwiftPackageReference "GzipSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/1024jp/GzipSwift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.0.1;
 			};
 		};
 		ACF600BC2678D7F4005DD97C /* XCRemoteSwiftPackageReference "SwiftSimplify" */ = {
@@ -4324,12 +4342,17 @@
 		};
 		AC5226C2270C50520048A585 /* Algorithms */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms.git" */;
+			package = AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
 			productName = Algorithms;
 		};
 		AC787D74267B41990034B222 /* AirCastingStyling */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AirCastingStyling;
+		};
+		ACB3F7702B7DEDA300069302 /* Gzip */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ACB3F76F2B7DEDA300069302 /* XCRemoteSwiftPackageReference "GzipSwift" */;
+			productName = Gzip;
 		};
 		ACF600BD2678D7F4005DD97C /* SwiftSimplify */ = {
 			isa = XCSwiftPackageProductDependency;

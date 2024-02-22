@@ -42,6 +42,7 @@ class PersistenceController: ObservableObject {
         let ctx = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         ctx.parent = sourceOfTruthContext
         ctx.automaticallyMergesChangesFromParent = true
+        ctx.name = "viewContext"
         return ctx
     }()
     
@@ -81,6 +82,7 @@ class PersistenceController: ObservableObject {
         let ctx = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         ctx.parent = sourceOfTruthContext
         ctx.automaticallyMergesChangesFromParent = true
+        ctx.name = "editContext"
         return ctx
     }()
     
@@ -88,6 +90,7 @@ class PersistenceController: ObservableObject {
         let ctx = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         ctx.parent = sourceOfTruthContext
         ctx.automaticallyMergesChangesFromParent = true
+        ctx.name = "createContext"
         return ctx
     }
     

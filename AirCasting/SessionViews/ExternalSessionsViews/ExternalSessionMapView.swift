@@ -34,7 +34,8 @@ struct ExternalSessionMapView: View {
                     StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
                                             threshold: threshold)
                 }.padding(.bottom)
-                if let selectedStream = selectedStream, let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold) {
+                if let selectedStream = selectedStream {
+                    let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
                     Button(action: { showThresholdsMenu = true  }, label: {
                         EditButtonView()
                             .padding([.bottom, .leading, .trailing])
