@@ -57,7 +57,7 @@ struct Strings {
                                                      comment: "")
         static let keepScreenTitle = NSLocalizedString("Keep screen on",
                                                        comment: "")
-        static let clearSDTitle = NSLocalizedString("Clear SD card",
+        static let clearSDTitle = NSLocalizedString("Clear AirBeam data storage",
                                                     comment: "")
         static let appInfoTitle = NSLocalizedString("AirCasting App v",
                                                     comment: "")
