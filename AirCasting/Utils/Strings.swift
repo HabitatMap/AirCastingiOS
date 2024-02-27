@@ -485,7 +485,7 @@ struct Strings {
                                                            comment: "")
         static let airBeamDescriptionText: String = NSLocalizedString("Did you know?",
                                                                       comment: "")
-        static let airBeamDescriptionDescription: String = NSLocalizedString("AirBeam3 is weather resistant. To keep tabs on your outdoor air quality 24/7, hang one outside your home and record a fixed session.",
+        static let airBeamDescriptionDescription: String = NSLocalizedString("AirBeam3 & AirBeam Mini are weather resistant. Hang them outside and record a fixed session to keep tabs on your air quality 24/7",
                                                                              comment: "")
     }
     
