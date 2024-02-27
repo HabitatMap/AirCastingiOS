@@ -416,15 +416,16 @@ private extension ChooseSessionTypeView {
 
 extension ChooseSessionTypeView {
     func chooseSessionButton(title: Text) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+        ZStack(alignment: .topLeading) {
+            Color.aircastingBackground
             title
                 .font(Fonts.muliRegularHeading4)
                 .foregroundColor(.aircastingGray)
+                .padding(.horizontal)
+                .padding(.top, buttonHeight / 3)
         }
         .multilineTextAlignment(.leading)
-        .padding(15)
-        .frame(maxWidth: .infinity, minHeight: buttonHeight, maxHeight: .infinity, alignment: .leading)
-        .background(Color.aircastingBackground)
+        .frame(maxWidth: .infinity, minHeight: buttonHeight, maxHeight: .infinity)
         .cornerRadius(8)
         .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
     }
