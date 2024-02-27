@@ -24,14 +24,12 @@ struct ABMeasurementsView<VM: SyncingMeasurementsViewModel>: View {
     
     var body: some View {
         ZStack {
-            if let viewModel = viewModel {
-                _ABMeasurementsView(measurementsViewModel: viewModel as! DefaultSyncingMeasurementsViewModel,
-                                    session: session,
-                                    isCollapsed: $isCollapsed,
-                                    selectedStream: $selectedStream,
-                                    thresholds: .init(value: thresholds.value),
-                                    measurementPresentationStyle: measurementPresentationStyle)
-            }
+            _ABMeasurementsView(measurementsViewModel: viewModel as! DefaultSyncingMeasurementsViewModel,
+                                session: session,
+                                isCollapsed: $isCollapsed,
+                                selectedStream: $selectedStream,
+                                thresholds: .init(value: thresholds.value),
+                                measurementPresentationStyle: measurementPresentationStyle)
         }
     }
 }
