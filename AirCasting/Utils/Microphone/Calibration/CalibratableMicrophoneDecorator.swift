@@ -13,7 +13,7 @@ class CalibratableMicrophoneDecorator: Microphone {
     
     init(microphone: Microphone) {
         self.microphone = microphone
-        Log.info("Initial zero dB level: \(calibrationValueProvider.zeroLevelAdjustment)")
+        Log.info("Initial zero dB level: \(self.calibrationValueProvider.zeroLevelAdjustment)")
     }
     
     func getCurrentDecibelLevel() -> Double? {

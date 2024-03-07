@@ -21,7 +21,7 @@ class PersistenceController: ObservableObject {
             }
         }
         didSet {
-            Log.info("UI updates \(uiSuspended ? "suspended" : "resumed")")
+            Log.info("UI updates \(self.uiSuspended ? "suspended" : "resumed")")
             
             if !uiSuspended {
                 propagateChangesToUI() {
