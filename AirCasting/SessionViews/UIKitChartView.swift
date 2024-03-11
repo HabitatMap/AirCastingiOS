@@ -102,6 +102,9 @@ class UI_PollutionChart: UIView {
         lineChartView.xAxis.drawGridLinesEnabled = true
         lineChartView.minOffset = 20
         
+        lineChartView.highlightPerDragEnabled = false
+        lineChartView.highlightPerTapEnabled = false
+        
         // we are setting the values for x axis so that there is always a space for 8 averages and they are always starting at the right edge
         lineChartView.xAxis.axisMinimum = 0
         lineChartView.xAxis.axisMaximum = 8
