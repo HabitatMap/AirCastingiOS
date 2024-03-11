@@ -21,6 +21,8 @@ struct SearchView: View {
             title
             textField
             #warning("This part was intentionally disabled, refer to https://trello.com/c/WqkeHh2x - to know more")
+            // Michaels on this - "openAQ and PurpleAir have revoked free access to their data via their APIs"
+            
 // DISABLE - START
 //            parametersQuestion
 //            HStack(spacing: 12) {

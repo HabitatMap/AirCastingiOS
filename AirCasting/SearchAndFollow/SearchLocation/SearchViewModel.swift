@@ -30,11 +30,9 @@ class SearchViewModel: ObservableObject {
     }
     
     init() {
-        measurementTypes = [
-            .init(isSelected: true, name: Strings.SearchFollowParamNames.particulateMatter),
-            .init(isSelected: false, name: Strings.SearchFollowParamNames.ozone)
-        ]
-        onParameterTap(with: Strings.SearchFollowParamNames.particulateMatter)
+        let defaultParam = Strings.SearchFollowParamNames.particulateMatter
+        measurementTypes = [.init(isSelected: true, name: defaultParam)]
+        onParameterTap(with: defaultParam)
     }
     
     func textFieldTapped() { isLocationPopupPresented.toggle() }
