@@ -39,7 +39,7 @@ struct Graph: UIViewRepresentable {
     private var notesHandler: NotesHandler?
     
     var isAutozoomEnabled: Bool
-    let simplifiedGraphEntryThreshold = 1000
+    let simplifiedGraphEntryThreshold = 1500
     private let formatter: ThresholdFormatter
     
     init(stream: MeasurementStreamEntity, thresholds: SensorThreshold, isAutozoomEnabled: Bool) {
@@ -78,7 +78,7 @@ struct Graph: UIViewRepresentable {
         let allLimitLines = getLimitLines()
         uiView.limitLines = allLimitLines
         simplifyGraphline(entries: entries, uiView: uiView)
-        context.coordinator.totalNumberOfMeasurements = entries.count
+        updateLatestMeasurementDate(in: context)
         context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: thresholds)
         context.coordinator.currentMeasurementsNumber = calculateSeeingPointsNumber(entries: entries, uiView: uiView)
         context.coordinator.entries = entries
@@ -103,8 +103,9 @@ struct Graph: UIViewRepresentable {
             context.coordinator.currentMeasurementsNumber = counter
         }
         
-        guard context.coordinator.currentThreshold != thresholdWitness ||
-                context.coordinator.totalNumberOfMeasurements != stream.allMeasurements?.count ||
+        guard let latestMeasurement = stream.allMeasurements?.sorted(by: { $0.time < $1.time }).last,
+              context.coordinator.latestMeasurementDate != latestMeasurement.time ||
+                context.coordinator.currentThreshold != thresholdWitness ||
                 stream != context.coordinator.stream else { return }
         
         try? uiView.updateWithThreshold(thresholdValues: formatter.formattedNumerics())
@@ -119,15 +120,14 @@ struct Graph: UIViewRepresentable {
         
         simplifyGraphline(entries: entries, uiView: uiView)
         
+        updateLatestMeasurementDate(in: context)
         context.coordinator.entries = entries
         context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: thresholds)
-        context.coordinator.totalNumberOfMeasurements = entries.count
         context.coordinator.currentMeasurementsNumber = entries.count
         context.coordinator.stream = stream
     }
     
     private func simplifyGraphline(entries: [ChartDataEntry], uiView: AirCastingGraph) {
-        
         let counter: Int = calculateSeeingPointsNumber(entries: entries, uiView: uiView)
         
         guard counter > simplifiedGraphEntryThreshold else {
@@ -200,10 +200,14 @@ struct Graph: UIViewRepresentable {
         measurement.measurementStream.isTemperature && userSettings.convertToCelsius ? TemperatureConverter.calculateCelsius(fahrenheit: measurement.value) : measurement.value
     }
     
+    private func updateLatestMeasurementDate(in context: Context) {
+        context.coordinator.latestMeasurementDate = stream.allMeasurements?.sorted(by: { $0.time < $1.time }).last?.time
+    }
+    
     class Coordinator: NSObject, UINavigationControllerDelegate {
 
         var parent: Graph!
-        var totalNumberOfMeasurements: Int?
+        var latestMeasurementDate: Date?
         var currentThreshold: ThresholdWitness?
         var currentMeasurementsNumber: Int?
         var entries: [ChartDataEntry]?
