@@ -241,7 +241,6 @@
 		ACB968072B9F1E1F006AEC6B /* MiniSDCardMeasurementsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACB968062B9F1E1F006AEC6B /* MiniSDCardMeasurementsParser.swift */; };
 		ACB968092B9F2B93006AEC6B /* MiniSDSyncFileFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACB968082B9F2B93006AEC6B /* MiniSDSyncFileFactory.swift */; };
 		ACBA8BDD2BAC7398006761D3 /* SDSyncFileWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBA8BDC2BAC7398006761D3 /* SDSyncFileWriter.swift */; };
-		ACBA8BDF2BAC73E0006761D3 /* SDSyncFileWritingServiceBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBA8BDE2BAC73E0006761D3 /* SDSyncFileWritingServiceBase.swift */; };
 		ACBB05102761F1C400A6B3FB /* SDStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBB050F2761F1C400A6B3FB /* SDStream.swift */; };
 		ACBB05132761F21500A6B3FB /* SDCardFixedSessionsSavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBB05122761F21500A6B3FB /* SDCardFixedSessionsSavingService.swift */; };
 		ACBF1AD2286C618F006DF793 /* XMarkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBF1AD1286C618F006DF793 /* XMarkButton.swift */; };
@@ -844,7 +843,6 @@
 		ACB968062B9F1E1F006AEC6B /* MiniSDCardMeasurementsParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniSDCardMeasurementsParser.swift; sourceTree = "<group>"; };
 		ACB968082B9F2B93006AEC6B /* MiniSDSyncFileFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniSDSyncFileFactory.swift; sourceTree = "<group>"; };
 		ACBA8BDC2BAC7398006761D3 /* SDSyncFileWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncFileWriter.swift; sourceTree = "<group>"; };
-		ACBA8BDE2BAC73E0006761D3 /* SDSyncFileWritingServiceBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncFileWritingServiceBase.swift; sourceTree = "<group>"; };
 		ACBB050F2761F1C400A6B3FB /* SDStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDStream.swift; sourceTree = "<group>"; };
 		ACBB05122761F21500A6B3FB /* SDCardFixedSessionsSavingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDCardFixedSessionsSavingService.swift; sourceTree = "<group>"; };
 		ACBF1AD1286C618F006DF793 /* XMarkButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMarkButton.swift; sourceTree = "<group>"; };
@@ -1960,7 +1958,6 @@
 			isa = PBXGroup;
 			children = (
 				33885BB127468B4E00F41CB5 /* SDSyncFileWritingService.swift */,
-				ACBA8BDE2BAC73E0006761D3 /* SDSyncFileWritingServiceBase.swift */,
 				ACBA8BDC2BAC7398006761D3 /* SDSyncFileWriter.swift */,
 			);
 			name = FileWriter;
@@ -3525,7 +3522,6 @@
 				3320F2EE29250CA500EFFB2D /* BluetoothConnectionHandler.swift in Sources */,
 				ACCEB2292768A13B0040140B /* ThresholdsValue.swift in Sources */,
 				FAAB48FD290BC9EF000BDBEE /* ReconnectSessionCardViewModel.swift in Sources */,
-				ACBA8BDF2BAC73E0006761D3 /* SDSyncFileWritingServiceBase.swift in Sources */,
 				33F604B12824180900B48C63 /* ExternalSessionHeader.swift in Sources */,
 				DDA90F0127CCB5AE002F4465 /* SearchAndFollowMap.swift in Sources */,
 				4F5D3F6F262C862E003AD82E /* KeychainStorage.swift in Sources */,
