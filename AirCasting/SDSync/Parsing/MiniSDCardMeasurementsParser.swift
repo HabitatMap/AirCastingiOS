@@ -28,7 +28,6 @@ class MiniSDCardMeasurementsParser: SDMeasurementsParser {
             case .endOfFile: break
             }
         }
-        
     }
     
     private func parseMeasurement(lineString: String, sessionUUID: SessionUUID) -> SDCardMeasurementsRow? {

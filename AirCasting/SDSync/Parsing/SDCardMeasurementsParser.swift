@@ -3,6 +3,7 @@
 
 import Foundation
 import CoreLocation
+import Resolver
 
 struct SDCardMeasurementsRow {
     let sessionUUID: SessionUUID
@@ -27,7 +28,15 @@ class SDCardMeasurementsParser: SDMeasurementsParser {
     let numberOfColumnsInTheFile = 13
     
     func enumerateMeasurements(url: URL, action: (SDCardMeasurementsRow) -> Void) throws {
-        fatalError()
+        let lineReader = Resolver.resolve(FileLineReader.self)
+        try lineReader.readLines(of: url) { result in
+            switch result {
+            case .line(let lineString):
+                guard let measurements = parseMeasurement(lineString: lineString) else { return }
+                action(measurements)
+            case .endOfFile: break
+            }
+        }
     }
     
     private func parseMeasurement(lineString: String) -> SDCardMeasurementsRow? {
