@@ -374,6 +374,12 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         characteristicsDicoveryCallbacks.removeValue(forKey: peripheral)
     }
     
+    func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
+        if error != nil {
+            print("[SD Sync] \(error)")
+        }
+    }
+    
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         characteristicsMappingLock.lock()
         defer { characteristicsMappingLock.unlock()}
