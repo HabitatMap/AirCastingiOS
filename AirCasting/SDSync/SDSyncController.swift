@@ -35,7 +35,7 @@ enum SDSyncError: Error {
 class SDSyncController {
     @Injected private var fileWriter: SDSyncFileWriter
     @Injected private var airbeamServices: SDCardAirBeamServices
-    @Injected private var fileValidator: SDSyncFileValidator
+    //@Injected private var fileValidator: SDSyncFileValidator
     @Injected private var fileLineReader: FileLineReader
     @Injected private var mobileSessionsSaver: SDCardMobileSessionssSaver
     @Injected private var fixedSessionsUploader: SDCardFixedSessionsUploadingService
@@ -47,7 +47,8 @@ class SDSyncController {
     
     func syncFromAirbeam(_ airbeamConnection: any BluetoothDevice, progress: @escaping (SDCardSyncStatus) -> Void, completion: @escaping (Result<Void, SDSyncError>) -> Void) {
         Log.info("[SD SYNC] Starting syncing")
-        guard let sensorName = airbeamConnection.name else {
+        guard let sensorName = airbeamConnection.name,
+              let airbeamType = airbeamConnection.airbeamType else {
             Log.error("[SD SYNC] Unable to identify the device")
             completion(.failure(.unidetifiableDevice))
             return
@@ -55,8 +56,11 @@ class SDSyncController {
 
         airbeamServices.downloadData(from: airbeamConnection, progress: { [weak self] chunk in
             // Filesystem write
+            let parser = Resolver.resolve(SDMeasurementsParser.self, args: sensorName)
             self?.writingQueue.async {
-                self?.fileWriter.writeToFile(data: chunk.payload, sessionType: chunk.sessionType)
+                self?.fileWriter.writeToFile(data: chunk.payload,
+                                             parser: parser,
+                                             sessionType: chunk.sessionType)
                 progress(.inProgress(.init(sessionType: chunk.sessionType, progress: chunk.progress)))
             }
         }, completion: { [weak self] result in
@@ -75,7 +79,9 @@ class SDSyncController {
                     }
                     
                     // MARK: checking if files have the right number of rows and if rows have the right values
-                    self.checkDirectoriesForCorruption(directories, expectedMeasurementsCount: metadata.expectedMeasurementsCount) { fileValidationResult in
+                    
+                    let fileValidator = Resolver.resolve(SDSyncFileValidator.self, args: airbeamType) 
+                    self.checkDirectoriesForCorruption(directories, expectedMeasurementsCount: metadata.expectedMeasurementsCount, fileValidator: fileValidator) { fileValidationResult in
                         switch fileValidationResult {
                         case .success(let verifiedDirectories):
                             Log.info("[SD SYNC] Check for corruption passed")
@@ -188,7 +194,7 @@ class SDSyncController {
         }
     }
     
-    private func checkDirectoriesForCorruption(_ directories: [(URL, SDCardSessionType)], expectedMeasurementsCount: [SDCardSessionType: Int], completion: (Result<[(URL, SDCardSessionType)], Error>) -> Void) {
+    private func checkDirectoriesForCorruption(_ directories: [(URL, SDCardSessionType)], expectedMeasurementsCount: [SDCardSessionType: Int], fileValidator: SDSyncFileValidator, completion: (Result<[(URL, SDCardSessionType)], Error>) -> Void) {
         let toValidate = directories.compactMap { file -> SDCardCSVFile in
             let fileURL = file.0
             let sessionType = file.1
@@ -202,7 +208,7 @@ class SDSyncController {
             }
         }
         
-        self.fileValidator.validate(files: toValidate) { result in
+        fileValidator.validate(files: toValidate) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))

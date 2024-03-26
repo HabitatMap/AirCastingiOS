@@ -6,7 +6,7 @@ import Combine
 import Gzip
 import CoreLocation
 import Resolver
-import UIKit
+import UIKit.UIImage
 
 final class SessionUploadService: SessionUpstream {
     @Injected private var client: APIClient

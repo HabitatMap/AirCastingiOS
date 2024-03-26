@@ -3,12 +3,6 @@
 
 import Foundation
 
-protocol SDSyncFileWriter {
-    func writeToFile(data: String, sessionType: SDCardSessionType)
-    func finishAndSave() -> [(URL, SDCardSessionType)]
-    func finishAndRemoveFiles()
-}
-
 final class SDSyncFileWritingService: SDSyncFileWriter {
     private var path: URL {
         FileManager.default.urls(for: .documentDirectory, in: .allDomainsMask)[0]
@@ -18,7 +12,6 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
     // We add buffers to limit the amount of savings to file. We save to file only when the amount of data reaches the threshold, or when the flushAndSave() func is called.
     private var buffers: [URL: [String]] = [:]
     private var fileHandles: [URL: FileHandle] = [:]
-    private let parser = SDCardMeasurementsParser()
     private var currentURL: URL? {
         didSet {
             guard currentURL != oldValue, let oldValue else { return }
@@ -30,23 +23,22 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
         self.bufferThreshold = bufferThreshold
     }
     
-    func writeToFile(data: String, sessionType: SDCardSessionType) {
+    func writeToFile(data: String, parser: SDMeasurementsParser, sessionType: SDCardSessionType) {
         if fileHandles.count == 0 {
             do {
                 try createDirectories()
             } catch {
-                Log.error("Error creating directories! \(error.localizedDescription)")
+                Log.error("[SD Sync] Error creating directories! \(error.localizedDescription)")
                 return
             }
         }
         
         let lines = data.components(separatedBy: "\r\n").filter { !$0.trimmingCharacters(in: ["\n"]).isEmpty }
         
-        lines.forEach { line in
-            guard let uuid = parser.getUUID(lineString: line) else { return }
+        parser.enumerateSessionLines(lines: lines) { uuid, lineString in
             let url = fileURL(for: sessionType, with: uuid)
             currentURL = url
-            buffers[url, default: []].append(line)
+            buffers[url, default: []].append(lineString)
             let bufferCount = buffers[url]?.count ?? 0
             guard bufferCount == bufferThreshold else { return }
             flushBuffer(for: url)
@@ -59,7 +51,7 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
             do {
                 try removeFiles()
             } catch {
-                Log.error("Error while removing files! \(error.localizedDescription)")
+                Log.error("[SD Sync] Error while removing files! \(error.localizedDescription)")
                 return []
             }
             return []
@@ -69,19 +61,19 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
         do {
             try closeFiles()
         } catch {
-            Log.error("Error closing files! \(error.localizedDescription)")
+            Log.error("[SD Sync] Error closing files! \(error.localizedDescription)")
         }
         return toReturn
     }
     
     func finishAndRemoveFiles() {
-        Log.info("Finish and remove called")
+        Log.info("[SD Sync] Finish and remove called")
         buffers = [:]
         do {
             try closeFiles()
             try removeFiles()
         } catch {
-            Log.error("Error finishing! \(error.localizedDescription)")
+            Log.error("[SD Sync] Error finishing! \(error.localizedDescription)")
         }
     }
     
@@ -122,7 +114,7 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
             guard let data = content.data(using: .utf8) else { return }
             try file.write(contentsOf: data)
         } catch {
-            Log.error("Writing to file failed: \(error)")
+            Log.error("[SD Sync] Writing to file failed: \(error)")
         }
         buffers[url] = []
     }
@@ -139,7 +131,7 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
     private func openFile(fileURL: URL) throws -> FileHandle {
         if FileManager.default.fileExists(atPath: fileURL.path) {
             try FileManager.default.removeItem(at: fileURL)
-            Log.error("Unexpected file found at \(fileURL)")
+            Log.error("[SD Sync] Unexpected file found at \(fileURL)")
         }
         try Data().write(to: fileURL)
         return try FileHandle(forWritingTo: fileURL)

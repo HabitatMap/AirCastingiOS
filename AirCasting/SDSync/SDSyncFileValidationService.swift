@@ -13,22 +13,31 @@ protocol SDSyncFileValidator {
 }
 
 struct SDSyncFileValidationService: SDSyncFileValidator {
-    private let expectedFieldsCount = 13
+    private let expectedFieldsCount: Int
     private let acceptanceThreshold = 0.8
     
     @Injected private var fileLineReader: FileLineReader
+    
+    init(type: AirBeamDeviceType) {
+        switch type {
+        case .airBeam2, .airBeam3:
+            expectedFieldsCount = 13
+        case .airBeamMini:
+            expectedFieldsCount = 4
+        }
+    }
     
     func validate(files: [SDCardCSVFile], completion: (Result<Void, SDCardValidationError>) -> Void) {
         var result = true
         
         for file in files {
             if !check(file) {
-                Log.info("Check failed for directory \(file)")
+                Log.info("[SD Sync] Check failed for directory \(file)")
                 result = false
                 break
             }
         }
-        Log.info("Files validated")
+        Log.info("[SD Sync] Files validated")
         result ? completion(.success(())) : completion(.failure(SDCardValidationError.insufficientIntegrity))
     }
     
@@ -47,12 +56,12 @@ struct SDSyncFileValidationService: SDSyncFileValidator {
                 switch line {
                 case .line(let content):
                     if (lineIsCorrupted(content)) {
-                        Log.info("Line corrupted: \(content)")
+                        Log.info("[SD Sync] Line corrupted: \(content)")
                         corruptedCount += 1
                     }
                     allCount += 1
                 case .endOfFile:
-                    Log.info("Reached end of csv file")
+                    Log.info("[SD Sync] Reached end of csv file")
                 }
             })
             

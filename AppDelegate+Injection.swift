@@ -18,6 +18,11 @@ extension Resolver: ResolverRegistering {
         .implements(SessionInsertable.self)
         .implements(SessionUpdateable.self)
         .scope(.application)
+        main.register { (_, args) in
+            let deviceID: String = args()
+            let isMini = deviceID.lowercased().contains(AirBeamDeviceType.airBeamMini.rawName)
+            return isMini ? MiniSDCardMeasurementsParser() : SDCardMeasurementsParser() as SDMeasurementsParser
+        }
         main.register { DefaultSessionNotesStorage() as SessionNotesStorage }.scope(.cached)
         main.register { DefaultSessionDeletingStorage() as SessionDeletingStorage }.scope(.cached)
         main.register { DefaultSDSyncMeasurementsStorage() as SDSyncMeasurementsStorage }.scope(.cached)
@@ -192,7 +197,8 @@ extension Resolver: ResolverRegistering {
         main.register { SDCardMobileSessionsSavingService() as SDCardMobileSessionssSaver }
         main.register { UploadFixedSessionAPIService() }
         main.register { SDCardFixedSessionsUploadingService() }
-        main.register { SDSyncFileValidationService() as SDSyncFileValidator }
+        main.register { (_, args) in SDSyncFileValidationService(type: args()) as SDSyncFileValidator }
+        
         main.register { SDSyncFileWritingService(bufferThreshold: 1000) as SDSyncFileWriter }
         main.register { BluetoothSDCardAirBeamServices() as SDCardAirBeamServices }
         main.register { DefaultMeasurementsAveragingService() as MeasurementsAveragingService }

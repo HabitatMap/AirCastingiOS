@@ -7,19 +7,30 @@ import CoreLocation
 struct SDCardMeasurementsRow {
     let sessionUUID: SessionUUID
     let date: Date
-    let lat: Double
-    let long: Double
-    let f: Double
-    let rh: Double
+    let lat: Double?
+    let long: Double?
+    let f: Double?
+    let rh: Double?
     let pm1: Double
     let pm2_5: Double
-    let pm10: Double
+    let pm10: Double?
 }
 
-class SDCardMeasurementsParser {
+protocol SDMeasurementsParser {
+    func getMeasurementTime(lineString: String) -> Date?
+    func enumerateMeasurements(url: URL, action: (SDCardMeasurementsRow) -> Void) throws
+    ///   - action: First argument is session ID. Second argument is line string.
+    func enumerateSessionLines(lines: [String], action: (String, String) -> Void)
+}
+
+class SDCardMeasurementsParser: SDMeasurementsParser {
     let numberOfColumnsInTheFile = 13
     
-    func parseMeasurement(lineString: String) -> SDCardMeasurementsRow? {
+    func enumerateMeasurements(url: URL, action: (SDCardMeasurementsRow) -> Void) throws {
+        fatalError()
+    }
+    
+    private func parseMeasurement(lineString: String) -> SDCardMeasurementsRow? {
         let measurementInfo = lineString.split(separator: ",")
         guard measurementInfo.count == numberOfColumnsInTheFile else {
             Log.warning("Line corrupted: \(lineString)")
@@ -51,7 +62,7 @@ class SDCardMeasurementsParser {
                                      pm10: pm10)
     }
     
-    func getUUID(lineString: String) -> String? {
+    private func getUUID(lineString: String) -> String? {
         let measurementInfo = lineString.split(separator: ",")
         guard measurementInfo.count == numberOfColumnsInTheFile else {
             Log.warning("Line corrupted: \(lineString)")
@@ -69,6 +80,14 @@ class SDCardMeasurementsParser {
         }
         return SDParsingUtils.dateFrom(date: measurementInfo[SDCardCSVFileFactory.Header.date.rawValue],
                                            time: measurementInfo[SDCardCSVFileFactory.Header.time.rawValue])
+    }
+    
+    func enumerateSessionLines(lines: [String], action: (String, String) -> Void) {
+        lines.forEach { lineString in
+            let uuid = getUUID(lineString: lineString)
+            guard let uuid else { return }
+            action(uuid, lineString)
+        }
     }
 }
 
