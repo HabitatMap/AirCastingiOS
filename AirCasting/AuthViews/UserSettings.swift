@@ -23,7 +23,7 @@ class UserSettings: ObservableObject {
         }
         set {
             userDefaults.setValue(newValue, forKey: crowdMapKey)
-            Log.info("Changed crowdMap contribution setting to \(contributingToCrowdMap ? "ON" : "OFF")")
+            Log.info("Changed crowdMap contribution setting to \(self.contributingToCrowdMap ? "ON" : "OFF")")
         }
     }
     
@@ -34,7 +34,7 @@ class UserSettings: ObservableObject {
         set {
             userDefaults.setValue(newValue, forKey: keepScreenOnKey)
             UIApplication.shared.isIdleTimerDisabled = userDefaults.bool(forKey: keepScreenOnKey)
-            Log.info("Changed keepScreenOn setting to \(keepScreenOn ? "ON" : "OFF")")
+            Log.info("Changed keepScreenOn setting to \(self.keepScreenOn ? "ON" : "OFF")")
             objectWillChange.send()
         }
     }
@@ -45,7 +45,7 @@ class UserSettings: ObservableObject {
         }
         set {
             userDefaults.setValue(newValue, forKey: locationlessKey)
-            Log.info("Changed locationless sessions setting to \(disableMapping ? "ON" : "OFF")")
+            Log.info("Changed locationless sessions setting to \(self.disableMapping ? "ON" : "OFF")")
             objectWillChange.send()
         }
     }
@@ -56,7 +56,7 @@ class UserSettings: ObservableObject {
         }
         set {
             userDefaults.setValue(newValue, forKey: convertToCelsiusKey)
-            Log.info("Changed convert to celcius setting to \(convertToCelsius ? "ON" : "OFF")")
+            Log.info("Changed convert to celcius setting to \(self.convertToCelsius ? "ON" : "OFF")")
             objectWillChange.send()
         }
     }
@@ -67,7 +67,7 @@ class UserSettings: ObservableObject {
         }
         set {
             userDefaults.setValue(newValue, forKey: satteliteMapKey)
-            Log.info("Changed satellite setting to \(satteliteMap ? "ON" : "OFF")")
+            Log.info("Changed satellite setting to \(self.satteliteMap ? "ON" : "OFF")")
             objectWillChange.send()
         }
     }
@@ -78,7 +78,7 @@ class UserSettings: ObservableObject {
         }
         set {
             userDefaults.setValue(newValue, forKey: twentyFourHourFormatKey)
-            Log.info("Changed twenty four hour format to \(twentyFourHour ? "ON" : "OFF")")
+            Log.info("Changed twenty four hour format to \(self.twentyFourHour ? "ON" : "OFF")")
             objectWillChange.send()
         }
     }
@@ -89,7 +89,7 @@ class UserSettings: ObservableObject {
         }
         set {
             userDefaults.setValue(newValue, forKey: syncOnlyThroughWifiKey)
-            Log.info("Changed sync only through wifi to \(syncOnlyThroughWifi ? "ON" : "OFF")")
+            Log.info("Changed sync only through wifi to \(self.syncOnlyThroughWifi ? "ON" : "OFF")")
             objectWillChange.send()
         }
     }
@@ -100,7 +100,7 @@ class UserSettings: ObservableObject {
         }
         set {
             userDefaults.setValue(newValue, forKey: dormantSessionsAlertKey)
-            Log.info("Changed dormant sessions alert to \(dormantSessionsAlert ? "ON" : "OFF")")
+            Log.info("Changed dormant sessions alert to \(self.dormantSessionsAlert ? "ON" : "OFF")")
             objectWillChange.send()
         }
     }
