@@ -30,11 +30,9 @@ class SearchViewModel: ObservableObject {
     }
     
     init() {
-        measurementTypes = [
-            .init(isSelected: true, name: Strings.SearchFollowParamNames.particulateMatter),
-            .init(isSelected: false, name: Strings.SearchFollowParamNames.ozone)
-        ]
-        onParameterTap(with: Strings.SearchFollowParamNames.particulateMatter)
+        let defaultParam = Strings.SearchFollowParamNames.particulateMatter
+        measurementTypes = [.init(isSelected: true, name: defaultParam)]
+        onParameterTap(with: defaultParam)
     }
     
     func textFieldTapped() { isLocationPopupPresented.toggle() }
@@ -44,8 +42,8 @@ class SearchViewModel: ObservableObject {
         self.measurementTypes.first(where: { $0.name == param })?.isSelected = true
         switch measurementType(from: param) {
         case .particulateMatter: self.sensorTypes = [
-            .init(isSelected: false, name: SensorType.AB3and2.capitalizedName),
-            .init(isSelected: true, name: SensorType.OpenAQ.capitalizedName),
+            .init(isSelected: true, name: SensorType.AB3and2.capitalizedName),
+            .init(isSelected: false, name: SensorType.OpenAQ.capitalizedName),
             .init(isSelected: false, name: SensorType.PurpleAir.capitalizedName)
         ]
         case .ozone: self.sensorTypes = [
