@@ -35,7 +35,6 @@ enum SDSyncError: Error {
 class SDSyncController {
     @Injected private var fileWriter: SDSyncFileWriter
     @Injected private var airbeamServices: SDCardAirBeamServices
-    //@Injected private var fileValidator: SDSyncFileValidator
     @Injected private var fileLineReader: FileLineReader
     @Injected private var mobileSessionsSaver: SDCardMobileSessionssSaver
     @Injected private var fixedSessionsUploader: SDCardFixedSessionsUploadingService
