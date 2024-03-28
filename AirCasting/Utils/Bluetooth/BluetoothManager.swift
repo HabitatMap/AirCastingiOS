@@ -376,7 +376,7 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
         if error != nil {
-            print("[SD Sync] \(error)")
+            Log.error("[SD Sync] \(error)")
         }
     }
     

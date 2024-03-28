@@ -15,6 +15,18 @@ struct SDCardMeasurementsRow {
     let pm1: Double
     let pm2_5: Double
     let pm10: Double?
+    
+    init(sessionUUID: SessionUUID, date: Date, lat: Double? = nil, long: Double? = nil, f: Double? = nil, rh: Double? = nil, pm1: Double, pm2_5: Double, pm10: Double? = nil) {
+        self.sessionUUID = sessionUUID
+        self.date = date
+        self.lat = lat
+        self.long = long
+        self.f = f
+        self.rh = rh
+        self.pm1 = pm1
+        self.pm2_5 = pm2_5
+        self.pm10 = pm10
+    }
 }
 
 protocol SDMeasurementsParser {

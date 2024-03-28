@@ -9,10 +9,8 @@ protocol BluetoothDevice {
 }
 
 extension BluetoothDevice {
-    
     var airbeamType: AirBeamDeviceType? {
         AirBeamDeviceType.allCases
             .first { self.name?.lowercased().contains($0.rawName) ?? false }
     }
-    
 }
