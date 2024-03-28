@@ -42,7 +42,7 @@ class UsesInternalPropertyToLogOnDeinit {
     }
     
     deinit {
-        logger.info("\(dummy)")
+        logger.info("\(self.dummy)")
     }
 }
 
