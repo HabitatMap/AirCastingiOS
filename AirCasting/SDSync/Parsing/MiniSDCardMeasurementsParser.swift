@@ -20,9 +20,7 @@ class MiniSDCardMeasurementsParser: SDMeasurementsParser {
                    let uuidString = getUUID(lineString: lineString) {
                     lastKnownUUID = SessionUUID(rawValue: uuidString)
                 }
-                guard let lastKnownUUID else { return }
-                
-                guard let measurements = parseMeasurement(lineString: lineString,
+                guard let lastKnownUUID, let measurements = parseMeasurement(lineString: lineString,
                                                           sessionUUID: lastKnownUUID) else { return }
                 action(measurements)
             case .endOfFile: break
@@ -46,13 +44,8 @@ class MiniSDCardMeasurementsParser: SDMeasurementsParser {
         }
         return SDCardMeasurementsRow(sessionUUID: sessionUUID,
                                      date: date,
-                                     lat: nil,
-                                     long: nil,
-                                     f: nil,
-                                     rh: nil,
                                      pm1: pm1,
-                                     pm2_5: pm2_5,
-                                     pm10: nil)
+                                     pm2_5: pm2_5)
     }
     
     private func getUUID(lineString: String) -> String? {
