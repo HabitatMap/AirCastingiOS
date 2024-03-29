@@ -10,7 +10,7 @@ import AirCastingStyling
 import Resolver
 
 struct ChooseSessionTypeView: View {
-    @EnvironmentObject private var tabSelection: TabBarSelection
+    @EnvironmentObject private var tabSelection: TabBarSelector
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
     @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton

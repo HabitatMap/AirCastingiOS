@@ -12,7 +12,7 @@ struct SearchMapView: View {
     @StateObject private var viewModel: SearchMapViewModel
     @Environment(\.presentationMode) var presentationMode
     @Binding var isSearchAndFollowLinkActive: Bool
-    @EnvironmentObject var tabSelection: TabBarSelection
+    @EnvironmentObject var tabSelection: TabBarSelector
     @EnvironmentObject var selectedSection: SelectedSection
     @Environment(\.colorScheme) var colorScheme
     
@@ -237,7 +237,7 @@ private extension SearchMapView {
     var finishButton: some View {
         Button {
             isSearchAndFollowLinkActive = false
-            tabSelection.selection = .dashboard
+            tabSelection.updateSelection(to: .dashboard)
             selectedSection.section = .following
         } label: {
             Text(Strings.SearchMapView.finishText)

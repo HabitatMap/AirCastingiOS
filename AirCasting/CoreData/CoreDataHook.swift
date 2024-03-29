@@ -27,6 +27,19 @@ final class CoreDataHook: NSObject, ObservableObject {
             self.refreshSessions()
         }
     }
+    
+    func setup(selectedSection: DashboardSection) throws {
+        self.selectedSection = selectedSection
+        try? performFetch(for: selectedSection)
+        refreshSessions()
+    }
+    
+    func getSessionsFor(section: DashboardSection) -> [Sessionable] {
+        try? performFetch(for: section)
+        let sessionEntities = fetchedResultsController.fetchedObjects ?? []
+        let externalSessionEntities = externalSessionsFetchedResultsController.fetchedObjects ?? []
+        return sessionEntities + externalSessionEntities
+    }
 
     private lazy var fetchedResultsController: NSFetchedResultsController<SessionEntity> = {
         let request = NSFetchRequest<SessionEntity>(entityName: "SessionEntity")
@@ -49,11 +62,20 @@ final class CoreDataHook: NSObject, ObservableObject {
         fetchedResultsController.delegate = self
         return fetchedResultsController
     }()
-
-    func setup(selectedSection: DashboardSection) throws {
+    
+    private func refreshSessions() {
+        let sessionEntities = fetchedResultsController.fetchedObjects ?? []
+        let externalSessionEntities = externalSessionsFetchedResultsController.fetchedObjects ?? []
+        sessions = sessionEntities + externalSessionEntities
+        guard case .following = selectedSection else { return }
+        sessions = sessions.sorted {
+            ($0.userInterface?.rowOrder ?? 0) > ($1.userInterface?.rowOrder ?? 0)
+        }
+    }
+    
+    private func performFetch(for selectedSection: DashboardSection) throws {
         let predicate: NSPredicate
         var externalSessionsPredicate = NSPredicate(value: false)
-        self.selectedSection = selectedSection
         switch selectedSection {
         case .fixed:
             predicate = NSPredicate(format: "type == %@", SessionType.fixed.rawValue)
@@ -76,18 +98,6 @@ final class CoreDataHook: NSObject, ObservableObject {
         externalSessionsFetchedResultsController.fetchRequest.predicate = externalSessionsPredicate
         try fetchedResultsController.performFetch()
         try externalSessionsFetchedResultsController.performFetch()
-
-        refreshSessions()
-    }
-
-    func refreshSessions() {
-        let sessionEntities = fetchedResultsController.fetchedObjects ?? []
-        let externalSessionEntities = externalSessionsFetchedResultsController.fetchedObjects ?? []
-        sessions = sessionEntities + externalSessionEntities
-        guard case .following = selectedSection else { return }
-        sessions = sessions.sorted {
-            ($0.userInterface?.rowOrder ?? 0) > ($1.userInterface?.rowOrder ?? 0)
-        }
     }
 }
 

@@ -19,6 +19,7 @@ struct SessionCardView: View {
     @State private var showLoadingIndicator = false
     @ObservedObject var session: SessionEntity
     @EnvironmentObject var selectedSection: SelectedSection
+    @EnvironmentObject private var tabSelection: TabBarSelector
     @EnvironmentObject var reorderButton: ReorderButton
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     let sessionCartViewModel: SessionCardViewModel
@@ -101,6 +102,10 @@ struct SessionCardView: View {
             reorderButton.setHidden(if: isGraphButtonActive)
             searchAndFollowButton.setHidden(if: isGraphButtonActive)
         }
+        .onReceive(tabSelection.dashboardSelectionNotifier, perform: { _ in
+            isMapButtonActive = false
+            isGraphButtonActive = false
+        })
         .font(Fonts.moderateRegularHeading4)
         .foregroundColor(.aircastingGray)
         .padding()

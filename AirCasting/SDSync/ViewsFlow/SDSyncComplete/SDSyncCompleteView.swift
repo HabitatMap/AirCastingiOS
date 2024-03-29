@@ -7,7 +7,7 @@ import SwiftUI
 struct SDSyncCompleteView<VM: SDSyncCompleteViewModel>: View {
     @StateObject var viewModel: VM
     @Binding var creatingSessionFlowContinues: Bool
-    @EnvironmentObject private var tabSelection: TabBarSelection
+    @EnvironmentObject private var tabSelection: TabBarSelector
     var isSDClearProcess: Bool
     
     var body: some View {
@@ -54,7 +54,7 @@ private extension SDSyncCompleteView {
     var continueButton: some View {
         Button {
             creatingSessionFlowContinues = false
-            tabSelection.selection = TabBarSelection.Tab.dashboard
+            tabSelection.updateSelection(to: .dashboard)
         } label: {
             Text(Strings.Commons.continue)
         }

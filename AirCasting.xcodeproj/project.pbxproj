@@ -564,6 +564,7 @@
 		FA5F7847289AB7C20016DF79 /* SearchViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5F7846289AB7C20016DF79 /* SearchViewModelTests.swift */; };
 		FA63D212289C0282002A4BD5 /* DatabaseDeviceUUID.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA63D211289C0282002A4BD5 /* DatabaseDeviceUUID.swift */; };
 		FA724D912927AC9F00C9EFE3 /* _MapViewThresholdFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA724D902927AC9F00C9EFE3 /* _MapViewThresholdFormatter.swift */; };
+		FA89DE8F2BB6BBE600619B73 /* TabBarSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA89DE8E2BB6BBE600619B73 /* TabBarSelector.swift */; };
 		FA94089A2886D3FE0022E1A5 /* BluetoothProtectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9408992886D3FE0022E1A5 /* BluetoothProtectorTests.swift */; };
 		FAAB48FD290BC9EF000BDBEE /* ReconnectSessionCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAB48FC290BC9EF000BDBEE /* ReconnectSessionCardViewModel.swift */; };
 		FAB1D4A427FAD83E004F531D /* BottomCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB1D4A327FAD83E004F531D /* BottomCardViewModel.swift */; };
@@ -1163,6 +1164,7 @@
 		FA5F7846289AB7C20016DF79 /* SearchViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModelTests.swift; sourceTree = "<group>"; };
 		FA63D211289C0282002A4BD5 /* DatabaseDeviceUUID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseDeviceUUID.swift; sourceTree = "<group>"; };
 		FA724D902927AC9F00C9EFE3 /* _MapViewThresholdFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _MapViewThresholdFormatter.swift; sourceTree = "<group>"; };
+		FA89DE8E2BB6BBE600619B73 /* TabBarSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarSelector.swift; sourceTree = "<group>"; };
 		FA9408992886D3FE0022E1A5 /* BluetoothProtectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothProtectorTests.swift; sourceTree = "<group>"; };
 		FA9E08C828926C07006475D6 /* AirCasting v8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v8.xcdatamodel"; sourceTree = "<group>"; };
 		FAAB48FC290BC9EF000BDBEE /* ReconnectSessionCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconnectSessionCardViewModel.swift; sourceTree = "<group>"; };
@@ -1779,7 +1781,7 @@
 				FA1C30BC2861BA5F0034C1C9 /* SignInPersistance.swift */,
 				AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */,
 				ACD01F912600A3C800B8F65F /* RootAppView.swift */,
-				AC7EB37725A6FB3A00A7F2AF /* MainTabBarView.swift */,
+				FA89DE8D2BB6BBCB00619B73 /* TabBar */,
 				FAF3B4E428058B6700F0F4B0 /* ProtectedScreen.swift */,
 				B3F1448126AE4CD9006A4612 /* OfflineMessageViewModel.swift */,
 				DD430AFE2670BB3000F1BF2E /* Onboarding */,
@@ -2972,6 +2974,15 @@
 			path = AirCastingUITests;
 			sourceTree = "<group>";
 		};
+		FA89DE8D2BB6BBCB00619B73 /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				AC7EB37725A6FB3A00A7F2AF /* MainTabBarView.swift */,
+				FA89DE8E2BB6BBE600619B73 /* TabBarSelector.swift */,
+			);
+			path = TabBar;
+			sourceTree = "<group>";
+		};
 		FAAB48FB290BC9D5000BDBEE /* ReconnectSessionCard */ = {
 			isa = PBXGroup;
 			children = (
@@ -3494,6 +3505,7 @@
 				332B993F2937B96C00C0D15D /* SDSyncMeasurementsStorage.swift in Sources */,
 				332020A8283CF724003E07F3 /* SessionEntity+Sessionable.swift in Sources */,
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
+				FA89DE8F2BB6BBE600619B73 /* TabBarSelector.swift in Sources */,
 				AC4A6A6A267CB3890001F639 /* AirCastingGraph.swift in Sources */,
 				DD197FA727BE439200340672 /* MapDownloaderUnitSymbol.swift in Sources */,
 				DD197FA727BE439200340672 /* MapDownloaderUnitSymbol.swift in Sources */,
