@@ -63,11 +63,11 @@ struct MainTabBarView: View {
             }
         }
         .onAppear {
-            UITabBar.appearance().backgroundColor = .aircastingBackground
             let appearance = UITabBarAppearance()
-            appearance.backgroundImage = UIImage()
+            appearance.backgroundColor = .aircastingBackground
             appearance.shadowImage = UIImage.mainTabBarShadow
             UITabBar.appearance().standardAppearance = appearance
+            UITabBar.appearance().scrollEdgeAppearance = appearance
             measurementsDownloadingInProgress = true
             measurementUpdatingService.updateAllSessionsMeasurements() {
                 DispatchQueue.main.async {
