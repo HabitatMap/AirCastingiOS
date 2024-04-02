@@ -136,11 +136,13 @@ enum StreamingMethod: Int {
 public enum DeviceType: Int, CustomStringConvertible {
     case MIC = 0
     case AIRBEAM3 = 1
+    case AIRBEAMMINI = 2
 
     public var description: String {
         switch self {
         case .MIC: return "Device's Microphone"
         case .AIRBEAM3: return "AirBeam 3"
+        case .AIRBEAMMINI: return "AirBeamMini"
         }
     }
 }
