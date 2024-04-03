@@ -14,7 +14,7 @@ class MicrophoneSessionStopper: SessionStoppable {
     }
     
     func stopSession() throws {
-        Log.verbose("Stopping session with uuid \(self.uuid.rawValue) using microphone session stopper")
+        Log.verbose("Stopping session with uuid \(uuid.rawValue) using microphone session stopper")
         microphoneManager.stopRecording()
         sessionFinishingStorage.accessStorage { [self] storage in
             do {

@@ -42,7 +42,7 @@ final class ChartDatabaseObserver {
                  "   New measurement time: \(newestMeasurement.time.debugInfo),\n" +
                  "   session name: \(newestMeasurement.measurementStream?.session?.name ?? newestMeasurement.measurementStream.externalSession?.name ?? "??")\n" +
                  "   session start time: \(newestMeasurement.measurementStream?.session?.startTime.debugInfo ?? newestMeasurement.measurementStream?.externalSession?.startTime.debugDescription ?? "no time"),\n" +
-                 "   filtering: \(self.filteringComponent)")
+                 "   filtering: \(filteringComponent)")
         onMeasurementsChange()
     }
     

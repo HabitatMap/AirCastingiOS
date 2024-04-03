@@ -14,7 +14,7 @@ class StandardSesssionStopper: SessionStoppable {
     }
     
     func stopSession() {
-        Log.verbose("Stopping session with uuid \(self.uuid.rawValue) using standard session stopper")
+        Log.verbose("Stopping session with uuid \(uuid.rawValue) using standard session stopper")
         sessionRecorder.stopRecordingSession(with: uuid) {
             $0.accessStorage {
                 do {

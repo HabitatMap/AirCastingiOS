@@ -169,14 +169,14 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
         guard let sessionURL = session.urlLocation,
               var components = URLComponents(string: sessionURL)
         else {
-            Log.error("No URL for session \(String(describing: self.session.uuid))")
+            Log.error("No URL for session \(String(describing: session.uuid))")
             return
         }
         
         components.queryItems = [URLQueryItem(name: "sensor_name", value: selectedStream?.streamName)]
         
         guard let url = components.url else {
-            Log.error("Coudn't compose url for session \(String(describing: self.session.uuid))")
+            Log.error("Coudn't compose url for session \(String(describing: session.uuid))")
             return
         }
         

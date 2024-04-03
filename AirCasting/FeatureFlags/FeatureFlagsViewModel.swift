@@ -22,6 +22,6 @@ class FeatureFlagsViewModel: ObservableObject {
     
     private func updateList() {
         enabledFeatures = FeatureFlag.allCases.filter { provider.isFeatureOn($0) ?? false }
-        Log.info("Updated feature list: \(self.enabledFeatures)")
+        Log.info("Updated feature list: \(enabledFeatures)")
     }
 }
