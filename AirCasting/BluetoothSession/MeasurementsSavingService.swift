@@ -6,7 +6,7 @@ import Resolver
 import CoreLocation
 
 protocol MeasurementsSavingService {
-    func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool, device: DeviceType?)
+    func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool)
     func createSession(session: Session, device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void)
     func changeStatusToRecording(for sessionUUID: SessionUUID)
 }
@@ -15,59 +15,63 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
     @Injected private var persistence: MobileSessionRecordingStorage
     @Injected private var uiStorage: UIStorage
     private var peripheralMeasurementManager = PeripheralMeasurementTimeLocationManager()
+    private var expectedMeasurementThreshold = 1
 
     class PeripheralMeasurementTimeLocationManager {
         @Injected private var locationTracker: LocationTracker
 
-        private(set) var collectedValuesCount: Int = 5
+        private(set) var collectedMeasurementsCount: Int = 0
         private(set) var currentTime: Date = DateBuilder.getFakeUTCDate()
         private(set) var currentLocation: CLLocationCoordinate2D? = .undefined
 
         func startNewValuesRound(locationless: Bool) {
             currentLocation = !locationless ? locationTracker.location.value?.coordinate : .undefined
             currentTime = DateBuilder.getFakeUTCDate()
-            collectedValuesCount = 0
+            collectedMeasurementsCount = 0
         }
 
-        func incrementCounter() { collectedValuesCount += 1 }
+        func incrementCounter() { collectedMeasurementsCount += 1 }
     }
 
     func createSession(session: Session, device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
-        persistence.accessStorage { [weak self] storage in
-            do {
-                guard let self else { return }
-                let sessionReturned = try storage.createSession(session)
-                let entity = BluetoothConnectionEntity(context: sessionReturned.managedObjectContext!)
-                entity.peripheralUUID = device.uuid
-                entity.session = sessionReturned
-                self.uiStorage.accessStorage { storage in
-                    do {
-                        try storage.switchCardExpanded(to: true, sessionUUID: session.uuid)
-                    } catch {
-                        Log.error("\(error)")
-                    }
-                }
-                completion(.success(()))
-            } catch {
-                Log.info("\(error)")
-                completion(.failure(error))
-            }
-        }
-    }
+           persistence.accessStorage { [weak self] storage in
+               do {
+                   guard let self else { return }
+                   let sessionReturned = try storage.createSession(session)
+                   let entity = BluetoothConnectionEntity(context: sessionReturned.managedObjectContext!)
+                   entity.peripheralUUID = device.uuid
+                   entity.session = sessionReturned
+                   self.uiStorage.accessStorage { storage in
+                       do {
+                           try storage.switchCardExpanded(to: true, sessionUUID: session.uuid)
+                       } catch {
+                           Log.error("\(error)")
+                       }
+                   }
+                   setMeasurementThreshold(basedOn: entity.session?.deviceType)
+                   completion(.success(()))
+               } catch {
+                   Log.info("\(error)")
+                   completion(.failure(error))
+               }
+           }
+       }
 
-    func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool, device: DeviceType?) {
-        let valuesCount: Int
-        switch device {
+    private func setMeasurementThreshold(basedOn type: DeviceType?) {
+        /* Explanation: We anticipate receiving 5 measurements from AirBeam 3 and 2 from AirBeam Mini. It's crucial that these batches arrive with timestamps accurate to the second. Therefore, we wait for the expected number of measurements before updating streams with the current time. */
+        switch type {
         case .AIRBEAM3:
-            valuesCount = 5
+            expectedMeasurementThreshold = 5
         case .AIRBEAMMINI:
-            valuesCount = 2
+            expectedMeasurementThreshold = 2
         default:
-            valuesCount = 1
+            expectedMeasurementThreshold = 1
             Log.warning("There's an unknown device recording session")
         }
-        /* Explanation: We anticipate receiving 5 measurements from AirBeam 3 (AB3) and 2 from AirBeam Mini (AB2). It's crucial that these batches arrive with timestamps accurate to the second. Therefore, we wait for the expected number of measurements before updating streams with the current time. */
-        if peripheralMeasurementManager.collectedValuesCount == valuesCount {
+    }
+    
+    func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool) {
+        if peripheralMeasurementManager.collectedMeasurementsCount == expectedMeasurementThreshold {
             peripheralMeasurementManager.startNewValuesRound(locationless: locationless)
         }
         updateStreams(stream: measurement, sessionUUID: sessionUUID, location: peripheralMeasurementManager.currentLocation, time: peripheralMeasurementManager.currentTime)
