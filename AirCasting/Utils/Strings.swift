@@ -683,10 +683,10 @@ struct Strings {
         static let orLabel: String = NSLocalizedString("or",
                                                        comment: "")
         
-        static let syncTitle: String = NSLocalizedString("Sync data storage if you recorded with AirBeam3 or AirBeam Mini",
+        static let syncTitle: String = NSLocalizedString("Sync storage if you recorded with AirBeam3 or AirBeam Mini",
                                                          comment: "")
         
-        static let syncData: String = NSLocalizedString("Sync data storage",
+        static let syncData: String = NSLocalizedString("Sync storage",
                                                                comment: "")
         static let followButtonTitle: String = NSLocalizedString("Follow session search & follow fixed sessions",
                                                                  comment: "")

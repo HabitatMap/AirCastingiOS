@@ -238,13 +238,13 @@ struct ChooseSessionTypeView: View {
             let additionalSpace = max(height - minimalRequiredHeight, 0)
             let spacerHeight = min(additionalSpace / 2.0, 60)
             
-            VStack() {
+            VStack(alignment: .leading) {
                 Spacer().frame(height: spacerHeight)
                 VStack(alignment: .leading, spacing: 10) {
                     titleLabel
                     messageLabel
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, 30)
                 Spacer().frame(height: spacerHeight)
                 VStack(alignment: .leading, spacing: 15) {
                     let horizontalSpacerRatio = 17.0
@@ -260,10 +260,11 @@ struct ChooseSessionTypeView: View {
                     }
                     let leftoverSpace = (additionalSpace - (spacerHeight * 2))
                     let innerSpacerHeight = min(leftoverSpace / 2, 25.0)
-                    Spacer().frame(height: innerSpacerHeight)
+                    Spacer().frame(height: innerSpacerHeight / 2)
                     if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) || featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
                         orLabel
                     }
+                    Spacer().frame(height: innerSpacerHeight / 2)
                     HStack {
                         switch (shouldShowSDSyncButton, shouldShowFollowSessionButton) {
                         case (false, true):
@@ -280,13 +281,13 @@ struct ChooseSessionTypeView: View {
                 }
                 .padding([.bottom, .vertical])
                 .padding(.horizontal, 30)
-                .background(Color.aircastingSecondaryBackground.ignoresSafeArea())
+                .background(Color.aircastingSecondaryBackground)
                 .alert(item: $viewModel.alert, content: { $0.makeAlert() })
             }
+            .background(Color.aircastingBackground.ignoresSafeArea())
             .onPreferenceChange(ViewHeightKey.self) {
                 self.buttonHeight = $0
             }
-            .background(Color.aircastingBackground.ignoresSafeArea())
         }
     }
 }
@@ -312,6 +313,8 @@ private extension ChooseSessionTypeView {
         Text(Strings.ChooseSessionTypeView.message)
             .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
+            .minimumScaleFactor(0.8)
+            .lineLimit(1)
     }
     
     var recordNewLabel: some View {
