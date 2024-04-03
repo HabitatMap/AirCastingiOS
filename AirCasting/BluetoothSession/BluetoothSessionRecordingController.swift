@@ -111,7 +111,7 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
         isRecording = true
         measurementsSaver.changeStatusToRecording(for: activeSession.session.uuid)
         measurementsRecorder.record(with: activeSession.device) { [weak self] stream in
-            self?.measurementsSaver.handlePeripheralMeasurement(stream, sessionUUID: activeSession.session.uuid, locationless: activeSession.session.locationless)
+            self?.measurementsSaver.handlePeripheralMeasurement(stream, sessionUUID: activeSession.session.uuid, locationless: activeSession.session.locationless, device: activeSession.session.deviceType)
         }
     }
 }
