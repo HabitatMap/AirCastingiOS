@@ -47,11 +47,10 @@ struct MainTabBarView: View {
         .onAppCameToForeground { performSessionsUpdate() }
         .onAppear {
             let appearance = UITabBarAppearance()
-            appearance.backgroundImage = UIImage()
+            appearance.backgroundColor = .aircastingBackground
             appearance.shadowImage = UIImage.mainTabBarShadow
             appearance.backgroundColor = .aircastingBackground
             UITabBar.appearance().standardAppearance = appearance
-            
             performSessionsUpdate()
             measurementUpdatingService.start()
         }
