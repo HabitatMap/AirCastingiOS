@@ -6,7 +6,7 @@ import Resolver
 import CoreLocation
 
 protocol MeasurementsSavingService {
-    func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool, device: DeviceType?)
+    func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool)
     func createSession(session: Session, device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void)
     func changeStatusToRecording(for sessionUUID: SessionUUID)
 }
@@ -55,21 +55,8 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         }
     }
 
-    func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool, device: DeviceType?) {
-        let valuesCount: Int
-        switch device {
-        case .AIRBEAM3:
-            valuesCount = 5
-        case .AIRBEAMMINI:
-            valuesCount = 2
-        default:
-            valuesCount = 1
-            Log.warning("There's an unknown device recording session")
-        }
-        /* Explanation: We anticipate receiving 5 measurements from AirBeam 3 (AB3) and 2 from AirBeam Mini (AB2). It's crucial that these batches arrive with timestamps accurate to the second. Therefore, we wait for the expected number of measurements before updating streams with the current time. */
-        if peripheralMeasurementManager.collectedValuesCount == valuesCount {
-            peripheralMeasurementManager.startNewValuesRound(locationless: locationless)
-        }
+    func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool) {
+        if peripheralMeasurementManager.collectedValuesCount == 5 { peripheralMeasurementManager.startNewValuesRound(locationless: locationless) }
         updateStreams(stream: measurement, sessionUUID: sessionUUID, location: peripheralMeasurementManager.currentLocation, time: peripheralMeasurementManager.currentTime)
         peripheralMeasurementManager.incrementCounter()
     }
