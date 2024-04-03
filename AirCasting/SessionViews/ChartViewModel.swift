@@ -130,7 +130,7 @@ final class ChartViewModel: ObservableObject {
     // MARK: Debugging utils
     
     private func log(_ msg: String, level: LogLevel = .info, file: String = #fileID, function: String = #function, line: Int = #line) {
-        Log.log("\(msg). Session info: [\(self.logSessionInfo)]", type: level, file: file, function: function, line: line)
+        Log.log("\(msg). Session info: [\(logSessionInfo)]", type: level, file: file, function: function, line: line)
     }
     
     private var logSessionInfo: String {
