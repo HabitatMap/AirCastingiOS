@@ -29,7 +29,7 @@ struct MainTabBarView: View {
             TabView(selection: .init(get: {
                 tabSelection.selection
             }, set: { newSelection in
-                tabSelection.updateSelection(to: newSelection)
+                tabSelection.update(to: newSelection)
             })) {
                 dashboardTab
                 createSessionTab
@@ -74,14 +74,12 @@ struct MainTabBarView: View {
     }
     
     private func dashboardTapped() {
-        tabSelection.updateSelection(to: .dashboard)
-        
+        tabSelection.update(to: .dashboard)
         if !coreDataHook.getSessionsFor(section: .mobileActive).isEmpty {
             selectedSection.section = .mobileActive
         } else {
             selectedSection.section = .following
         }
-        
         try! coreDataHook.setup(selectedSection: selectedSection.section)
     }
 }

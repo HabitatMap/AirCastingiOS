@@ -39,7 +39,7 @@ private extension EmptyFixedDashboardView {
     private var exploreExistingSessionsButton: some View {
         Button(action: {
             exploreSessionsButton.exploreSessionsButtonTapped = true
-            tabSelection.updateSelection(to: .createSession)
+            tabSelection.update(to: .createSession)
         }, label: {
             Text(Strings.EmptyDashboardFixed.exploreSessionsButton)
                 .font(Fonts.moderateBoldHeading1)

@@ -237,7 +237,7 @@ private extension SearchMapView {
     var finishButton: some View {
         Button {
             isSearchAndFollowLinkActive = false
-            tabSelection.updateSelection(to: .dashboard)
+            tabSelection.update(to: .dashboard)
             selectedSection.section = .following
         } label: {
             Text(Strings.SearchMapView.finishText)

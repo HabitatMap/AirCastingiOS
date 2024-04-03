@@ -14,7 +14,7 @@ struct EmptyDashboardButtonView: View {
         Button(action: {
             emptyDashboardButtonTapped.mobileWasTapped = !isFixed
             exploreSessionsButton.exploreSessionsButtonTapped = false
-            tabSelection.updateSelection(to: .createSession)
+            tabSelection.update(to: .createSession)
         }, label: {
             if isFixed {
                 Text(Strings.EmptyDashboardMobile.buttonFixed)

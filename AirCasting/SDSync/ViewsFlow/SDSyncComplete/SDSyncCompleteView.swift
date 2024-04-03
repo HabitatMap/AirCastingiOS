@@ -54,7 +54,7 @@ private extension SDSyncCompleteView {
     var continueButton: some View {
         Button {
             creatingSessionFlowContinues = false
-            tabSelection.updateSelection(to: .dashboard)
+            tabSelection.update(to: .dashboard)
         } label: {
             Text(Strings.Commons.continue)
         }

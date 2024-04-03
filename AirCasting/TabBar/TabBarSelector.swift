@@ -25,7 +25,7 @@ class TabBarSelector: ObservableObject {
                                 unselectedString: Strings.MainTabBarView.plusIcon)
     ]
     
-    func updateSelection(to newSelection: Tab) {
+    func update(to newSelection: Tab) {
         selection = newSelection
         
         if newSelection == .dashboard {

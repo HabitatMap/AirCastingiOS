@@ -158,7 +158,7 @@ extension ConfirmCreatingSessionView {
                     } else {
                         selectedSection.section = .following
                     }
-                    tabSelection.updateSelection(to: .dashboard)
+                    tabSelection.update(to: .dashboard)
 
                 case .failure(let error):
                     self.error = error as NSError
