@@ -188,6 +188,7 @@ extension Resolver: ResolverRegistering {
             switch session.deviceType {
             case .MIC: return MicrophoneSessionStopper(uuid: session.uuid)
             case .AIRBEAM3: return StandardSesssionStopper(uuid: session.uuid)
+            case .AIRBEAMMINI: return StandardSesssionStopper(uuid: session.uuid)
             case .none: return StandardSesssionStopper(uuid: session.uuid)
             }
         }

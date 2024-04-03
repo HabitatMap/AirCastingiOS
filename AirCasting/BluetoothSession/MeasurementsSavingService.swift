@@ -15,21 +15,22 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
     @Injected private var persistence: MobileSessionRecordingStorage
     @Injected private var uiStorage: UIStorage
     private var peripheralMeasurementManager = PeripheralMeasurementTimeLocationManager()
+    private var expectedMeasurementThreshold = 1
 
     class PeripheralMeasurementTimeLocationManager {
         @Injected private var locationTracker: LocationTracker
 
-        private(set) var collectedValuesCount: Int = 5
+        private(set) var collectedMeasurementsCount: Int = 0
         private(set) var currentTime: Date = DateBuilder.getFakeUTCDate()
         private(set) var currentLocation: CLLocationCoordinate2D? = .undefined
 
         func startNewValuesRound(locationless: Bool) {
             currentLocation = !locationless ? locationTracker.location.value?.coordinate : .undefined
             currentTime = DateBuilder.getFakeUTCDate()
-            collectedValuesCount = 0
+            collectedMeasurementsCount = 0
         }
 
-        func incrementCounter() { collectedValuesCount += 1 }
+        func incrementCounter() { collectedMeasurementsCount += 1 }
     }
 
     func createSession(session: Session, device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
@@ -47,6 +48,7 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
                         Log.error("\(error)")
                     }
                 }
+                setMeasurementThreshold(basedOn: entity.session?.deviceType)
                 completion(.success(()))
             } catch {
                 Log.info("\(error)")
@@ -54,10 +56,24 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
             }
         }
     }
+    
+    private func setMeasurementThreshold(basedOn type: DeviceType?) {
+        /* Explanation: We anticipate receiving 5 measurements from AirBeam 3 and 2 from AirBeam Mini. It's crucial that these batches arrive with timestamps accurate to the second. Therefore, we wait for the expected number of measurements before updating streams with the current time. */
+        switch type {
+        case .AIRBEAM3:
+            expectedMeasurementThreshold = 5
+        case .AIRBEAMMINI:
+            expectedMeasurementThreshold = 2
+        default:
+            expectedMeasurementThreshold = 1
+            Log.warning("There's an unknown device recording session")
+        }
+    }
 
     func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool) {
-        if peripheralMeasurementManager.collectedValuesCount == 5 { peripheralMeasurementManager.startNewValuesRound(locationless: locationless) }
-
+        if peripheralMeasurementManager.collectedMeasurementsCount == expectedMeasurementThreshold {
+            peripheralMeasurementManager.startNewValuesRound(locationless: locationless)
+        }
         updateStreams(stream: measurement, sessionUUID: sessionUUID, location: peripheralMeasurementManager.currentLocation, time: peripheralMeasurementManager.currentTime)
         peripheralMeasurementManager.incrementCounter()
     }
