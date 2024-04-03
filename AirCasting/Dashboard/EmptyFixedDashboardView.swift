@@ -5,7 +5,7 @@ import SwiftUI
 import Resolver
 
 struct EmptyFixedDashboardView: View {
-    @EnvironmentObject private var tabSelection: TabBarSelection
+    @EnvironmentObject private var tabSelection: TabBarSelector
     @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
@@ -39,7 +39,7 @@ private extension EmptyFixedDashboardView {
     private var exploreExistingSessionsButton: some View {
         Button(action: {
             exploreSessionsButton.exploreSessionsButtonTapped = true
-            tabSelection.selection = .createSession
+            tabSelection.update(to: .createSession)
         }, label: {
             Text(Strings.EmptyDashboardFixed.exploreSessionsButton)
                 .font(Fonts.moderateBoldHeading1)

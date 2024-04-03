@@ -11,10 +11,7 @@ import Resolver
 
 struct MainTabBarView: View {
     @Injected private var measurementUpdatingService: MeasurementUpdatingService
-    @State var homeImage: String = HomeIcon.selected.string
-    @State var settingsImage: String = SettingsIcon.unselected.string
-    @State var plusImage: String = PlusIcon.unselected.string
-    @StateObject var tabSelection: TabBarSelection = TabBarSelection()
+    @StateObject var tabSelection: TabBarSelector = TabBarSelector()
     @StateObject var selectedSection = SelectedSection()
     @StateObject var reorderButton = ReorderButton()
     @StateObject var searchAndFollow = SearchAndFollowButton()
@@ -27,26 +24,19 @@ struct MainTabBarView: View {
     @Environment(\.colorScheme) var colorScheme
     @State var measurementsDownloadingInProgress = false
     
-    private var sessions: [Sessionable] {
-        coreDataHook.sessions
-    }
-    
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            TabView(selection: $tabSelection.selection) {
+            TabView(selection: .init(get: {
+                tabSelection.selection
+            }, set: { newSelection in
+                tabSelection.update(to: newSelection)
+            })) {
                 dashboardTab
                 createSessionTab
                 settingsTab
             }
             Button {
-                tabSelection.selection = .dashboard
-                try! coreDataHook.setup(selectedSection: .mobileActive)
-                if sessions.contains(where: { $0.isActive }) {
-                    selectedSection.section = .mobileActive
-                } else {
-                    selectedSection.section = .following
-                }
-                try! coreDataHook.setup(selectedSection: selectedSection.section)
+                dashboardTapped()
             } label: {
                 Rectangle()
                     .fill(Color.clear)
@@ -54,34 +44,16 @@ struct MainTabBarView: View {
             }
             
         }
-        .onAppCameToForeground {
-            measurementsDownloadingInProgress = true
-            measurementUpdatingService.updateAllSessionsMeasurements() {
-                DispatchQueue.main.async {
-                    measurementsDownloadingInProgress = false
-                }
-            }
-        }
+        .onAppCameToForeground { performSessionsUpdate() }
         .onAppear {
             let appearance = UITabBarAppearance()
             appearance.backgroundColor = .aircastingBackground
             appearance.shadowImage = UIImage.mainTabBarShadow
+            appearance.backgroundColor = .aircastingBackground
             UITabBar.appearance().standardAppearance = appearance
-            UITabBar.appearance().scrollEdgeAppearance = appearance
-            measurementsDownloadingInProgress = true
-            measurementUpdatingService.updateAllSessionsMeasurements() {
-                DispatchQueue.main.async {
-                    measurementsDownloadingInProgress = false
-                }
-            }
+            performSessionsUpdate()
             measurementUpdatingService.start()
         }
-        .onChange(of: tabSelection.selection, perform: { _ in
-            tabSelection.selection == .dashboard ? (homeImage = HomeIcon.selected.string) : (homeImage = HomeIcon.unselected.string)
-            tabSelection.selection == .settings ? (settingsImage = SettingsIcon.selected.string) : (settingsImage = SettingsIcon.unselected.string)
-            tabSelection.selection == .createSession ? (plusImage = PlusIcon.selected.string) : (plusImage = PlusIcon.unselected.string)
-            
-        })
         .environmentObject(selectedSection)
         .environmentObject(tabSelection)
         .environmentObject(emptyDashboardButtonTapped)
@@ -90,25 +62,43 @@ struct MainTabBarView: View {
         .environmentObject(reorderButton)
         .environmentObject(searchAndFollow)
     }
+    
+    private func performSessionsUpdate() {
+        measurementsDownloadingInProgress = true
+        measurementUpdatingService.updateAllSessionsMeasurements() {
+            DispatchQueue.main.async {
+                measurementsDownloadingInProgress = false
+            }
+        }
+    }
+    
+    private func dashboardTapped() {
+        tabSelection.update(to: .dashboard)
+        if !coreDataHook.getSessionsFor(section: .mobileActive).isEmpty {
+            selectedSection.section = .mobileActive
+        } else {
+            selectedSection.section = .following
+        }
+        try! coreDataHook.setup(selectedSection: selectedSection.section)
+    }
 }
 
 private extension MainTabBarView {
-    // Tab Bar views
     private var dashboardTab: some View {
         NavigationView {
             DashboardView(coreDataHook: coreDataHook, measurementsDownloadingInProgress: $measurementsDownloadingInProgress)
         }.navigationViewStyle(StackNavigationViewStyle())
             .tabItem {
-                createTabBarImage(homeImage)
+                createTabBarImage(tabSelection.getImageFor(.dashboard))
             }
-            .tag(TabBarSelection.Tab.dashboard)
+            .tag(TabBarSelector.Tab.dashboard)
             .overlay(
                 Group{
                     HStack {
                         if !searchAndFollow.isHidden && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) && selectedSection.section == .following {
                             searchAndFollowButton
                         }
-                        if reorderButton.reorderIsOn || (!reorderButton.isHidden && sessions.count > 1 && selectedSection.section == .following) {
+                        if reorderButton.reorderIsOn || (!reorderButton.isHidden && coreDataHook.sessions.count > 1 && selectedSection.section == .following) {
                             reorderingButton
                         }
                     }
@@ -120,17 +110,17 @@ private extension MainTabBarView {
     private var createSessionTab: some View {
         ChooseSessionTypeView(sessionContext: sessionContext)
             .tabItem {
-                createTabBarImage(plusImage)
+                createTabBarImage(tabSelection.getImageFor(.createSession))
             }
-            .tag(TabBarSelection.Tab.createSession)
+            .tag(TabBarSelector.Tab.createSession)
     }
     
     private var settingsTab: some View {
         SettingsView(sessionContext: sessionContext)
             .tabItem {
-                createTabBarImage(settingsImage)
+                createTabBarImage(tabSelection.getImageFor(.settings))
             }
-            .tag(TabBarSelection.Tab.settings)
+            .tag(TabBarSelector.Tab.settings)
     }
     
     private var reorderingButton: some View {
@@ -193,16 +183,6 @@ private extension MainTabBarView {
     }
 }
 
-class TabBarSelection: ObservableObject {
-    @Published var selection = Tab.dashboard
-    
-    enum Tab {
-        case dashboard
-        case createSession
-        case settings
-    }
-}
-
 class SelectedSection: ObservableObject {
     @Published var section = DashboardSection.following
     @Published var mobileSessionWasFinished = false
@@ -261,8 +241,8 @@ class ReorderButton: ObservableObject {
 }
 
 class SearchAndFollowButton: ObservableObject {
-     @Published var searchIsOn = false
-     @Published var isHidden = false
+    @Published var searchIsOn = false
+    @Published var isHidden = false
     
     func setHidden(if isActive: Bool) {
         if isActive {
@@ -270,44 +250,6 @@ class SearchAndFollowButton: ObservableObject {
         } else {
             withAnimation {
                 isHidden = false
-            }
-        }
-    }
- }
-
-extension MainTabBarView {
-    enum HomeIcon {
-        case selected
-        case unselected
-        
-        var string: String {
-            switch self {
-            case .selected: return Strings.MainTabBarView.homeBlueIcon
-            case .unselected: return Strings.MainTabBarView.homeIcon
-            }
-        }
-    }
-    
-    enum PlusIcon {
-        case selected
-        case unselected
-        
-        var string: String {
-            switch self {
-            case .selected: return Strings.MainTabBarView.plusBlueIcon
-            case .unselected: return Strings.MainTabBarView.plusIcon
-            }
-        }
-    }
-    
-    enum SettingsIcon {
-        case selected
-        case unselected
-        
-        var string: String {
-            switch self {
-            case .selected: return Strings.MainTabBarView.settingsBlueIcon
-            case .unselected: return Strings.MainTabBarView.settingsIcon
             }
         }
     }

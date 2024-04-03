@@ -21,7 +21,7 @@ struct ConfirmCreatingSessionView: View {
     @EnvironmentObject var selectedSection: SelectedSection
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @Injected private var locationTracker: LocationTracker
-    @EnvironmentObject private var tabSelection: TabBarSelection
+    @EnvironmentObject private var tabSelection: TabBarSelector
     @Binding var creatingSessionFlowContinues: Bool
 
     let initialLocation: CLLocation?
@@ -158,7 +158,7 @@ extension ConfirmCreatingSessionView {
                     } else {
                         selectedSection.section = .following
                     }
-                    tabSelection.selection = TabBarSelection.Tab.dashboard
+                    tabSelection.update(to: .dashboard)
 
                 case .failure(let error):
                     self.error = error as NSError

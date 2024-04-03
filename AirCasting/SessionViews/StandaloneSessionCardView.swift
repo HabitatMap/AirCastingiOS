@@ -7,7 +7,7 @@ import Resolver
 
 struct StandaloneSessionCardView: View {
     let session: SessionEntity
-    @EnvironmentObject private var tabSelection: TabBarSelection
+    @EnvironmentObject private var tabSelection: TabBarSelector
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
     @EnvironmentObject var selectedSection: SelectedSection
     @Injected private var networkChecker: NetworkChecker
@@ -87,7 +87,7 @@ struct StandaloneSessionCardView: View {
 
     func finishSessionAndSyncAlertAction() {
         finishAndSyncButtonTapped.finishAndSyncButtonWasTapped = true
-        tabSelection.selection = .createSession
+        tabSelection.update(to: .createSession)
         selectedSection.mobileSessionWasFinished = true
     }
     

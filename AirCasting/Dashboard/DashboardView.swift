@@ -24,13 +24,9 @@ struct DashboardView: View {
     @Injected private var networkChecker: NetworkChecker
     @Injected private var persistenceController: PersistenceController
     private let sessionSynchronizer: SessionSynchronizer
-
-    private var sessions: [Sessionable] {
-        coreDataHook.sessions
-    }
     
     private var noDormantNorFixedSessions: Bool {
-        !sessions.contains(where: { $0.isFixed || !$0.isActive })
+        !coreDataHook.sessions.contains(where: { $0.isFixed || !$0.isActive })
     }
 
     init(coreDataHook: CoreDataHook, measurementsDownloadingInProgress: Binding<Bool>) {
@@ -48,7 +44,7 @@ struct DashboardView: View {
                 .alert(item: $alert, content: { $0.makeAlert() })
             if reorderButton.reorderIsOn {
                 followingReorderTab
-                ReorderingDashboard(sessions: sessions,
+                ReorderingDashboard(sessions: coreDataHook.sessions,
                                     thresholds: Array(self.thresholds))
             } else {
                 sessionTypePicker
@@ -99,7 +95,7 @@ struct DashboardView: View {
         }
         .onChange(of: selectedSection.mobileSessionWasFinished) { newValue in
             if newValue &&
-                sessions.count == 1 {
+                coreDataHook.sessions.count == 1 {
                 selectedSection.section = .mobileDormant
             }
             selectedSection.mobileSessionWasFinished = false

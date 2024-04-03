@@ -22,7 +22,6 @@ struct SelectDeviceView: View {
     @Binding var creatingSessionFlowContinues : Bool
     @Binding var sdSyncContinues : Bool
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
-    @EnvironmentObject private var tabSelection: TabBarSelection
 
     var body: some View {
         VStack(spacing: 30) {

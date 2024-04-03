@@ -5,7 +5,7 @@ import SwiftUI
 import AirCastingStyling
 
 struct EmptyDashboardButtonView: View {
-    @EnvironmentObject private var tabSelection: TabBarSelection
+    @EnvironmentObject private var tabSelection: TabBarSelector
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
     @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton
     var isFixed: Bool
@@ -14,7 +14,7 @@ struct EmptyDashboardButtonView: View {
         Button(action: {
             emptyDashboardButtonTapped.mobileWasTapped = !isFixed
             exploreSessionsButton.exploreSessionsButtonTapped = false
-            tabSelection.selection = .createSession
+            tabSelection.update(to: .createSession)
         }, label: {
             if isFixed {
                 Text(Strings.EmptyDashboardMobile.buttonFixed)
