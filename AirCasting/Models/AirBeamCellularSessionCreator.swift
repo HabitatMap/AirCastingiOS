@@ -21,6 +21,7 @@ final class AirBeamCellularSessionCreator: SessionCreator {
     func createSession(_ sessionContext: CreateSessionContext, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let sessionType = sessionContext.sessionType,
               let sessionUUID = sessionContext.sessionUUID,
+              let deviceType = sessionContext.deviceType,
               let isIndoor = sessionContext.isIndoor else {
             assertionFailure("invalidCreateSessionContext \(sessionContext)")
             completion(.failure(AirBeamSessionCreatorError.invalidCreateSessionContext(sessionContext)))

@@ -187,8 +187,7 @@ extension Resolver: ResolverRegistering {
         func matchStopper(for session: DevicedSession) -> SessionStoppable {
             switch session.deviceType {
             case .MIC: return MicrophoneSessionStopper(uuid: session.uuid)
-            case .AIRBEAM3: return StandardSesssionStopper(uuid: session.uuid)
-            case .AIRBEAMMINI: return StandardSesssionStopper(uuid: session.uuid)
+            case .AIRBEAM: return StandardSesssionStopper(uuid: session.uuid)
             case .none: return StandardSesssionStopper(uuid: session.uuid)
             }
         }

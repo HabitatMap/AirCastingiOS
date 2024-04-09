@@ -69,6 +69,8 @@ struct SelectPeripheralView: View {
             Button(action: {
                 selection = availableDevice
                 sessionContext.device = availableDevice
+                // TODO: AB shouldn't be hardcoded
+                sessionContext.deviceType = .AIRBEAM
             }) {
                 HStack(spacing: 20) {
                     CheckBox(isSelected: selection?.uuid == availableDevice.uuid)

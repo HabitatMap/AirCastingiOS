@@ -20,6 +20,7 @@ struct SDSyncFileValidationService: SDSyncFileValidator {
     
     init(type: AirBeamDeviceType) {
         switch type {
+            //TODO: ask Mike - should we remove this?
         case .airBeam2, .airBeam3:
             expectedFieldsCount = 13
         case .airBeamMini:

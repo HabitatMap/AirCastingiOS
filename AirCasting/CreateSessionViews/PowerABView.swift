@@ -11,7 +11,6 @@ import Resolver
 
 struct PowerABView: View {
     @Binding var creatingSessionFlowContinues: Bool
-    @EnvironmentObject private var sessionContext: CreateSessionContext
 
     var body: some View {
         VStack() {
@@ -30,7 +29,6 @@ struct PowerABView: View {
                 .buttonStyle(BlueButtonStyle())
         }
         .padding()
-        .onAppear(perform: { sessionContext.deviceType = .AIRBEAM3 })
         .background(Color.aircastingBackground.ignoresSafeArea())
     }
 

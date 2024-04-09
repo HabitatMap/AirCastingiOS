@@ -48,7 +48,7 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
                         Log.error("\(error)")
                     }
                 }
-                setMeasurementThreshold(basedOn: entity.session?.deviceType)
+                setMeasurementThreshold(basedOn: device.airbeamType)
                 completion(.success(()))
             } catch {
                 Log.info("\(error)")
@@ -57,12 +57,12 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         }
     }
     
-    private func setMeasurementThreshold(basedOn type: DeviceType?) {
+    private func setMeasurementThreshold(basedOn type: AirBeamDeviceType?) {
         /* Explanation: We anticipate receiving 5 measurements from AirBeam 3 and 2 from AirBeam Mini. It's crucial that these batches arrive with timestamps accurate to the second. Therefore, we wait for the expected number of measurements before updating streams with the current time. */
         switch type {
-        case .AIRBEAM3:
+        case .airBeam3:
             expectedMeasurementThreshold = 5
-        case .AIRBEAMMINI:
+        case .airBeamMini:
             expectedMeasurementThreshold = 2
         default:
             expectedMeasurementThreshold = 1

@@ -135,15 +135,16 @@ enum StreamingMethod: Int {
 
 public enum DeviceType: Int, CustomStringConvertible {
     case MIC = 0
-    case AIRBEAM3 = 1
-    case AIRBEAMMINI = 2
+    case AIRBEAM = 1
 
     public var description: String {
         switch self {
         case .MIC: return "Device's Microphone"
-        case .AIRBEAM3: return "AirBeam 3"
-        case .AIRBEAMMINI: return "AirBeamMini"
+        case .AIRBEAM: return "AirBeam"
         }
+    }
+    func isAirBeam() -> Bool {
+        self == .AIRBEAM
     }
 }
 
