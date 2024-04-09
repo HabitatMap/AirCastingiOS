@@ -14,15 +14,21 @@ protocol MeasurementsSavingService {
 class DefaultMeasurementsSaver: MeasurementsSavingService {
     @Injected private var persistence: MobileSessionRecordingStorage
     @Injected private var uiStorage: UIStorage
-    private var peripheralMeasurementManager = PeripheralMeasurementTimeLocationManager()
+    private var peripheralMeasurementManager: PeripheralMeasurementTimeLocationManager?
     private var expectedMeasurementThreshold = 1
 
     class PeripheralMeasurementTimeLocationManager {
         @Injected private var locationTracker: LocationTracker
 
-        private(set) var collectedMeasurementsCount: Int = 0
-        private(set) var currentTime: Date = DateBuilder.getFakeUTCDate()
-        private(set) var currentLocation: CLLocationCoordinate2D? = .undefined
+        private(set) var collectedMeasurementsCount: Int
+        private(set) var currentTime: Date
+        private(set) var currentLocation: CLLocationCoordinate2D?
+        
+        init(collectedMeasurementsCount: Int) {
+            self.collectedMeasurementsCount = collectedMeasurementsCount
+            self.currentTime = DateBuilder.getFakeUTCDate()
+            self.currentLocation = .undefined
+        }
 
         func startNewValuesRound(locationless: Bool) {
             currentLocation = !locationless ? locationTracker.location.value?.coordinate : .undefined
@@ -49,6 +55,7 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
                     }
                 }
                 setMeasurementThreshold(basedOn: device.airbeamType)
+                peripheralMeasurementManager = .init(collectedMeasurementsCount: expectedMeasurementThreshold)
                 completion(.success(()))
             } catch {
                 Log.info("\(error)")
@@ -71,6 +78,10 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
     }
 
     func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool) {
+        guard let peripheralMeasurementManager else {
+            Log.error("Peripheral Measurements Manager should have been initialized during session creation...")
+            return
+        }
         if peripheralMeasurementManager.collectedMeasurementsCount == expectedMeasurementThreshold {
             peripheralMeasurementManager.startNewValuesRound(locationless: locationless)
         }
