@@ -55,7 +55,6 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
                     }
                 }
                 setMeasurementThreshold(basedOn: device.airbeamType)
-                peripheralMeasurementManager = .init(collectedMeasurementsCount: expectedMeasurementThreshold)
                 completion(.success(()))
             } catch {
                 Log.info("\(error)")

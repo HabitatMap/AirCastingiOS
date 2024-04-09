@@ -143,6 +143,9 @@ public enum DeviceType: Int, CustomStringConvertible {
         case .AIRBEAM: return "AirBeam"
         }
     }
+    func isAirBeam() -> Bool {
+        self == .AIRBEAM
+    }
 }
 
 extension Session {
