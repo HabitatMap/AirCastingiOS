@@ -162,7 +162,7 @@ class PersistenceController: ObservableObject {
             }
             Log.info("Finishing sessions \( sessions.map({ "\(String(describing: $0.uuid)): \(String(describing: $0.status)) \(String(describing: $0.type))"}) )")
             sessions.forEach {
-                if let deviceType = $0.deviceType, deviceType.isAirBeam() {
+                if let deviceType = $0.deviceType, deviceType == .AIRBEAM {
                     $0.status = .DISCONNECTED
                 } else {
                     $0.status = .FINISHED
