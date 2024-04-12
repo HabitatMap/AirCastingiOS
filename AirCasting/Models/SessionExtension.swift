@@ -16,7 +16,7 @@ extension SessionEntity {
     var isFixed: Bool { type == .fixed }
     var isFollowed: Bool { followedAt != nil }
     var isUnfollowedFixed: Bool { type == .fixed && followedAt == nil }
-    var isInStandaloneMode: Bool { isMobile && status == .DISCONNECTED && deviceType == .AIRBEAM3 }
+    var isInStandaloneMode: Bool { isMobile && status == .DISCONNECTED && deviceType == .AIRBEAM }
     var deletable: Bool { isDormant || isFixed }
     var editable: Bool { isDormant || isFixed }
     var shareable: Bool { isDormant || isFixed }

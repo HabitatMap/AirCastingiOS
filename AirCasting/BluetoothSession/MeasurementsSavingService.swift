@@ -14,15 +14,21 @@ protocol MeasurementsSavingService {
 class DefaultMeasurementsSaver: MeasurementsSavingService {
     @Injected private var persistence: MobileSessionRecordingStorage
     @Injected private var uiStorage: UIStorage
-    private var peripheralMeasurementManager = PeripheralMeasurementTimeLocationManager()
+    private var peripheralMeasurementManager: PeripheralMeasurementTimeLocationManager?
     private var expectedMeasurementThreshold = 1
 
     class PeripheralMeasurementTimeLocationManager {
         @Injected private var locationTracker: LocationTracker
 
-        private(set) var collectedMeasurementsCount: Int = 0
-        private(set) var currentTime: Date = DateBuilder.getFakeUTCDate()
-        private(set) var currentLocation: CLLocationCoordinate2D? = .undefined
+        private(set) var collectedMeasurementsCount: Int
+        private(set) var currentTime: Date
+        private(set) var currentLocation: CLLocationCoordinate2D?
+        
+        init(collectedMeasurementsCount: Int) {
+            self.collectedMeasurementsCount = collectedMeasurementsCount
+            self.currentTime = DateBuilder.getFakeUTCDate()
+            self.currentLocation = .undefined
+        }
 
         func startNewValuesRound(locationless: Bool) {
             currentLocation = !locationless ? locationTracker.location.value?.coordinate : .undefined
@@ -48,7 +54,8 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
                         Log.error("\(error)")
                     }
                 }
-                setMeasurementThreshold(basedOn: entity.session?.deviceType)
+                setMeasurementThreshold(basedOn: device.airbeamType)
+                peripheralMeasurementManager = .init(collectedMeasurementsCount: expectedMeasurementThreshold)
                 completion(.success(()))
             } catch {
                 Log.info("\(error)")
@@ -57,12 +64,12 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         }
     }
     
-    private func setMeasurementThreshold(basedOn type: DeviceType?) {
+    private func setMeasurementThreshold(basedOn type: AirBeamDeviceType?) {
         /* Explanation: We anticipate receiving 5 measurements from AirBeam 3 and 2 from AirBeam Mini. It's crucial that these batches arrive with timestamps accurate to the second. Therefore, we wait for the expected number of measurements before updating streams with the current time. */
         switch type {
-        case .AIRBEAM3:
+        case .airBeam3:
             expectedMeasurementThreshold = 5
-        case .AIRBEAMMINI:
+        case .airBeamMini:
             expectedMeasurementThreshold = 2
         default:
             expectedMeasurementThreshold = 1
@@ -71,6 +78,10 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
     }
 
     func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool) {
+        guard let peripheralMeasurementManager else {
+            Log.error("Peripheral Measurements Manager should have been initialized during session creation...")
+            return
+        }
         if peripheralMeasurementManager.collectedMeasurementsCount == expectedMeasurementThreshold {
             peripheralMeasurementManager.startNewValuesRound(locationless: locationless)
         }

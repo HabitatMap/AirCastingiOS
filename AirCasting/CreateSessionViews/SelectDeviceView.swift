@@ -68,8 +68,6 @@ struct SelectDeviceView: View {
     
     var bluetoothButton: some View {
         Button(action: {
-            // it doesn't have to be airbeam, it can be any device, but it doesn't influence anything, it's just needed for views flow
-            sessionContext.deviceType = DeviceType.AIRBEAM3
             selected = 1
             if !bluetoothHandler.isBluetoothDenied() {
                 isPowerABLinkActive = true

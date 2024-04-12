@@ -150,7 +150,7 @@ extension _ABMeasurementsView {
         } else if session.isFollowed {
             return Text(Strings.SessionCart.lastMinuteMeasurement)
                 .font(Fonts.moderateRegularHeading4)
-        } else if session.type == .mobile && session.deviceType == .AIRBEAM3 {
+        } else if session.type == .mobile && session.deviceType == .AIRBEAM {
             return Text(Strings.SessionCart.measurementsTitle)
                 .font(Fonts.moderateRegularHeading4)
         }

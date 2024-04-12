@@ -22,7 +22,7 @@ class FixedSessionFaker {
             session.gotDeleted = false
             session.version = 32
             session.status = .RECORDING
-            session.deviceType = .AIRBEAM3
+            session.deviceType = .AIRBEAM
 
             for i in 0..<5 {
                 let stream = MeasurementStreamEntity(context: context)
