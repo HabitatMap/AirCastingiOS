@@ -49,8 +49,8 @@ struct MainTabBarView: View {
             let appearance = UITabBarAppearance()
             appearance.backgroundColor = .aircastingBackground
             appearance.shadowImage = UIImage.mainTabBarShadow
-            appearance.backgroundColor = .aircastingBackground
             UITabBar.appearance().standardAppearance = appearance
+            UITabBar.appearance().scrollEdgeAppearance = appearance
             performSessionsUpdate()
             measurementUpdatingService.start()
         }
