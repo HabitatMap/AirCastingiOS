@@ -208,7 +208,7 @@ fileprivate extension Database.Session {
         Database.Session(uuid: .default,
                          type: .mobile,
                          name: "Testable",
-                         deviceType: .AIRBEAM3,
+                         deviceType: .AIRBEAM,
                          location: nil,
                          startTime: nil,
                          contribute: false,
