@@ -38,6 +38,8 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     @Injected private var persistenceController: PersistenceController
     private var databaseStorage = SDSyncMobileSessionsDatabaseStorage()
     private lazy var context: NSManagedObjectContext = persistenceController.editContext
+    private var sessionUUID: SessionUUID?
+    private var location: CLLocationCoordinate2D? = nil
     
     func saveDataToDb(filesDirectoryURL: URL, deviceID: String, completion: @escaping (Result<Void, Error>) -> Void) {
         var isDirectory: ObjCBool = false
@@ -82,12 +84,14 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
             return
         }
         
-        let sessionUUID = SessionUUID(stringLiteral: String(sessionUUIDString))
+        sessionUUID = SessionUUID(stringLiteral: String(sessionUUIDString))
         
-        Log.info("Processing mobile session: \(sessionUUID)")
+        guard let sessionUUID else { return }
+        
+        Log.info("Processing mobile session: \(self.sessionUUID)")
         
         guard let processedSession = getSessionData(sessionUUID: sessionUUID, deviceID: deviceID) else {
-            Log.info("Ignoring session \(sessionUUID). Moving forward.")
+            Log.info("Ignoring session \(self.sessionUUID). Moving forward.")
             completion(.success(()))
             return
         }
@@ -95,7 +99,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         processFile(fileURL: fileURL, session: processedSession, deviceID: deviceID, completion: completion)
     }
     
-    private func processFile(fileURL: URL, session: SDSessionData, deviceID: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    private func processFile(fileURL: URL, session: SDSessionData, deviceID: String, completion: @escaping (Result<Void, Error>) -> Void) {        
         var streamsWithMeasurements: [SDStream: [SDSyncMeasurement]] = [:]
         let bufferThreshold = 5000
         var savingFailed = false
@@ -189,9 +193,8 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     }
     
     private func enqueueForSaving(measurements: SDCardMeasurementsRow, buffer streamsWithMeasurements: inout [SDStream: [SDSyncMeasurement]], deviceID: String) {
-        var location: CLLocationCoordinate2D?
-        if let lat = measurements.lat, let long = measurements.long {
-            location = CLLocationCoordinate2D(latitude: lat, longitude: long)
+        if location == nil {
+            location = addMeasurementLocation(deviceID: deviceID, measurements: measurements)
         }
         
         if let f = measurements.f {
@@ -204,6 +207,47 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm2_5, header: .pm2_5), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.pm2_5, location: location))
         if let pm10 = measurements.pm10 {
             streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm10, header: .pm10), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: pm10, location: location))
+        }
+    }
+    
+    private func addMeasurementLocation(deviceID: String, measurements: SDCardMeasurementsRow) -> CLLocationCoordinate2D? {
+
+        let isMini = deviceID.lowercased().contains(AirBeamDeviceType.airBeamMini.rawName)
+        
+        if isMini {
+            guard let sessionUUID else {
+                Log.error("[SD Sync] Session doesn't have sessionUUID")
+                fatalError()
+            }
+            do {
+                let session = try context.existingSession(uuid: sessionUUID)
+                let filteredStreams = session.allStreams.filter { MeasurementStreamEntity in
+                    !MeasurementStreamEntity.allMeasurements!.isEmpty
+                }
+                let latestMeasurements = filteredStreams.map({ $0.allMeasurements?.last })
+                let sortedMeasurements = latestMeasurements.sorted { first, second in
+                    guard let first, let second else { return false }
+                    return first.time > second.time
+                }
+                guard let latestMeasurement = sortedMeasurements.first else {
+                    /* We need to change it to current phone's location */
+                    return session.location!
+                }
+                guard let location = latestMeasurement?.location else {
+                    // ^
+                    return session.location!
+                }
+                return location
+            } catch {
+                Log.error("[SD Sync] Error fetching session from local database")
+                return nil
+            }
+        } else {
+            if let lat = measurements.lat, let long = measurements.long {
+                return CLLocationCoordinate2D(latitude: lat, longitude: long)
+            }
+            Log.error("[SD Sync] Something went wrong when adding location to measurements")
+            return nil
         }
     }
     
