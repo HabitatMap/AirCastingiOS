@@ -190,10 +190,9 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         return session
     }
     
+    
     private func enqueueForSaving(sessionUUID: SessionUUID, measurements: SDCardMeasurementsRow, buffer streamsWithMeasurements: inout [SDStream: [SDSyncMeasurement]], deviceID: String) {
-       
         location = location ?? setProperLocation(sessionUUID: sessionUUID, deviceID: deviceID, measurements: measurements)
-        
         if let f = measurements.f {
             streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .f, header: .f), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: f, location: location))
         }

@@ -18,6 +18,7 @@ protocol LocationAuthorization {
 protocol LocationTracker {
     func start()
     func stop()
+    func oneTimeLocationUpdate() async throws -> CLLocation 
     var location: CurrentValueSubject<CLLocation?, Never> { get }
 }
 
@@ -33,6 +34,11 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
             self.locationManager.requestLocation()
         }
     }
+    
+    private var didCheckForOneTimeUpdate = false
+    private var locationCancellable: AnyCancellable?
+    var oneTimeLocationTracker: CurrentValueSubject<Void, Never> = .init(())
+    private var locationContinuation: CheckedContinuation<CLLocation, Error>?
     
     var location: CurrentValueSubject<CLLocation?, Never> = .init(nil)
     
@@ -65,6 +71,14 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
         assert(locationStartReference >= 0)
     }
     
+    func oneTimeLocationUpdate() async throws -> CLLocation {
+        return try await withCheckedThrowingContinuation { [weak self] continuation in
+            self?.locationContinuation = continuation
+            self?.didCheckForOneTimeUpdate = true
+            self?.locationManager.requestLocation()
+        }
+    }
+    
     func requestAuthorization() {
         locationManager.requestAlwaysAuthorization()
     }
@@ -83,8 +97,12 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
     // MARK: - CLLocationManagerDelegate
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let latestLocation = locations.last else { return }
-        location.value = latestLocation
+        if let latestLocation = locations.last {
+            location.value = latestLocation
+            if didCheckForOneTimeUpdate {
+                finishLocationUpdate(with: .success(latestLocation))
+            }
+        }
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
@@ -97,9 +115,18 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
             fatalError()
         }
     }
-    
+
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         Log.warning("Location fetch failed with error: \(error.localizedDescription)")
+        if didCheckForOneTimeUpdate {
+            finishLocationUpdate(with: .failure(error))
+        }
+    }
+    
+    private func finishLocationUpdate(with result: Result<CLLocation, Error>) {
+        guard let continuation = locationContinuation else { return }
+        locationContinuation = nil
+        continuation.resume(with: result)
     }
 }
 
