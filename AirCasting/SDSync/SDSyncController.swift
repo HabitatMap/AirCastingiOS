@@ -41,6 +41,7 @@ class SDSyncController {
     @Injected private var averagingService: ActiveSessionsAveragingController
     @Injected private var sessionSynchronizer: SessionSynchronizer
     @Injected private var measurementsDownloader: SyncedMeasurementsDownloader
+    @Injected private var locationTracker: LocationTracker
     
     private let writingQueue = DispatchQueue(label: "SDSyncController")
     
@@ -154,15 +155,18 @@ class SDSyncController {
     
     private func process(mobileSessionFilesDirectory: URL, deviceID: String, completion: @escaping (Bool) -> Void) {
         Log.info("[SD Sync] Processing mobile file")
-        self.mobileSessionsSaver.saveDataToDb(filesDirectoryURL: mobileSessionFilesDirectory, deviceID: deviceID) { result in
-            switch result {
-            case .success():
-                Log.info("[SD Sync] Saved mobile data with success")
-                self.onCurrentSyncEnd { self.startBackendSync() }
-                completion(true)
-            case .failure(let error):
-                Log.error("[SD Sync] Failed to save sessions to database: \(error.localizedDescription)")
-                completion(false)
+        Task {
+            let location = try await locationTracker.oneTimeLocationUpdate()
+            self.mobileSessionsSaver.saveDataToDb(filesDirectoryURL: mobileSessionFilesDirectory, deviceID: deviceID, deviceLocation: .init(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)) { result in
+                switch result {
+                case .success():
+                    Log.info("[SD Sync] Saved mobile data with success")
+                    self.onCurrentSyncEnd { self.startBackendSync() }
+                    completion(true)
+                case .failure(let error):
+                    Log.error("[SD Sync] Failed to save sessions to database: \(error.localizedDescription)")
+                    completion(false)
+                }
             }
         }
     }

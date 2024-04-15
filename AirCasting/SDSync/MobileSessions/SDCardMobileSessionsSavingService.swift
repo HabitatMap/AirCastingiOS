@@ -8,7 +8,7 @@ import Combine
 import Resolver
 
 protocol SDCardMobileSessionssSaver {
-    func saveDataToDb(filesDirectoryURL: URL, deviceID: String, completion: @escaping (Result<Void, Error>) -> Void)
+    func saveDataToDb(filesDirectoryURL: URL, deviceID: String, deviceLocation: CLLocationCoordinate2D, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 enum SDMobileSavingErrors: Error {
@@ -40,10 +40,15 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     private lazy var context: NSManagedObjectContext = persistenceController.editContext
     private var sessionUUID: SessionUUID?
     private var location: CLLocationCoordinate2D? = nil
+    private var deviceLocation: CLLocationCoordinate2D? = nil
     
-    func saveDataToDb(filesDirectoryURL: URL, deviceID: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    func saveDataToDb(filesDirectoryURL: URL, deviceID: String, deviceLocation: CLLocationCoordinate2D, completion: @escaping (Result<Void, Error>) -> Void) {
         var isDirectory: ObjCBool = false
         guard FileManager.default.fileExists(atPath: filesDirectoryURL.path, isDirectory: &isDirectory) else { completion(.success(())); return }
+        
+        if self.deviceLocation == nil {
+            self.deviceLocation = deviceLocation
+        }
         
         guard isDirectory.boolValue else {
             process(fileURL: filesDirectoryURL, deviceID: deviceID, completion: completion)
@@ -190,7 +195,6 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         return session
     }
     
-    
     private func enqueueForSaving(sessionUUID: SessionUUID, measurements: SDCardMeasurementsRow, buffer streamsWithMeasurements: inout [SDStream: [SDSyncMeasurement]], deviceID: String) {
         location = location ?? setProperLocation(sessionUUID: sessionUUID, deviceID: deviceID, measurements: measurements)
         if let f = measurements.f {
@@ -207,7 +211,6 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     }
     
     private func setProperLocation(sessionUUID: SessionUUID, deviceID: String, measurements: SDCardMeasurementsRow) -> CLLocationCoordinate2D? {
-        
         if deviceID.isMini {
             location = getLastRecordedLocation(sessionUUID: sessionUUID)
             return location
