@@ -194,7 +194,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     
     private func enqueueForSaving(measurements: SDCardMeasurementsRow, buffer streamsWithMeasurements: inout [SDStream: [SDSyncMeasurement]], deviceID: String) {
         if location == nil {
-            location = addMeasurementLocation(deviceID: deviceID, measurements: measurements)
+            location = setProperLocation(deviceID: deviceID, measurements: measurements)
         }
         
         if let f = measurements.f {
@@ -210,43 +210,40 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         }
     }
     
-    private func addMeasurementLocation(deviceID: String, measurements: SDCardMeasurementsRow) -> CLLocationCoordinate2D? {
-
+    private func setProperLocation(deviceID: String, measurements: SDCardMeasurementsRow) -> CLLocationCoordinate2D? {
         let isMini = deviceID.lowercased().contains(AirBeamDeviceType.airBeamMini.rawName)
         
         if isMini {
-            guard let sessionUUID else {
-                Log.error("[SD Sync] Session doesn't have sessionUUID")
-                fatalError()
-            }
-            do {
-                let session = try context.existingSession(uuid: sessionUUID)
-                let filteredStreams = session.allStreams.filter { MeasurementStreamEntity in
-                    !MeasurementStreamEntity.allMeasurements!.isEmpty
-                }
-                let latestMeasurements = filteredStreams.map({ $0.allMeasurements?.last })
-                let sortedMeasurements = latestMeasurements.sorted { first, second in
-                    guard let first, let second else { return false }
-                    return first.time > second.time
-                }
-                guard let latestMeasurement = sortedMeasurements.first else {
-                    /* We need to change it to current phone's location */
-                    return session.location!
-                }
-                guard let location = latestMeasurement?.location else {
-                    // ^
-                    return session.location!
-                }
-                return location
-            } catch {
-                Log.error("[SD Sync] Error fetching session from local database")
-                return nil
-            }
+            location = getLastRecordedLocation()
+            return location
         } else {
             if let lat = measurements.lat, let long = measurements.long {
                 return CLLocationCoordinate2D(latitude: lat, longitude: long)
             }
             Log.error("[SD Sync] Something went wrong when adding location to measurements")
+            return nil
+        }
+    }
+    
+    private func getLastRecordedLocation() -> CLLocationCoordinate2D? {
+        guard let sessionUUID else {
+            Log.error("[SD Sync] Session doesn't have sessionUUID")
+            fatalError()
+        }
+        do {
+            let session = try context.existingSession(uuid: sessionUUID)
+            let filteredStreams = session.allStreams.filter { $0.allMeasurements?.isEmpty == false }
+            let latestMeasurements = filteredStreams.compactMap({ $0.allMeasurements?.last })
+            let allLastMeasurements = filteredStreams.compactMap { $0.allMeasurements?.last }
+            if let newestMeasurement = allLastMeasurements.max(by: { $0.time < $1.time }),
+               let location = newestMeasurement.location {
+                return location
+            } else {
+                // return phone's location
+                return nil
+            }
+        } catch {
+            Log.error("[SD Sync] Error fetching session from local database")
             return nil
         }
     }

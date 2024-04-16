@@ -276,7 +276,7 @@ private extension SessionHeaderView {
 private extension SessionHeaderView {
     func checkStandaloneActionAvaibility() -> Bool {
         guard let devType = session.deviceType else { return false }
-        return devType.isAirBeam() &&
+        return devType == .AIRBEAM &&
         session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode)
     }
 }
