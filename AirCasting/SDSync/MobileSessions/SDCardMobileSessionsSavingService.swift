@@ -233,8 +233,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                let location = newestMeasurement.location {
                 return location
             } else {
-                // return phone's location
-                return nil
+                return deviceLocation
             }
         } catch {
             Log.error("[SD Sync] Error fetching session from local database")

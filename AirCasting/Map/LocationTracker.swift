@@ -99,9 +99,7 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let latestLocation = locations.last {
             location.value = latestLocation
-            if didCheckForOneTimeUpdate {
-                finishLocationUpdate(with: .success(latestLocation))
-            }
+            checkForOneTimeLocationUpdate(with: .success(latestLocation))
         }
     }
     
@@ -118,15 +116,20 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         Log.warning("Location fetch failed with error: \(error.localizedDescription)")
-        if didCheckForOneTimeUpdate {
-            finishLocationUpdate(with: .failure(error))
-        }
+        checkForOneTimeLocationUpdate(with: .failure(error))
     }
     
     private func finishLocationUpdate(with result: Result<CLLocation, Error>) {
         guard let continuation = locationContinuation else { return }
         locationContinuation = nil
         continuation.resume(with: result)
+    }
+    
+    private func checkForOneTimeLocationUpdate(with result: Result<CLLocation, Error>) {
+        if didCheckForOneTimeUpdate {
+            finishLocationUpdate(with: result)
+            didCheckForOneTimeUpdate = false
+        }
     }
 }
 
