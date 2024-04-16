@@ -10,3 +10,8 @@ struct SDStream: Hashable {
     let header: SDCardCSVFileFactory.Header
 }
 
+extension String {
+    var isMini: Bool {
+        return self.lowercased().contains(AirBeamDeviceType.airBeamMini.rawName.lowercased())
+    }
+}

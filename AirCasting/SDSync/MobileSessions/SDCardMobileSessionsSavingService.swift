@@ -211,9 +211,8 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     }
     
     private func setProperLocation(deviceID: String, measurements: SDCardMeasurementsRow) -> CLLocationCoordinate2D? {
-        let isMini = deviceID.lowercased().contains(AirBeamDeviceType.airBeamMini.rawName)
         
-        if isMini {
+        if deviceID.isMini {
             location = getLastRecordedLocation()
             return location
         } else {
