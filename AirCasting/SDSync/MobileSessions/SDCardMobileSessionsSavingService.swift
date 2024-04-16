@@ -83,7 +83,6 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
             completion(.failure(SDMobileSavingErrors.noUUID))
             return
         }
-        
         sessionUUID = SessionUUID(stringLiteral: String(sessionUUIDString))
         
         guard let sessionUUID else { return }
@@ -95,11 +94,10 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
             completion(.success(()))
             return
         }
-        
-        processFile(fileURL: fileURL, session: processedSession, deviceID: deviceID, completion: completion)
+        processFile(sessionUUID: sessionUUID, fileURL: fileURL, session: processedSession, deviceID: deviceID, completion: completion)
     }
     
-    private func processFile(fileURL: URL, session: SDSessionData, deviceID: String, completion: @escaping (Result<Void, Error>) -> Void) {        
+    private func processFile(sessionUUID: SessionUUID, fileURL: URL, session: SDSessionData, deviceID: String, completion: @escaping (Result<Void, Error>) -> Void) {
         var streamsWithMeasurements: [SDStream: [SDSyncMeasurement]] = [:]
         let bufferThreshold = 5000
         var savingFailed = false
@@ -136,7 +134,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                         return
                     }
                     
-                    self.enqueueForSaving(measurements: measurements, buffer: &streamsWithMeasurements, deviceID: deviceID)
+                    self.enqueueForSaving(sessionUUID: sessionUUID, measurements: measurements, buffer: &streamsWithMeasurements, deviceID: deviceID)
                     
                     savedLines += 1
                     guard savedLines == bufferThreshold else { return }
@@ -192,9 +190,9 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         return session
     }
     
-    private func enqueueForSaving(measurements: SDCardMeasurementsRow, buffer streamsWithMeasurements: inout [SDStream: [SDSyncMeasurement]], deviceID: String) {
+    private func enqueueForSaving(sessionUUID: SessionUUID, measurements: SDCardMeasurementsRow, buffer streamsWithMeasurements: inout [SDStream: [SDSyncMeasurement]], deviceID: String) {
        
-        location = location ?? setProperLocation(deviceID: deviceID, measurements: measurements)
+        location = location ?? setProperLocation(sessionUUID: sessionUUID, deviceID: deviceID, measurements: measurements)
         
         if let f = measurements.f {
             streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .f, header: .f), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: f, location: location))
@@ -209,10 +207,10 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         }
     }
     
-    private func setProperLocation(deviceID: String, measurements: SDCardMeasurementsRow) -> CLLocationCoordinate2D? {
+    private func setProperLocation(sessionUUID: SessionUUID, deviceID: String, measurements: SDCardMeasurementsRow) -> CLLocationCoordinate2D? {
         
         if deviceID.isMini {
-            location = getLastRecordedLocation()
+            location = getLastRecordedLocation(sessionUUID: sessionUUID)
             return location
         } else {
             if let lat = measurements.lat, let long = measurements.long {
@@ -223,11 +221,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         }
     }
     
-    private func getLastRecordedLocation() -> CLLocationCoordinate2D? {
-        guard let sessionUUID else {
-            Log.error("[SD Sync] Session doesn't have sessionUUID")
-            fatalError()
-        }
+    private func getLastRecordedLocation(sessionUUID: SessionUUID) -> CLLocationCoordinate2D? {
         do {
             let session = try context.existingSession(uuid: sessionUUID)
             let filteredStreams = session.allStreams.filter { $0.allMeasurements?.isEmpty == false }
