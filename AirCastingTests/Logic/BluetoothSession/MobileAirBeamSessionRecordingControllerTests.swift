@@ -232,6 +232,11 @@ class AirBeamConfiguratorMock: AirBeamConfigurator {
 }
 
 class LocationTrackerMock: LocationTracker {
+    func oneTimeLocationUpdate() async throws -> CLLocation {
+        // Think about it - it was done without much thinking, just to make it run
+        .cracow
+    }
+    
     enum HistoryItem {
         case start
         case stop
