@@ -20,8 +20,7 @@ extension Resolver: ResolverRegistering {
         .scope(.application)
         main.register { (_, args) in
             let deviceID: String = args()
-            let isMini = deviceID.lowercased().contains(AirBeamDeviceType.airBeamMini.rawName)
-            return isMini ? MiniSDCardMeasurementsParser() : SDCardMeasurementsParser() as SDMeasurementsParser
+            return deviceID.isMini ? MiniSDCardMeasurementsParser() : SDCardMeasurementsParser() as SDMeasurementsParser
         }
         main.register { DefaultSessionNotesStorage() as SessionNotesStorage }.scope(.cached)
         main.register { DefaultSessionDeletingStorage() as SessionDeletingStorage }.scope(.cached)
