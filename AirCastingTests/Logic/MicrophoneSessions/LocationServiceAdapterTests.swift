@@ -33,6 +33,11 @@ class LocationServiceAdapterTests: XCTestCase {
     // MARK: Test doubles
     
     class TrackerSpy: LocationTracker {
+        func oneTimeLocationUpdate() async throws -> CLLocation {
+            // Think about it - it was done without much thinking, just to make it run
+            .cracow
+        }
+        
         enum HistoryItem: Equatable {
             case start, stop, getLocation
         }
@@ -53,6 +58,11 @@ class LocationServiceAdapterTests: XCTestCase {
     }
     
     class TrackerStub: LocationTracker {
+        func oneTimeLocationUpdate() async throws -> CLLocation {
+            // Think about it - it was done without much thinking, just to make it run
+            .cracow
+        }
+        
         let location: CurrentValueSubject<CLLocation?, Never>
 
         func start() { }
