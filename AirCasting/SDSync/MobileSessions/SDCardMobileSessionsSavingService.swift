@@ -62,6 +62,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
             files.forEach { _ in group.enter() }
             
             for file in files {
+                // Plik
                 process(fileURL: file, deviceID: deviceID) { result in
                     switch result {
                     case .success():
@@ -95,7 +96,9 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         Log.info("Processing mobile session: \(self.sessionUUID)")
         
         guard let processedSession = getSessionData(sessionUUID: sessionUUID, deviceID: deviceID) else {
-            Log.info("Ignoring session \(self.sessionUUID). Moving forward.")
+
+            Log.info("Ignoring session \(sessionUUID). Moving forward.")
+            // should it be success?
             completion(.success(()))
             return
         }
@@ -109,7 +112,6 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         var sessionData = session
         
         // Helper variables for debugging
-        var i = 0
         var savedLines = 0
         
         guard let lastLineInFile = try? fileLineReader.readLastNonEmptyLine(of: fileURL) else {
@@ -119,6 +121,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         }
         
         let parser = Resolver.resolve(SDMeasurementsParser.self, args: deviceID)
+        // resolver powinien zwrócić Mini parser
         guard let lastMeasurementTime = parser.getMeasurementTime(lineString: lastLineInFile) else {
             Log.error("Failed to read last measurement time from file")
             completion(.failure(SDMobileSavingErrors.noLastMeasurementTime))
@@ -127,7 +130,9 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         
         do {
             try parser.enumerateMeasurements(url: fileURL, action: { measurements in
-                guard !savingFailed else { return }
+                guard !savingFailed else {
+                    return
+                }
                 
                 context.perform {
                     // This happens only with the first line
@@ -145,7 +150,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                     guard savedLines == bufferThreshold else { return }
                     
                     do {
-                        Log.info("Threshold exceeded, saving data")
+                        Log.info("MARTA: Threshold exceeded, saving data")
                         try self.saveData(streamsWithMeasurements, session: &sessionData)
                         streamsWithMeasurements = [:]
                         savedLines = 0
@@ -164,10 +169,15 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                 }
                 
                 do {
+                    Log.info("MARTA: Saving data")
+                    print(streamsWithMeasurements as AnyObject)
+                    Log.info("MARTA: Session UUID")
+                    print(sessionData.uuid)
                     try self.saveData(streamsWithMeasurements, session: &sessionData)
                     try self.averageUnaveragedMeasurements(sessionUUID: sessionData.uuid, averagingWindow: sessionData.averaging ?? .zeroWindow)
                     try self.databaseStorage.setStatusToFinishedAndUpdateEndTime(for: sessionData.uuid, context: self.context)
                     try self.context.save()
+                    Log.info("MARTA: Success")
                     completion(.success(()))
                 } catch {
                     completion(.failure(error))
@@ -197,16 +207,23 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     
     private func enqueueForSaving(sessionUUID: SessionUUID, measurements: SDCardMeasurementsRow, buffer streamsWithMeasurements: inout [SDStream: [SDSyncMeasurement]], deviceID: String) {
         location = location ?? setProperLocation(sessionUUID: sessionUUID, deviceID: deviceID, measurements: measurements)
-        if let f = measurements.f {
-            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .f, header: .f), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: f, location: location))
-        }
-        if let rh = measurements.rh {
-            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .rh, header: .rh), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: rh, location: location))
-        }
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm1, header: .pm1), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.pm1, location: location))
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm2_5, header: .pm2_5), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.pm2_5, location: location))
-        if let pm10 = measurements.pm10 {
-            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm10, header: .pm10), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: pm10, location: location))
+        
+        if deviceID.starts(with: "AirBeamMini") {
+            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .mini_pm1, header: .pm1), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.pm1, location: location))
+            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .mini_pm2_5, header: .pm2_5), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.pm2_5, location: location))
+        } else {
+            
+            if let f = measurements.f {
+                streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .f, header: .f), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: f, location: location))
+            }
+            if let rh = measurements.rh {
+                streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .rh, header: .rh), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: rh, location: location))
+            }
+            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm1, header: .pm1), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.pm1, location: location))
+            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm2_5, header: .pm2_5), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.pm2_5, location: location))
+            if let pm10 = measurements.pm10 {
+                streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm10, header: .pm10), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: pm10, location: location))
+            }
         }
     }
     
@@ -243,6 +260,8 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     
     private func saveData(_ streamsWithMeasurements: [SDStream: [SDSyncMeasurement]], session: inout SDSessionData) throws {
         Log.info("[SD Sync] Saving data: \(streamsWithMeasurements.count)")
+        // Jeśli coś jeszcze jest nie tak to może być kwestia
+        //AirCasting.SDCardCSVFileFactory.Header.pm2_5 może potrzebujemy headerów też mini? - sprawdzic na androidzie
         if session.needsToBeCreated {
             try saveNewSessionWithStreams(streamsWithMeasurements: streamsWithMeasurements, sessionData: &session)
         } else {

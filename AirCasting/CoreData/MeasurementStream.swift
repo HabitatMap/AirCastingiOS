@@ -9,6 +9,8 @@ enum MeasurementStreamSensorName: String {
     case pm1 = "AirBeam3-PM1"
     case pm2_5 = "AirBeam3-PM2.5"
     case pm10 = "AirBeam3-PM10"
+    case mini_pm1 = "AirBeamMini-PM1"
+    case mini_pm2_5 = "AirBeamMini-PM2.5"
 }
 
 struct MeasurementStream: Hashable {
@@ -108,6 +110,32 @@ extension MeasurementStream {
             thresholdHigh = 100
             thresholdMedium = 50
             thresholdLow = 20
+            thresholdVeryLow = 0
+        case .mini_pm1:
+            id = nil
+            self.sensorName = sensorName.rawValue
+            self.sensorPackageName = sensorPackageName
+            measurementType = PARTICULATE_MATTER_MEASUREMENT_TYPE
+            measurementShortType = PARTICULATE_MATTER_MEASUREMENT_SHORT_TYPE
+            unitName = PARTICULATE_MATTER_UNIT_NAME
+            unitSymbol = PARTICULATE_MATTER_UNIT_SYMBOL
+            thresholdVeryHigh = 150
+            thresholdHigh = 55
+            thresholdMedium = 35
+            thresholdLow = 12
+            thresholdVeryLow = 0
+        case .mini_pm2_5:
+            id = nil
+            self.sensorName = sensorName.rawValue
+            self.sensorPackageName = sensorPackageName
+            measurementType = PARTICULATE_MATTER_MEASUREMENT_TYPE
+            measurementShortType = PARTICULATE_MATTER_MEASUREMENT_SHORT_TYPE
+            unitName = PARTICULATE_MATTER_UNIT_NAME
+            unitSymbol = PARTICULATE_MATTER_UNIT_SYMBOL
+            thresholdVeryHigh = 150
+            thresholdHigh = 55
+            thresholdMedium = 35
+            thresholdLow = 12
             thresholdVeryLow = 0
         }
     }
