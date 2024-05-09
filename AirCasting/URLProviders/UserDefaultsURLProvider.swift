@@ -6,7 +6,7 @@ import Foundation
 class UserDefaultsURLProvider: URLProvider {
     var baseAppURL: URL {
         get {
-            userDefaults.url(forKey: "baseURL") ?? URL(string: "http://45.56.103.151")!
+            userDefaults.url(forKey: "baseURL") ?? URL(string: "http://aircasting.org/")!
         }
         set {
             userDefaults.set(newValue, forKey: "baseURL")

@@ -62,7 +62,6 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
             files.forEach { _ in group.enter() }
             
             for file in files {
-                // Plik
                 process(fileURL: file, deviceID: deviceID) { result in
                     switch result {
                     case .success():
@@ -98,7 +97,6 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         guard let processedSession = getSessionData(sessionUUID: sessionUUID, deviceID: deviceID) else {
 
             Log.info("Ignoring session \(sessionUUID). Moving forward.")
-            // should it be success?
             completion(.success(()))
             return
         }
@@ -121,7 +119,6 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         }
         
         let parser = Resolver.resolve(SDMeasurementsParser.self, args: deviceID)
-        // resolver powinien zwrócić Mini parser
         guard let lastMeasurementTime = parser.getMeasurementTime(lineString: lastLineInFile) else {
             Log.error("Failed to read last measurement time from file")
             completion(.failure(SDMobileSavingErrors.noLastMeasurementTime))
@@ -130,9 +127,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         
         do {
             try parser.enumerateMeasurements(url: fileURL, action: { measurements in
-                guard !savingFailed else {
-                    return
-                }
+                guard !savingFailed else { return }
                 
                 context.perform {
                     // This happens only with the first line
@@ -255,8 +250,6 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     
     private func saveData(_ streamsWithMeasurements: [SDStream: [SDSyncMeasurement]], session: inout SDSessionData) throws {
         Log.info("[SD Sync] Saving data: \(streamsWithMeasurements.count)")
-        // Jeśli coś jeszcze jest nie tak to może być kwestia
-        //AirCasting.SDCardCSVFileFactory.Header.pm2_5 może potrzebujemy headerów też mini? - sprawdzic na androidzie
         if session.needsToBeCreated {
             try saveNewSessionWithStreams(streamsWithMeasurements: streamsWithMeasurements, sessionData: &session)
         } else {
