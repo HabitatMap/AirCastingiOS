@@ -150,7 +150,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                     guard savedLines == bufferThreshold else { return }
                     
                     do {
-                        Log.info("MARTA: Threshold exceeded, saving data")
+                        Log.info("Threshold exceeded, saving data")
                         try self.saveData(streamsWithMeasurements, session: &sessionData)
                         streamsWithMeasurements = [:]
                         savedLines = 0
@@ -169,15 +169,10 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                 }
                 
                 do {
-                    Log.info("MARTA: Saving data")
-                    print(streamsWithMeasurements as AnyObject)
-                    Log.info("MARTA: Session UUID")
-                    print(sessionData.uuid)
                     try self.saveData(streamsWithMeasurements, session: &sessionData)
                     try self.averageUnaveragedMeasurements(sessionUUID: sessionData.uuid, averagingWindow: sessionData.averaging ?? .zeroWindow)
                     try self.databaseStorage.setStatusToFinishedAndUpdateEndTime(for: sessionData.uuid, context: self.context)
                     try self.context.save()
-                    Log.info("MARTA: Success")
                     completion(.success(()))
                 } catch {
                     completion(.failure(error))

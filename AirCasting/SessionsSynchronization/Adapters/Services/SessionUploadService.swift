@@ -50,10 +50,6 @@ final class SessionUploadService: SessionUpstream {
                 //
                 // 🤷‍♂️
                 let sessionData = try encoder.encode(session.session)
-                print("Marta, uploading session with data")
-                print(session.session)
-                print("Encoded")
-                print(sessionData)
                 let gzippedSessionData = try sessionData.gzipped()
                 let sessionBase64String = gzippedSessionData.base64EncodedString(options: [.lineLength76Characters, .endLineWithLineFeed])
                 getPhotosData(photos: session.photos) { photosAsBase64String in
