@@ -95,7 +95,7 @@ struct SDSyncFileValidationService: SDSyncFileValidator {
     
     private func lineIsCorrupted(_ line: String) -> Bool {
         let fields = line.split(separator: ",")
-        return !line.isEmpty && fields.count != expectedFieldsCount
+        return !line.isEmpty && fields.count != expectedFieldsCount && fields.count != 1
     }
     
     private func validateAcceptedCorruption(_ stats: Stats, _ expectedCount: Int) -> Bool {

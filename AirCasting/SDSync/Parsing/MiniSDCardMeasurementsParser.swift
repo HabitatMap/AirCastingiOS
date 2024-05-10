@@ -19,10 +19,11 @@ class MiniSDCardMeasurementsParser: SDMeasurementsParser {
                 if measurementInfo.count == firstLineColumns,
                    let uuidString = getUUID(lineString: lineString) {
                     lastKnownUUID = SessionUUID(rawValue: uuidString)
+                } else {
+                    guard let lastKnownUUID, let measurements = parseMeasurement(lineString: lineString,
+                                                              sessionUUID: lastKnownUUID) else { return }
+                    action(measurements)
                 }
-                guard let lastKnownUUID, let measurements = parseMeasurement(lineString: lineString,
-                                                          sessionUUID: lastKnownUUID) else { return }
-                action(measurements)
             case .endOfFile: break
             }
         }

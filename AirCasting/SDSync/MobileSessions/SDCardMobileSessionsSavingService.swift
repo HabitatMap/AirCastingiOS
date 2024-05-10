@@ -95,7 +95,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         Log.info("Processing mobile session: \(self.sessionUUID)")
         
         guard let processedSession = getSessionData(sessionUUID: sessionUUID, deviceID: deviceID) else {
-            Log.info("Ignoring session \(self.sessionUUID). Moving forward.")
+            Log.info("Ignoring session \(sessionUUID). Moving forward.")
             completion(.success(()))
             return
         }
@@ -109,7 +109,6 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         var sessionData = session
         
         // Helper variables for debugging
-        var i = 0
         var savedLines = 0
         
         guard let lastLineInFile = try? fileLineReader.readLastNonEmptyLine(of: fileURL) else {
@@ -197,16 +196,22 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     
     private func enqueueForSaving(sessionUUID: SessionUUID, measurements: SDCardMeasurementsRow, buffer streamsWithMeasurements: inout [SDStream: [SDSyncMeasurement]], deviceID: String) {
         location = location ?? setProperLocation(sessionUUID: sessionUUID, deviceID: deviceID, measurements: measurements)
-        if let f = measurements.f {
-            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .f, header: .f), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: f, location: location))
-        }
-        if let rh = measurements.rh {
-            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .rh, header: .rh), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: rh, location: location))
-        }
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm1, header: .pm1), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.pm1, location: location))
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm2_5, header: .pm2_5), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.pm2_5, location: location))
-        if let pm10 = measurements.pm10 {
-            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm10, header: .pm10), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: pm10, location: location))
+        
+        if deviceID.starts(with: "AirBeamMini") {
+            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .mini_pm1, header: .pm1), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.pm1, location: location))
+            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .mini_pm2_5, header: .pm2_5), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.pm2_5, location: location))
+        } else {
+            if let f = measurements.f {
+                streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .ab3_f, header: .f), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: f, location: location))
+            }
+            if let rh = measurements.rh {
+                streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .ab3_rh, header: .rh), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: rh, location: location))
+            }
+            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .ab3_pm1, header: .pm1), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.pm1, location: location))
+            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .ab3_pm2_5, header: .pm2_5), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: measurements.pm2_5, location: location))
+            if let pm10 = measurements.pm10 {
+                streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .ab3_pm10, header: .pm10), default: []].append(SDSyncMeasurement(measuredAt: measurements.date, value: pm10, location: location))
+            }
         }
     }
     
