@@ -98,19 +98,19 @@ class SDCardFixedSessionsUploadingService {
         let date = measurements.date
         
         if let f = measurements.f {
-            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .f, header: .f), default: []]
+            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .ab3_f, header: .f), default: []]
                 .append(Measurement(time: date, value: f, location: location))
         }
         if let rh = measurements.rh {
-            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .rh, header: .rh), default: []]
+            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .ab3_rh, header: .rh), default: []]
                 .append(Measurement(time: date, value: rh, location: location))
         }
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm1, header: .pm1), default: []]
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .ab3_pm1, header: .pm1), default: []]
             .append(Measurement(time: date, value: measurements.pm1, location: location))
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm2_5, header: .pm2_5), default: []]
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .ab3_pm2_5, header: .pm2_5), default: []]
             .append(Measurement(time: date, value: measurements.pm2_5, location: location))
         if let pm10 = measurements.pm10 {
-            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .pm10, header: .pm10), default: []]
+            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .ab3_pm10, header: .pm10), default: []]
                 .append(Measurement(time: date, value: pm10, location: location))
         }
     }

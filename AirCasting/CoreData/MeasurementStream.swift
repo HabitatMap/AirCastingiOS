@@ -4,11 +4,11 @@
 import Foundation
 
 enum MeasurementStreamSensorName: String {
-    case f = "AirBeam3-F"
-    case rh = "AirBeam3-RH"
-    case pm1 = "AirBeam3-PM1"
-    case pm2_5 = "AirBeam3-PM2.5"
-    case pm10 = "AirBeam3-PM10"
+    case ab3_f = "AirBeam3-F"
+    case ab3_rh = "AirBeam3-RH"
+    case ab3_pm1 = "AirBeam3-PM1"
+    case ab3_pm2_5 = "AirBeam3-PM2.5"
+    case ab3_pm10 = "AirBeam3-PM10"
     case mini_pm1 = "AirBeamMini-PM1"
     case mini_pm2_5 = "AirBeamMini-PM2.5"
 }
@@ -46,7 +46,7 @@ struct MeasurementStream: Hashable {
 extension MeasurementStream {
     init(sensorName: MeasurementStreamSensorName, sensorPackageName: String) {
         switch sensorName {
-        case .f:
+        case .ab3_f:
             id = nil
             self.sensorName = sensorName.rawValue
             self.sensorPackageName = sensorPackageName
@@ -59,7 +59,7 @@ extension MeasurementStream {
             thresholdMedium = 75
             thresholdLow = 45
             thresholdVeryLow = 15
-        case .rh:
+        case .ab3_rh:
             id = nil
             self.sensorName = sensorName.rawValue
             self.sensorPackageName = sensorPackageName
@@ -72,7 +72,7 @@ extension MeasurementStream {
             thresholdMedium = 50
             thresholdLow = 25
             thresholdVeryLow = 0
-        case .pm1:
+        case .ab3_pm1:
             id = nil
             self.sensorName = sensorName.rawValue
             self.sensorPackageName = sensorPackageName
@@ -85,7 +85,7 @@ extension MeasurementStream {
             thresholdMedium = 35
             thresholdLow = 12
             thresholdVeryLow = 0
-        case .pm2_5:
+        case .ab3_pm2_5:
             id = nil
             self.sensorName = sensorName.rawValue
             self.sensorPackageName = sensorPackageName
@@ -98,7 +98,7 @@ extension MeasurementStream {
             thresholdMedium = 35
             thresholdLow = 12
             thresholdVeryLow = 0
-        case .pm10:
+        case .ab3_pm10:
             id = nil
             self.sensorName = sensorName.rawValue
             self.sensorPackageName = sensorPackageName

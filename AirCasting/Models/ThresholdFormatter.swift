@@ -84,6 +84,6 @@ final class TemperatureThresholdFormatter: ThresholdFormatter {
     }
     
     private func isSensorTemperature(for threshold: SensorThreshold) -> Bool {
-        threshold.sensorName?.last == MeasurementStreamSensorName.f.rawValue.last
+        threshold.sensorName?.last == MeasurementStreamSensorName.ab3_f.rawValue.last
     }
 }
