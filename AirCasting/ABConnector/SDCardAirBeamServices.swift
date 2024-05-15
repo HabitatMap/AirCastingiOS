@@ -108,29 +108,38 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices, BluetoothConnection
         var currentSessionType: SDCardSessionType?
         Log.info("[SD Sync] Downloading data")
         do {
+            Log.warning("Subscribe to bluettoth metadata with characteristics: \(self.DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) ")
             metadataCharacteristicObserver = try bluetoothManager.subscribeToCharacteristic(for: device, characteristic: DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
                 switch result {
                 case .success(let data):
+                    Log.warning("MARTA: Metadata success outside queue")
                     self.queue.async { [weak self] in
+                        Log.warning("MARTA: Metadata success inside queue")
                         currentSessionType = currentSessionType.next
                         self?.handleMetadata(data, device: device, currentSessionType: currentSessionType!, completion: completion)
                     }
                 case .failure(let error):
+                    Log.warning("MARTA: Metadata failure outside queue")
                     self.queue.async { [weak self] in
+                        Log.warning("MARTA: Metadata failure inside queue")
                         Log.warning("[SD SYNC]  Error while receiving metadata from SD card: \(error.localizedDescription)")
                         self?.finishSync(device: device) { completion(.failure(error)) }
                     }
                 }
             }
-            
+            Log.warning("Subscribe to bluettoth data with characteristics: \(self.DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID) ")
             dataCharacteristicObserver = try bluetoothManager.subscribeToCharacteristic(for: device, characteristic: DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
                 switch result {
                 case .success(let data):
+                    Log.warning("MARTA: Data success outside queue, data: \(String(describing: String(data: data!, encoding: .utf8)))")
                     self.queue.async { [weak self] in
+                        Log.warning("MARTA: data success inside queue, data: \(String(describing: String(data: data!, encoding: .utf8)))")
                         self?.handlePayload(device: device, data: data, currentSessionType: currentSessionType, progress: progress, completion: completion)
                     }
                 case .failure(let error):
+                    Log.warning("MARTA: Data failure outside queue")
                     self.queue.async { [weak self] in
+                        Log.warning("MARTA: data failure inside queue")
                         Log.warning("Error while receiving data from SD card: \(error.localizedDescription)")
                         self?.finishSync(device: device) { completion(.failure(error)) }
                     }
@@ -143,6 +152,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices, BluetoothConnection
     
     private func subscribeToMetaDataForClearingCard(device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
         do {
+            Log.warning("Subscribe to bluettoth clearing with characteristics: \(self.DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) ")
             clearCardCharacteristicObserver = try bluetoothManager.subscribeToCharacteristic(for: device, characteristic: DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID, timeout: 10) { result in
                 switch result {
                 case .success(let data):
@@ -177,7 +187,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices, BluetoothConnection
             return
         }
         
-        Log.info("[SD CARD SYNC] " + payload)
+        Log.info("[SD CARD SYNC] Metadata: " + payload)
         if payload == "SD_SYNC_FINISH" {
             // It is possible that when Airbeam is pluged in and the data is sent faster than iPhone can process, we receive this SD_SYNC_FINISH message before all of the payload is sent.
             // That's why we have to add the monitoring which checks if any new data is still being send, and if not, then we are letting the called know that Airbeam finished sending data.
@@ -210,13 +220,19 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices, BluetoothConnection
             self.finishSync(device: device) { completion(.failure(SDCardSyncError.wrongOrderOfReceivedPayload)) }
             return
         }
-        self.receivedMeasurementsCount[sessionType, default: 0] += Constants.SDCardSync.numberOfMeasurementsInDataChunk
+        
+        Log.warning("Handling payload \(payload) with measurenemts count ???")
+        let numberOfMeasurementsInChunk =  payload.components(separatedBy: "\r\n").filter { !$0.trimmingCharacters(in: ["\n"]).isEmpty }.count
+        /// It's not ALWAYS 4, right? What for smaller payloads?
+        self.receivedMeasurementsCount[sessionType, default: 0] += numberOfMeasurementsInChunk
         
         guard let expectedMeasurementsCount = self.expectedMeasurementsCount[sessionType], expectedMeasurementsCount != 0 else {
             Log.error("[SD SYNC] Received data for session type which should have 0 measurements")
             return
         }
         
+        
+        /// Why like this?
         let receivedMeasurementsNumber = self.receivedMeasurementsCount[sessionType]! < expectedMeasurementsCount ? self.receivedMeasurementsCount[sessionType]! : expectedMeasurementsCount
         let progressFraction = SDCardProgress(received: receivedMeasurementsNumber, expected: expectedMeasurementsCount)
         progress(SDCardDataChunk(payload: payload, sessionType: sessionType, progress: progressFraction))
@@ -249,7 +265,9 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices, BluetoothConnection
         
         var checkedMeasurementsCount: [SDCardSessionType: Int] = [:]
         monitoringForFinishedSendingToken = queue.schedule(after: queue.now, interval: .seconds(1)) {
-            Log.debug("Checking with:\n expected \(self.expectedMeasurementsCount)\n received \(self.receivedMeasurementsCount)\n checked \(checkedMeasurementsCount)")
+            
+            Log.debug("Checking measurements count with:\n expected \(self.expectedMeasurementsCount)\n received \(self.receivedMeasurementsCount)\n checked \(checkedMeasurementsCount)")
+            
             guard checkedMeasurementsCount != self.receivedMeasurementsCount else {
                 Log.debug("NO NEW MEASUREMENT IN 1 SEC")
                 completion()
@@ -264,7 +282,8 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices, BluetoothConnection
     }
     
     private func allMeasurementsDownloaded() -> Bool {
-        receivedMeasurementsCount.allSatisfy( { $1 >= expectedMeasurementsCount[$0] ?? 0 })
+        Log.warning("Monitoring for end of payload, expected: \(self.expectedMeasurementsCount), received: \(self.receivedMeasurementsCount)")
+        return receivedMeasurementsCount.allSatisfy( { $1 >= expectedMeasurementsCount[$0] ?? 0 })
     }
 }
 
