@@ -21,7 +21,8 @@ class AirbeamMeasurementsRecordingServices: MeasurementsRecordingServices {
     
     private var miniMeasurementsCharacteristics: [String] = [
         "0000ffe4-0000-1000-8000-00805f9b34fb",    // PM1
-        "0000ffe5-0000-1000-8000-00805f9b34fb"]    // PM2.5
+        "0000ffe5-0000-1000-8000-00805f9b34fb",    // PM2.5
+        ]    // Battery level
     
     private var characteristicsObservers: [AnyHashable] = []
     
@@ -29,7 +30,6 @@ class AirbeamMeasurementsRecordingServices: MeasurementsRecordingServices {
         do {
             let characteristics = device.airbeamType == .airBeamMini ? miniMeasurementsCharacteristics : measurementsCharacteristics
             try characteristics.forEach {
-                Log.warning("Łełołeło, troche problem. ")
                 let observer = try bluetoothManager.subscribeToCharacteristic(for: device, characteristic: .init(value: $0)) { result in
                     switch result {
                     case .success(let data):
@@ -53,6 +53,7 @@ class AirbeamMeasurementsRecordingServices: MeasurementsRecordingServices {
         characteristicsObservers = []
     }
     
+    // TODO: This doesn't take battery lvl into consideration 
     private func parseData(data: Data) -> ABMeasurementStream? {
         let string = String(data: data, encoding: .utf8)
         let components = string?.components(separatedBy: ";")

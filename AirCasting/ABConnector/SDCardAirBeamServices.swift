@@ -112,17 +112,12 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices, BluetoothConnection
             metadataCharacteristicObserver = try bluetoothManager.subscribeToCharacteristic(for: device, characteristic: DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
                 switch result {
                 case .success(let data):
-                    Log.warning("MARTA: Metadata success outside queue")
                     self.queue.async { [weak self] in
-                        Log.warning("MARTA: Metadata success inside queue")
                         currentSessionType = currentSessionType.next
                         self?.handleMetadata(data, device: device, currentSessionType: currentSessionType!, completion: completion)
                     }
                 case .failure(let error):
-                    Log.warning("MARTA: Metadata failure outside queue")
                     self.queue.async { [weak self] in
-                        Log.warning("MARTA: Metadata failure inside queue")
-                        Log.warning("[SD SYNC]  Error while receiving metadata from SD card: \(error.localizedDescription)")
                         self?.finishSync(device: device) { completion(.failure(error)) }
                     }
                 }
@@ -131,16 +126,12 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices, BluetoothConnection
             dataCharacteristicObserver = try bluetoothManager.subscribeToCharacteristic(for: device, characteristic: DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
                 switch result {
                 case .success(let data):
-                    Log.warning("MARTA: Data success outside queue, data: \(String(describing: String(data: data!, encoding: .utf8)))")
+                    Log.warning("MARTA: data success outside queue, data: \(String(describing: String(data: data!, encoding: .utf8)))")
                     self.queue.async { [weak self] in
-                        Log.warning("MARTA: data success inside queue, data: \(String(describing: String(data: data!, encoding: .utf8)))")
                         self?.handlePayload(device: device, data: data, currentSessionType: currentSessionType, progress: progress, completion: completion)
                     }
                 case .failure(let error):
-                    Log.warning("MARTA: Data failure outside queue")
                     self.queue.async { [weak self] in
-                        Log.warning("MARTA: data failure inside queue")
-                        Log.warning("Error while receiving data from SD card: \(error.localizedDescription)")
                         self?.finishSync(device: device) { completion(.failure(error)) }
                     }
                 }

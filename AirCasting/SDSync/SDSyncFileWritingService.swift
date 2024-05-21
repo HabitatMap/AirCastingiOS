@@ -33,11 +33,19 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
             }
         }
         
+        // Wszystkie linie? 
         let lines = data.components(separatedBy: "\r\n").filter { !$0.trimmingCharacters(in: ["\n"]).isEmpty }
+        let number = lines
         
         parser.enumerateSessionLines(lines: lines) { uuid, lineString in
-            let url = fileURL(for: sessionType, with: uuid)
-            currentURL = url
+            var url = currentURL
+            
+            if let uuid = uuid {
+                url = fileURL(for: sessionType, with: uuid)
+                currentURL = url
+            }
+            
+            guard let url else { return }
             buffers[url, default: []].append(lineString)
             let bufferCount = buffers[url]?.count ?? 0
             guard bufferCount == bufferThreshold else { return }
