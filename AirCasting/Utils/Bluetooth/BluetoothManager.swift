@@ -181,6 +181,7 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
             
             DispatchQueue.main.asyncAfter(deadline: .now() + timeout) {
                 self.queue.async {
+                    Log.warning("MARTA: Number of connections for \(device.peripheral.identifier) is \(String(describing: self.connectionCallbacks[device.peripheral]))")
                     guard !(self.connectionCallbacks[device.peripheral]?.isEmpty ?? true) else {
                         return
                     }
@@ -383,13 +384,14 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
     }
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+        let value = characteristic.value
         characteristicsMappingLock.lock()
         defer { characteristicsMappingLock.unlock()}
         guard let containgObserver = charactieristicsMapping.first(where: { CBUUID(string: $0.key.value) == characteristic.uuid }) else { return }
         containgObserver.value.forEach { observer in
             observer.triggerCounter += 1
             guard error == nil else { observer.action(.failure(error!)); return }
-            callbackQueue.async { observer.action(.success(characteristic.value)) }
+            callbackQueue.async { observer.action(.success(value)) }
         }
     }
     

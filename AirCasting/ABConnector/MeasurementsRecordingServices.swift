@@ -28,6 +28,7 @@ class AirbeamMeasurementsRecordingServices: MeasurementsRecordingServices {
     
     func record(with device: any BluetoothDevice, completion: @escaping (ABMeasurementStream) -> Void) {
         do {
+            Log.warning("MARTA: record session run")
             let characteristics = device.airbeamType == .airBeamMini ? miniMeasurementsCharacteristics : measurementsCharacteristics
             try characteristics.forEach {
                 let observer = try bluetoothManager.subscribeToCharacteristic(for: device, characteristic: .init(value: $0)) { result in
