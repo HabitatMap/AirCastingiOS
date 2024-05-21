@@ -68,14 +68,13 @@ class MiniSDCardMeasurementsParser: SDMeasurementsParser {
                                        time: measurementInfo[MiniSDCardCSVFileFactory.Header.time])
     }
     
-    func enumerateSessionLines(lines: [String], action: (String, String) -> Void) {
+    func enumerateSessionLines(lines: [String], action: (String?, String) -> Void) {
         var lastKnownUUID: String?
         lines.forEach { lineString in
             let measurementInfo = lineString.split(separator: ",")
             if measurementInfo.count == firstLineColumns {
                lastKnownUUID = getUUID(lineString: lineString)
             }
-            guard let lastKnownUUID else { return }
             action(lastKnownUUID, lineString)
         }
     }

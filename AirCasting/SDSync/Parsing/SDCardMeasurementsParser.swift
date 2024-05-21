@@ -33,7 +33,7 @@ protocol SDMeasurementsParser {
     func getMeasurementTime(lineString: String) -> Date?
     func enumerateMeasurements(url: URL, action: (SDCardMeasurementsRow) -> Void) throws
     ///   - action: First argument is session ID. Second argument is line string.
-    func enumerateSessionLines(lines: [String], action: (String, String) -> Void)
+    func enumerateSessionLines(lines: [String], action: (String?, String) -> Void)
 }
 
 class SDCardMeasurementsParser: SDMeasurementsParser {
@@ -103,7 +103,7 @@ class SDCardMeasurementsParser: SDMeasurementsParser {
                                            time: measurementInfo[SDCardCSVFileFactory.Header.time.rawValue])
     }
     
-    func enumerateSessionLines(lines: [String], action: (String, String) -> Void) {
+    func enumerateSessionLines(lines: [String], action: (String?, String) -> Void) {
         lines.forEach { lineString in
             let uuid = getUUID(lineString: lineString)
             guard let uuid else { return }

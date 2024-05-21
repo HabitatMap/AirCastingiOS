@@ -19,11 +19,17 @@ class AirbeamMeasurementsRecordingServices: MeasurementsRecordingServices {
         "0000ffe5-0000-1000-8000-00805f9b34fb",    // PM2.5
         "0000ffe6-0000-1000-8000-00805f9b34fb"]   // PM10
     
+    private var miniMeasurementsCharacteristics: [String] = [
+        "0000ffe4-0000-1000-8000-00805f9b34fb",    // PM1
+        "0000ffe5-0000-1000-8000-00805f9b34fb"     // PM2.5
+        ]
+    
     private var characteristicsObservers: [AnyHashable] = []
     
     func record(with device: any BluetoothDevice, completion: @escaping (ABMeasurementStream) -> Void) {
         do {
-            try measurementsCharacteristics.forEach {
+            let characteristics = device.airbeamType == .airBeamMini ? miniMeasurementsCharacteristics : measurementsCharacteristics
+            try characteristics.forEach {
                 let observer = try bluetoothManager.subscribeToCharacteristic(for: device, characteristic: .init(value: $0)) { result in
                     switch result {
                     case .success(let data):
@@ -46,7 +52,7 @@ class AirbeamMeasurementsRecordingServices: MeasurementsRecordingServices {
         characteristicsObservers.forEach({ bluetoothManager.unsubscribeCharacteristicObserver(token: $0)})
         characteristicsObservers = []
     }
-    
+
     private func parseData(data: Data) -> ABMeasurementStream? {
         let string = String(data: data, encoding: .utf8)
         let components = string?.components(separatedBy: ";")

@@ -36,8 +36,15 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
         let lines = data.components(separatedBy: "\r\n").filter { !$0.trimmingCharacters(in: ["\n"]).isEmpty }
         
         parser.enumerateSessionLines(lines: lines) { uuid, lineString in
-            let url = fileURL(for: sessionType, with: uuid)
-            currentURL = url
+            var url = currentURL
+            
+            // UUID can be nil when data comes from ABMini, in that case just keep using the current URL
+            if let uuid = uuid {
+                url = fileURL(for: sessionType, with: uuid)
+                currentURL = url
+            }
+            
+            guard let url else { return }
             buffers[url, default: []].append(lineString)
             let bufferCount = buffers[url]?.count ?? 0
             guard bufferCount == bufferThreshold else { return }
