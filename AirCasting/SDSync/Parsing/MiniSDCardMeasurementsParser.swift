@@ -15,7 +15,6 @@ class MiniSDCardMeasurementsParser: SDMeasurementsParser {
         try lineReader.readLines(of: url) { result in
             switch result {
             case .line(let lineString):
-                // Reading from file
                 let measurementInfo = lineString.split(separator: ",")
                 if measurementInfo.count == firstLineColumns,
                    let uuidString = getUUID(lineString: lineString) {

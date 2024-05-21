@@ -181,7 +181,6 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
             
             DispatchQueue.main.asyncAfter(deadline: .now() + timeout) {
                 self.queue.async {
-                    Log.warning("MARTA: Number of connections for \(device.peripheral.identifier) is \(String(describing: self.connectionCallbacks[device.peripheral]))")
                     guard !(self.connectionCallbacks[device.peripheral]?.isEmpty ?? true) else {
                         return
                     }

@@ -108,7 +108,6 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices, BluetoothConnection
         var currentSessionType: SDCardSessionType?
         Log.info("[SD Sync] Downloading data")
         do {
-            Log.warning("Subscribe to bluettoth metadata with characteristics: \(self.DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) ")
             metadataCharacteristicObserver = try bluetoothManager.subscribeToCharacteristic(for: device, characteristic: DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
                 switch result {
                 case .success(let data):
@@ -118,20 +117,20 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices, BluetoothConnection
                     }
                 case .failure(let error):
                     self.queue.async { [weak self] in
+                        Log.warning("[SD SYNC] Error while receiving metadata from SD card: \(error.localizedDescription)")
                         self?.finishSync(device: device) { completion(.failure(error)) }
                     }
                 }
             }
-            Log.warning("Subscribe to bluettoth data with characteristics: \(self.DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID) ")
             dataCharacteristicObserver = try bluetoothManager.subscribeToCharacteristic(for: device, characteristic: DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
                 switch result {
                 case .success(let data):
-                    Log.warning("MARTA: data success outside queue, data: \(String(describing: String(data: data!, encoding: .utf8)))")
                     self.queue.async { [weak self] in
                         self?.handlePayload(device: device, data: data, currentSessionType: currentSessionType, progress: progress, completion: completion)
                     }
                 case .failure(let error):
                     self.queue.async { [weak self] in
+                        Log.warning("Error while receiving data from SD card: \(error.localizedDescription)")
                         self?.finishSync(device: device) { completion(.failure(error)) }
                     }
                 }
@@ -143,7 +142,6 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices, BluetoothConnection
     
     private func subscribeToMetaDataForClearingCard(device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
         do {
-            Log.warning("Subscribe to bluettoth clearing with characteristics: \(self.DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) ")
             clearCardCharacteristicObserver = try bluetoothManager.subscribeToCharacteristic(for: device, characteristic: DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID, timeout: 10) { result in
                 switch result {
                 case .success(let data):
@@ -212,9 +210,8 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices, BluetoothConnection
             return
         }
         
-        Log.warning("Handling payload \(payload) with measurenemts count ???")
+        
         let numberOfMeasurementsInChunk =  payload.components(separatedBy: "\r\n").filter { !$0.trimmingCharacters(in: ["\n"]).isEmpty }.count
-        /// It's not ALWAYS 4, right? What for smaller payloads?
         self.receivedMeasurementsCount[sessionType, default: 0] += numberOfMeasurementsInChunk
         
         guard let expectedMeasurementsCount = self.expectedMeasurementsCount[sessionType], expectedMeasurementsCount != 0 else {
@@ -223,7 +220,6 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices, BluetoothConnection
         }
         
         
-        /// Why like this?
         let receivedMeasurementsNumber = self.receivedMeasurementsCount[sessionType]! < expectedMeasurementsCount ? self.receivedMeasurementsCount[sessionType]! : expectedMeasurementsCount
         let progressFraction = SDCardProgress(received: receivedMeasurementsNumber, expected: expectedMeasurementsCount)
         progress(SDCardDataChunk(payload: payload, sessionType: sessionType, progress: progressFraction))
@@ -273,7 +269,6 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices, BluetoothConnection
     }
     
     private func allMeasurementsDownloaded() -> Bool {
-        Log.warning("Monitoring for end of payload, expected: \(self.expectedMeasurementsCount), received: \(self.receivedMeasurementsCount)")
         return receivedMeasurementsCount.allSatisfy( { $1 >= expectedMeasurementsCount[$0] ?? 0 })
     }
 }
