@@ -33,13 +33,12 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
             }
         }
         
-        // Wszystkie linie? 
         let lines = data.components(separatedBy: "\r\n").filter { !$0.trimmingCharacters(in: ["\n"]).isEmpty }
-        let number = lines
         
         parser.enumerateSessionLines(lines: lines) { uuid, lineString in
             var url = currentURL
             
+            // UUID can be nil when data comes from ABMini, in that case just keep using the current URL
             if let uuid = uuid {
                 url = fileURL(for: sessionType, with: uuid)
                 currentURL = url

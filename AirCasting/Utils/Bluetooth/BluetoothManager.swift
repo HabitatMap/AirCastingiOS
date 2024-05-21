@@ -305,10 +305,8 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         characteristicsMappingLock.lock()
         charactieristicsMapping[characteristic, default:[]].append(observer)
         characteristicsMappingLock.unlock()
-        Log.warning("Device perihperal services: \(String(describing: device.peripheral.services))")
         device.peripheral.services?.forEach {
             let allMatching = $0.characteristics?.filter { $0.uuid == CBUUID(string: characteristic.value) } ?? []
-            Log.warning("All matching: \(allMatching)")
             allMatching.forEach {
                 device.peripheral.setNotifyValue(true, for: $0)
             }
