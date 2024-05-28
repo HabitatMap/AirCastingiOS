@@ -165,8 +165,8 @@ class SDCardFixedSessionsUploadingService {
             }
             let milisecondsInSecond = 1000
             let csvMeasurements = measurements.map {
-                CSVMeasurement(longitude: $0.location?.longitude,
-                               latitude: $0.location?.latitude,
+                CSVMeasurement(longitude: $0.location?.longitude ?? 200,
+                               latitude: $0.location?.latitude ?? 200,
                                milliseconds: abs(Int($0.time.timeIntervalSince1970.remainder(dividingBy: TimeInterval(milisecondsInSecond)))),
                                time: $0.time,
                                value: $0.value)

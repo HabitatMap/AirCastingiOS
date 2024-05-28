@@ -109,7 +109,7 @@ class SDSyncController {
                 switch result {
                 case .success(let fixedSessionsUUIDs):
                     self.measurementsDownloader.download(sessionsUUIDs: fixedSessionsUUIDs)
-                    Log.info("Completion success. Fixed sessions upladed successfully.")
+                    Log.info("Completion success. Fixed sessions uploaded successfully.")
                     completion(.success(()))
                 case .failure:
                     completion(.failure(.fixedSessionsProcessingFailure))
