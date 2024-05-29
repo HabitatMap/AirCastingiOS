@@ -52,6 +52,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                 }
                 return
             }
+            
             self.sdSyncController.syncFromAirbeam(self.device, progress: { [weak self] newStatus in
                 guard let self = self else { return }
                 switch newStatus {

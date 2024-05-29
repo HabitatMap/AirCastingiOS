@@ -97,21 +97,28 @@ class SDCardFixedSessionsUploadingService {
         
         let date = measurements.date
         
-        if let f = measurements.f {
-            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .ab3_f, header: .f), default: []]
-                .append(Measurement(time: date, value: f, location: location))
-        }
-        if let rh = measurements.rh {
-            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .ab3_rh, header: .rh), default: []]
-                .append(Measurement(time: date, value: rh, location: location))
-        }
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .ab3_pm1, header: .pm1), default: []]
-            .append(Measurement(time: date, value: measurements.pm1, location: location))
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .ab3_pm2_5, header: .pm2_5), default: []]
-            .append(Measurement(time: date, value: measurements.pm2_5, location: location))
-        if let pm10 = measurements.pm10 {
-            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .ab3_pm10, header: .pm10), default: []]
-                .append(Measurement(time: date, value: pm10, location: location))
+        if deviceID.starts(with: "AirBeamMini") {
+            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .mini_pm1, header: .pm1), default: []]
+                .append(Measurement(time: date, value: measurements.pm1, location: location))
+            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .mini_pm2_5, header: .pm2_5), default: []]
+                .append(Measurement(time: date, value: measurements.pm2_5, location: location))
+        } else {
+            if let f = measurements.f {
+                streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .ab3_f, header: .f), default: []]
+                    .append(Measurement(time: date, value: f, location: location))
+            }
+            if let rh = measurements.rh {
+                streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .ab3_rh, header: .rh), default: []]
+                    .append(Measurement(time: date, value: rh, location: location))
+            }
+            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .ab3_pm1, header: .pm1), default: []]
+                .append(Measurement(time: date, value: measurements.pm1, location: location))
+            streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .ab3_pm2_5, header: .pm2_5), default: []]
+                .append(Measurement(time: date, value: measurements.pm2_5, location: location))
+            if let pm10 = measurements.pm10 {
+                streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, deviceID: deviceID, name: .ab3_pm10, header: .pm10), default: []]
+                    .append(Measurement(time: date, value: pm10, location: location))
+            }
         }
     }
     
@@ -159,14 +166,23 @@ class SDCardFixedSessionsUploadingService {
     
     private func getSyncParams(streamsWithMeasurements: [SDStream: [Measurement]], deviceID: String) -> [UploadFixedSessionAPIService.UploadFixedMeasurementsParams] {
         streamsWithMeasurements.compactMap { sdStream, measurements -> UploadFixedSessionAPIService.UploadFixedMeasurementsParams? in
-            guard let stream = CSVMeasurementStream.SUPPORTED_STREAMS[sdStream.header] else {
+            var stream: CSVMeasurementStream?
+            
+            if deviceID.starts(with: "AirBeamMini") {
+                stream = CSVMeasurementStream.MINI_SUPPORTED_STREAMS[sdStream.header]
+            } else {
+                stream = CSVMeasurementStream.SUPPORTED_STREAMS[sdStream.header]
+            }
+            
+            guard let stream = stream else {
                 Log.info("Unsupported stream")
                 return nil
             }
+            
             let milisecondsInSecond = 1000
             let csvMeasurements = measurements.map {
-                CSVMeasurement(longitude: $0.location?.longitude,
-                               latitude: $0.location?.latitude,
+                CSVMeasurement(longitude: $0.location?.longitude ?? 200,
+                               latitude: $0.location?.latitude ?? 200,
                                milliseconds: abs(Int($0.time.timeIntervalSince1970.remainder(dividingBy: TimeInterval(milisecondsInSecond)))),
                                time: $0.time,
                                value: $0.value)
