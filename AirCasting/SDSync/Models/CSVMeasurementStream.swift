@@ -20,6 +20,31 @@ struct CSVMeasurementStream {
     private static let PM_MEASUREMENT_SHORT_TYPE = "PM"
     private static let PM_UNIT_NAME = "microgram per cubic meter"
     private static let PM_UNIT_SYMBOL = "µg/m³"
+    
+    static let MINI_SUPPORTED_STREAMS: [SDCardCSVFileFactory.Header : CSVMeasurementStream] = [
+        SDCardCSVFileFactory.Header.pm1 : CSVMeasurementStream(sensorName: MeasurementStreamSensorName.mini_pm1.rawValue,
+                                          measurementType: PM_MEASUREMENT_TYPE,
+                                          measurementShortType: PM_MEASUREMENT_SHORT_TYPE,
+                                          unitName: PM_UNIT_NAME,
+                                          unitSymbol: PM_UNIT_SYMBOL,
+                                          thresholdVeryLow: 0,
+                                          thresholdLow: 12,
+                                          thresholdMedium: 35,
+                                          thresholdHigh: 55,
+                                          thresholdVeryHigh: 150),
+        
+        SDCardCSVFileFactory.Header.pm2_5 : CSVMeasurementStream(sensorName: MeasurementStreamSensorName.mini_pm2_5.rawValue,
+                                            measurementType: PM_MEASUREMENT_TYPE,
+                                            measurementShortType: PM_MEASUREMENT_SHORT_TYPE,
+                                            unitName: PM_UNIT_NAME,
+                                            unitSymbol: PM_UNIT_SYMBOL,
+                                            thresholdVeryLow: 0,
+                                            thresholdLow: 12,
+                                            thresholdMedium: 35,
+                                            thresholdHigh: 55,
+                                            thresholdVeryHigh: 150),
+    ]
+        
     static let SUPPORTED_STREAMS: [SDCardCSVFileFactory.Header : CSVMeasurementStream] = [
         SDCardCSVFileFactory.Header.f : CSVMeasurementStream(sensorName: MeasurementStreamSensorName.ab3_f.rawValue,
                                         measurementType: "Temperature",
