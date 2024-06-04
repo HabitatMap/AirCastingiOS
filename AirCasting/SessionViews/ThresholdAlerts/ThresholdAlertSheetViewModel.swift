@@ -155,6 +155,6 @@ class ThresholdAlertSheetViewModel: ObservableObject {
     }
     
     private func shorten(_ streamName: String) -> String {
-        String(streamName.replacingOccurrences(of: ":", with: "-").split(separator: "-").last ?? "")
+        String(streamName.replacingOccurrences(of: "-", with: ":").split(separator: ":").last ?? "")
     }
 }

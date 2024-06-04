@@ -126,7 +126,7 @@ extension NSManagedObjectContext {
     func existingObject<T: SensorThreshold>(sensorName: String) throws -> T?  {
         let className = NSStringFromClass(T.classForCoder())
         let fetchRequest = NSFetchRequest<T>(entityName: className)
-        guard let sensorType = sensorName.replacingOccurrences(of: ":", with: "-").split(separator: "-").last else {
+        guard let sensorType = sensorName.replacingOccurrences(of: "-", with: ":").split(separator: ":").last else {
             fetchRequest.predicate = NSPredicate(format: "sensorName == %@", sensorName)
             let results = try self.fetch(fetchRequest)
             return results.first

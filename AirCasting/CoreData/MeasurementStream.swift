@@ -4,13 +4,13 @@
 import Foundation
 
 enum MeasurementStreamSensorName: String {
-    case ab3_f = "AirBeam3-F"
-    case ab3_rh = "AirBeam3-RH"
-    case ab3_pm1 = "AirBeam3-PM1"
-    case ab3_pm2_5 = "AirBeam3-PM2.5"
-    case ab3_pm10 = "AirBeam3-PM10"
-    case mini_pm1 = "AirBeamMini-PM1"
-    case mini_pm2_5 = "AirBeamMini-PM2.5"
+    case ab3_f = "AirBeam3:F"
+    case ab3_rh = "AirBeam3:RH"
+    case ab3_pm1 = "AirBeam3:PM1"
+    case ab3_pm2_5 = "AirBeam3:PM2.5"
+    case ab3_pm10 = "AirBeam3:PM10"
+    case mini_pm1 = "AirBeamMini:PM1"
+    case mini_pm2_5 = "AirBeamMini:PM2.5"
 }
 
 struct MeasurementStream: Hashable {

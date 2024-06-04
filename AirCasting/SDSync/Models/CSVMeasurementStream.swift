@@ -18,7 +18,7 @@ struct CSVMeasurementStream {
     private static let DEVICE_NAME = "AirBeam3"
     private static let PM_MEASUREMENT_TYPE = "Particulate Matter"
     private static let PM_MEASUREMENT_SHORT_TYPE = "PM"
-    private static let PM_UNIT_NAME = "microgram per cubic meter"
+    private static let PM_UNIT_NAME = "micrograms per cubic meter"
     private static let PM_UNIT_SYMBOL = "µg/m³"
     
     static let MINI_SUPPORTED_STREAMS: [SDCardCSVFileFactory.Header : CSVMeasurementStream] = [

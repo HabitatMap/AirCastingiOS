@@ -51,6 +51,6 @@ struct StaticSingleStreamView: View {
 
 struct StaticSingleStreamView_Previews: PreviewProvider {
     static var previews: some View {
-        StaticSingleStreamView(streamName: "AirBeam3-PM1", value: 20, color: Color.aircastingGray, isSelected: true) { }
+        StaticSingleStreamView(streamName: "AirBeam3:PM1", value: 20, color: Color.aircastingGray, isSelected: true) { }
     }
 }

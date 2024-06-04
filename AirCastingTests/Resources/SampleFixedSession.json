@@ -21,9 +21,9 @@
   "version": 0,
   "tag_list": "",
   "streams": {
-    "AirBeam2-F": {
+    "AirBeam2:F": {
       "id": 2015180,
-      "sensor_name": "AirBeam2-F",
+      "sensor_name": "AirBeam2:F",
       "unit_name": "fahrenheit",
       "measurement_type": "Temperature",
       "measurement_short_type": "F",
@@ -34,7 +34,7 @@
       "threshold_high": 105,
       "threshold_very_high": 135,
       "session_id": 1692523,
-      "sensor_package_name": "Airbeam2-0018961070D6",
+      "sensor_package_name": "Airbeam2:0018961070D6",
       "measurements_count": 5,
       "min_latitude": 200.0,
       "max_latitude": 200.0,
