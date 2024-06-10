@@ -56,8 +56,8 @@ class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
                     streamOptions.append(.init(id: id, title: "dB", isSelected: false, isEnabled: false))
                 } else {
                     streamName = streamName
-                        .replacingOccurrences(of: "-", with: ":")
-                        .components(separatedBy: ":")[1]
+                        .replacingOccurrences(of: ":", with: "-")
+                        .components(separatedBy: "-")[1]
                     streamOptions.append(.init(id: id, title: streamName, isSelected: false, isEnabled: false))
                 }
             }

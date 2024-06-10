@@ -16,9 +16,9 @@ final class UpdateSessionParamsServiceTests: ACTestCase {
         end_time: Date(timeIntervalSinceReferenceDate: 621782618),
         deleted: nil,
         version: 0,
-        streams: ["AirBeam2:F": FixedSession.StreamOutput(
+        streams: ["AirBeam2-F": FixedSession.StreamOutput(
                     id: 2015180,
-                    sensor_name: "AirBeam2:F",
+                    sensor_name: "AirBeam2-F",
                     sensor_package_name: "Airbeam2:0018961070D6",
                     measurement_type: "Temperature",
                     measurement_short_type: "F",

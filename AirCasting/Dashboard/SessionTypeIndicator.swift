@@ -14,8 +14,8 @@ struct SessionTypeIndicator: View {
         
         streamSensorNames.forEach { sensorName in
             var name = sensorName
-                .replacingOccurrences(of: "-", with: ":")
-                .components(separatedBy: ":").first!
+                .replacingOccurrences(of: ":", with: "-")
+                .components(separatedBy: "-").first!
             
             name = (name == "Builtin") ? "Phone mic" : name
             !stream.contains(name) ? stream.append(name) : nil

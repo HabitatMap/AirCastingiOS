@@ -259,16 +259,16 @@ class CompleteScreenViewModel: ObservableObject {
     
     private func getShortSensorName(_ streamName: String) -> String {
         let shortName = streamName
-            .replacingOccurrences(of: "-", with: ":")
-            .drop { $0 != ":" }
-            .replacingOccurrences(of: ":", with: "")
+            .replacingOccurrences(of: ":", with: "-")
+            .drop { $0 != "-" }
+            .replacingOccurrences(of: "-", with: "")
         return userSettings.convertToCelsius && shortName == Strings.SingleMeasurementView.fahrenheitUnit ? Strings.SingleMeasurementView.celsiusUnit : shortName
     }
     
     private func componentsSeparation(name: String) -> String? {
         let value = name
-            .replacingOccurrences(of: "-", with: ":")
-            .components(separatedBy: ":").first!
+            .replacingOccurrences(of: ":", with: "-")
+            .components(separatedBy: "-").first!
         return value.components(separatedBy: CharacterSet.decimalDigits).joined()
     }
     

@@ -22,7 +22,7 @@ class AirbeamMeasurementsRecordingServices: MeasurementsRecordingServices {
     private var miniMeasurementsCharacteristics: [String] = [
         "0000ffe4-0000-1000-8000-00805f9b34fb",    // PM1
         "0000ffe5-0000-1000-8000-00805f9b34fb"     // PM2.5
-        ]
+    ]
     
     private var characteristicsObservers: [AnyHashable] = []
     
@@ -70,7 +70,7 @@ class AirbeamMeasurementsRecordingServices: MeasurementsRecordingServices {
         }
         let newMeasurement = ABMeasurementStream(measuredValue: measuredValue,
                                                  packageName: values[1],
-                                                 sensorName: values[2].replacingOccurrences(of: "-", with: ":"),
+                                                 sensorName: values[2],
                                                  measurementType: values[3],
                                                  measurementShortType: values[4],
                                                  unitName: values[5],

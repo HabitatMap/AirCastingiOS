@@ -85,8 +85,8 @@ struct SingleMeasurementView: View {
             return userSettings.convertToCelsius ? Strings.SingleMeasurementView.celsiusUnit : Strings.SingleMeasurementView.fahrenheitUnit
         } else {
             let streamSensorNameParts = streamName
-                                .replacingOccurrences(of: "-", with: ":")
-                                .components(separatedBy: ":")
+                                .replacingOccurrences(of: ":", with: "-")
+                                .components(separatedBy: "-")
             var name = ""
             if streamSensorNameParts.count == 2 { name = streamSensorNameParts[1] }
             return name
