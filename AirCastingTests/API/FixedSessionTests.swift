@@ -111,7 +111,7 @@ final class FixedSessionTests: APIServiceTestCase {
             streams: ["AirBeam2-F": FixedSession.StreamOutput(
                         id: 2015180,
                         sensor_name: "AirBeam2-F",
-                        sensor_package_name: "Airbeam2:0018961070D6",
+                        sensor_package_name: "Airbeam2-0018961070D6",
                         measurement_type: "Temperature",
                         measurement_short_type: "F",
                         unit_name: "fahrenheit",
