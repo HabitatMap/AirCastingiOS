@@ -204,7 +204,7 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
                 if streamName == Constants.SensorName.microphone {
                     streamOptions.append(.init(id: id, title: "dB", streamName: Constants.SensorName.microphone, isSelected: false, isEnabled: false))
                 } else {
-                    var sensorNameComponents = streamName.components(separatedBy: "-")
+                    let sensorNameComponents = streamName.components(separatedBy: "-")
                     if sensorNameComponents.count == 2 {
                         sensorName = streamName.components(separatedBy: "-")[1]
                     } else {

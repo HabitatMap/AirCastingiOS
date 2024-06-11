@@ -85,8 +85,8 @@ struct SingleMeasurementView: View {
             return userSettings.convertToCelsius ? Strings.SingleMeasurementView.celsiusUnit : Strings.SingleMeasurementView.fahrenheitUnit
         } else {
             return streamName
-                            .drop { $0 != "-" }
-                            .replacingOccurrences(of: "-", with: "")
+                .drop { $0 != "-" }
+                .replacingOccurrences(of: "-", with: "")
         }
     }
 }

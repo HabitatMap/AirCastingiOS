@@ -267,10 +267,10 @@ class CompleteScreenViewModel: ObservableObject {
     
     private func componentsSeparation(name: String) -> String? {
         if name.contains(":") {
-                    let value = name.components(separatedBy: ":").first!
-                    return value.components(separatedBy: CharacterSet.decimalDigits).joined()
-                }
-                let value = name.components(separatedBy: "-").first!
+            let value = name.components(separatedBy: ":").first!
+            return value.components(separatedBy: CharacterSet.decimalDigits).joined()
+        }
+        let value = name.components(separatedBy: "-").first!
         return value.components(separatedBy: CharacterSet.decimalDigits).joined()
     }
     
