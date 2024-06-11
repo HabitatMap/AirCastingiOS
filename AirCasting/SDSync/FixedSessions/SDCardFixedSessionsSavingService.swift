@@ -189,7 +189,7 @@ class SDCardFixedSessionsUploadingService {
             }
             
             return UploadFixedSessionAPIService.UploadFixedMeasurementsParams(session_uuid: sdStream.sessionUUID.rawValue,
-                                                                              sensor_package_name: deviceID,
+                                                                              sensor_package_name: deviceID.replacingOccurrences(of: ":", with: "-"),
                                                                               sensor_name: stream.sensorName,
                                                                               measurement_type: stream.measurementType,
                                                                               measurement_short_type: stream.measurementShortType,
