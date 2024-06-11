@@ -55,9 +55,7 @@ class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
                 if streamName == Constants.SensorName.microphone {
                     streamOptions.append(.init(id: id, title: "dB", isSelected: false, isEnabled: false))
                 } else {
-                    streamName = streamName
-                        .replacingOccurrences(of: ":", with: "-")
-                        .components(separatedBy: "-")[1]
+                    streamName = streamName.components(separatedBy: "-")[1]
                     streamOptions.append(.init(id: id, title: streamName, isSelected: false, isEnabled: false))
                 }
             }

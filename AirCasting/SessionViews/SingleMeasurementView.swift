@@ -84,12 +84,16 @@ struct SingleMeasurementView: View {
         } else if stream.isTemperature {
             return userSettings.convertToCelsius ? Strings.SingleMeasurementView.celsiusUnit : Strings.SingleMeasurementView.fahrenheitUnit
         } else {
-            let streamSensorNameParts = streamName
-                                .replacingOccurrences(of: ":", with: "-")
-                                .components(separatedBy: "-")
-            var name = ""
-            if streamSensorNameParts.count == 2 { name = streamSensorNameParts[1] }
-            return name
+            // MARTA: tutaj były 3?
+//            let streamSensorNameParts = streamName
+//                                            .replacingOccurrences(of: ":", with: "-")
+//                                            .components(separatedBy: "-")
+//                        var name = ""
+//                        if streamSensorNameParts.count == 2 { name = streamSensorNameParts[1] }
+//                        return name
+            return streamName
+                            .drop { $0 != "-" }
+                            .replacingOccurrences(of: "-", with: "")
         }
     }
 }

@@ -14,8 +14,9 @@ struct SessionTypeIndicator: View {
         
         streamSensorNames.forEach { sensorName in
             var name = sensorName
-                .replacingOccurrences(of: ":", with: "-")
-                .components(separatedBy: "-").first!
+            componentsSeparation(name: &name)
+//                .replacingOccurrences(of: ":", with: "-")
+//                .components(separatedBy: "-").first!
             
             name = (name == "Builtin") ? "Phone mic" : name
             !stream.contains(name) ? stream.append(name) : nil
@@ -24,4 +25,14 @@ struct SessionTypeIndicator: View {
         return Text("\(sessionType.description) : \(text)")
             .font(Fonts.moderateRegularHeading4)
     }
+    
+    private func componentsSeparation(name: inout String) {
+            // separation is used to nicely handle the case where sensor could be
+            // AirBeam2-xxxx or AirBeam2:xxx
+            if name.contains(":") {
+                name = name.components(separatedBy: ":").first!
+            } else {
+                name = name.components(separatedBy: "-").first!
+            }
+        }
 }
