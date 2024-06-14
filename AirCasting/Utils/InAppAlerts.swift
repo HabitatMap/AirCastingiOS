@@ -191,7 +191,7 @@ struct InAppAlerts {
     static func finishAndSyncAlert(sessionName: String?, action: @escaping (() -> Void)) -> AlertInfo {
         AlertInfo(
             title: ((sessionName == nil) ? Strings.SessionHeaderView.finishAlertTitleSYNCNoName : String(format: Strings.SessionHeaderView.finishAlertTitleNamed, arguments: [sessionName!])),
-            message: Strings.SessionHeaderView.finishAlertMessage +
+            message: Strings.SessionHeaderView.finishAlertMessage + " " +
             Strings.SessionHeaderView.finishAlertMessage_withSync,
             buttons: [
                 .default(title: Strings.SessionHeaderView.finishAlertButton,
