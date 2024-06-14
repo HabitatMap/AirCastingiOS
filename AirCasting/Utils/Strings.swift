@@ -622,13 +622,13 @@ struct Strings {
         static let finishAlertTitleSYNCNamed: String = NSLocalizedString("Finish recording %@ and sync from SD card?",
                                                                        comment: "")
         
-        static let finishAlertMessage: String = NSLocalizedString("The session will be moved to Mobile Dormant tab and you won't be able to add new measurement to it.",
+        static let finishAlertMessage: String = NSLocalizedString("The session will be moved to the Mobile Dormant tab and you won’t be able to add new measurements to it.",
                                                                   comment: "")
         static let cannotReconnectAlertTitle: String = NSLocalizedString("Reconnection failure",
                                                                   comment: "")
         static let cannotReconnectAlertMessage: String = NSLocalizedString("Cannot process reconnection anymore. Please finish session, so it will be moved to Mobile Dormant.",
                                                                   comment: "")
-        static let finishAlertMessage_withSync: String = NSLocalizedString(" SD card will be cleared afterwards.",
+        static let finishAlertMessage_withSync: String = NSLocalizedString("Internal storage will be cleared afterwards.",
                                                                            comment: "")
         static let finishAlertButton: String = NSLocalizedString("Finish recording",
                                                                  comment: "")
@@ -818,9 +818,9 @@ struct Strings {
     }
     
     enum StandaloneSessionCardView {
-        static let heading = NSLocalizedString("Your AirBeam3 is now in standalone mode",
+        static let heading = NSLocalizedString("Your AirBeam is now in standalone mode",
                                                comment: "")
-        static let description = NSLocalizedString("AirBeam3 is now recording using its SD card. The measurements will be displayed here after syncing.",
+        static let description = NSLocalizedString("AirBeam is now recording using its storage. The measurements will be displayed here after syncing.",
                                                    comment: "")
         static let finishAndSyncButtonLabel = NSLocalizedString("Finish recording & sync",
                                                                 comment: "")
@@ -912,7 +912,7 @@ struct Strings {
     enum SDSyncCompleteView {
         static let title: String = NSLocalizedString("Sync complete",
                                                      comment: "")
-        static let message: String = NSLocalizedString("The data from your AirBeam3 was synchronized successfully to the app. The SD card was cleared.",
+        static let message: String = NSLocalizedString("The data from your AirBeam was synced successfully and internal storage was cleared",
                                                        comment: "")
         static let SDClearTitle: String = NSLocalizedString("SD card cleared",
                                                             comment: "")
