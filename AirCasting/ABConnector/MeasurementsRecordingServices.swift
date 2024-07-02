@@ -100,7 +100,7 @@ class AirbeamMeasurementsRecordingServices: MeasurementsRecordingServices {
         guard let value else { return }
         
         let components = value.components(separatedBy: " ")
-        guard components.count == 4 else { return }
+        guard components.count > 3 else { return }
         let percentage = components[2] // e.g. 53%
         guard let percentageNumber = Int(percentage.dropLast(1)) else { return } // e.g. 53
         let range = currentBatteryLvl-2...currentBatteryLvl+1
