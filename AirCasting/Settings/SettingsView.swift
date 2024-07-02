@@ -112,7 +112,6 @@ struct SettingsView: View {
                     Text(Strings.Settings.crashlyticsSectionTitle)
                     crashButton
                     createErrorButton
-                    createTestNotification
                 }
                 #endif
                 appInfoSection
@@ -341,19 +340,6 @@ struct SettingsView: View {
         Button(Strings.Settings.crashTheApp) {
             let numbers = [0]
             _ = numbers[1]
-        }
-    }
-    
-    
-    // MARTA: Remove that
-    private var createTestNotification: some View {
-        Button {
-            Log.debug("[Test notification] Sending it now!")
-            notificationService.send(notification: .init(title: "AirBeam battery",
-                                                         body: "Current level: 88%"),
-                                     for: .testing)
-        } label: {
-            Text("Send test notification")
         }
     }
     

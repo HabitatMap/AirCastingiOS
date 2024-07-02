@@ -60,7 +60,7 @@ class AirbeamMeasurementsRecordingServices: MeasurementsRecordingServices {
     private func parseData(data: Data) -> ABMeasurementStream? {
         let string = String(data: data, encoding: .utf8)
         
-        if string?.components(separatedBy: ";").count == 1 {
+        if string?.components(separatedBy: ";").count == 1 { // device sent battery level, not a measurement
             sendBatteryLoadInformationNotification(value: string)
             return nil
         }
@@ -102,22 +102,25 @@ class AirbeamMeasurementsRecordingServices: MeasurementsRecordingServices {
         let components = value.components(separatedBy: " ")
         guard components.count == 4 else { return }
         let percentage = components[2] // e.g. 53%
-        guard let percentageNumber = Int(percentage.dropLast(1)) else { return }// e.g. 53
+        guard let percentageNumber = Int(percentage.dropLast(1)) else { return } // e.g. 53
+        let range = currentBatteryLvl-2...currentBatteryLvl+1
         
-        if (percentageNumber < 15 && !batteryBelowTreshold) {
+        if (percentageNumber < 15 && !batteryBelowTreshold && !range.contains(percentageNumber)) {
             notificationService.send(notification: .init(title: "AirBeam battery",
                                                          body: "Battery low: \(percentage) Charge your Airbeam."),
                                      visability: .prominent,
-                                     for: .battery)
+                                     for: .lowBattery)
+            currentBatteryLvl = percentageNumber
             batteryBelowTreshold = true
             return
         }
         
-        if (percentageNumber < 20 && batteryBelowTreshold) {
+        if (percentageNumber > 20 && batteryBelowTreshold && !range.contains(percentageNumber)) {
             batteryBelowTreshold = false
+            currentBatteryLvl = percentageNumber
         }
         
-        let range = currentBatteryLvl-3...currentBatteryLvl+2
+        
         if (!range.contains(percentageNumber)) {
             currentBatteryLvl = percentageNumber
             notificationService.send(notification: .init(title: "AirBeam battery",

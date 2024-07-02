@@ -13,10 +13,12 @@ final class NotificationsManager: ObservableObject {
     enum NotificationCategory {
         case battery
         case testing
+        case lowBattery
         
         var notificationsLimit: Int {
             switch self {
             case .battery: 1
+            case .lowBattery: 1
             case .testing: 50
             }
         }
@@ -38,7 +40,7 @@ final class NotificationsManager: ObservableObject {
         
         let content = createNotificationContent(notification.title,
                                                 body: notification.body,
-                                                visability: visability.rawValue)
+                                                visibility: visability)
         
         let request = createRequest(notification.id, content: content)
         
@@ -59,12 +61,13 @@ final class NotificationsManager: ObservableObject {
         notifications[category]?.remove(at: idxToRemove)
     }
     
-    private func createNotificationContent(_ title: String, body: String, visability: String) -> UNMutableNotificationContent {
+    private func createNotificationContent(_ title: String, body: String, visibility: NotificationVisability) -> UNMutableNotificationContent {
         let content = UNMutableNotificationContent()
-        let userInfo: [AnyHashable: Any] = [NotificationInfoKeys.visability.rawValue: visability]
+        let userInfo: [AnyHashable: Any] = [NotificationInfoKeys.visability.rawValue: visibility.rawValue]
         content.title = title
         content.body = body
         content.userInfo = userInfo
+        if visibility == .prominent { content.sound = .default }
         return content
     }
     
