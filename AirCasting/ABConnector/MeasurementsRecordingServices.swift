@@ -27,7 +27,7 @@ class AirbeamMeasurementsRecordingServices: MeasurementsRecordingServices {
         ]
     
     private var characteristicsObservers: [AnyHashable] = []
-    private var currentBatteryLvl: Int = 0
+    private var currentBatteryLvl: Int = -5
     private var batteryBelowTreshold: Bool = false
     
     func record(with device: any BluetoothDevice, completion: @escaping (ABMeasurementStream) -> Void) {
