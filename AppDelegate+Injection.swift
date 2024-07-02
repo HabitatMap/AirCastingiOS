@@ -160,6 +160,7 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultThresholdAlertsController() as ThresholdAlertsController }
         main.register { BluetoothConnectionProtector() as ConnectionProtectable }
         main.register { DefaultMeasurementsSaver() as MeasurementsSavingService }
+        main.register { NotificationsManager() }.scope(.application)
 
         // MARK: - AirBeam configuration
         main.register { (_, args) in

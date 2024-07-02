@@ -578,6 +578,9 @@
 		FAF3B4DD28057A3300F0F4B0 /* SensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4DC28057A3300F0F4B0 /* SensorType.swift */; };
 		FAF3B4E128057EC100F0F4B0 /* MeasurementType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4E028057EC100F0F4B0 /* MeasurementType.swift */; };
 		FAF3B4E528058B6700F0F4B0 /* ProtectedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4E428058B6700F0F4B0 /* ProtectedScreen.swift */; };
+		FAFBDBE52BC4943700A9E839 /* NotificationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFBDBE42BC4943700A9E839 /* NotificationsManager.swift */; };
+		FAFBDBE72BC494AA00A9E839 /* NotificationVisability.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFBDBE62BC494AA00A9E839 /* NotificationVisability.swift */; };
+		FAFBDBE92BC494C500A9E839 /* NotificationInfoKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFBDBE82BC494C500A9E839 /* NotificationInfoKeys.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1178,6 +1181,9 @@
 		FAF3B4DC28057A3300F0F4B0 /* SensorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorType.swift; sourceTree = "<group>"; };
 		FAF3B4E028057EC100F0F4B0 /* MeasurementType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementType.swift; sourceTree = "<group>"; };
 		FAF3B4E428058B6700F0F4B0 /* ProtectedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtectedScreen.swift; sourceTree = "<group>"; };
+		FAFBDBE42BC4943700A9E839 /* NotificationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsManager.swift; sourceTree = "<group>"; };
+		FAFBDBE62BC494AA00A9E839 /* NotificationVisability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationVisability.swift; sourceTree = "<group>"; };
+		FAFBDBE82BC494C500A9E839 /* NotificationInfoKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationInfoKeys.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1622,6 +1628,7 @@
 		AC32040625CC122900A68520 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				FAFBDBE32BC4942500A9E839 /* Notifications */,
 				3320F2E22922657C00EFFB2D /* Bluetooth */,
 				33ECC0E32901B15600A3BC85 /* Averaging */,
 				B31E361028AECB2A00E85431 /* GlobalAlerts */,
@@ -2992,6 +2999,16 @@
 			name = ReconnectSessionCard;
 			sourceTree = "<group>";
 		};
+		FAFBDBE32BC4942500A9E839 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				FAFBDBE42BC4943700A9E839 /* NotificationsManager.swift */,
+				FAFBDBE62BC494AA00A9E839 /* NotificationVisability.swift */,
+				FAFBDBE82BC494C500A9E839 /* NotificationInfoKeys.swift */,
+			);
+			path = Notifications;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -3409,6 +3426,7 @@
 				AC524A962615D8620061AD45 /* MeasurementStreamEntity.swift in Sources */,
 				B32D08A2267A4949006C97ED /* LogErrorPublisher.swift in Sources */,
 				DDC5F5882719694800F1F9D8 /* ShadowImages.swift in Sources */,
+				FAFBDBE72BC494AA00A9E839 /* NotificationVisability.swift in Sources */,
 				DD430B022670F3B300F1BF2E /* NearAirDescription.swift in Sources */,
 				331D32D528328A92001A6414 /* Sessionable.swift in Sources */,
 				ACCEB2192763A2230040140B /* SDSyncCompleteViewModel.swift in Sources */,
@@ -3554,6 +3572,7 @@
 				33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */,
 				ACC8838C265284AA00C5DB70 /* CoreDataHook.swift in Sources */,
 				AC8CFF5C25E6866100FB2918 /* SignInView.swift in Sources */,
+				FAFBDBE92BC494C500A9E839 /* NotificationInfoKeys.swift in Sources */,
 				DDDA056627DF3B3A00C6B9B9 /* MapDownloaderSearchedStreams.swift in Sources */,
 				ACCEB2262763A2230040140B /* UnplugABView.swift in Sources */,
 				DD2181EF267BBCBC0010EC2E /* MyAccountView.swift in Sources */,
@@ -3788,6 +3807,7 @@
 				AC8CFF4125E5095600FB2918 /* Textfield.swift in Sources */,
 				DD123EC227BD2C53001083C3 /* SearchMapViewModel.swift in Sources */,
 				33ECC0E22901ACFA00A3BC85 /* AveragingServiceStorage.swift in Sources */,
+				FAFBDBE52BC4943700A9E839 /* NotificationsManager.swift in Sources */,
 				B3FD77C3267C94AF00E97CC2 /* SessionDownloadService.swift in Sources */,
 				FAC3B67A283B96480095D915 /* ChartMeasurementsFilter.swift in Sources */,
 				AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */,
@@ -4328,8 +4348,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/1024jp/GzipSwift";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 6.0.1;
+				kind = exactVersion;
+				version = 6.0.1;
 			};
 		};
 		ACF600BC2678D7F4005DD97C /* XCRemoteSwiftPackageReference "SwiftSimplify" */ = {

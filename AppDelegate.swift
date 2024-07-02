@@ -4,25 +4,39 @@ import FirebaseMessaging
 import Resolver
 
 @objc
-class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        UNUserNotificationCenter.current().delegate = self
+        
+        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+        UNUserNotificationCenter.current().requestAuthorization(
+            options: authOptions,
+            completionHandler: { _, _ in }
+        )
+        
         if ProcessInfo.processInfo.environment["boot_type"] == "clean" {
             Log.info("Running in clean boot mode, erasing all data and logging out before the app launches")
             performCleanBoot()
         }
         
         Messaging.messaging().delegate = self
-        // NOTE: We don't ask user for the remote notifications permissions since we're only using APNS for
-        // the firebase config change notifications (silent push notifications - no permission is needed for
-        // this kind). If you want to add non-silet notifications, uncomment:
-        //
-        // let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
-        // UNUserNotificationCenter.current().requestAuthorization(
-        //     options: authOptions,
-        //     completionHandler: { _, _ in }
-        // )
         application.registerForRemoteNotifications()
         return true
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        
+        if let visabilityValue = notification.request.content.userInfo[NotificationInfoKeys.visability.rawValue] as? String,
+           let visability = NotificationVisability(rawValue: visabilityValue) {
+            switch visability {
+            case .prominent:
+                completionHandler([.banner, .list, .sound])
+            case .visible:
+                completionHandler([.banner, .list])
+            case .unnoticed:
+                completionHandler([.list])
+            }
+        }
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
