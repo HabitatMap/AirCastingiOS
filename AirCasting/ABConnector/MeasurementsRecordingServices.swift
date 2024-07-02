@@ -11,6 +11,7 @@ protocol MeasurementsRecordingServices {
 
 class AirbeamMeasurementsRecordingServices: MeasurementsRecordingServices {
     @Injected private var bluetoothManager: BluetoothCommunicator
+    @InjectedObject private var notificationService: NotificationsManager
     
     private var measurementsCharacteristics: [String] = [
         "0000ffe1-0000-1000-8000-00805f9b34fb",    // Temperature
@@ -21,10 +22,13 @@ class AirbeamMeasurementsRecordingServices: MeasurementsRecordingServices {
     
     private var miniMeasurementsCharacteristics: [String] = [
         "0000ffe4-0000-1000-8000-00805f9b34fb",    // PM1
-        "0000ffe5-0000-1000-8000-00805f9b34fb"     // PM2.5
+        "0000ffe5-0000-1000-8000-00805f9b34fb",     // PM2.5
+        "0000ffe7-0000-1000-8000-00805f9b34fb"      // Battery
         ]
     
     private var characteristicsObservers: [AnyHashable] = []
+    private var currentBatteryLvl: Int = 0
+    private var batteryBelowTreshold: Bool = false
     
     func record(with device: any BluetoothDevice, completion: @escaping (ABMeasurementStream) -> Void) {
         do {
@@ -55,6 +59,12 @@ class AirbeamMeasurementsRecordingServices: MeasurementsRecordingServices {
 
     private func parseData(data: Data) -> ABMeasurementStream? {
         let string = String(data: data, encoding: .utf8)
+        
+        if string?.components(separatedBy: ";").count == 1 {
+            sendBatteryLoadInformationNotification(value: string)
+            return nil
+        }
+        
         let components = string?.components(separatedBy: ";")
         guard let values = components,
               values.count == 12,
@@ -81,5 +91,38 @@ class AirbeamMeasurementsRecordingServices: MeasurementsRecordingServices {
                                           thresholdHigh: thresholdHigh,
                                           thresholdVeryHigh: thresholdVeryHigh)
         return newMeasurement
+    }
+    
+    private func sendBatteryLoadInformationNotification(value: String?){
+        // Information on a battery load comes in a format:
+        // "3.56V  53% Load"
+
+        guard let value else { return }
+        
+        let components = value.components(separatedBy: " ")
+        guard components.count == 4 else { return }
+        let percentage = components[2] // e.g. 53%
+        guard let percentageNumber = Int(percentage.dropLast(1)) else { return }// e.g. 53
+        
+        if (percentageNumber < 15 && !batteryBelowTreshold) {
+            notificationService.send(notification: .init(title: "AirBeam battery",
+                                                         body: "Battery low: \(percentage) Charge your Airbeam."),
+                                     visability: .prominent,
+                                     for: .battery)
+            batteryBelowTreshold = true
+            return
+        }
+        
+        if (percentageNumber < 20 && batteryBelowTreshold) {
+            batteryBelowTreshold = false
+        }
+        
+        let range = currentBatteryLvl-3...currentBatteryLvl+2
+        if (!range.contains(percentageNumber)) {
+            currentBatteryLvl = percentageNumber
+            notificationService.send(notification: .init(title: "AirBeam battery",
+                                                         body: "Current level: \(percentage)"),
+                                     for: .battery)
+        }
     }
 }

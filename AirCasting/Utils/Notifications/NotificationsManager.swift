@@ -22,16 +22,6 @@ final class NotificationsManager: ObservableObject {
         }
     }
     
-    /// ℹ️
-    /// This function adjusts notification visibility based on the time elapsed since the last notification.
-    /// Example: `lastSendedMoreThen` set to 10 means a notification will be sent with the specified visibility
-    /// only if there has been a gap of at least 10 hours since the last notification was sent.
-    /// The default visibility is set to `visible` if none of the conditions are met.
-    enum NotificationConditionalVisability: Hashable {
-        case lastSendedLessThen(hours: Int, visability: NotificationVisability)
-        case lastSendedMoreThen(hours: Int, visability: NotificationVisability)
-    }
-    
     private let notificationCenter = UserNotifications.UNUserNotificationCenter.current()
     private var notifications: [NotificationCategory : [Notification]] = [:]
     
@@ -56,49 +46,7 @@ final class NotificationsManager: ObservableObject {
         notifications[category, default: []].append(notification)
     }
     
-    func send(notification: Notification,
-              visabilityConditions: Set<NotificationConditionalVisability>,
-              for category: NotificationCategory) {
-        
-        var visabilityDecision: NotificationVisability = .visible
-        
-        if let latestNotification = notifications[category]?.last,
-           let timeDifferenceInHours = Calendar.current.dateComponents([.hour], from: latestNotification.creationTime,
-                                                                       to: notification.creationTime).hour {
-            
-            for condition in visabilityConditions {
-                switch condition {
-                case .lastSendedLessThen(let hours, let visability):
-                    if timeDifferenceInHours < hours {
-                        visabilityDecision = visability
-                        return
-                    }
-                case .lastSendedMoreThen(let hours, let visability):
-                    if timeDifferenceInHours >= hours {
-                        visabilityDecision = visability
-                        return
-                    }
-                }
-            }
-        }
-        
-        if let categoryItemNumber = notifications[category]?.count,
-           categoryItemNumber >= category.notificationsLimit,
-           let firstItem = notifications[category]?.first {
-            cancelNotification(stringId: firstItem.id.uuidString)
-            removeCancelledNotification(for: firstItem.id, category: category)
-        }
-        
-        let content = createNotificationContent(notification.title,
-                                                body: notification.body,
-                                                visability: visabilityDecision.rawValue)
-        
-        let request = createRequest(notification.id, content: content)
-        
-        requestNotification(request)
-        notifications[category, default: []].append(notification)
-    }
-    
+   
     private func cancelNotification(stringId: String) {
         UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: [stringId])
     }

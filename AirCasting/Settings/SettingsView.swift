@@ -344,6 +344,8 @@ struct SettingsView: View {
         }
     }
     
+    
+    // MARTA: Remove that
     private var createTestNotification: some View {
         Button {
             Log.debug("[Test notification] Sending it now!")
