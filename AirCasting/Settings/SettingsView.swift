@@ -4,7 +4,6 @@
 //
 //  Created by Lunar on 16/03/2021.
 //
-
 import SwiftUI
 import AirCastingStyling
 import Resolver
@@ -13,6 +12,7 @@ struct SettingsView: View {
     @StateObject private var viewModel: SettingsViewModel
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     @InjectedObject private var userSettings: UserSettings
+    @InjectedObject private var notificationService: NotificationsManager
     private let sessionContext: CreateSessionContext
     #if BETA
     @StateObject private var shareLogsViewModel = ShareLogsViewModel()
@@ -22,7 +22,7 @@ struct SettingsView: View {
         self.sessionContext = sessionContext
         self._viewModel = .init(wrappedValue: .init(sessionContext: sessionContext))
     }
-
+    
     var body: some View {
         if #available(iOS 15, *) {
             NavigationView {
@@ -95,7 +95,7 @@ struct SettingsView: View {
             #endif
         }
     }
-
+    
     private var main: some View {
         Form {
             Group {
@@ -125,7 +125,7 @@ struct SettingsView: View {
         .navigationBarTitle(Strings.Settings.title)
         .alert(item: $viewModel.alert, content: { $0.makeAlert() })
     }
-
+    
     private var settingsSection: some View {
         Section() {
             VStack(alignment: .leading) {
@@ -165,7 +165,7 @@ struct SettingsView: View {
             navigateToBackendSettingsButton
         }
     }
-
+    
     private var appInfoSection: some View {
         Section() {
             Text(Strings.Settings.appInfoTitle) + Text(". ") + Text("\(UIApplication.appVersion!) ") +
@@ -177,7 +177,7 @@ struct SettingsView: View {
             #endif
         }.foregroundColor(.aircastingGray)
     }
-
+    
     private var signOutLink: some View {
         NavigationLink(destination: SettingsMyAccountView(viewModel: SettingsMyAccountViewModel())) {
             myAccount
@@ -213,23 +213,23 @@ struct SettingsView: View {
         settingSwitch(toogle: $userSettings.syncOnlyThroughWifi,
                       label: Strings.Settings.syncOnlyThroughWifi)
     }
-
+    
     private var keepScreenOnSwitch: some View {
         settingSwitch(toogle: $userSettings.keepScreenOn,
                       label: Strings.Settings.keepScreenTitle)
     }
-
+    
     private var crowdMapSwitch: some View {
         settingSwitch(toogle: $userSettings.contributingToCrowdMap,
                       label: Strings.Settings.crowdMap)
     }
-
+    
     private var crowdMapDescription: some View {
         Text(Strings.Settings.crowdMapDescription)
             .font(Fonts.muliRegularHeading3)
             .foregroundColor(.aircastingGray)
     }
-
+    
     private var disableMappingSwitch: some View {
         settingSwitch(toogle: $userSettings.disableMapping,
                       label: Strings.Settings.disableMapping)
@@ -258,13 +258,13 @@ struct SettingsView: View {
         settingSwitch(toogle: $userSettings.convertToCelsius,
                       label: Strings.Settings.temperature)
     }
-
+    
     private var temperatureDescription: some View {
         Text(Strings.Settings.celsiusDescription)
             .font(Fonts.muliRegularHeading3)
             .foregroundColor(.aircastingGray)
     }
-
+    
     private var navigateToBackendSettingsButton: some View {
         Button(action: {
             viewModel.navigateToBackendButtonTapped()
@@ -283,23 +283,23 @@ struct SettingsView: View {
             BackendSettingsView()
         })
     }
-
+    
     private var clearSDCard: some View {
         Button {
             viewModel.clearSDButtonTapped()
-         } label: {
-             Group {
-                 HStack {
-                     Text(Strings.Settings.clearSDTitle)
-                         .font(Fonts.muliBoldHeading1)
-                         .accentColor(.primary)
-                     Spacer()
-                     Image(systemName: "chevron.right")
-                         .accentColor(.gray).opacity(0.6)
-                 }
-             }
-         }
-     }
+        } label: {
+            Group {
+                HStack {
+                    Text(Strings.Settings.clearSDTitle)
+                        .font(Fonts.muliBoldHeading1)
+                        .accentColor(.primary)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .accentColor(.gray).opacity(0.6)
+                }
+            }
+        }
+    }
     
     private var calibrateMicrophone: some View {
         Button(action: {
@@ -325,7 +325,7 @@ struct SettingsView: View {
             AppConfigurationView()
                 .navigationTitle(Strings.Settings.appConfig)
         })
-            .font(Fonts.muliBoldHeading1)
+        .font(Fonts.muliBoldHeading1)
     }
     
     #if BETA
