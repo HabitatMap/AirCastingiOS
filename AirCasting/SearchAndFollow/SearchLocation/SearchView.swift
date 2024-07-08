@@ -20,37 +20,33 @@ struct SearchView: View {
         VStack(alignment: .leading) {
             title
             textField
-            #warning("This part was intentionally disabled, refer to https://trello.com/c/WqkeHh2x - to know more")
-            // Michaels on this - "openAQ and PurpleAir have revoked free access to their data via their APIs"
             
-// DISABLE - START
-//            parametersQuestion
-//            HStack(spacing: 12) {
-//                ForEach(viewModel.measurementTypes) { param in
-//                    Button {
-//                        withAnimation(.easeInOut(duration: 0.3)) {
-//                            viewModel.onParameterTap(with: param.name)
-//                        }
-//                    } label: {
-//                        Text(param.name)
-//                            .padding(5)
-//                    }.buttonStyle(MultiSelectButtonStyle(isSelected: param.isSelected))
-//                        .padding(.bottom, 5)
-//                }
-//            }
-//            sensorQuestion
-//            HStack(spacing: 12) {
-//                ForEach(viewModel.sensorTypes) { sensor in
-//                    Button {
-//                        viewModel.onSensorTap(with: sensor.name)
-//                    } label: {
-//                        Text(sensor.name)
-//                            .padding(5)
-//                    }.buttonStyle(MultiSelectButtonStyle(isSelected: sensor.isSelected))
-//                        .padding(.bottom, 5)
-//                }
-//            }
-// DISABLE - END
+            parametersQuestion
+            LazyVGrid(columns: [GridItem(.flexible())]) {
+                ForEach(viewModel.measurementTypes) { param in
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            viewModel.onParameterTap(with: param.name)
+                        }
+                    } label: {
+                        Text(param.name)
+                            .padding(5)
+                    }.buttonStyle(MultiSelectButtonStyle(isSelected: param.isSelected))
+                        .padding(.bottom, 5)
+                }
+            }
+            sensorQuestion
+            HStack(spacing: 12) {
+                ForEach(viewModel.sensorTypes) { sensor in
+                    Button {
+                        viewModel.onSensorTap(with: sensor.name)
+                    } label: {
+                        Text(sensor.name)
+                            .padding(5)
+                    }.buttonStyle(MultiSelectButtonStyle(isSelected: sensor.isSelected))
+                        .padding(.bottom, 5)
+                }
+            }
             Spacer()
             button
         }
@@ -115,7 +111,7 @@ private extension SearchView {
             destination: SearchMapView(locationName: viewModel.addressName,
                                        locationAddress: viewModel.addresslocation,
                                        parameterType: viewModel.selectedParameter ?? .particulateMatter,
-                                       sensorType: viewModel.selectedSensor ?? .OpenAQ, isSearchAndFollowLinkActive: $isSearchAndFollowLinkActive),
+                                       sensorType: viewModel.selectedSensor ?? .AirBeam, isSearchAndFollowLinkActive: $isSearchAndFollowLinkActive),
             label: {
                 Text(Strings.Commons.continue)
             })

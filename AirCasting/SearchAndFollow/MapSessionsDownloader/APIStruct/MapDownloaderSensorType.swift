@@ -4,25 +4,22 @@
 import Foundation
 
 enum MapDownloaderSensorType: Codable {
-    case AB3and2
-    case OpenAQ
-    case PurpleAir
+    case AirBeam
+    case Govt
 }
 
 extension MapDownloaderSensorType {
     var sensorNamePrefix: String {
         switch self {
-        case .AB3and2: return "airbeam"
-        case .OpenAQ: return "openaq"
-        case .PurpleAir: return "purpleair"
+        case .AirBeam: return "airbeam"
+        case .Govt: return "government"
         }
     }
     
     var capitalizedName: String {
         switch self {
-        case .AB3and2: return Strings.SearchFollowSensorNames.AirBeam3and2
-        case .OpenAQ: return Strings.SearchFollowSensorNames.openAQ
-        case .PurpleAir: return Strings.SearchFollowSensorNames.purpleAir
+        case .AirBeam: return Strings.SearchFollowSensorNames.AirBeam3and2
+        case .Govt: return Strings.SearchFollowSensorNames.Govt
         }
     }
 }

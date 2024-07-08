@@ -1081,14 +1081,13 @@ struct Strings {
     
     enum SearchFollowSensorNames {
         static let AirBeam3and2: String = NSLocalizedString("AirBeam", comment: "")
-        static let openAQ: String = NSLocalizedString("OpenAQ", comment: "")
-        static let purpleAir: String = NSLocalizedString("PurpleAir", comment: "")
-        static let openAQOzone: String = NSLocalizedString("OpenAQ", comment: "")
+        static let Govt: String = NSLocalizedString("Govt", comment: "")
     }
     
     enum SearchFollowParamNames {
         static let particulateMatter: String = NSLocalizedString("Particulate Matter", comment: "")
         static let ozone: String = NSLocalizedString("Ozone", comment: "")
+        static let nitrogenDioxide: String = NSLocalizedString("Nitrogen Dioxide", comment: "")
     }
     
     enum CompleteSearchView {

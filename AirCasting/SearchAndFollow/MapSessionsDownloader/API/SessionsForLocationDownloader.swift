@@ -80,6 +80,8 @@ extension SessionsForLocationDownloaderDefault {
             return .uqm3
         case .ozone:
             return .ppb
+        case .nitrogenDioxide:
+            return .ppb
         }
     }
 }
