@@ -22,7 +22,7 @@ struct SearchView: View {
             textField
             
             parametersQuestion
-            
+
             VStack(alignment: .leading, spacing: 12) {
                 ForEach(viewModel.measurementTypes) { param in
                     Button {
@@ -33,6 +33,7 @@ struct SearchView: View {
                         Text(param.name)
                             .fixedSize()
                             .lineLimit(1)
+
                             .padding(5)
                     }.buttonStyle(MultiSelectButtonStyle(isSelected: param.isSelected))
                         .padding(.bottom, 5)
