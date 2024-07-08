@@ -10,7 +10,7 @@ class MapDownloaderSensorTypeTests: XCTestCase {
         XCTAssertEqual(airbeam, "airbeam")
         
         let govt: String = MapDownloaderSensorType.Govt.sensorNamePrefix
-        XCTAssertEqual(govt, "govt")
+        XCTAssertEqual(govt, "government")
     }
     
     func test_gettingCapitalizedName_returnCorrectString() {
