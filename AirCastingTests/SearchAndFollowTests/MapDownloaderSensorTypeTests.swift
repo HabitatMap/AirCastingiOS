@@ -9,21 +9,15 @@ class MapDownloaderSensorTypeTests: XCTestCase {
         let airbeam: String = MapDownloaderSensorType.AirBeam.sensorNamePrefix
         XCTAssertEqual(airbeam, "airbeam")
         
-        let openAQ: String = MapDownloaderSensorType.OpenAQ.sensorNamePrefix
-        XCTAssertEqual(openAQ, "openaq")
-        
-        let purpleAir: String = MapDownloaderSensorType.PurpleAir.sensorNamePrefix
-        XCTAssertEqual(purpleAir, "purpleair")
+        let govt: String = MapDownloaderSensorType.Govt.sensorNamePrefix
+        XCTAssertEqual(govt, "govt")
     }
     
     func test_gettingCapitalizedName_returnCorrectString() {
         let airbeam: String = MapDownloaderSensorType.AirBeam.capitalizedName
         XCTAssertEqual(airbeam, "AirBeam")
         
-        let openAQ: String = MapDownloaderSensorType.OpenAQ.capitalizedName
-        XCTAssertEqual(openAQ, "OpenAQ")
-        
-        let purpleAir: String = MapDownloaderSensorType.PurpleAir.capitalizedName
-        XCTAssertEqual(purpleAir, "PurpleAir")
+        let govt: String = MapDownloaderSensorType.Govt.capitalizedName
+        XCTAssertEqual(govt, "Govt")
     }
 }
