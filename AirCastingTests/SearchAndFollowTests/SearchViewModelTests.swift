@@ -31,12 +31,12 @@ class SearchViewModelTests: XCTestCase {
     func test_particulareMatterTapped_correspondingSensorsAppears() {
         let particulateMatter = "Particulate Matter"
         sut.onParameterTap(with: particulateMatter)
-        XCTAssertEqual(sut.sensorTypes.map(\.name), ["AirBeam", "OpenAQ", "PurpleAir"])
+        XCTAssertEqual(sut.sensorTypes.map(\.name), ["AirBeam", "Govt"])
     }
     
     func test_ozoneTapped_correspondingSensorsAppears() {
         let particulateMatter = "Ozone"
         sut.onParameterTap(with: particulateMatter)
-        XCTAssertEqual(sut.sensorTypes.map(\.name), ["OpenAQ"])
+        XCTAssertEqual(sut.sensorTypes.map(\.name), ["Govt"])
     }
 }
