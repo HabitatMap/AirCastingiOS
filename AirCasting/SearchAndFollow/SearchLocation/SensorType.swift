@@ -4,18 +4,15 @@
 import Foundation
 
 enum SensorType: Codable, CaseIterable {
-    case AB3and2
-    case OpenAQ
-    case PurpleAir
+    case AirBeam
+    case Govt
 }
 
 extension SensorType {
-    
     var capitalizedName: String {
         switch self {
-        case .AB3and2: return Strings.SearchFollowSensorNames.AirBeam3and2
-        case .OpenAQ: return Strings.SearchFollowSensorNames.openAQ
-        case .PurpleAir: return Strings.SearchFollowSensorNames.purpleAir
+        case .AirBeam: return Strings.SearchFollowSensorNames.AirBeam3and2
+        case .Govt: return Strings.SearchFollowSensorNames.Govt
         }
     }
 }

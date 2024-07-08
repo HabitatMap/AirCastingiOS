@@ -6,7 +6,7 @@ import XCTest
 
 class MapDownloaderSensorTypeTests: XCTestCase {
     func test_gettingSensorNamePrefix_returnsCorrectString() {
-        let airbeam: String = MapDownloaderSensorType.AB3and2.sensorNamePrefix
+        let airbeam: String = MapDownloaderSensorType.AirBeam.sensorNamePrefix
         XCTAssertEqual(airbeam, "airbeam")
         
         let openAQ: String = MapDownloaderSensorType.OpenAQ.sensorNamePrefix
@@ -17,7 +17,7 @@ class MapDownloaderSensorTypeTests: XCTestCase {
     }
     
     func test_gettingCapitalizedName_returnCorrectString() {
-        let airbeam: String = MapDownloaderSensorType.AB3and2.capitalizedName
+        let airbeam: String = MapDownloaderSensorType.AirBeam.capitalizedName
         XCTAssertEqual(airbeam, "AirBeam")
         
         let openAQ: String = MapDownloaderSensorType.OpenAQ.capitalizedName

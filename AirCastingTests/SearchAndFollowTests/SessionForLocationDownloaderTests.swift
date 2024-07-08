@@ -81,7 +81,7 @@ class SessionForLocationDownloaderTests: ACTestCase {
                           timeFrom: 20.20,
                           timeTo: 20.20,
                           measurementType: .particulateMatter,
-                          sensor: .AB3and2)
+                          sensor: .AirBeam)
         }
     }
 }

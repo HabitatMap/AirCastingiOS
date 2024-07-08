@@ -30,9 +30,13 @@ class SearchViewModel: ObservableObject {
     }
     
     init() {
-        let defaultParam = Strings.SearchFollowParamNames.particulateMatter
-        measurementTypes = [.init(isSelected: true, name: defaultParam)]
-        onParameterTap(with: defaultParam)
+        measurementTypes = [
+            .init(isSelected: true, name: Strings.SearchFollowParamNames.particulateMatter),
+            .init(isSelected: false, name: Strings.SearchFollowParamNames.nitrogenDioxide),
+            .init(isSelected: false, name: Strings.SearchFollowParamNames.ozone),
+            
+        ]
+        onParameterTap(with: Strings.SearchFollowParamNames.particulateMatter)
     }
     
     func textFieldTapped() { isLocationPopupPresented.toggle() }
@@ -40,17 +44,23 @@ class SearchViewModel: ObservableObject {
     func onParameterTap(with param: String) {
         deselectAll(measurementTypes)
         self.measurementTypes.first(where: { $0.name == param })?.isSelected = true
+        
         switch measurementType(from: param) {
         case .particulateMatter: self.sensorTypes = [
-            .init(isSelected: true, name: SensorType.AB3and2.capitalizedName),
-            .init(isSelected: false, name: SensorType.OpenAQ.capitalizedName),
-            .init(isSelected: false, name: SensorType.PurpleAir.capitalizedName)
+            .init(isSelected: true, name: SensorType.AirBeam.capitalizedName),
+            .init(isSelected: false, name: SensorType.Govt.capitalizedName),
         ]
+            
         case .ozone: self.sensorTypes = [
-            .init(isSelected: true, name: SensorType.OpenAQ.capitalizedName)
+            .init(isSelected: true, name: SensorType.Govt.capitalizedName)
+        ]
+            
+        case .nitrogenDioxide: self.sensorTypes = [
+            .init(isSelected: true, name: SensorType.Govt.capitalizedName)
         ]
         case .none: return
         }
+        self.objectWillChange.send()
     }
     
     func onSensorTap(with name: String) {
@@ -83,16 +93,15 @@ class SearchViewModel: ObservableObject {
         switch from {
         case Strings.SearchFollowParamNames.particulateMatter: return .particulateMatter
         case Strings.SearchFollowParamNames.ozone: return .ozone
+        case Strings.SearchFollowParamNames.nitrogenDioxide: return .nitrogenDioxide
         default: return nil
         }
     }
     
     private func sensorType(from: String) -> SensorType? {
         switch from {
-        case Strings.SearchFollowSensorNames.AirBeam3and2: return .AB3and2
-        case Strings.SearchFollowSensorNames.openAQ: return .OpenAQ
-        case Strings.SearchFollowSensorNames.purpleAir: return .PurpleAir
-        case Strings.SearchFollowSensorNames.openAQOzone: return .OpenAQ
+        case Strings.SearchFollowSensorNames.AirBeam3and2: return .AirBeam
+        case Strings.SearchFollowSensorNames.Govt: return .Govt
         default: return nil
         }
     }

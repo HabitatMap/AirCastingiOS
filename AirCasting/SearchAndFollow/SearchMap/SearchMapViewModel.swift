@@ -160,6 +160,7 @@ extension MeasurementType {
         switch self {
         case .particulateMatter: return .particulateMatter
         case .ozone: return .ozone
+        case .nitrogenDioxide: return .nitrogenDioxide
         }
     }
 }
@@ -167,9 +168,8 @@ extension MeasurementType {
 extension SensorType {
     var downloaderType: MapDownloaderSensorType {
         switch self {
-        case .AB3and2: return .AB3and2
-        case .OpenAQ: return .OpenAQ
-        case .PurpleAir: return .PurpleAir
+        case .AirBeam: return .AirBeam
+        case .Govt: return .Govt
         }
     }
 }
