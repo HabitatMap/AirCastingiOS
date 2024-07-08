@@ -22,7 +22,8 @@ struct SearchView: View {
             textField
             
             parametersQuestion
-            LazyVGrid(columns: [GridItem(.flexible())]) {
+            
+            VStack(alignment: .leading, spacing: 12) {
                 ForEach(viewModel.measurementTypes) { param in
                     Button {
                         withAnimation(.easeInOut(duration: 0.3)) {
@@ -30,13 +31,15 @@ struct SearchView: View {
                         }
                     } label: {
                         Text(param.name)
+                            .fixedSize()
+                            .lineLimit(1)
                             .padding(5)
                     }.buttonStyle(MultiSelectButtonStyle(isSelected: param.isSelected))
                         .padding(.bottom, 5)
                 }
             }
             sensorQuestion
-            HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 12) {
                 ForEach(viewModel.sensorTypes) { sensor in
                     Button {
                         viewModel.onSensorTap(with: sensor.name)
@@ -117,5 +120,15 @@ private extension SearchView {
             })
         .buttonStyle(BlueButtonStyle())
         .disabled(viewModel.continueDisabled)
+    }
+}
+
+
+struct SearchView_Previews: PreviewProvider {
+    static var previews: some View {
+        SearchView(isSearchAndFollowLinkActive: .constant(true))
+            .previewLayout(PreviewLayout.sizeThatFits)
+            .padding()
+            .previewDisplayName("Default preview")
     }
 }

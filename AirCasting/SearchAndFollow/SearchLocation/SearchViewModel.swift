@@ -32,9 +32,8 @@ class SearchViewModel: ObservableObject {
     init() {
         measurementTypes = [
             .init(isSelected: true, name: Strings.SearchFollowParamNames.particulateMatter),
-            .init(isSelected: false, name: Strings.SearchFollowParamNames.nitrogenDioxide),
             .init(isSelected: false, name: Strings.SearchFollowParamNames.ozone),
-            
+            .init(isSelected: false, name: Strings.SearchFollowParamNames.nitrogenDioxide),
         ]
         onParameterTap(with: Strings.SearchFollowParamNames.particulateMatter)
     }
