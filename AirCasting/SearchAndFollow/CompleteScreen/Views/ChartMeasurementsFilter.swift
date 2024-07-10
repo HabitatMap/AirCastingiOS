@@ -14,22 +14,17 @@ struct ChartMeasurementsFilterDefault: ChartMeasurementsFilter {
     typealias MeasurementType = SearchAndFollowChartViewModel.ChartMeasurement
     
     enum EntriesSensor: String {
-        case OpenAQ = "OpenAQ"
+        case Government = "Government"
         case AirBeam = "AirBeam"
-        case PurpleAir = "PurpleAir"
         case undefined = ""
     }
     
     func filter(measurements: [MeasurementType]) -> [MeasurementType] {
-        guard convertedName != .OpenAQ else { return measurements }
         guard let firstElement = measurements.reversed().first?.time else { return [] }
         switch convertedName {
-        case .AirBeam, .PurpleAir:
+        case .AirBeam, .Government:
             return clearData(using: measurements, hourToRemove: firstElement)
         case .undefined:
-            Log.info("Missing sensor name in the chart VM")
-            return []
-        default:
             Log.info("Missing sensor name in the chart VM")
             return []
         }
@@ -51,9 +46,8 @@ struct ChartMeasurementsFilterDefault: ChartMeasurementsFilter {
     
     private func getEntriesSensor(using sensor: String) -> EntriesSensor {
         switch sensor {
-        case EntriesSensor.OpenAQ.rawValue: return .OpenAQ
+        case EntriesSensor.Government.rawValue: return .Government
         case EntriesSensor.AirBeam.rawValue: return .AirBeam
-        case EntriesSensor.PurpleAir.rawValue: return .PurpleAir
         default: return .undefined
         }
     }
