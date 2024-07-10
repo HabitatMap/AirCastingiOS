@@ -18,7 +18,7 @@ class MapDownloaderMeasurementTypeTests: XCTestCase {
         XCTAssertEqual(particulateMatter, "-pm2.5")
         
         let ozone: String = MapDownloaderMeasurementType.ozone.sensorNameSuffix
-        XCTAssertEqual(ozone, "-o3")
+        XCTAssertEqual(ozone, "-ozone")
     }
     
     func test_gettingCapitalizedName_returnsCorrectString() {
