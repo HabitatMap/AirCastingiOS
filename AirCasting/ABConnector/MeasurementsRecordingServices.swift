@@ -27,10 +27,11 @@ class AirbeamMeasurementsRecordingServices: MeasurementsRecordingServices {
         ]
     
     private var characteristicsObservers: [AnyHashable] = []
-    private var currentBatteryLvl: Int = -5
+    private var currentBatteryLvl: Int = -5 // any negative value below -3 so that notification shows even for low batter levels
     private var batteryBelowTreshold: Bool = false
     
     func record(with device: any BluetoothDevice, completion: @escaping (ABMeasurementStream) -> Void) {
+        currentBatteryLvl = -5
         do {
             let characteristics = device.airbeamType == .airBeamMini ? miniMeasurementsCharacteristics : measurementsCharacteristics
             try characteristics.forEach {
