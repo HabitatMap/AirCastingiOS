@@ -86,7 +86,6 @@ public class SessionEntity: NSManagedObject, Identifiable {
     }
     
     public var sortedStreams: [MeasurementStreamEntity] {
-//        Log.info("MARTA: Sorted streams access!")
         let defaultSortedABStreams = [FStream,
                                       pm1Stream,
                                       pm2Stream,

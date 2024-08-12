@@ -71,17 +71,13 @@ final class CoreDataHook: NSObject, ObservableObject {
     }()
     
     private func refreshSessions() {
-        Log.info("MARTA: refresh sessions")
         let sessionEntities = fetchedResultsController.fetchedObjects ?? []
         let externalSessionEntities = externalSessionsFetchedResultsController.fetchedObjects ?? []
         sessions = sessionEntities + externalSessionEntities
-        Log.info("MARTA: following?: \(self.selectedSection)")
         guard case .following = selectedSection else { return }
         sessions = sessions.sorted {
             ($0.userInterface?.rowOrder ?? 0) > ($1.userInterface?.rowOrder ?? 0)
         }
-//        Log.info("MARTA: Sessions in hook: \(self.sessions)")
-//        Log.info("MARTA: Sessions measurements in hook: \(self.sessions.first?.sortedStreams.first?.measurements)")
     }
     
     private func performFetch(for selectedSection: DashboardSection) throws {

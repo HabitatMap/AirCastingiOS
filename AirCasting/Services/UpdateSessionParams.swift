@@ -106,7 +106,6 @@ final class UpdateSessionParamsService {
 
 private extension UpdateSessionParamsService {
     func fillMeasurement(_ entity: MeasurementEntity, with measurement: FixedSession.MeasurementOutput) {
-        Log.info("MARTA: Filled value for measurement: \(Double(measurement.value))")
         entity.value = Double(measurement.value)
         entity.location = CLLocationCoordinate2D(latitude: measurement.latitude, longitude: measurement.longitude)
         entity.time = measurement.time

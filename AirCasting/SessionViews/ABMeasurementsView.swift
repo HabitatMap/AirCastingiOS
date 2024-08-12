@@ -51,10 +51,7 @@ struct _ABMeasurementsView: View {
     }
     
     private var hasAnyMeasurements: Bool {
-//        Log.info("MARTA: refresh!")
-        Log.info("MARTA: All sorted streams values: \(session.sortedStreams.first?.latestValue)")
-        Log.info("MARTA: Filtered sorted streams: \((session.sortedStreams).filter { $0.latestValue != nil })")
-        return (session.sortedStreams).filter { $0.latestValue != nil }.count > 0
+        (session.sortedStreams).filter { $0.latestValue != nil }.count > 0
     }
     
     var body: some View {

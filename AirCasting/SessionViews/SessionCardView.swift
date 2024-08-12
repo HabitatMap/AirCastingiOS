@@ -81,11 +81,7 @@ struct SessionCardView: View {
         .onAppear {
             selectDefaultStreamIfNeeded(streams: session.sortedStreams)
         }
-        .onChange(of: session) { value in
-            Log.info("MARTA: on change session in view? ")
-        }
         .onChange(of: session.sortedStreams) { newValue in
-            Log.info("MARTA: streams changed in view!")
             selectDefaultStreamIfNeeded(streams: newValue)
         }
         .onChange(of: selectedStream, perform: { [weak graphStatsDataSource, weak mapStatsDataSource] newStream in

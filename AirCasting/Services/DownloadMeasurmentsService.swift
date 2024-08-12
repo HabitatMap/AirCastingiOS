@@ -142,12 +142,8 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
                     let session: SessionEntity = try context.newOrExisting(uuid: output.uuid)
                     
                     if output.streams.first?.value.measurements.count ?? 0 > 0 {
-                        Log.info("MARTA: New measurement!")
                         self.cancelQuickRefresh()
-                        // FIrst time triggering doesn't update UI. Why? Not true??
                     }
-                    // FOr some reason puting this inside if made the API not send any measurements anymore? 
-                    Log.info("MARTA: Update params!")
                     try UpdateSessionParamsService().updateSessionsParams(session: session, output: output)
                     try self.removeOldServiceDefault.removeOldestMeasurements(in: context,
                                                                               from: sessionUUID)
@@ -170,8 +166,6 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
                                                                               from: sessionUUID)
                 }
                 try context.save()
-                //context.reset()
-                Log.info("MARTA: After??!")
             } catch let error as UpdateSessionParamsService.Error {
                 Log.error("Failed to update session params: \(error)")
             } catch let error as DefaultRemoveOldMeasurementsService.Error {
