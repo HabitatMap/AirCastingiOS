@@ -84,6 +84,9 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                                              noteNumber: selectedNote!.number,
                                                              sessionUUID: session.uuid))
         })
+        .onChange(of: selectedStream, perform: { newStream in
+            graphStatsDataSource.stream = newStream
+        })
         .onAppear {
             statsContainerViewModel.adjustForNewData()
             statsContainerViewModel.continuousModeEnabled = true
