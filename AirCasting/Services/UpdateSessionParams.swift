@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreData
 import CoreLocation
 
 final class UpdateSessionParamsService {
@@ -26,7 +27,6 @@ final class UpdateSessionParamsService {
             throw Error.missingContext(output)
         }
         let oldStreams = session.measurementStreams?.array as? [MeasurementStreamEntity] ?? []
-        
         let streamDiff = diff(oldStreams, Array(output.streams.values)) {
             if let id = $0.id {
                 return id == $1.id
