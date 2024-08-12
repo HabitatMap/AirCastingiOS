@@ -16,13 +16,20 @@ final class CoreDataHook: NSObject, ObservableObject {
         super.init()
         observerToken = NotificationCenter.default.addObserver(forName: .NSManagedObjectContextObjectsDidChange, object: context, queue: nil) { [weak self] notification in
             guard let self = self else { return }
-            let updatedIds = (notification.userInfo?["refreshed"] as? Set<NSManagedObject> ?? []).map(\.objectID)
-            let changedInterfaces = self.sessions.compactMap(\.userInterface).filter {
-                updatedIds.contains($0.objectID)
-            }
-            guard changedInterfaces.count > 0 else {
-                return
-            }
+            
+            // The code below was preventing the UI from refreshing when new (first) measurement was inserted into a stream in a fixed session
+            // Commenting it out seems to be logical (as the notification is sent only when something actually changes) and seems to solve the issue
+            // But, as I am not fully confident in this change, I'm leaving the code commented out for now. It woud be good to understand why it was written in the first place.
+//            let updatedIds = (notification.userInfo?["refreshed"] as? Set<NSManagedObject> ?? []).map(\.objectID)
+//            let updatedIds = updateRefreshedIds + updateInsertedIds
+//            
+//            let changedInterfaces = self.sessions.compactMap(\.userInterface).filter {
+//                updatedIds.contains($0.objectID)
+//            }
+//            
+//            guard changedInterfaces.count > 0 else {
+//                return
+//            }
             Log.verbose("User interface changed!")
             self.refreshSessions()
         }

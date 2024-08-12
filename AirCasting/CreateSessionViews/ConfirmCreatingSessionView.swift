@@ -21,6 +21,7 @@ struct ConfirmCreatingSessionView: View {
     @EnvironmentObject var selectedSection: SelectedSection
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @Injected private var locationTracker: LocationTracker
+    @Injected private var downloadMeasurementsService: DownloadMeasurementsService
     @EnvironmentObject private var tabSelection: TabBarSelector
     @Binding var creatingSessionFlowContinues: Bool
 
@@ -157,6 +158,7 @@ extension ConfirmCreatingSessionView {
                         selectedSection.section = .mobileActive
                     } else {
                         selectedSection.section = .following
+                        downloadMeasurementsService.triggerQuickRefresh()
                     }
                     tabSelection.update(to: .dashboard)
 

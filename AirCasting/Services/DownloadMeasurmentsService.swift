@@ -19,13 +19,15 @@ protocol MeasurementUpdatingService {
 
 final class DownloadMeasurementsService: MeasurementUpdatingService {
     @Injected private var persistenceController: PersistenceController
+    private var refreshTimeInSeconds: Double = 60
     private let fixedSessionService = FixedSessionAPIService()
     private var timerSink: Cancellable?
+    private var quickTimerSink: Cancellable?
     private var lastFetchCancellableTask: Cancellable?
     @Injected private var removeOldServiceDefault: RemoveOldMeasurements
     
     func start() {
-        timerSink = Timer.publish(every: 60, on: .current, in: .common).autoconnect().sink { [weak self] tick in
+        timerSink = Timer.publish(every: refreshTimeInSeconds, on: .current, in: .common).autoconnect().sink { [weak self] tick in
             guard !(self?.persistenceController.uiSuspended ?? true) else { return }
             Log.info("Timer triggered for fixed sessions measurements download")
             self?.updateAllSessionsMeasurements()
@@ -36,6 +38,18 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: sessionUUID, lastSync: lastSynced) { [weak self] in
             self?.processServiceResponse($0, for: sessionUUID, isExternal: false, completion: completion)
         }
+    }
+    
+    func triggerQuickRefresh() {
+        quickTimerSink = Timer.publish(every: 10, on: .current, in: .common).autoconnect().sink { [weak self] tick in
+            guard !(self?.persistenceController.uiSuspended ?? true) else { return }
+            Log.info("Quick timer triggered for fixed sessions measurements download")
+            self?.updateAllSessionsMeasurements()
+        }
+    }
+    
+    func cancelQuickRefresh() {
+        quickTimerSink?.cancel()
     }
     
     private func updateMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, isExternal: Bool, completion: @escaping () -> Void) {
@@ -126,9 +140,13 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
                 if !isExternal {
                     Log.info("Processing regular session response")
                     let session: SessionEntity = try context.newOrExisting(uuid: output.uuid)
+                    
+                    if output.streams.first?.value.measurements.count ?? 0 > 0 {
+                        self.cancelQuickRefresh()
+                    }
                     try UpdateSessionParamsService().updateSessionsParams(session: session, output: output)
                     try self.removeOldServiceDefault.removeOldestMeasurements(in: context,
-                                                                       from: sessionUUID)
+                                                                              from: sessionUUID)
                 } else {
                     Log.info("Processing external session response")
                     let session = try context.existingExternalSession(uuid: sessionUUID)
