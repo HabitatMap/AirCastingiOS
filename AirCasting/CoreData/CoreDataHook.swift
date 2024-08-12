@@ -30,7 +30,7 @@ final class CoreDataHook: NSObject, ObservableObject {
 //            guard changedInterfaces.count > 0 else {
 //                return
 //            }
-            Log.verbose("User interface changed!")
+//            Log.verbose("User interface changed!")
             self.refreshSessions()
         }
     }
