@@ -305,7 +305,7 @@ struct InAppAlerts {
         )
     }
     
-    static func secondConfirmationDeletingAccountAlert(action: @escaping (() -> Void)) -> AlertInfo {
+    static func emailConfirmationDeletingAccountAlert(action: @escaping (() -> Void)) -> AlertInfo {
         AlertInfo(
             title: Strings.InAppAlerts.secondDeletingAccountTitle, message: Strings.InAppAlerts.secondDeletingAccountMessage,
             buttons: [

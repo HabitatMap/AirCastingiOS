@@ -62,5 +62,11 @@ private extension SettingsMyAccountView {
         .foregroundColor(.red)
         .padding(.bottom, 20)
         .padding()
+        .alert("Enter your name", isPresented: $viewModel.showingAlert) {
+            TextField("Enter your name", text: $viewModel.confirmationCode)
+            Button("OK", action: viewModel.confirmCode)
+                        } message: {
+                            Text("Xcode will print whatever you type.")
+                        }
     }
 }

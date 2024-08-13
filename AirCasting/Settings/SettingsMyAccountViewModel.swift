@@ -12,6 +12,8 @@ final class SettingsMyAccountViewModel: ObservableObject {
     @InjectedObject private var userState: UserState
     @InjectedObject private var userSettings: UserSettings
     @Published var alert: AlertInfo?
+    @Published var showingAlert = false
+    @Published var confirmationCode = ""
     
     func signOutButtonTapped() {
         guard networkChecker.connectionAvailable else {
@@ -41,23 +43,41 @@ final class SettingsMyAccountViewModel: ObservableObject {
     
     func deleteButtonTapped() {
         showAlert(InAppAlerts.firstConfirmationDeletingAccountAlert {
-            self.showAlert(InAppAlerts.secondConfirmationDeletingAccountAlert {
-                guard self.networkChecker.connectionAvailable else {
-                    self.showAlert(InAppAlerts.unableToConnectBeforeDeletingAccount())
-                    return
-                }
-                self.changeUserState(to: .deletingAccount)
-                self.deleteController.deleteAccount { result in
-                    self.changeUserState(to: .idle)
-                    switch result {
-                    case .success(_): break
-                    case .failure(let error):
-                        self.showAlert(InAppAlerts.failedDeletingAccount())
-                        Log.error("Failed to delete account: \(error)")
+            self.deleteController.sendCode() { result in
+                // Co robi ten user state?
+                // self.changeUserState(to: .idle)
+                switch result {
+                case .success(_):
+                    DispatchQueue.main.async {
+                        self.showingAlert.toggle()
                     }
+                case .failure(let error):
+                    // Inny message?
+                    self.showAlert(InAppAlerts.failedDeletingAccount())
+                    Log.error("Failed to send the code: \(error)")
                 }
-            })
+            }
         })
+    }
+    
+    func confirmCode() {
+        guard self.networkChecker.connectionAvailable else {
+            self.showAlert(InAppAlerts.unableToConnectBeforeDeletingAccount())
+            return
+        }
+        
+        self.changeUserState(to: .deletingAccount)
+        
+        self.deleteController.deleteAccount(confirmationCode: self.confirmationCode) { result in
+            self.changeUserState(to: .idle)
+            switch result {
+            case .success(_): break
+            case .failure(let error):
+                self.showAlert(InAppAlerts.failedDeletingAccount())
+                Log.error("Failed to delete account: \(error)")
+            }
+        }
+        
     }
     
     private func logoutUser() {
