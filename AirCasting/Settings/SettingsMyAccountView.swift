@@ -62,11 +62,18 @@ private extension SettingsMyAccountView {
         .foregroundColor(.red)
         .padding(.bottom, 20)
         .padding()
-        .alert("Enter your name", isPresented: $viewModel.showingAlert) {
-            TextField("Enter your name", text: $viewModel.confirmationCode)
+        .alert(Strings.InAppAlerts.secondDeletingAccountTitle, isPresented: $viewModel.showingAlert) {
+            // Dodać email usera do stringa
+            TextField("Code", text: $viewModel.confirmationCode)
+                .onChange(of: viewModel.confirmationCode) { text in
+                    // nie działa ustawienie, ale sie zatrzymuje on edit
+                    viewModel.confirmationCode = String(text.prefix(4))
+                }
+                .keyboardType(.numberPad)
+            // Dodać cancel
             Button("OK", action: viewModel.confirmCode)
-                        } message: {
-                            Text("Xcode will print whatever you type.")
-                        }
+        } message: {
+            Text(Strings.InAppAlerts.secondDeletingAccountMessage)
+        }
     }
 }
