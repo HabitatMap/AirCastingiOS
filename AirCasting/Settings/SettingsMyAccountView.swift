@@ -9,7 +9,6 @@ struct SettingsMyAccountView<VM: SettingsMyAccountViewModel>: View {
     @ObservedObject var viewModel: VM
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     @State var text = ""
-    @FocusState var isFocused: Bool
 
     var body: some View {
         ZStack {
