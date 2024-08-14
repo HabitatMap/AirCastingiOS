@@ -61,6 +61,7 @@ final class SettingsMyAccountViewModel: ObservableObject {
     }
     
     func confirmCode() {
+        // sprawdzić czy kod ma dokładnie 4 cyfry
         guard self.networkChecker.connectionAvailable else {
             self.showAlert(InAppAlerts.unableToConnectBeforeDeletingAccount())
             return
@@ -73,6 +74,7 @@ final class SettingsMyAccountViewModel: ObservableObject {
             switch result {
             case .success(_): break
             case .failure(let error):
+                // sparwdzić czy error działa ze złym kodem
                 self.showAlert(InAppAlerts.failedDeletingAccount())
                 Log.error("Failed to delete account: \(error)")
             }

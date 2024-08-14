@@ -8,6 +8,8 @@ import Resolver
 struct SettingsMyAccountView<VM: SettingsMyAccountViewModel>: View {
     @ObservedObject var viewModel: VM
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
+    @State var text = ""
+    @FocusState var isFocused: Bool
 
     var body: some View {
         ZStack {
@@ -64,16 +66,19 @@ private extension SettingsMyAccountView {
         .padding()
         .alert(Strings.InAppAlerts.secondDeletingAccountTitle, isPresented: $viewModel.showingAlert) {
             // Dodać email usera do stringa
-            TextField("Code", text: $viewModel.confirmationCode)
-                .onChange(of: viewModel.confirmationCode) { text in
-                    // nie działa ustawienie, ale sie zatrzymuje on edit
-                    viewModel.confirmationCode = String(text.prefix(4))
-                }
+            TextField("Code", text: $text)
                 .keyboardType(.numberPad)
-            // Dodać cancel
+                .onChange(of: text) { newValue in
+                    text = String(newValue.prefix(4))
+                        viewModel.confirmationCode = text
+                    }
             Button("OK", action: viewModel.confirmCode)
+            Button("Cancel", role: .cancel, action: {} )
+
         } message: {
-            Text(Strings.InAppAlerts.secondDeletingAccountMessage)
+            Text(Strings.InAppAlerts.secondDeletingAccountMessageFirst +
+                 "\(KeychainStorage(service: Bundle.main.bundleIdentifier!).getProfileData(for: .email))" +
+                 Strings.InAppAlerts.secondDeletingAccountMessageSecond)
         }
     }
 }
