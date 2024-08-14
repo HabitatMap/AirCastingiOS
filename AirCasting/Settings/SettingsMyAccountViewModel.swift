@@ -43,25 +43,23 @@ final class SettingsMyAccountViewModel: ObservableObject {
     
     func deleteButtonTapped() {
         showAlert(InAppAlerts.firstConfirmationDeletingAccountAlert {
+            self.changeUserState(to: .deletingAccount)
             self.deleteController.sendCode() { result in
-                // Co robi ten user state?
-                // self.changeUserState(to: .idle)
+                self.changeUserState(to: .idle)
                 switch result {
                 case .success(_):
                     DispatchQueue.main.async {
                         self.showingAlert.toggle()
                     }
                 case .failure(let error):
-                    // Inny message?
                     self.showAlert(InAppAlerts.failedDeletingAccount())
-                    Log.error("Failed to send the code: \(error)")
+                    Log.error("Failed to send the confirmation email, account not deleted: \(error)")
                 }
             }
         })
     }
     
     func confirmCode() {
-        // sprawdzić czy kod ma dokładnie 4 cyfry
         guard self.networkChecker.connectionAvailable else {
             self.showAlert(InAppAlerts.unableToConnectBeforeDeletingAccount())
             return
@@ -74,7 +72,6 @@ final class SettingsMyAccountViewModel: ObservableObject {
             switch result {
             case .success(_): break
             case .failure(let error):
-                // sparwdzić czy error działa ze złym kodem
                 self.showAlert(InAppAlerts.failedDeletingAccount())
                 Log.error("Failed to delete account: \(error)")
             }

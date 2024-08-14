@@ -65,7 +65,6 @@ private extension SettingsMyAccountView {
         .padding(.bottom, 20)
         .padding()
         .alert(Strings.InAppAlerts.secondDeletingAccountTitle, isPresented: $viewModel.showingAlert) {
-            // Dodać email usera do stringa
             TextField("Code", text: $text)
                 .keyboardType(.numberPad)
                 .onChange(of: text) { newValue in
