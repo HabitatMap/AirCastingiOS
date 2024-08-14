@@ -8,6 +8,7 @@ import Resolver
 struct SettingsMyAccountView<VM: SettingsMyAccountViewModel>: View {
     @ObservedObject var viewModel: VM
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
+    @State var text = ""
 
     var body: some View {
         ZStack {
@@ -62,5 +63,20 @@ private extension SettingsMyAccountView {
         .foregroundColor(.red)
         .padding(.bottom, 20)
         .padding()
+        .alert(Strings.InAppAlerts.secondDeletingAccountTitle, isPresented: $viewModel.showingAlert) {
+            TextField("Code", text: $text)
+                .keyboardType(.numberPad)
+                .onChange(of: text) { newValue in
+                    text = String(newValue.prefix(4))
+                        viewModel.confirmationCode = text
+                    }
+            Button("OK", action: viewModel.confirmCode)
+            Button("Cancel", role: .cancel, action: {} )
+
+        } message: {
+            Text(Strings.InAppAlerts.secondDeletingAccountMessageFirst +
+                 "\(KeychainStorage(service: Bundle.main.bundleIdentifier!).getProfileData(for: .email))" +
+                 Strings.InAppAlerts.secondDeletingAccountMessageSecond)
+        }
     }
 }

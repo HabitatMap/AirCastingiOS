@@ -1022,7 +1022,9 @@ struct Strings {
                                                                           comment: "")
         static let secondDeletingAccountTitle: String = NSLocalizedString("Delete confirmation",
                                                                           comment: "")
-        static let secondDeletingAccountMessage: String = NSLocalizedString("You will lose all your sessions and data. Are you sure to delete the account?",
+        static let secondDeletingAccountMessageFirst: String = NSLocalizedString("We have sent an email to\n",
+                                                                            comment: "")
+        static let secondDeletingAccountMessageSecond: String = NSLocalizedString("\nwith a verification code. To complete account deletion, enter the 4-digit verification code below. This action will delete all data associated with the account and cannot be reversed",
                                                                             comment: "")
         static let secondConfirmingDeletingButton: String = NSLocalizedString("Delete",
                                                                               comment: "")
