@@ -10,6 +10,7 @@ class UserSettings: ObservableObject {
     private let crowdMapKey = Constants.UserDefaultsKeys.crowdMap
     private let locationlessKey = Constants.UserDefaultsKeys.disableMapping
     private let keepScreenOnKey = Constants.UserDefaultsKeys.keepScreenOn
+    private let darkThemeKey = Constants.UserDefaultsKeys.darkTheme
     private let convertToCelsiusKey = Constants.UserDefaultsKeys.convertToCelsius
     private let satteliteMapKey = Constants.UserDefaultsKeys.satelliteMapKey
     private let twentyFourHourFormatKey = Constants.UserDefaultsKeys.twentyFourHoursFormatKey
@@ -35,6 +36,18 @@ class UserSettings: ObservableObject {
             userDefaults.setValue(newValue, forKey: keepScreenOnKey)
             UIApplication.shared.isIdleTimerDisabled = userDefaults.bool(forKey: keepScreenOnKey)
             Log.info("Changed keepScreenOn setting to \(self.keepScreenOn ? "ON" : "OFF")")
+            objectWillChange.send()
+        }
+    }
+    
+    var darkTheme: Bool {
+        get {
+            userDefaults.bool(forKey: darkThemeKey)
+        }
+        set {
+            userDefaults.setValue(newValue, forKey: darkThemeKey)
+            UIApplication.shared.windows.filter {$0.isKeyWindow}.first?.overrideUserInterfaceStyle = newValue ? .dark : .light
+            Log.info("Changed darkTheme setting to \(self.darkTheme ? "ON" : "OFF")")
             objectWillChange.send()
         }
     }

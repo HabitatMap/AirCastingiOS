@@ -145,6 +145,7 @@ struct SettingsView: View {
                 Spacer()
                 dormantSessionsAlertDescription
             }
+            darkThemeSwitch
             keepScreenOnSwitch
             satelliteMapSwitch
             twentyFourHourFormatSwitch
@@ -217,6 +218,11 @@ struct SettingsView: View {
     private var keepScreenOnSwitch: some View {
         settingSwitch(toogle: $userSettings.keepScreenOn,
                       label: Strings.Settings.keepScreenTitle)
+    }
+    
+    private var darkThemeSwitch: some View {
+        settingSwitch(toogle: $userSettings.darkTheme,
+                      label: Strings.Settings.useDarkTheme)
     }
     
     private var crowdMapSwitch: some View {

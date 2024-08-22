@@ -20,6 +20,7 @@ struct AirCastingApp: App {
     @Injected private var persistenceController: PersistenceController
     @Injected private var microphone: Microphone
     @Injected private var activeBluetoothSessionProvider: ActiveMobileSessionProvidingService
+    @InjectedObject var userSettings: UserSettings
     private let appBecameActive = PassthroughSubject<Void, Never>()
     @ObservedObject private var offlineMessageViewModel: OfflineMessageViewModel
     private var cancellables: [AnyCancellable] = []
@@ -36,6 +37,7 @@ struct AirCastingApp: App {
     var body: some Scene {
         WindowGroup {
             RootAppView()
+                .preferredColorScheme($userSettings.darkTheme.wrappedValue ? .dark : .light)
                 .fullScreenCover(isPresented: $shouldProtect, content: {
                     ProtectedScreen()
                 })

@@ -120,6 +120,7 @@
 		33F96EAC293F86F000FE7F0A /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F96EAB293F86F000FE7F0A /* Session.swift */; };
 		33F96EAE294090C500FE7F0A /* MobileSessionFinishingStorageMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F96EAD294090C500FE7F0A /* MobileSessionFinishingStorageMock.swift */; };
 		33FD502227A144B300162384 /* SingleMeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD502127A144B300162384 /* SingleMeasurementView.swift */; };
+		40EBAC862C739B1500B38459 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40EBAC852C739B1500B38459 /* SceneDelegate.swift */; };
 		4F15548B263C44AF00FF3208 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F15548A263C44AF00FF3208 /* Session.swift */; };
 		4F15548F263C819C00FF3208 /* MeasurementEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F15548E263C819C00FF3208 /* MeasurementEntity.swift */; };
 		4F1D57D926454E3700F250AC /* MeasurementStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F1D57D826454E3700F250AC /* MeasurementStream.swift */; };
@@ -721,6 +722,7 @@
 		33F96EAD294090C500FE7F0A /* MobileSessionFinishingStorageMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSessionFinishingStorageMock.swift; sourceTree = "<group>"; };
 		33FD502127A144B300162384 /* SingleMeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleMeasurementView.swift; sourceTree = "<group>"; };
 		3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirCastingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		40EBAC852C739B1500B38459 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		4327910762891E7B1AE9102E /* Pods-AirCastingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCastingTests.debug.xcconfig"; path = "Target Support Files/Pods-AirCastingTests/Pods-AirCastingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		4F15548A263C44AF00FF3208 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		4F15548E263C819C00FF3208 /* MeasurementEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementEntity.swift; sourceTree = "<group>"; };
@@ -1749,6 +1751,7 @@
 		AC7EB36925A6FB3A00A7F2AF = {
 			isa = PBXGroup;
 			children = (
+				40EBAC852C739B1500B38459 /* SceneDelegate.swift */,
 				B35E04C2278C931700227D8D /* AppDelegate+Injection.swift */,
 				B367A58D274E9EAA004C605B /* AppDelegate.swift */,
 				B3EFAB1D26F1F9DB00E88141 /* FixedSessionFaker.swift */,
@@ -3439,6 +3442,7 @@
 				DD49FB6F27904119004A1CA8 /* DatabaseNote.swift in Sources */,
 				B392DC332755F944002F0145 /* AppConfigurationView.swift in Sources */,
 				DD2E8BEB2685E13600439F8B /* BackendURLValidator.swift in Sources */,
+				40EBAC862C739B1500B38459 /* SceneDelegate.swift in Sources */,
 				AC25C6D82817DA720091C714 /* RemoveDataController.swift in Sources */,
 				DDCE5D3626A1F79F0033C211 /* UserSettings.swift in Sources */,
 				DDD24D9726A8569400D4A327 /* ForgotPasswordController.swift in Sources */,
@@ -4061,12 +4065,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 12;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = LXAGXH6CF6;
+				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -4078,7 +4080,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "AirCasting Ad hoc distribution";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -4091,12 +4092,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -4107,8 +4106,7 @@
 				MARKETING_VERSION = 1.16.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "HabitatMap AppStore";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "AirCasting Ad hoc distribution";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -4182,12 +4180,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -4198,8 +4194,7 @@
 				MARKETING_VERSION = 1.16.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "AirCasting Ad hoc distribution";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "AirCasting Ad hoc distribution";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
