@@ -55,6 +55,8 @@ struct Strings {
                                                                   comment: "")
         static let about: String = NSLocalizedString("About AirCasting",
                                                      comment: "")
+        static let useDarkTheme = NSLocalizedString("Use dark theme",
+                                                       comment: "")
         static let keepScreenTitle = NSLocalizedString("Keep screen on",
                                                        comment: "")
         static let clearSDTitle = NSLocalizedString("Clear AirBeam data storage",
