@@ -53,7 +53,6 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
         referenceLock.lock(); defer { referenceLock.unlock() }
         if locationStartReference == 0 {
             requestAuthorization()
-            locationManager.startUpdatingLocation()
         }
         locationStartReference += 1
         Log.info("Started location tracking (refcount: \(self.locationStartReference))")
@@ -107,6 +106,7 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
             locationState = .granted
+            locationManager.startUpdatingLocation()
         case .denied, .notDetermined, .restricted:
             locationState = .denied
         @unknown default:
