@@ -53,6 +53,7 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
         referenceLock.lock(); defer { referenceLock.unlock() }
         if locationStartReference == 0 {
             requestAuthorization()
+            locationManager.startUpdatingLocation()
         }
         locationStartReference += 1
         Log.info("Started location tracking (refcount: \(self.locationStartReference))")
