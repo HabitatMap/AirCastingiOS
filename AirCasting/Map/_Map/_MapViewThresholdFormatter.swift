@@ -25,11 +25,11 @@ class _MapViewThresholdFormatter {
         let veryHigh = threshold.thresholdVeryHigh
         
         switch value {
-        case veryLow ..< low:
+        case veryLow ... low:
             return UIColor.aircastingGreen
-        case low ..< medium:
+        case low ... medium:
             return UIColor.aircastingYellow
-        case medium ..< high:
+        case medium ... high:
             return UIColor.aircastingOrange
         case high ... veryHigh:
             return UIColor.aircastingRed
