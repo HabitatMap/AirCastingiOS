@@ -90,6 +90,10 @@ struct SessionCardView: View {
             mapStatsDataSource?.stream = newStream
             mapStatsDataSource?.dataSource.stream = newStream
         })
+        .onChange(of: selectedStream, perform: { newStream in
+            mapStatsDataSource.stream = newStream
+            graphStatsDataSource.stream = newStream
+        })
         .onChange(of: userSelection, perform: { selection in
             selectedStream = selection
             uiState.changeSelectedStream(sessionUUID: session.uuid, newStream: selection?.sensorName ?? "")
@@ -224,7 +228,7 @@ private extension SessionCardView {
         var computeStatisticsInterval: Double? = nil
 
         if session.isActive || session.isNew {
-            computeStatisticsInterval = 1
+            computeStatisticsInterval = 0.25
         } else if session.isFollowed {
             computeStatisticsInterval = 60
         }
