@@ -224,7 +224,7 @@ private extension SessionCardView {
         var computeStatisticsInterval: Double? = nil
 
         if session.isActive || session.isNew {
-            computeStatisticsInterval = 1
+            computeStatisticsInterval = 0.25
         } else if session.isFollowed {
             computeStatisticsInterval = 60
         }
@@ -242,6 +242,7 @@ private extension SessionCardView {
          let mapView = SessionMapView(session: session,
                                   thresholds: .init(value: thresholds),
                                   statsContainerViewModel: _mapStatsViewModel,
+                                  statsDataSource: mapStatsDataSource.dataSource,
                                   showLoadingIndicator: $showLoadingIndicator,
                                   selectedStream: $selectedStream)
             .foregroundColor(.aircastingDarkGray)

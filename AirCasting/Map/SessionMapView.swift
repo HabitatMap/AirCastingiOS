@@ -31,6 +31,7 @@ struct SessionMapView: View {
     @State private var showThresholdsMenu = false
     @Injected private var locationTracker: LocationTracker
     @StateObject private var heatmapContainer = HeatmapContainer()
+    let mapStatsDataSource: MapStatsDataSource
     
     enum SessionMapSessionType {
         case fixed
@@ -41,10 +42,12 @@ struct SessionMapView: View {
     init(session: SessionEntity,
          thresholds: ABMeasurementsViewThreshold,
          statsContainerViewModel: StateObject<StatisticsContainerViewModel>,
+         statsDataSource: MapStatsDataSource,
          showLoadingIndicator: Binding<Bool>,
          selectedStream: Binding<MeasurementStreamEntity?>) {
         self.session = session
         self.thresholds = thresholds
+        self.mapStatsDataSource = statsDataSource
         self._statsContainerViewModel = statsContainerViewModel
         self._mapNotesVM = .init(wrappedValue: .init(sessionUUID: session.uuid))
         self._showLoadingIndicator = showLoadingIndicator
@@ -150,6 +153,9 @@ struct SessionMapView: View {
                                                              sessionUUID: session.uuid))
         })
         .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: selectedStream, perform: { newStream in
+            mapStatsDataSource.stream = newStream
+        })
         .onAppear {
             statsContainerViewModel.adjustForNewData()
             statsContainerViewModel.continuousModeEnabled = true
