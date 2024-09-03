@@ -90,10 +90,6 @@ struct SessionCardView: View {
             mapStatsDataSource?.stream = newStream
             mapStatsDataSource?.dataSource.stream = newStream
         })
-        .onChange(of: selectedStream, perform: { newStream in
-            mapStatsDataSource.stream = newStream
-            graphStatsDataSource.stream = newStream
-        })
         .onChange(of: userSelection, perform: { selection in
             selectedStream = selection
             uiState.changeSelectedStream(sessionUUID: session.uuid, newStream: selection?.sensorName ?? "")
@@ -246,6 +242,7 @@ private extension SessionCardView {
          let mapView = SessionMapView(session: session,
                                   thresholds: .init(value: thresholds),
                                   statsContainerViewModel: _mapStatsViewModel,
+                                  statsDataSource: mapStatsDataSource.dataSource,
                                   showLoadingIndicator: $showLoadingIndicator,
                                   selectedStream: $selectedStream)
             .foregroundColor(.aircastingDarkGray)
