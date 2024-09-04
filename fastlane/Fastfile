@@ -174,7 +174,11 @@ platform :ios do
 
    private_lane :test_flight do
       cocoapods
-      build_app(workspace: "AirCasting.xcworkspace", scheme: "AirCasting", export_method: "app-store", output_directory: "./build_ipa/testflight", configuration: "Release")
+      build_app(workspace: "AirCasting.xcworkspace", scheme: "AirCasting", export_method: "app-store", output_directory: "./build_ipa/testflight", configuration: "Release", export_options: {
+            provisioningProfiles: {
+               "org.habitatmap.AirCasting": "HabitatMap AppStore"
+            }
+         })
       upload_to_testflight(
          api_key: get_appstore_api_key
       )

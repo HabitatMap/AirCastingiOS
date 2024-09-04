@@ -23,6 +23,14 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 AirCastingApp
 
+### ios release
+
+```sh
+[bundle exec] fastlane ios release
+```
+
+
+
 ### ios release_update
 
 ```sh
@@ -43,14 +51,6 @@ AirCastingApp
 
 ```sh
 [bundle exec] fastlane ios hotfix_release
-```
-
-
-
-### ios release
-
-```sh
-[bundle exec] fastlane ios release
 ```
 
 
