@@ -66,7 +66,7 @@ platform :ios do
          test_flight
          build_app(workspace: "AirCasting.xcworkspace", scheme: "AirCasting", export_method: "ad-hoc", silent: "true", output_directory: "./build_ipa/#{version}b#{build}(RC)", configuration: "Release", export_options: {
             provisioningProfiles: {
-               "org.habitatmap.AirCasting": "AirCasting Ad hoc distribution"
+               "org.habitatmap.AirCasting": "HabitatMap AppStore"
             }
          })
          firebase_app_distribution(
@@ -107,7 +107,7 @@ platform :ios do
          test_flight
          build_app(workspace: "AirCasting.xcworkspace", scheme: "AirCasting", export_method: "ad-hoc", silent: "true", output_directory: "./build_ipa/#{version}b#{build}(HF)", configuration: "Release", export_options: {
             provisioningProfiles: {
-               "org.habitatmap.AirCasting": "AirCasting Ad hoc distribution"
+               "org.habitatmap.AirCasting": "HabitatMap AppStore"
             }
          })
          firebase_app_distribution(
@@ -131,7 +131,7 @@ platform :ios do
          test_flight
          build_app(workspace: "AirCasting.xcworkspace", scheme: "AirCasting", export_method: "ad-hoc", silent: "true", output_directory: "./build_ipa/#{version}b#{build}(RC)", configuration: "Release", export_options: {
             provisioningProfiles: {
-               "org.habitatmap.AirCasting": "AirCasting Ad hoc distribution"
+               "org.habitatmap.AirCasting": "HabitatMap AppStore"
             }
          })
          firebase_app_distribution(
