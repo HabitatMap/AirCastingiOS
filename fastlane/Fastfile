@@ -52,6 +52,36 @@ platform :ios do
       end
    end
 
+   lane :release do
+      ensure_git_status_clean
+      increment_build_number
+      version = get_version_number
+      ensure_git_branch(branch: "develop")
+      build = get_build_number
+      begin
+         test_flight
+         build_app(workspace: "AirCasting.xcworkspace", scheme: "AirCasting", export_method: "ad-hoc", silent: "true", output_directory: "./build_ipa/#{version}b#{build}(RC)", configuration: "Release", export_options: {
+            provisioningProfiles: {
+               "org.habitatmap.AirCasting": "AirCasting Ad hoc distribution"
+            }
+         })
+         firebase_app_distribution(
+            app: "1:51291628191:ios:b090a81539b7acbb48b8aa",
+            groups: "always_testers",
+            release_notes: "Release Candidate #{version} build #{build}"
+         )
+         download_dsyms(app_identifier: "org.habitatmap.AirCasting", version: version, build_number: build, api_key: get_appstore_api_key)
+         upload_symbols_to_crashlytics(gsp_path: "./GoogleService-Info.plist",
+                                       app_id: "1:51291628191:ios:b090a81539b7acbb48b8aa",
+                                       binary_path: "./upload-symbols")
+         sh("git checkout -b release/#{version}")
+         sh("git push -u origin release/#{version}")
+      rescue => ex
+         reset_git_repo(skip_clean: true)
+         raise
+      end
+   end
+
    lane :release_update do
       ensure_git_status_clean
       version = get_version_number
@@ -118,34 +148,7 @@ platform :ios do
       end
    end
 
-   lane :release do
-      ensure_git_status_clean
-      version = get_version_number
-      ensure_git_branch(branch: "develop")
-      build = get_build_number
-      begin
-         test_flight
-         build_app(workspace: "AirCasting.xcworkspace", scheme: "AirCasting", export_method: "ad-hoc", silent: "true", output_directory: "./build_ipa/#{version}b#{build}(RC)", configuration: "Release", export_options: {
-            provisioningProfiles: {
-               "org.habitatmap.AirCasting": "AirCasting Ad hoc distribution"
-            }
-         })
-         firebase_app_distribution(
-            app: "1:51291628191:ios:b090a81539b7acbb48b8aa",
-            groups: "always_testers",
-            release_notes: "Release Candidate #{version} build #{build}"
-         )
-         download_dsyms(app_identifier: "org.habitatmap.AirCasting", version: version, build_number: build, api_key: get_appstore_api_key)
-         upload_symbols_to_crashlytics(gsp_path: "./GoogleService-Info.plist",
-                                       app_id: "1:51291628191:ios:b090a81539b7acbb48b8aa",
-                                       binary_path: "./upload-symbols")
-         sh("git checkout -b release/#{version}")
-         sh("git push -u origin release/#{version}")
-      rescue => ex
-         reset_git_repo(skip_clean: true)
-         raise
-      end
-   end
+
 
    lane :tests do
       run_tests(scheme: "AirCasting")
