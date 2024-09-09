@@ -45,6 +45,8 @@ struct ChartMeasurementsFilterDefault: ChartMeasurementsFilter {
     }
     
     private func getEntriesSensor(using sensor: String) -> EntriesSensor {
+        if (sensor == "AirBeamMini") { return .AirBeam }
+            
         switch sensor {
         case EntriesSensor.Government.rawValue: return .Government
         case EntriesSensor.AirBeam.rawValue: return .AirBeam
