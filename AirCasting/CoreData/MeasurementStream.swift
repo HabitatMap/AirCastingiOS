@@ -83,7 +83,7 @@ extension MeasurementStream {
             thresholdVeryHigh = 150
             thresholdHigh = 55
             thresholdMedium = 35
-            thresholdLow = 12
+            thresholdLow = 9
             thresholdVeryLow = 0
         case .ab3_pm2_5:
             id = nil
@@ -96,7 +96,7 @@ extension MeasurementStream {
             thresholdVeryHigh = 150
             thresholdHigh = 55
             thresholdMedium = 35
-            thresholdLow = 12
+            thresholdLow = 9
             thresholdVeryLow = 0
         case .ab3_pm10:
             id = nil
@@ -122,7 +122,7 @@ extension MeasurementStream {
             thresholdVeryHigh = 150
             thresholdHigh = 55
             thresholdMedium = 35
-            thresholdLow = 12
+            thresholdLow = 9
             thresholdVeryLow = 0
         case .mini_pm2_5:
             id = nil
@@ -135,7 +135,7 @@ extension MeasurementStream {
             thresholdVeryHigh = 150
             thresholdHigh = 55
             thresholdMedium = 35
-            thresholdLow = 12
+            thresholdLow = 9
             thresholdVeryLow = 0
         }
     }
