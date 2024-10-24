@@ -71,7 +71,7 @@ private extension EditNoteView {
             viewModel.deleteTapped()
         } label: {
             Text(Strings.EditNoteView.deleteButton)
-                .bold()
+                .font(Fonts.muliBoldHeading1)
         }
         .buttonStyle(BlueButtonStyle())
     }
