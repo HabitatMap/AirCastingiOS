@@ -916,14 +916,14 @@ struct Strings {
                                                      comment: "")
         static let message: String = NSLocalizedString("The data from your AirBeam was synced successfully and internal storage was cleared",
                                                        comment: "")
-        static let SDClearTitle: String = NSLocalizedString("SD card cleared",
+        static let SDClearTitle: String = NSLocalizedString("Data cleared",
                                                             comment: "")
-        static let SDClearMessage: String = NSLocalizedString("SD inside your AirBeam was cleared sucesfully",
+        static let SDClearMessage: String = NSLocalizedString("Storage inside your AirBeam was cleared sucesfully",
                                                               comment: "")
     }
     
     enum ClearingSDCardView {
-        static let title: String = NSLocalizedString("Clearing SD card",
+        static let title: String = NSLocalizedString("Clearing data storage",
                                                      comment: "")
         static let message: String = NSLocalizedString("This should take less then 10 seconds.",
                                                        comment: "")
