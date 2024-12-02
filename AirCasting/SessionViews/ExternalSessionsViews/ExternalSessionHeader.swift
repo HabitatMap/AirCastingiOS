@@ -9,6 +9,7 @@ struct ExternalSessionHeader: View {
     @ObservedObject var thresholds: ABMeasurementsViewThreshold
     @Binding var selectedStream: MeasurementStreamEntity?
     @Binding var isCollapsed: Bool
+    @State var showThresholdAlertModal = false
     let expandingAction: (() -> Void)?
     var chevronIndicator: String {
         isCollapsed ? "chevron.down" : "chevron.up"
@@ -21,6 +22,9 @@ struct ExternalSessionHeader: View {
     var body: some View {
         VStack {
             sessionHeader
+                .sheet(isPresented: $showThresholdAlertModal) {
+                    thresholdAlertSheet
+                }
             measurements
         }
     }
@@ -33,6 +37,8 @@ private extension ExternalSessionHeader {
             HStack {
                 dateAndTime
                     .foregroundColor(Color.aircastingTimeGray)
+                Spacer()
+                actionsMenu
             }
             nameLabel
         }
@@ -40,8 +46,33 @@ private extension ExternalSessionHeader {
         .foregroundColor(.aircastingGray)
     }
 
+    var thresholdAlertSheet: some View {
+        ThresholdAlertSheet(session: session, isActive: $showThresholdAlertModal)
+    }
+
     var dateAndTime: some View {
         adaptTimeAndDate()
+    }
+
+    var actionsMenu: some View {
+        Menu {
+            actionsMenuThresholdAlertButton
+        } label: {
+            ZStack(alignment: .trailing) {
+                EditButtonView()
+                Rectangle()
+                    .frame(width: 50, height: 35, alignment: .trailing)
+                    .opacity(0.0001)
+            }
+        }
+    }
+
+    var actionsMenuThresholdAlertButton: some View {
+        Button {
+            showThresholdAlertModal.toggle()
+        } label: {
+            Label(Strings.SessionHeaderView.thresholdAlertsButton, systemImage: "exclamationmark.triangle")
+        }
     }
 
     var nameLabel: some View {
