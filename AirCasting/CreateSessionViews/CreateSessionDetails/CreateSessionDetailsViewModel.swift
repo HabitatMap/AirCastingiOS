@@ -97,6 +97,10 @@ class CreateSessionDetailsViewModel: ObservableObject {
         isWiFi && wifiSSID.isEmpty && wifiPassword.isEmpty
     }
     
+    func isMiniSession(sessionContext: CreateSessionContext) -> Bool {
+        sessionContext.device?.name?.starts(with: "AirBeamMini") ?? false
+    }
+    
     func connectToOtherNetworkClick() {
         isSSIDTextfieldDisplayed = true
     }
