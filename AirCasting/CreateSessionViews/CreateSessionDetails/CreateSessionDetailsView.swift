@@ -70,7 +70,11 @@ private extension CreateSessionDetailsView {
     var fixedSessionDetails: some View {
         VStack(alignment: .leading, spacing: 25) {
             placementPicker
-            transmissionTypePicker
+            
+            if !viewModel.isMiniSession(sessionContext: sessionContext) {
+                transmissionTypePicker
+            }
+            
             if viewModel.shouldShowCompleteCredentials() {
                 wifiNameAndPasswordEntry
             } else if viewModel.isWiFi {
