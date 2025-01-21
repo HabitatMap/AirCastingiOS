@@ -6,17 +6,17 @@ import AirCastingStyling
 
 struct CompleteScreen: View {
     @StateObject var viewModel: CompleteScreenViewModel
+    @Environment(\.dismiss) var dismiss
     
     init(session: PartialExternalSession) {
         _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session))
     }
     
     var body: some View {
-       // Text("ddd")
         sessionCard
             .overlay(
                 Button(action: {
-                    //viewModel.xMarkTapped()
+                    dismiss()
                 }, label: {
                     Image(systemName: "xmark")
                         .foregroundColor(.aircastingDarkGray)
