@@ -163,10 +163,6 @@ class CompleteScreenViewModel: ObservableObject {
         }
     }
     
-    private func dismissView() {
-        //exitRoute()
-    }
-    
     private func refresh() {
         streamsDownloader.downloadStreams(with: session.id) { result in
             switch result {
@@ -247,7 +243,7 @@ class CompleteScreenViewModel: ObservableObject {
     
     private func showAlert() {
         DispatchQueue.main.async {
-            self.alert = InAppAlerts.failedSessionDownloadAlert(dismiss: self.dismissView)
+            self.alert = InAppAlerts.failedSessionDownloadAlert(dismiss: {} )
         }
     }
     

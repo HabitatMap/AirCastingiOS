@@ -20,7 +20,7 @@ struct BottomCardView: View {
     var sessionCard: some View {
         Button {
             sheetIsPresented = true
-            //onMarkerChangeAction?(viewModel.dataModel.id)
+            onMarkerChangeAction?(viewModel.dataModel.id)
         } label: {
             VStack(alignment: .leading, spacing: 5) {
                 Text(viewModel.dataModel.title)
