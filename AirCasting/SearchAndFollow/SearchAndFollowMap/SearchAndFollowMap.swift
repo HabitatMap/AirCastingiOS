@@ -47,7 +47,6 @@ struct SearchAndFollowMap: UIViewRepresentable {
     }
     
     func makeUIView(context: Context) -> GMSMapView {
-        GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
         context.coordinator.startingPointHolder = self.startingPoint
         let startingPoint = setStartingPoint(using: startingPoint)
         let mapView = GMSMapView.map(withFrame: .zero,

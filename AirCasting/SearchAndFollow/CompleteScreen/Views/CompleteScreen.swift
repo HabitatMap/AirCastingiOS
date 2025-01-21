@@ -6,16 +6,17 @@ import AirCastingStyling
 
 struct CompleteScreen: View {
     @StateObject var viewModel: CompleteScreenViewModel
+    @Environment(\.dismiss) var dismiss
     
-    init(session: PartialExternalSession, exitRoute: @escaping () -> Void) {
-        _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session, exitRoute: exitRoute))
+    init(session: PartialExternalSession) {
+        _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session))
     }
     
     var body: some View {
         sessionCard
             .overlay(
                 Button(action: {
-                    viewModel.xMarkTapped()
+                    dismiss()
                 }, label: {
                     Image(systemName: "xmark")
                         .foregroundColor(.aircastingDarkGray)
@@ -175,7 +176,7 @@ private extension CompleteScreen {
 #if DEBUG
 struct CompleteScreen_Previews: PreviewProvider {
     static var previews: some View {
-        CompleteScreen(session: .mock, exitRoute: { })
+        CompleteScreen(session: .mock)
     }
 }
 #endif
