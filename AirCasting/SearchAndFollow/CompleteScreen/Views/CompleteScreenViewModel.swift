@@ -50,7 +50,6 @@ class CompleteScreenViewModel: ObservableObject {
     let sessionStartTime: Date
     let sessionEndTime: Date
     let sensorType: String
-    let exitRoute: () -> Void
     
     private var isOwnSession: Bool { userAuthenticationSession.user?.username == session.provider }
     private var session: PartialExternalSession
@@ -63,7 +62,7 @@ class CompleteScreenViewModel: ObservableObject {
     @Injected private var userAuthenticationSession: UserAuthenticationSession
     @Injected private var userSettings: UserSettings
     
-    init(session: PartialExternalSession, exitRoute: @escaping () -> Void) {
+    init(session: PartialExternalSession) {
         self.session = session
         sessionLongitude = session.longitude
         sessionLatitude = session.latitude
@@ -71,7 +70,6 @@ class CompleteScreenViewModel: ObservableObject {
         sessionStartTime = session.startTime
         sessionEndTime = session.endTime
         sensorType = session.provider
-        self.exitRoute = exitRoute
         refreshCompleteButtonText()
         reloadData()
         isSessionFollowed = externalSessionsStore.doesSessionExist(uuid: session.uuid)
@@ -95,10 +93,6 @@ class CompleteScreenViewModel: ObservableObject {
             assignValues(with: stream)
             generateChartEntires(with: stream)
         }
-    }
-    
-    func xMarkTapped() {
-        exitRoute()
     }
     
     func followButtonPressed() {
@@ -170,7 +164,7 @@ class CompleteScreenViewModel: ObservableObject {
     }
     
     private func dismissView() {
-        exitRoute()
+        //exitRoute()
     }
     
     private func refresh() {

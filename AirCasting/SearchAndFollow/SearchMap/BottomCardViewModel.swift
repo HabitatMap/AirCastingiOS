@@ -6,20 +6,12 @@ import SwiftUI
 import Resolver
 
 class BottomCardViewModel: ObservableObject {
-    @Published private var isModalScreenPresented = false
     let dataModel: BottomCardModel
     let session: PartialExternalSession
     
     init(session: PartialExternalSession) {
         dataModel = .init(id: session.id, title: session.name, startTime: session.startTime, endTime: session.endTime)
         self.session = session
-    }
-    
-    func getIsModalScreenPresented() -> Bool { isModalScreenPresented }
-    func setIsModalScreenPresented(using v: Bool) { DispatchQueue.main.async { self.isModalScreenPresented = v } }
-    
-    func sessionCardTapped() {
-        setIsModalScreenPresented(using: true)
     }
     
     func adaptTimeAndDate() -> String {
@@ -31,8 +23,6 @@ class BottomCardViewModel: ObservableObject {
     }
     
     func initCompleteScreen() -> CompleteScreen {
-        CompleteScreen(session: session) { [weak self] in
-            self?.isModalScreenPresented = false
-        }
+        CompleteScreen(session: session)
     }
 }

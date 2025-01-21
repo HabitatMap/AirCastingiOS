@@ -6,6 +6,7 @@ import SwiftUI
 
 struct BottomCardView: View {
     @StateObject var viewModel: BottomCardViewModel
+    @State var sheetIsPresented = false
     private var onMarkerChangeAction: ((Int) -> ())? = nil
     
     init(session: PartialExternalSession) {
@@ -18,8 +19,8 @@ struct BottomCardView: View {
     
     var sessionCard: some View {
         Button {
-            viewModel.sessionCardTapped()
-            onMarkerChangeAction?(viewModel.dataModel.id)
+            sheetIsPresented = true
+            //onMarkerChangeAction?(viewModel.dataModel.id)
         } label: {
             VStack(alignment: .leading, spacing: 5) {
                 Text(viewModel.dataModel.title)
@@ -36,11 +37,9 @@ struct BottomCardView: View {
                     .scaledToFit()
             }
         }
-        .sheet(isPresented: .init(get: {
-            viewModel.getIsModalScreenPresented()
-        }, set: { value in
-            viewModel.setIsModalScreenPresented(using: value)
-        }), content: { viewModel.initCompleteScreen() })
+        .sheet(isPresented: $sheetIsPresented){
+            viewModel.initCompleteScreen()
+        }
         .frame(width: 200, alignment: .leading)
         .padding(10)
         .background(Color.aircastingBackground)
