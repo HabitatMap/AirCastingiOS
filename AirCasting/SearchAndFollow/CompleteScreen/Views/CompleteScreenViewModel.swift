@@ -28,21 +28,63 @@ class CompleteScreenViewModel: ObservableObject {
         }
     }
     
-    @Published var selectedStream: Int?
-    @Published var selectedStreamUnitSymbol: String?
-    @Published var chartStartTime: Date?
-    @Published var chartEndTime: Date?
-    @Published var isMapSelected: Bool = true
-    @Published var isSessionFollowed: Bool = false
-    @Published var alert: AlertInfo?
-    @Published var followButtonEnabled: Bool = false
-    @Published var followButtonText: String = Strings.CompleteSearchView.followButtonTitle
+    @Published var selectedStream: Int? {
+        didSet {
+            Log.info("MARTA: selectedStream changed")
+        }
+    }
+    
+    @Published var selectedStreamUnitSymbol: String? {
+        didSet {
+            Log.info("MARTA: selectedStreamUnitSymbol changed")
+        }
+    }
+    @Published var chartStartTime: Date? {
+        didSet {
+            Log.info("MARTA: chartStartTime changed")
+        }
+    }
+    @Published var chartEndTime: Date? {
+        didSet {
+            Log.info("MARTA: chartEndTime changed")
+        }
+    }
+    @Published var isMapSelected: Bool = true {
+        didSet {
+            Log.info("MARTA: isMapSelected changed")
+        }
+    }
+    @Published var isSessionFollowed: Bool = false {
+        didSet {
+            Log.info("MARTA: isSessionFollowed changed")
+        }
+    }
+    @Published var alert: AlertInfo? {
+        didSet {
+            Log.info("MARTA: alert changed")
+        }
+    }
+    @Published var followButtonEnabled: Bool = false {
+        didSet {
+            Log.info("MARTA: followButtonEnabled changed")
+        }
+    }
+    @Published var followButtonText: String = Strings.CompleteSearchView.followButtonTitle {
+        didSet {
+            Log.info("MARTA: followButtonText changed")
+        }
+    }
     @Published var sessionStreams: Loadable<[SessionStreamViewModel]> = .loading {
         didSet {
             followButtonEnabled = sessionStreams.isReady && !isOwnSession
+            Log.info("MARTA: sessionStreams changed")
         }
     }
-    @Published var chartViewModel = SearchAndFollowChartViewModel()
+    @Published var chartViewModel = SearchAndFollowChartViewModel() {
+        didSet {
+            Log.info("MARTA: chartViewModel changed")
+        }
+    }
     
     let sessionLongitude: Double
     let sessionLatitude: Double
@@ -56,11 +98,41 @@ class CompleteScreenViewModel: ObservableObject {
     private var externalSessionWithStreams: ExternalSessionWithStreamsAndMeasurements?
     
     @Injected private var singleSessionDownloader: SingleSessionDownloader
+    {
+        didSet {
+            Log.info("MARTA: followButtonEnabled changed")
+        }
+    }
     @Injected private var externalSessionsStore: ExternalSessionsStore
+    {
+        didSet {
+            Log.info("MARTA: followButtonEnabled changed")
+        }
+    }
     @Injected private var service: SearchAndFollowCompleteScreenService
+    {
+        didSet {
+            Log.info("MARTA: followButtonEnabled changed")
+        }
+    }
     @Injected private var streamsDownloader: AirBeamMeasurementsDownloader
+    {
+        didSet {
+            Log.info("MARTA: followButtonEnabled changed")
+        }
+    }
     @Injected private var userAuthenticationSession: UserAuthenticationSession
+    {
+        didSet {
+            Log.info("MARTA: followButtonEnabled changed")
+        }
+    }
     @Injected private var userSettings: UserSettings
+    {
+        didSet {
+            Log.info("MARTA: followButtonEnabled changed")
+        }
+    }
     
     init(session: PartialExternalSession) {
         self.session = session

@@ -12,19 +12,71 @@ enum ProceedToView {
 }
 
 class ChooseSessionTypeViewModel: ObservableObject {
-    @Published var isSearchAndFollowLinkActive = false
-    @Published var isTurnLocationOnLinkActive = false
-    @Published var isMobileLinkActive = false
-    @Published var isTurnBluetoothOnLinkActive = false
-    @Published var isPowerABLinkActive = false
-    @Published var startSync = false
-    @Published var isInfoPresented: Bool = false
-    @Published var alert: AlertInfo?
-    @Injected private var networkChecker: NetworkChecker
-    @Injected private var locationAuthorization: LocationAuthorization
-    @Injected private var bluetoothHandler: BluetoothPermisionsChecker
-    @InjectedObject private var userSettings: UserSettings
-    @Injected private var urlProvider: URLProvider
+    @Published var isSearchAndFollowLinkActive = false {
+        didSet {
+            Log.info("MARTA: isSearchAndFollowLinkActive changed")
+        }
+    }
+    @Published var isTurnLocationOnLinkActive = false {
+        didSet {
+            Log.info("MARTA: isTurnLocationOnLinkActive changed")
+        }
+    }
+    @Published var isMobileLinkActive = false {
+        didSet {
+            Log.info("MARTA: isMobileLinkActive changed")
+        }
+    }
+    @Published var isTurnBluetoothOnLinkActive = false {
+        didSet {
+            Log.info("MARTA: isTurnBluetoothOnLinkActive changed")
+        }
+    }
+    @Published var isPowerABLinkActive = false {
+        didSet {
+            Log.info("MARTA: isPowerABLinkActive changed")
+        }
+    }
+    @Published var startSync = false {
+        didSet {
+            Log.info("MARTA: startSync changed")
+        }
+    }
+    @Published var isInfoPresented: Bool = false {
+        didSet {
+            Log.info("MARTA: isInfoPresented changed")
+        }
+    } 
+    @Published var alert: AlertInfo? {
+        didSet {
+            Log.info("MARTA: alert changed")
+        }
+    }
+    @Injected private var networkChecker: NetworkChecker {
+        didSet {
+            Log.info("MARTA: networkChecker changed")
+        }
+    }
+    @Injected private var locationAuthorization: LocationAuthorization {
+        didSet {
+            Log.info("MARTA: locationAuthorization changed")
+        }
+    }
+    @Injected private var bluetoothHandler: BluetoothPermisionsChecker {
+        didSet {
+            Log.info("MARTA: bluetoothHandler changed")
+        }
+    }
+    @InjectedObject private var userSettings: UserSettings {
+        didSet {
+            Log.info("MARTA: userSettings changed")
+        }
+    }
+    @Injected private var urlProvider: URLProvider {
+        didSet {
+            Log.info("MARTA: urlProvider changed")
+        }
+    }
     private let sessionContext: CreateSessionContext
     
     var passSessionContext: CreateSessionContext {

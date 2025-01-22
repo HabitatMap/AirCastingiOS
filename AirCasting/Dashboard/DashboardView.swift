@@ -12,17 +12,61 @@ import Combine
 import Resolver
 
 struct DashboardView: View {
-    @StateObject var coreDataHook: CoreDataHook
-    @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
-    @EnvironmentObject var selectedSection: SelectedSection
-    @EnvironmentObject var reorderButton: ReorderButton
-    @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
-    @State var isRefreshing: Bool
-    @Binding var measurementsDownloadingInProgress: Bool
-    @State private var alert: AlertInfo?
-    @InjectedObject private var userSettings: UserSettings
-    @Injected private var networkChecker: NetworkChecker
-    @Injected private var persistenceController: PersistenceController
+    @StateObject var coreDataHook: CoreDataHook {
+        didSet {
+            Log.info("MARTA: coreDataHook changed")
+        }
+    }
+    @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds {
+        didSet {
+            Log.info("MARTA: FetchRequest changed")
+        }
+    }
+    @EnvironmentObject var selectedSection: SelectedSection {
+        didSet {
+            Log.info("MARTA: selectedSection changed")
+        }
+    }
+    @EnvironmentObject var reorderButton: ReorderButton {
+        didSet {
+            Log.info("MARTA: reorderButton changed")
+        }
+    }
+    @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton {
+        didSet {
+            Log.info("MARTA: searchAndFollowButton changed")
+        }
+    }
+    @State var isRefreshing: Bool {
+        didSet {
+            Log.info("MARTA: isRefreshing changed")
+        }
+    }
+    @Binding var measurementsDownloadingInProgress: Bool {
+        didSet {
+            Log.info("MARTA: measurementsDownloadingInProgress changed")
+        }
+    }
+    @State private var alert: AlertInfo? {
+        didSet {
+            Log.info("MARTA: alert changed")
+        }
+    }
+    @InjectedObject private var userSettings: UserSettings {
+        didSet {
+            Log.info("MARTA: userSettings changed")
+        }
+    }
+    @Injected private var networkChecker: NetworkChecker {
+        didSet {
+            Log.info("MARTA: networkChecker changed")
+        }
+    }
+    @Injected private var persistenceController: PersistenceController {
+        didSet {
+            Log.info("MARTA: persistenceController changed")
+        }
+    }
     private let sessionSynchronizer: SessionSynchronizer
     
     private var noDormantNorFixedSessions: Bool {

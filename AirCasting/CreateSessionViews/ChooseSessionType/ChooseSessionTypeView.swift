@@ -10,13 +10,41 @@ import AirCastingStyling
 import Resolver
 
 struct ChooseSessionTypeView: View {
-    @EnvironmentObject private var tabSelection: TabBarSelector
-    @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
-    @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
-    @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton
-    @StateObject var viewModel: ChooseSessionTypeViewModel
-    @State private var buttonHeight = CGFloat.zero
-    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
+    @EnvironmentObject private var tabSelection: TabBarSelector {
+        didSet {
+            Log.info("MARTA: tabSelection changed")
+        }
+    }
+    @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped {
+        didSet {
+            Log.info("MARTA: emptyDashboardButtonTapped changed")
+        }
+    }
+    @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped {
+        didSet {
+            Log.info("MARTA: finishAndSyncButtonTapped changed")
+        }
+    }
+    @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton {
+        didSet {
+            Log.info("MARTA: exploreSessionsButton changed")
+        }
+    }
+    @StateObject var viewModel: ChooseSessionTypeViewModel {
+        didSet {
+            Log.info("MARTA: viewModel changed")
+        }
+    }
+    @State private var buttonHeight = CGFloat.zero {
+        didSet {
+            Log.info("MARTA: buttonHeight changed")
+        }
+    }
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel {
+        didSet {
+            Log.info("MARTA: featureFlagsViewModel changed")
+        }
+    }
     
     var shouldShowSDSyncButton: Bool {
         featureFlagsViewModel.enabledFeatures.contains(.sdCardSync)
@@ -106,11 +134,8 @@ struct ChooseSessionTypeView: View {
                     viewModel.setSearchAndFollow(using: new)
                 })) {
                     CreatingSessionFlowRootView {
-                        SearchView(isSearchAndFollowLinkActive: .init(get: {
-                            viewModel.isSearchAndFollowLinkActive
-                        }, set: { new in
-                            viewModel.setSearchAndFollow(using: new)
-                        }))
+                        //MARTA: here?
+                        SearchView(isSearchAndFollowLinkActive: $viewModel.isSearchAndFollowLinkActive)
                     }
                 }
                 .fullScreenCover(isPresented: .init(get: {

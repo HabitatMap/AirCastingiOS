@@ -8,13 +8,41 @@ import AirCastingStyling
 import Resolver
 
 struct SearchMapView: View {
-    @InjectedObject private var userSettings: UserSettings
-    @StateObject private var viewModel: SearchMapViewModel
-    @Environment(\.presentationMode) var presentationMode
-    @Binding var isSearchAndFollowLinkActive: Bool
-    @EnvironmentObject var tabSelection: TabBarSelector
-    @EnvironmentObject var selectedSection: SelectedSection
-    @Environment(\.colorScheme) var colorScheme
+    @InjectedObject private var userSettings: UserSettings {
+        didSet {
+            Log.info("MARTA: userSettings changed")
+        }
+    }
+    @StateObject private var viewModel: SearchMapViewModel {
+        didSet {
+            Log.info("MARTA: viewModel changed")
+        }
+    }
+    @Environment(\.presentationMode) var presentationMode {
+        didSet {
+            Log.info("MARTA: presentationMode changed")
+        }
+    }
+    @Binding var isSearchAndFollowLinkActive: Bool {
+        didSet {
+            Log.info("MARTA: isSearchAndFollowLinkActive changed")
+        }
+    }
+    @EnvironmentObject var tabSelection: TabBarSelector {
+        didSet {
+            Log.info("MARTA: tabSelection changed")
+        }
+    }
+    @EnvironmentObject var selectedSection: SelectedSection {
+        didSet {
+            Log.info("MARTA: selectedSection changed")
+        }
+    }
+    @Environment(\.colorScheme) var colorScheme {
+        didSet {
+            Log.info("MARTA: colorScheme changed")
+        }
+    }
     
     init(locationName: String, locationAddress: CLLocationCoordinate2D, parameterType: MeasurementType, sensorType: SensorType, isSearchAndFollowLinkActive: Binding<Bool>) {
         _viewModel = .init(wrappedValue: .init(passedLocation: locationName,
@@ -209,9 +237,9 @@ private extension SearchMapView {
                     ForEach(viewModel.sessionsList, id: \.id) { sessionMarker in
                         let session = sessionMarker.session
                         BottomCardView(session: session)
-                            .onMarkerChange(action: { pointer in
-                                viewModel.markerSelectionChanged(using: pointer)
-                            })
+//                            .onMarkerChange(action: { pointer in
+//                                viewModel.markerSelectionChanged(using: pointer)
+//                            })
                             .background(
                                 Group {
                                     Color.aircastingBackground

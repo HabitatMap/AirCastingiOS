@@ -9,6 +9,7 @@ struct MapSessionMarker: Equatable {
         lhs.id == rhs.id
     }
     
+
     let id: Int
     let location: CLLocationCoordinate2D
     let markerImage: UIImage

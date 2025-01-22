@@ -18,6 +18,11 @@ class SearchAndFollowChartViewModel: ObservableObject {
     }
     
     @Published var entries: [ChartDot] = []
+    {
+        didSet {
+            Log.info("MARTA: StaticSessionHeaderViewModel changed")
+        }
+    }
     
     func generateEntries(with measurements: [ChartMeasurement], thresholds: ThresholdsValue, using sensor: ChartMeasurementsFilter) -> (Date?, Date?) {
         var times: [Date] = []

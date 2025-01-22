@@ -15,7 +15,9 @@ class BottomCardViewModel: ObservableObject {
     }
     
     func adaptTimeAndDate() -> String {
-        let formatter: DateIntervalFormatter = DateFormatters.SessionCardView.shared.utcDateIntervalFormatter 
+        // TO SIE TRIGGERUJE TUŻ PRZED?!
+        
+        let formatter: DateIntervalFormatter = DateFormatters.SessionCardView.shared.utcDateIntervalFormatter
         let start = dataModel.startTime
         let end = dataModel.endTime
         let string = formatter.string(from: start, to: end)

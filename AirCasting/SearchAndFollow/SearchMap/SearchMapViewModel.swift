@@ -21,18 +21,58 @@ enum PointerValue: Equatable {
 
 class SearchMapViewModel: ObservableObject {
     var passedLocation: String
-    @Published var passedLocationAddress: CLLocationCoordinate2D
+    @Published var passedLocationAddress: CLLocationCoordinate2D {
+        didSet {
+            Log.info("MARTA: passedLocationAddress changed")
+        }
+    }
     private let measurementType: MeasurementType
     private let sensorType: SensorType
-    @Injected private var mapSessionsDownloader: SessionsForLocationDownloader
-    @Published var isLocationPopupPresented = false
-    @Published var sessionsList = [MapSessionMarker]()
-    @Published var searchAgainButton: Bool = false
-    @Published var showLoadingIndicator: Bool = false
-    @Published var alert: AlertInfo?
-    @Published var shouldDismissView: Bool = false
-    @Published var cardPointerID: PointerValue = .noValue
-    @Published var shouldCardsScroll: Bool = false
+    @Injected private var mapSessionsDownloader: SessionsForLocationDownloader {
+        didSet {
+            Log.info("MARTA: mapSessionsDownloader changed")
+        }
+    }
+    @Published var isLocationPopupPresented = false {
+        didSet {
+            Log.info("MARTA: isLocationPopupPresented changed")
+        }
+    }
+    @Published var sessionsList = [MapSessionMarker]() {
+        didSet {
+            Log.info("MARTA: sessionsList changed")
+        }
+    }
+    @Published var searchAgainButton: Bool = false {
+        didSet {
+            Log.info("MARTA: searchAgainButton changed")
+        }
+    }
+    @Published var showLoadingIndicator: Bool = false {
+        didSet {
+            Log.info("MARTA: showLoadingIndicator changed")
+        }
+    }
+    @Published var alert: AlertInfo? {
+        didSet {
+            Log.info("MARTA: alert changed")
+        }
+    }
+    @Published var shouldDismissView: Bool = false {
+        didSet {
+            Log.info("MARTA: shouldDismissView changed")
+        }
+    }
+    @Published var cardPointerID: PointerValue = .noValue {
+        didSet {
+            Log.info("MARTA: cardPointerID changed")
+        }
+    }
+    @Published var shouldCardsScroll: Bool = false {
+        didSet {
+            Log.info("MARTA: shouldCardsScroll changed")
+        }
+    }
     private var currentPosition: GeoSquare?
 
     init(passedLocation: String, passedLocationAddress: CLLocationCoordinate2D, measurementType: MeasurementType, sensorType: SensorType) {
@@ -112,6 +152,7 @@ class SearchMapViewModel: ObservableObject {
     }
     
     private func handleUpdatingSuccess(using sessions: [MapDownloaderSearchedSession]) {
+        // This function causes event loop
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.sessionsList = sessions.compactMap { s in

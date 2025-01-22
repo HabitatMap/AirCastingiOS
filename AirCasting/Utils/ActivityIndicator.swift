@@ -5,7 +5,11 @@ import Foundation
 import SwiftUI
 
 struct ActivityIndicator: UIViewRepresentable {
-    @Binding var isAnimating: Bool
+    @Binding var isAnimating: Bool {
+        didSet {
+            Log.info("MARTA: isAnimating changed")
+        }
+    }
     let style: UIActivityIndicatorView.Style
 
     func makeUIView(context: UIViewRepresentableContext<ActivityIndicator>) -> UIActivityIndicatorView {

@@ -6,7 +6,7 @@ import SwiftUI
 
 struct BottomCardView: View {
     @StateObject var viewModel: BottomCardViewModel
-    @State var sheetIsPresented = false
+    @State private var sheetIsPresented = false
     private var onMarkerChangeAction: ((Int) -> ())? = nil
     
     init(session: PartialExternalSession) {
@@ -30,20 +30,21 @@ struct BottomCardView: View {
                     .lineLimit(3)
                     .minimumScaleFactor(0.7)
                 Spacer(minLength: 0.01)
-                dataAndTime
-                    .font(Fonts.muliRegularHeading6)
-                    .foregroundColor(.aircastingGray)
-                    .minimumScaleFactor(0.1)
-                    .scaledToFit()
+//                dataAndTime
+//                    .font(Fonts.muliRegularHeading6)
+//                    .foregroundColor(.aircastingGray)
+//                    .minimumScaleFactor(0.1)
+//                    .scaledToFit()
             }
         }
-        .sheet(isPresented: $sheetIsPresented){
+        .fullScreenCover(isPresented: $sheetIsPresented){
+//            Text("Hello, World!")
             viewModel.initCompleteScreen()
         }
-        .frame(width: 200, alignment: .leading)
-        .padding(10)
-        .background(Color.aircastingBackground)
-        .cornerRadius(8)
+//        .frame(width: 200, alignment: .leading)
+//        .padding(10)
+//        .background(Color.aircastingBackground)
+//        .cornerRadius(8)
     }
 }
 
@@ -54,10 +55,10 @@ private extension BottomCardView {
     }
 }
 
-extension BottomCardView {
-    func onMarkerChange(action: @escaping (_ pointer: Int) -> ()) -> Self {
-        var newSelf = self
-        newSelf.onMarkerChangeAction = action
-        return newSelf
-    }
-}
+//extension BottomCardView {
+//    func onMarkerChange(action: @escaping (_ pointer: Int) -> ()) -> Self {
+//        var newSelf = self
+//        newSelf.onMarkerChangeAction = action
+//        return newSelf
+//    }
+//}

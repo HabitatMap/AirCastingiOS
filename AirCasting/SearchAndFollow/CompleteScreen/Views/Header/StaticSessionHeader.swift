@@ -6,6 +6,11 @@ import Resolver
 
 struct StaticSessionHeader: View {
     @StateObject var viewModel: StaticSessionHeaderViewModel
+    {
+        didSet {
+            Log.info("MARTA: StaticSessionHeaderViewModel changed")
+        }
+    }
     
     init(name: String, startTime: Date, endTime: Date, sensorType: String) {
         _viewModel = .init(wrappedValue: StaticSessionHeaderViewModel(name: name, startTime: startTime, endTime: endTime, sensorType: sensorType))

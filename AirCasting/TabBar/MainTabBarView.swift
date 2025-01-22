@@ -10,19 +10,71 @@ import SwiftUI
 import Resolver
 
 struct MainTabBarView: View {
-    @Injected private var measurementUpdatingService: MeasurementUpdatingService
-    @StateObject var tabSelection: TabBarSelector = TabBarSelector()
-    @StateObject var selectedSection = SelectedSection()
-    @StateObject var reorderButton = ReorderButton()
-    @StateObject var searchAndFollow = SearchAndFollowButton()
-    @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
-    @StateObject var finishAndSyncButtonTapped = FinishAndSyncButtonTapped()
-    @StateObject var exploreSessionsButton = ExploreSessionsButton()
-    @StateObject var sessionContext: CreateSessionContext
-    @StateObject var coreDataHook: CoreDataHook
-    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
-    @Environment(\.colorScheme) var colorScheme
-    @State var measurementsDownloadingInProgress = false
+    @Injected private var measurementUpdatingService: MeasurementUpdatingService {
+        didSet {
+            Log.info("MARTA: isAnimating changed")
+        }
+    }
+    @StateObject var tabSelection: TabBarSelector = TabBarSelector() {
+        didSet {
+            Log.info("MARTA: isAnimating changed")
+        }
+    }
+    @StateObject var selectedSection = SelectedSection() {
+        didSet {
+            Log.info("MARTA: isAnimating changed")
+        }
+    }
+    @StateObject var reorderButton = ReorderButton() {
+        didSet {
+            Log.info("MARTA: isAnimating changed")
+        }
+    }
+    @StateObject var searchAndFollow = SearchAndFollowButton() {
+        didSet {
+            Log.info("MARTA: isAnimating changed")
+        }
+    }
+    @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped() {
+        didSet {
+            Log.info("MARTA: isAnimating changed")
+        }
+    }
+    @StateObject var finishAndSyncButtonTapped = FinishAndSyncButtonTapped() {
+        didSet {
+            Log.info("MARTA: isAnimating changed")
+        }
+    }
+    @StateObject var exploreSessionsButton = ExploreSessionsButton() {
+        didSet {
+            Log.info("MARTA: isAnimating changed")
+        }
+    }
+    @StateObject var sessionContext: CreateSessionContext {
+        didSet {
+            Log.info("MARTA: isAnimating changed")
+        }
+    }
+    @StateObject var coreDataHook: CoreDataHook {
+        didSet {
+            Log.info("MARTA: isAnimating changed")
+        }
+    }
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel {
+        didSet {
+            Log.info("MARTA: isAnimating changed")
+        }
+    }
+    @Environment(\.colorScheme) var colorScheme {
+        didSet {
+            Log.info("MARTA: isAnimating changed")
+        }
+    }
+    @State var measurementsDownloadingInProgress = false {
+        didSet {
+            Log.info("MARTA: isAnimating changed")
+        }
+    }
     
     var body: some View {
         ZStack(alignment: .bottomLeading) {
@@ -241,8 +293,16 @@ class ReorderButton: ObservableObject {
 }
 
 class SearchAndFollowButton: ObservableObject {
-    @Published var searchIsOn = false
-    @Published var isHidden = false
+    @Published var searchIsOn = false {
+        didSet {
+            Log.info("MARTA: searchIsOn changed")
+        }
+    }
+    @Published var isHidden = false {
+        didSet {
+            Log.info("MARTA: isHidden changed")
+        }
+    }
     
     func setHidden(if isActive: Bool) {
         if isActive {

@@ -5,8 +5,16 @@ import SwiftUI
 import AirCastingStyling
 
 struct CompleteScreen: View {
-    @StateObject var viewModel: CompleteScreenViewModel
-    @Environment(\.dismiss) var dismiss
+    @StateObject var viewModel: CompleteScreenViewModel {
+        didSet {
+            Log.info("MARTA: viewModel changed")
+        }
+    }
+    @Environment(\.dismiss) var dismiss {
+        didSet {
+            Log.info("MARTA: dismiss changed")
+        }
+    }
     
     init(session: PartialExternalSession) {
         _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session))
@@ -32,11 +40,12 @@ struct CompleteScreen: View {
             header
             if viewModel.sessionStreams.isReady {
                 measurements
-            } else {
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle())
-                    .padding(.vertical)
             }
+//            else {
+//                ProgressView()
+//                    .progressViewStyle(CircularProgressViewStyle())
+//                    .padding(.vertical)
+//            }
             if viewModel.isMapSelected {
                 _MapView(path: [.init(lat: viewModel.sessionLatitude, long: viewModel.sessionLongitude, value: 0.0)],
                          type: .normal,

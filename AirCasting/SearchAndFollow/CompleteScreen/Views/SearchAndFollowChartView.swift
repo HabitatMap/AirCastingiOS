@@ -6,6 +6,11 @@ import Charts
 
 struct SearchAndFollowChartView: UIViewRepresentable {
     @StateObject var viewModel: SearchAndFollowChartViewModel
+    {
+        didSet {
+            Log.info("MARTA: StaticSessionHeaderViewModel changed")
+        }
+    }
     
     typealias UIViewType = UI_PollutionChart
     

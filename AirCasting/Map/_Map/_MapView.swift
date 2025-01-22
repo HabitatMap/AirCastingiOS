@@ -77,6 +77,11 @@ extension _MapView {
 
 struct _MapView: UIViewRepresentable {
     @Environment(\.colorScheme) private var colorScheme
+    {
+        didSet {
+            Log.info("MARTA: StaticSessionHeaderViewModel changed")
+        }
+    }
     
     private let path: [PathPoint]
     private let type: MapType

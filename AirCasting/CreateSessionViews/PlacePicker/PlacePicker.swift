@@ -6,7 +6,11 @@ import GooglePlaces
 import Resolver
 
 struct PlacePicker: UIViewControllerRepresentable {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.presentationMode) var presentationMode {
+        didSet {
+            Log.info("MARTA: presentationMode changed")
+        }
+    }
     let service: PlacePickerService
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<PlacePicker>) -> GMSAutocompleteViewController {

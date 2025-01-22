@@ -6,10 +6,26 @@ import AirCastingStyling
 import CoreLocation
 
 struct SearchView: View {
-    @StateObject var viewModel: SearchViewModel
-    @Environment(\.presentationMode) var presentationMode
-    @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton
-    @Binding var isSearchAndFollowLinkActive: Bool
+    @StateObject var viewModel: SearchViewModel {
+        didSet {
+            Log.info("MARTA: viewModel changed")
+        }
+    }
+    @Environment(\.presentationMode) var presentationMode {
+        didSet {
+            Log.info("MARTA: presentationMode changed")
+        }
+    }
+    @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton {
+        didSet {
+            Log.info("MARTA: exploreSessionsButton changed")
+        }
+    }
+    @Binding var isSearchAndFollowLinkActive: Bool {
+        didSet {
+            Log.info("MARTA: isSearchAndFollowLinkActive changed")
+        }
+    }
     
     init(isSearchAndFollowLinkActive: Binding<Bool>) {
         _viewModel = .init(wrappedValue: SearchViewModel())
