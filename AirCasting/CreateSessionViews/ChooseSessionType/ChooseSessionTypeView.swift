@@ -377,13 +377,7 @@ private extension ChooseSessionTypeView {
     private func createButton<T: View>(action: @escaping () -> Void, label: T) -> some View {
         Button(action: action) {
             label
-        }.background(GeometryReader {
-            Color.clear
-                .preference(
-                    key: ViewHeightKey.self,
-                    value: $0.frame(in: .local).size.height
-                )
-        })
+        }
     }
     
     var fixedSessionLabel: some View {
@@ -419,13 +413,11 @@ private extension ChooseSessionTypeView {
 
 extension ChooseSessionTypeView {
     func chooseSessionButton(title: Text) -> some View {
-        ZStack(alignment: .topLeading) {
+        ZStack(alignment: .center) {
             Color.aircastingBackground
             title
                 .font(Fonts.muliRegularHeading4)
                 .foregroundColor(.aircastingGray)
-                .padding(.horizontal)
-                .padding(.top, buttonHeight / 3)
         }
         .multilineTextAlignment(.leading)
         .frame(maxWidth: .infinity, minHeight: buttonHeight, maxHeight: .infinity)
