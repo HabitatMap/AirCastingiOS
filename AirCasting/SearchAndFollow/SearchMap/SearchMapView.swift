@@ -237,8 +237,11 @@ private extension SearchMapView {
     var finishButton: some View {
         Button {
             isSearchAndFollowLinkActive = false
-            tabSelection.update(to: .dashboard)
-            selectedSection.section = .following
+            // The following were commented out because they were causing app to freeze on iOS18
+            // Issue connected to and described in https://github.com/HabitatMap/AirCastingiOS/pull/1049
+            // FIX ASAP
+            // tabSelection.update(to: .dashboard)
+            // selectedSection.section = .following
         } label: {
             Text(Strings.SearchMapView.finishText)
                 .font(Fonts.muliRegularHeading3.bold())
