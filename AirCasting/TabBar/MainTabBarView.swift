@@ -218,7 +218,12 @@ class EmptyDashboardButtonTapped: ObservableObject {
 }
 
 class ExploreSessionsButton: ObservableObject {
-    @Published var exploreSessionsButtonTapped = false
+    @Published private(set) var exploreSessionsButtonTapped = false
+
+    func setExploreSessionsButtonTapped(_ newValue: Bool) {
+      guard exploreSessionsButtonTapped != newValue else { return }
+      exploreSessionsButtonTapped = newValue
+    }
 }
 
 class FinishAndSyncButtonTapped: ObservableObject {
