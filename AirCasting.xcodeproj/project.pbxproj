@@ -88,6 +88,7 @@
 		3392B3FA28A1601000432B92 /* DeleteThresholdAlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3392B3F928A1601000432B92 /* DeleteThresholdAlertService.swift */; };
 		3392B3FC28A3C35600432B92 /* ThresholdAlertsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3392B3FB28A3C35600432B92 /* ThresholdAlertsController.swift */; };
 		3392B3FE28A3D5D000432B92 /* FetchThresholdAlertsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3392B3FD28A3D5D000432B92 /* FetchThresholdAlertsService.swift */; };
+		3395DA302D47AA100034F8D8 /* Pods_AirCasting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 579DADD7511663DDAA4FB410 /* Pods_AirCasting.framework */; };
 		3397C81F2787024C0050B333 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3397C81E2787024C0050B333 /* UserDefaults.swift */; };
 		3399394D27DA1722006144AF /* SingleSessionDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3399394C27DA1722006144AF /* SingleSessionDownloader.swift */; };
 		339AC2902934DEBE0083D8FF /* SessionNotesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339AC28F2934DEBE0083D8FF /* SessionNotesStorage.swift */; };
@@ -148,7 +149,6 @@
 		750A51DA2754D47F00D6F4E7 /* GridSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750A51D92754D47F00D6F4E7 /* GridSquare.swift */; };
 		750A51DC2754D4BD00D6F4E7 /* VisibleRegionCoordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750A51DB2754D4BD00D6F4E7 /* VisibleRegionCoordinates.swift */; };
 		75B1DD48273BCCD200BCDF9B /* Heatmap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1DD47273BCCD200BCDF9B /* Heatmap.swift */; };
-		A2579BD136CB309D7F5A1E2B /* Pods_AirCasting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 579DADD7511663DDAA4FB410 /* Pods_AirCasting.framework */; };
 		AC006D27275F52B400E99019 /* CSVMeasurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC006D26275F52B400E99019 /* CSVMeasurement.swift */; };
 		AC006D29275F52CB00E99019 /* CSVMeasurementStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC006D28275F52CB00E99019 /* CSVMeasurementStream.swift */; };
 		AC006D2B275F537300E99019 /* UploadFixedSessionAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC006D2A275F537300E99019 /* UploadFixedSessionAPIService.swift */; };
@@ -1204,6 +1204,7 @@
 				ACB3F7712B7DEDA300069302 /* Gzip in Frameworks */,
 				ACF600BE2678D7F4005DD97C /* SwiftSimplify in Frameworks */,
 				AC5226C3270C50520048A585 /* Algorithms in Frameworks */,
+				3395DA302D47AA100034F8D8 /* Pods_AirCasting.framework in Frameworks */,
 				B37DA29D283189DD002A9708 /* FirebaseRemoteConfigSwift in Frameworks */,
 				FA2438EF28F98EA40028B126 /* DeviceKit in Frameworks */,
 				FABFB85E28BE64A700C8B157 /* Charts in Frameworks */,
@@ -1211,7 +1212,6 @@
 				B37DA299283189DD002A9708 /* FirebaseCrashlytics in Frameworks */,
 				3375E8D22791E7100019A5DE /* ZipArchive in Frameworks */,
 				B37DA297283189DD002A9708 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
-				A2579BD136CB309D7F5A1E2B /* Pods_AirCasting.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4061,12 +4061,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 0;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = LXAGXH6CF6;
+				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -4078,7 +4076,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "AirCasting  development";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -4092,11 +4089,9 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 0;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = LXAGXH6CF6;
+				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -4108,7 +4103,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "AirCasting Ad hoc distribution";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -4183,11 +4177,9 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 0;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = LXAGXH6CF6;
+				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -4199,7 +4191,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "AirCasting Ad hoc distribution";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
