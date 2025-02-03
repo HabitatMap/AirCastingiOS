@@ -37,7 +37,7 @@ struct BottomCardView: View {
                     .scaledToFit()
             }
         }
-        .fullScreenCover(isPresented: $sheetIsPresented){
+        .sheet(isPresented: $sheetIsPresented){
             viewModel.initCompleteScreen()
         }
         .frame(width: 200, alignment: .leading)

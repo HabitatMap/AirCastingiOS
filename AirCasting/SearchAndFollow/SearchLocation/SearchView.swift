@@ -58,7 +58,7 @@ struct SearchView: View {
         .background(Color.aircastingBackground.ignoresSafeArea())
         .onAppear(perform: {
             viewModel.viewInitialized { presentationMode.wrappedValue.dismiss() }
-            exploreSessionsButton.exploreSessionsButtonTapped = false
+            exploreSessionsButton.setExploreSessionsButtonTapped(false)
         })
         .alert(item: $viewModel.alert, content: { $0.makeAlert() })
         .sheet(isPresented: $viewModel.isLocationPopupPresented) {

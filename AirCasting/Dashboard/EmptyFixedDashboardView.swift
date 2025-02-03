@@ -38,7 +38,7 @@ struct EmptyFixedDashboardView: View {
 private extension EmptyFixedDashboardView {
     private var exploreExistingSessionsButton: some View {
         Button(action: {
-            exploreSessionsButton.exploreSessionsButtonTapped = true
+            exploreSessionsButton.setExploreSessionsButtonTapped(true)
             tabSelection.update(to: .createSession)
         }, label: {
             Text(Strings.EmptyDashboardFixed.exploreSessionsButton)
