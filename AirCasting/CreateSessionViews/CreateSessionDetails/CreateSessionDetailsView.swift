@@ -86,12 +86,7 @@ private extension CreateSessionDetailsView {
     var wifiNameAndPasswordEntry: some View {
         VStack(alignment: .leading, spacing: 25) {
             provideNameAndPasswordTitle
-            if #available(iOS 15.0, *) {
-               wifiSSIDField
-                    .onSubmit { viewModel.isSSIDTextfieldDisplayed = false }
-            } else {
-                wifiSSIDField
-            }
+            wifiSSIDField
             wifiPasswordField
         }
     }
@@ -105,7 +100,6 @@ private extension CreateSessionDetailsView {
                 connectedWifiLabel
                 updatePasswordButton
             }
-            connectToDifferentWifi
         }
     }
     
@@ -236,12 +230,6 @@ private extension CreateSessionDetailsView {
         Text(String(format: Strings.WifiPopupView.connectedNetworkTitle, arguments: [viewModel.wifiSSID]))
             .font(Fonts.muliBoldHeading1)
             .foregroundColor(.aircastingDarkGray)
-    }
-    
-    var connectToDifferentWifi: some View {
-        Button(Strings.WifiPopupView.differentNetwork) {
-            viewModel.connectToOtherNetworkClick()
-        }
     }
 }
 

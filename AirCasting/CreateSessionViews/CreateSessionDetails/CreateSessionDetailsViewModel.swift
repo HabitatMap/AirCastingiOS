@@ -16,23 +16,22 @@ class CreateSessionDetailsViewModel: ObservableObject {
     @Published var isLocationSessionDetailsActive: Bool = false
     @Published var isLocationScreenNedeed: Bool = false
     @Published var showAlertAboutEmptyCredentials = false
-    @Published var isSSIDTextfieldDisplayed: Bool = false
     @Published var showErrorIndicator: Bool = false
     @Published var showWifiPasswordField = true
     var shouldShowError: Bool { sessionName.isEmpty && showErrorIndicator }
     @Injected private var locationAuthorization: LocationAuthorization
     
     private let keychainStorage = KeychainStorage(service: Bundle.main.bundleIdentifier!)
+    private let wifiSsidKey = "StoredWifiName"
     
     func onScreenEnter() {
-        if let ssid = getWiFiSsid() {
+        if let ssid = try? keychainStorage.string(forKey: wifiSsidKey){
             wifiSSID = ssid
             if let data = try? keychainStorage.data(forKey: ssid), let password = String(data: data, encoding: .utf8) {
                 wifiPassword = password
                 showWifiPasswordField = false
             }
         }
-        isSSIDTextfieldDisplayed = wifiSSID.isEmpty
     }
     
     func updatePasswordTapped() {
@@ -40,7 +39,7 @@ class CreateSessionDetailsViewModel: ObservableObject {
     }
     
     func onContinueClick(sessionContext: CreateSessionContext) -> CreateSessionContext {
-        saveWifiPassword()
+        saveWifiNameAndPassword()
         // sessionContext is needed because it is being modified in the session creation proccess
         // by 'modified' I mean - the data it ovverriden by the proper one (get from user) on every step
         guard !sessionName.isEmpty else { showErrorIndicator = true; return sessionContext }
@@ -57,12 +56,13 @@ class CreateSessionDetailsViewModel: ObservableObject {
         return sessionContext
     }
     
-    private func saveWifiPassword() {
+    private func saveWifiNameAndPassword() {
         // We only want to save password for the default wifi network
-        guard !wifiPassword.isEmpty && !isSSIDTextfieldDisplayed else { return }
+        guard !wifiPassword.isEmpty else { return }
         guard let passwordData = wifiPassword.data(using: .utf8) else { return }
         do {
             try keychainStorage.setValue(value: passwordData, forKey: wifiSSID)
+            try keychainStorage.setString(wifiSSID, forKey: wifiSsidKey)
         } catch {
             Log.error("Failed to save wifi password to the keychain")
         }
@@ -101,23 +101,7 @@ class CreateSessionDetailsViewModel: ObservableObject {
         sessionContext.device?.name?.starts(with: "AirBeamMini") ?? false
     }
     
-    func connectToOtherNetworkClick() {
-        isSSIDTextfieldDisplayed = true
-    }
-    
     func shouldShowCompleteCredentials() -> Bool {
-        isWiFi && isSSIDTextfieldDisplayed
-    }
-    
-    private func getWiFiSsid() -> String? {
-        var ssid: String?
-        guard let interfaces = CNCopySupportedInterfaces() as NSArray? else { return "" }
-        for interface in interfaces {
-            if let interfaceInfo = CNCopyCurrentNetworkInfo(interface as! CFString) as NSDictionary? {
-                ssid = interfaceInfo[kCNNetworkInfoKeySSID as String] as? String
-                break
-            }
-        }
-        return ssid
+        isWiFi 
     }
 }
