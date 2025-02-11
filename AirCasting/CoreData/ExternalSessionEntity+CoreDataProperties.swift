@@ -71,13 +71,7 @@ extension ExternalSessionEntity : Identifiable {
 extension ExternalSessionEntity {
     
     var pm1Stream: MeasurementStreamEntity? {
-        let match = measurementStreams?.first(where: { (stream) -> Bool in
-            (stream as? MeasurementStreamEntity)?.sensorName == "AirBeam3-PM1" ||
-            (stream as? MeasurementStreamEntity)?.sensorName == "AirBeam2-PM1" ||
-            (stream as? MeasurementStreamEntity)?.sensorName == "AirBeam1-PM1"
-        })
-        let pm1Stream = match as? MeasurementStreamEntity
-        return pm1Stream
+        streamWithSensorNameContaining("PM1")
     }
     
     var pm2Stream: MeasurementStreamEntity? {
