@@ -22,9 +22,10 @@ class CreateSessionDetailsViewModel: ObservableObject {
     @Injected private var locationAuthorization: LocationAuthorization
     
     private let keychainStorage = KeychainStorage(service: Bundle.main.bundleIdentifier!)
+    private let wifiSsidKey = "StoredWifiName"
     
     func onScreenEnter() {
-        if let ssid = try? keychainStorage.string(forKey: "StoredWifiName"){
+        if let ssid = try? keychainStorage.string(forKey: wifiSsidKey){
             wifiSSID = ssid
             if let data = try? keychainStorage.data(forKey: ssid), let password = String(data: data, encoding: .utf8) {
                 wifiPassword = password
@@ -61,7 +62,7 @@ class CreateSessionDetailsViewModel: ObservableObject {
         guard let passwordData = wifiPassword.data(using: .utf8) else { return }
         do {
             try keychainStorage.setValue(value: passwordData, forKey: wifiSSID)
-            try keychainStorage.setString(wifiSSID, forKey: "StoredWifiName")
+            try keychainStorage.setString(wifiSSID, forKey: wifiSsidKey)
         } catch {
             Log.error("Failed to save wifi password to the keychain")
         }
