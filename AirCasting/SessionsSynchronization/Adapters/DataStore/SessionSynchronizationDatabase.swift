@@ -25,7 +25,11 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
     
     func getLocalSessionList() -> AnyPublisher<[SessionsSynchronization.Metadata], Error> {
         Future { [sessionsFetcher, dataConverter] promise in
-            let predicate = NSPredicate(format: "locationless = %d", false)
+            let predicate = NSPredicate(
+              format: "locationless = %d AND status = %d",
+              false,
+              SessionStatus.FINISHED.rawValue
+            )
             sessionsFetcher.fetchSessions(constrained: .predicate(predicate)) { [dataConverter] result in
                 switch result {
                 case .failure(let error):
