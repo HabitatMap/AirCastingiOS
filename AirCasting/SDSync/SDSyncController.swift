@@ -42,6 +42,8 @@ class SDSyncController {
     @Injected private var sessionSynchronizer: SessionSynchronizer
     @Injected private var measurementsDownloader: SyncedMeasurementsDownloader
     @Injected private var locationTracker: LocationTracker
+    @Injected private var databaseStorage: SDSyncMobileSessionsDatabaseStorage
+    @Injected private var finishStandaloneSession: SessionFinisher
     
     private let writingQueue = DispatchQueue(label: "SDSyncController")
     
@@ -137,6 +139,8 @@ class SDSyncController {
             Log.info("[SD Sync] Completion success. There were no directories.")
             completion(.success(()))
         }
+        // TODO: finish the triggering mobile session
+        
     }
     
     private func process(fixedSessionsFilesDirectory: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {

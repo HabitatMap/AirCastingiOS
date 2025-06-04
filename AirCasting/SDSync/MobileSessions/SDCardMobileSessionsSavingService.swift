@@ -36,7 +36,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     @Injected private var fileLineReader: FileLineReader
     @Injected private var averagingService: MeasurementsAveragingService
     @Injected private var persistenceController: PersistenceController
-    private var databaseStorage = SDSyncMobileSessionsDatabaseStorage()
+    @Injected private var databaseStorage: SDSyncMobileSessionsDatabaseStorage
     private lazy var context: NSManagedObjectContext = persistenceController.editContext
     private var sessionUUID: SessionUUID?
     private var location: CLLocationCoordinate2D? = nil
@@ -165,7 +165,6 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                 do {
                     try self.saveData(streamsWithMeasurements, session: &sessionData)
                     try self.averageUnaveragedMeasurements(sessionUUID: sessionData.uuid, averagingWindow: sessionData.averaging ?? .zeroWindow)
-                    try self.databaseStorage.setStatusToFinishedAndUpdateEndTime(for: sessionData.uuid, context: self.context)
                     try self.context.save()
                     completion(.success(()))
                 } catch {

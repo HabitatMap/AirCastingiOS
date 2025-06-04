@@ -197,6 +197,8 @@ extension Resolver: ResolverRegistering {
         main.register { SDCardMobileSessionsSavingService() as SDCardMobileSessionssSaver }
         main.register { UploadFixedSessionAPIService() }
         main.register { SDCardFixedSessionsUploadingService() }
+        main.register { SDSyncMobileSessionsDatabaseStorage() }
+        main.register { SDCardMobileSessionFinisher() as SessionFinisher }
         main.register { (_, args) in SDSyncFileValidationService(type: args()) as SDSyncFileValidator }
         
         main.register { SDSyncFileWritingService(bufferThreshold: 1000) as SDSyncFileWriter }
