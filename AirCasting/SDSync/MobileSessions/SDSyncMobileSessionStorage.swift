@@ -18,14 +18,6 @@ struct SDSyncMobileSessionsDatabaseStorage {
         stream.addToMeasurements(newMeasurement)
     }
     
-    func setStatusToFinishedAndUpdateEndTime(for sessionUUID: SessionUUID, context: NSManagedObjectContext) throws {
-        let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        sessionEntity.status = .FINISHED
-        guard let endTime = sessionEntity.lastMeasurementTime else { return }
-        Log.info("SD Sync end time for session (UUID | name) \(sessionEntity.uuid) \(sessionEntity.name ?? ""): \(endTime)")
-        sessionEntity.endTime = endTime
-    }
-    
     func fetchUnaveragedMeasurements(currentWindow: AveragingWindow, stream: MeasurementStreamEntity, context: NSManagedObjectContext) throws -> [MeasurementEntity] {
         let fetchRequest = fetchRequestForUnaveragedMeasurements(currentWindow: currentWindow, stream: stream)
         return try context.fetch(fetchRequest)
