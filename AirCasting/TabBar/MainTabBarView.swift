@@ -17,6 +17,7 @@ struct MainTabBarView: View {
     @StateObject var searchAndFollow = SearchAndFollowButton()
     @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
     @StateObject var finishAndSyncButtonTapped = FinishAndSyncButtonTapped()
+    @StateObject var standaloneSessionToSyncAndFinish = StandaloneSessionToSyncAndFinish()
     @StateObject var exploreSessionsButton = ExploreSessionsButton()
     @StateObject var sessionContext: CreateSessionContext
     @StateObject var coreDataHook: CoreDataHook
@@ -58,6 +59,7 @@ struct MainTabBarView: View {
         .environmentObject(tabSelection)
         .environmentObject(emptyDashboardButtonTapped)
         .environmentObject(finishAndSyncButtonTapped)
+        .environmentObject(standaloneSessionToSyncAndFinish)
         .environmentObject(exploreSessionsButton)
         .environmentObject(reorderButton)
         .environmentObject(searchAndFollow)
@@ -228,6 +230,18 @@ class ExploreSessionsButton: ObservableObject {
 
 class FinishAndSyncButtonTapped: ObservableObject {
     @Published var finishAndSyncButtonWasTapped = false
+}
+
+class StandaloneSessionToSyncAndFinish: ObservableObject {
+    @Published var uuid: SessionUUID?
+    
+    func setSession(_ sessionUuid: SessionUUID?) {
+        uuid = sessionUuid
+    }
+    
+    func clearSessionUuid() {
+        uuid = nil
+    }
 }
 
 class ReorderButton: ObservableObject {

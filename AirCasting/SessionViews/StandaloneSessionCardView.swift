@@ -9,6 +9,7 @@ struct StandaloneSessionCardView: View {
     let session: SessionEntity
     @EnvironmentObject private var tabSelection: TabBarSelector
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
+    @EnvironmentObject private var standaloneSessionToSyncAndFinish: StandaloneSessionToSyncAndFinish
     @EnvironmentObject var selectedSection: SelectedSection
     @Injected private var networkChecker: NetworkChecker
     @InjectedObject private var userSettings: UserSettings
@@ -87,6 +88,7 @@ struct StandaloneSessionCardView: View {
 
     func finishSessionAndSyncAlertAction() {
         finishAndSyncButtonTapped.finishAndSyncButtonWasTapped = true
+        standaloneSessionToSyncAndFinish.uuid = session.uuid
         tabSelection.update(to: .createSession)
         selectedSection.mobileSessionWasFinished = true
     }

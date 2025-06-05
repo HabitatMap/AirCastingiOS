@@ -16,11 +16,12 @@ class SDCardMobileSessionFinisher : SessionFinisher {
     
     func callAsFunction(uuid: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: uuid)
-        if (sessionEntity.isInStandaloneMode) {
-            sessionEntity.status = .FINISHED
-            guard let endTime = sessionEntity.lastMeasurementTime else { return }
-            Log.info("SD Sync end time for session (UUID | name) \(sessionEntity.uuid) \(sessionEntity.name ?? ""): \(endTime)")
-            sessionEntity.endTime = endTime
-        }
+        
+        guard sessionEntity.isInStandaloneMode else { Log.info("SD Sync tried finish \(uuid) which is not in standalone mode!"); return }
+        
+        sessionEntity.status = .FINISHED
+        guard let endTime = sessionEntity.lastMeasurementTime else { return }
+        Log.info("SD Sync measurement end time for session (UUID | name) \(sessionEntity.uuid) \(sessionEntity.name ?? ""): \(endTime)")
+        sessionEntity.endTime = endTime
     }
 }

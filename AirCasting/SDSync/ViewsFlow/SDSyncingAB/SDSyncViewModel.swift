@@ -17,7 +17,7 @@ protocol SDSyncViewModel: ObservableObject {
     var shouldDismiss: Bool { get set }
     var alert: AlertInfo? { get set }
     var progress: Published<SDSyncProgressViewModel?>.Publisher { get }
-    func connectToAirBeamAndSync()
+    func connectToAirBeamAndSync(_ standaloneSessionToSyncAndFinish: StandaloneSessionToSyncAndFinish)
 }
 
 // [RESOLVER] Move this VM init to view afte all dependencies are resolved
@@ -42,7 +42,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
         self.sessionContext = sessionContext
     }
 
-    func connectToAirBeamAndSync() {
+    func connectToAirBeamAndSync(_ standaloneSessionToSyncAndFinish: StandaloneSessionToSyncAndFinish) {
         self.airBeamConnectionController.connectToAirBeam(device: device) { result in
             Log.info("[SD SYNC] Completed connecting to AB")
             guard result == .success else {
@@ -53,7 +53,9 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                 return
             }
             
-            self.sdSyncController.syncFromAirbeam(self.device, progress: { [weak self] newStatus in
+            self.sdSyncController.syncFromAirbeam(standaloneSessionToSyncAndFinish: standaloneSessionToSyncAndFinish,
+                                                  self.device,
+                                                  progress: { [weak self] newStatus in
                 guard let self = self else { return }
                 switch newStatus {
                 case .inProgress(let progress):
