@@ -11,6 +11,7 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
     @StateObject var viewModel: VM
     @State var progressTitle: String?
     @State var progressCount: String?
+    @EnvironmentObject private var standaloneSessionToSyncAndFinish: StandaloneSessionToSyncAndFinish
     @Binding var creatingSessionFlowContinues: Bool
 
     var body: some View {
@@ -46,7 +47,7 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
              It resulted with showing next view and going back to this one.
              The async enables app to load this view and then push the next one. */
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                viewModel.connectToAirBeamAndSync()
+                viewModel.connectToAirBeamAndSync(standaloneSessionToSyncAndFinish)
             }
         })
     }

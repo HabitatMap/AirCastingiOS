@@ -46,9 +46,16 @@ class SDSyncController {
     @Injected private var finishStandaloneSession: SessionFinisher
     
     private let writingQueue = DispatchQueue(label: "SDSyncController")
+    private var standaloneSessionToSyncAndFinish: StandaloneSessionToSyncAndFinish?
     
-    func syncFromAirbeam(_ airbeamConnection: any BluetoothDevice, progress: @escaping (SDCardSyncStatus) -> Void, completion: @escaping (Result<Void, SDSyncError>) -> Void) {
+    func syncFromAirbeam(standaloneSessionToSyncAndFinish: StandaloneSessionToSyncAndFinish,
+                         _ airbeamConnection: any BluetoothDevice,
+                         progress: @escaping (SDCardSyncStatus) -> Void,
+                         completion: @escaping (Result<Void, SDSyncError>) -> Void) {
         Log.info("[SD SYNC] Starting syncing")
+        
+        self.standaloneSessionToSyncAndFinish = standaloneSessionToSyncAndFinish
+        
         guard let sensorName = airbeamConnection.name,
               let airbeamType = airbeamConnection.airbeamType else {
             Log.error("[SD SYNC] Unable to identify the device")
@@ -76,6 +83,12 @@ class SDSyncController {
                     Log.info("[SD SYNC] Files: \(directories)")
                     guard !directories.isEmpty else {
                         Log.info("[SD SYNC] No files. Finishing sd sync")
+                        do {
+                            try self.finishStandaloneSessionIfPresent(completion)
+                        } catch {
+                            completion(.failure(.mobileSessionsProcessingFailure))
+                            return
+                        }
                         completion(.success(()))
                         return
                     }
@@ -87,7 +100,9 @@ class SDSyncController {
                         switch fileValidationResult {
                         case .success(let verifiedDirectories):
                             Log.info("[SD SYNC] Check for corruption passed")
-                            self.handle(filesDirectories: verifiedDirectories, sensorName: sensorName, completion: completion)
+                            self.handle(filesDirectories: verifiedDirectories,
+                                        sensorName: sensorName,
+                                        completion: completion)
                         case .failure(let error):
                             Log.error(error.localizedDescription)
                             completion(.failure(.filesCorrupted))
@@ -102,7 +117,17 @@ class SDSyncController {
         })
     }
     
-    private func handle(filesDirectories: [(URL, SDCardSessionType)], sensorName: String, completion: @escaping (Result<Void, SDSyncError>) -> Void ) {
+    fileprivate func finishStandaloneSessionIfPresent(_ completion: (Result<Void, SDSyncError>) -> Void) throws {
+        if let uuidOfSessionToFinish = standaloneSessionToSyncAndFinish?.uuid {
+            try finishStandaloneSession(uuid: uuidOfSessionToFinish)
+            standaloneSessionToSyncAndFinish?.clearSessionUuid()
+        } else { Log.info("[SD Sync] There was no standalone session to finish.") }
+        self.onCurrentSyncEnd { self.startBackendSync() }
+    }
+    
+    private func handle(filesDirectories: [(URL, SDCardSessionType)],
+                        sensorName: String,
+                        completion: @escaping (Result<Void, SDSyncError>) -> Void) {
         let mobileFilesDirectoryURL = filesDirectories.first(where: { $0.1 == SDCardSessionType.mobile })?.0
         let fixedFilesDirectoryURL = filesDirectories.first(where: { $0.1 == SDCardSessionType.fixed })?.0
         
@@ -125,22 +150,22 @@ class SDSyncController {
                     completion(.failure(.mobileSessionsProcessingFailure))
                     return
                 }
-                
-                if let fixedFilesDirectoryURL = fixedFilesDirectoryURL {
-                    handleFixedFiles(at: fixedFilesDirectoryURL)
-                } else {
-                    Log.info("[SD Sync] Completion success. There was no fixed directory.")
-                    completion(.success(()))
-                }
             }
-        } else if let fixedFilesDirectoryURL = fixedFilesDirectoryURL {
-            handleFixedFiles(at: fixedFilesDirectoryURL)
-        } else {
-            Log.info("[SD Sync] Completion success. There were no directories.")
-            completion(.success(()))
-        }
-        // TODO: finish the triggering mobile session
+        } else { Log.info("[SD Sync] There was no mobile directory.") }
         
+        if let fixedFilesDirectoryURL = fixedFilesDirectoryURL {
+            handleFixedFiles(at: fixedFilesDirectoryURL)
+        } else { Log.info("[SD Sync] There was no fixed directory.") }
+        
+        do {
+            try finishStandaloneSessionIfPresent(completion)
+        } catch {
+            completion(.failure(.mobileSessionsProcessingFailure))
+            return
+        }
+        
+        Log.info("[SD Sync] Completion success.")
+        completion(.success(()))
     }
     
     private func process(fixedSessionsFilesDirectory: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
@@ -165,7 +190,6 @@ class SDSyncController {
                 switch result {
                 case .success():
                     Log.info("[SD Sync] Saved mobile data with success")
-                    self.onCurrentSyncEnd { self.startBackendSync() }
                     completion(true)
                 case .failure(let error):
                     Log.error("[SD Sync] Failed to save sessions to database: \(error.localizedDescription)")
