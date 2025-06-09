@@ -62,7 +62,7 @@ class SDSyncController {
             completion(.failure(.unidetifiableDevice))
             return
         }
-
+        
         airbeamServices.downloadData(from: airbeamConnection, progress: { [weak self] chunk in
             // Filesystem write
             let parser = Resolver.resolve(SDMeasurementsParser.self, args: sensorName)
@@ -95,7 +95,7 @@ class SDSyncController {
                     
                     // MARK: checking if files have the right number of rows and if rows have the right values
                     
-                    let fileValidator = Resolver.resolve(SDSyncFileValidator.self, args: airbeamType) 
+                    let fileValidator = Resolver.resolve(SDSyncFileValidator.self, args: airbeamType)
                     self.checkDirectoriesForCorruption(directories, expectedMeasurementsCount: metadata.expectedMeasurementsCount, fileValidator: fileValidator) { fileValidationResult in
                         switch fileValidationResult {
                         case .success(let verifiedDirectories):
@@ -184,8 +184,10 @@ class SDSyncController {
     
     private func process(mobileSessionFilesDirectory: URL, deviceID: String, completion: @escaping (Bool) -> Void) {
         Log.info("[SD Sync] Processing mobile file")
-        Task {
-            let location = try await locationTracker.oneTimeLocationUpdate()
+        
+        do {
+            let location = try waitFor(locationTracker.oneTimeLocationUpdate)
+            
             self.mobileSessionsSaver.saveDataToDb(filesDirectoryURL: mobileSessionFilesDirectory, deviceID: deviceID, deviceLocation: .init(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)) { result in
                 switch result {
                 case .success():
@@ -196,7 +198,11 @@ class SDSyncController {
                     completion(false)
                 }
             }
+        } catch {
+            Log.error("[SD Sync] Failed retrieve location: \(error.localizedDescription)")
+            completion(false)
         }
+        
     }
     
     func clearSDCard(_ airbeamConnection: any BluetoothDevice, completion: @escaping (Bool) -> Void) {
