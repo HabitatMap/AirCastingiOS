@@ -120,7 +120,9 @@ class SDSyncController {
     fileprivate func finishStandaloneSessionIfPresent(_ completion: (Result<Void, SDSyncError>) -> Void) throws {
         if let uuidOfSessionToFinish = standaloneSessionToSyncAndFinish?.uuid {
             try finishStandaloneSession(uuid: uuidOfSessionToFinish)
-            standaloneSessionToSyncAndFinish?.clearSessionUuid()
+            DispatchQueue.main.async {
+                self.standaloneSessionToSyncAndFinish?.clearSessionUuid()
+            }
         } else { Log.info("[SD Sync] There was no standalone session to finish.") }
         self.onCurrentSyncEnd { self.startBackendSync() }
     }
