@@ -166,6 +166,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                     try self.saveData(streamsWithMeasurements, session: &sessionData)
                     try self.averageUnaveragedMeasurements(sessionUUID: sessionData.uuid, averagingWindow: sessionData.averaging ?? .zeroWindow)
                     try self.context.save()
+                    
                     completion(.success(()))
                 } catch {
                     completion(.failure(error))

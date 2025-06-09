@@ -152,19 +152,18 @@ class SDSyncController {
                     completion(.failure(.mobileSessionsProcessingFailure))
                     return
                 }
+                do {
+                    try self.finishStandaloneSessionIfPresent(completion)
+                } catch {
+                    completion(.failure(.mobileSessionsProcessingFailure))
+                    return
+                }
             }
         } else { Log.info("[SD Sync] There was no mobile directory.") }
         
         if let fixedFilesDirectoryURL = fixedFilesDirectoryURL {
             handleFixedFiles(at: fixedFilesDirectoryURL)
         } else { Log.info("[SD Sync] There was no fixed directory.") }
-        
-        do {
-            try finishStandaloneSessionIfPresent(completion)
-        } catch {
-            completion(.failure(.mobileSessionsProcessingFailure))
-            return
-        }
         
         Log.info("[SD Sync] Completion success.")
         completion(.success(()))
