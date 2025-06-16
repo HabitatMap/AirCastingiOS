@@ -31,21 +31,21 @@ struct SettingsView: View {
             .navigationViewStyle(.stack)
             .fullScreenCover(isPresented: $viewModel.startSDClear) {
                 CreatingSessionFlowRootView {
-                    SDRestartABView(isSDClearProcess: viewModel.SDClearingRouteProcess,
+                    SDRestartABView(isSDClearProcess: true,
                                     creatingSessionFlowContinues: $viewModel.startSDClear)
                 }
             }
             .fullScreenCover(isPresented: $viewModel.locationScreenGo) {
                 CreatingSessionFlowRootView {
                     TurnOnLocationView(creatingSessionFlowContinues: $viewModel.locationScreenGo,
-                                       viewModel: TurnOnLocationViewModel(sessionContext: sessionContext, isSDClearProcess: viewModel.SDClearingRouteProcess))
+                                       viewModel: TurnOnLocationViewModel(process: .sdClear))
                 }
             }
             .fullScreenCover(isPresented: $viewModel.BTScreenGo) {
                 CreatingSessionFlowRootView {
                     TurnOnBluetoothView(creatingSessionFlowContinues: $viewModel.BTScreenGo,
                                         sdSyncContinues: .constant(false),
-                                        isSDClearProcess: viewModel.SDClearingRouteProcess)
+                                        isSDClearProcess: true)
                 }
             }
             .environmentObject(viewModel.sessionContext)
@@ -65,7 +65,7 @@ struct SettingsView: View {
                     EmptyView()
                         .fullScreenCover(isPresented: $viewModel.startSDClear) {
                             CreatingSessionFlowRootView {
-                                SDRestartABView(isSDClearProcess: viewModel.SDClearingRouteProcess,
+                                SDRestartABView(isSDClearProcess: true,
                                                 creatingSessionFlowContinues: $viewModel.startSDClear)
                             }
                         }
@@ -73,7 +73,7 @@ struct SettingsView: View {
                         .fullScreenCover(isPresented: $viewModel.locationScreenGo) {
                             CreatingSessionFlowRootView {
                                 TurnOnLocationView(creatingSessionFlowContinues: $viewModel.locationScreenGo,
-                                                   viewModel: TurnOnLocationViewModel(sessionContext: sessionContext, isSDClearProcess: viewModel.SDClearingRouteProcess))
+                                                   viewModel: TurnOnLocationViewModel(process: .sdClear))
                             }
                         }
                     EmptyView()
@@ -81,7 +81,7 @@ struct SettingsView: View {
                             CreatingSessionFlowRootView {
                                 TurnOnBluetoothView(creatingSessionFlowContinues: $viewModel.BTScreenGo,
                                                     sdSyncContinues: .constant(false),
-                                                    isSDClearProcess: viewModel.SDClearingRouteProcess)
+                                                    isSDClearProcess: true)
                             }
                         }
                 })

@@ -26,7 +26,7 @@ struct BackendSyncCompletedView<VM: BackendSyncCompletedViewModel>: View {
                 }
                 continueButton
             }
-            .background(Group { restartNavigationLink; BTNavigationLink })
+            .background(Group { restartNavigationLink; BTNavigationLink; locationNavigationLink })
             .padding()
             .background(Color.aircastingBackground.ignoresSafeArea())
         }
@@ -60,6 +60,15 @@ private extension BackendSyncCompletedView {
         }
         .buttonStyle(BlueButtonStyle())
         .padding(.bottom, 15)
+    }
+    
+    var locationNavigationLink: some View {
+        NavigationLink(
+            destination: TurnOnLocationView(creatingSessionFlowContinues: $creatingSessionFlowContinues, viewModel: TurnOnLocationViewModel(process: .sdSync)),
+            isActive: .init(get: { viewModel.presentLocationNextScreen }, set: { _ in }),
+            label: {
+                EmptyView()
+            })
     }
     
     var restartNavigationLink: some View {

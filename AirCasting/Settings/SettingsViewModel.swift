@@ -13,7 +13,6 @@ class SettingsViewModel: ObservableObject {
     @Published var alert: AlertInfo?
     @Published var dormantAlert = false
     
-    var SDClearingRouteProcess = true
     let username = "\(KeychainStorage(service: Bundle.main.bundleIdentifier!).getProfileData(for: .username))"
     
     @Injected private var locationAuthorization: LocationAuthorization

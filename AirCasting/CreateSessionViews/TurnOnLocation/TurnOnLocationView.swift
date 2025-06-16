@@ -29,6 +29,7 @@ struct TurnOnLocationView: View {
                 proceedToBluetoothView
                 proceedToSelectDeviceView
                 proceedToRestartABView
+                proceedToUnplugABView
             }
         )
         .onAppear {
@@ -100,6 +101,14 @@ struct TurnOnLocationView: View {
         NavigationLink(
             destination: SDRestartABView(isSDClearProcess: viewModel.isSDClearProcess, creatingSessionFlowContinues: $creatingSessionFlowContinues),
             isActive: $viewModel.restartABLink,
+            label: {
+                EmptyView()
+            })
+    }
+    var proceedToUnplugABView: some View {
+        NavigationLink(
+            destination: UnplugABView(isSDClearProcess: viewModel.isSDClearProcess, creatingSessionFlowContinues: $creatingSessionFlowContinues),
+            isActive: $viewModel.unplugABLink,
             label: {
                 EmptyView()
             })
