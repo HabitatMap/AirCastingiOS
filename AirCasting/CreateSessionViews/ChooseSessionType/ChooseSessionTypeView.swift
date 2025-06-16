@@ -68,8 +68,7 @@ struct ChooseSessionTypeView: View {
                         }, set: { new in
                             viewModel.setLocationLink(using: new)
                         }),
-                                           viewModel: TurnOnLocationViewModel(sessionContext: viewModel.passSessionContext,
-                                                                              isSDClearProcess: false))
+                                           viewModel: TurnOnLocationViewModel(process: .createSession(sessionContext: viewModel.passSessionContext)))
                     }
                 }
                 .fullScreenCover(isPresented: .init(get: {
@@ -159,8 +158,7 @@ struct ChooseSessionTypeView: View {
                                     }, set: { new in
                                         viewModel.setLocationLink(using: new)
                                     }),
-                                                       viewModel: TurnOnLocationViewModel(sessionContext: viewModel.passSessionContext,
-                                                                                          isSDClearProcess: false))
+                                                       viewModel: TurnOnLocationViewModel(process: .createSession(sessionContext: viewModel.passSessionContext)))
                                 }
                             }
                         EmptyView()

@@ -42,4 +42,7 @@ final class CreateSessionContext: ObservableObject {
     func saveCurrentLocation(lat: Double, log: Double) {
         startingLocation = CLLocationCoordinate2D(latitude: lat, longitude: log)
     }
+    var isMobileSession: Bool {
+        sessionType == .mobile
+    }
 }
