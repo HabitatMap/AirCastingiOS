@@ -55,6 +55,7 @@ class ChooseSessionTypeViewModel: ObservableObject {
     func fixedSessionButtonTapped() {
         createNewSession(isSessionFixed: true)
         switch fixedSessionNextStep() {
+        case.location: isTurnLocationOnLinkActive = true
         case .airBeam: isPowerABLinkActive = true
         case .bluetooth: isTurnBluetoothOnLinkActive = true
         default: return
@@ -95,6 +96,7 @@ class ChooseSessionTypeViewModel: ObservableObject {
     }
     
     private func fixedSessionNextStep() -> ProceedToView {
+        guard locationAuthorization.locationState == .granted else { return .location }
         guard !bluetoothHandler.isBluetoothDenied() else { return .bluetooth }
         return .airBeam
     }
