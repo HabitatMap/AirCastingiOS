@@ -81,7 +81,7 @@ struct TurnOnLocationView: View {
     var proceedToBluetoothView: some View {
         NavigationLink(
             destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                             sdSyncContinues: .constant(false),
+                                             sdSyncContinues: .constant(viewModel.isSDSyncProcess),
                                              isSDClearProcess: viewModel.isSDClearProcess),
             isActive: $viewModel.isTurnBluetoothOnLinkActive,
             label: {
@@ -92,7 +92,7 @@ struct TurnOnLocationView: View {
         NavigationLink(
             destination: SelectDeviceView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
                                           sdSyncContinues: .constant(false)),
-            isActive: $viewModel.isMobileLinkActive,
+            isActive: $viewModel.isProceedToSelectDeviceTypeLinkActive,
             label: {
                 EmptyView()
             })
