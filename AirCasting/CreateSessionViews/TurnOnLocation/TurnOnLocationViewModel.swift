@@ -14,7 +14,7 @@ enum TurnOnLocationUiProcess {
 class TurnOnLocationViewModel: ObservableObject {
     @Published var isPowerABLinkActive = false
     @Published var isTurnBluetoothOnLinkActive = false
-    @Published var isMobileLinkActive = false
+    @Published var isProceedToSelectDeviceTypeLinkActive = false
     @Published var restartABLink = false
     @Published var unplugABLink = false
     @Published var alert: AlertInfo?
@@ -32,6 +32,10 @@ class TurnOnLocationViewModel: ObservableObject {
         return if case .sdClear = process { true } else { false }
     }
     
+    var isSDSyncProcess: Bool {
+        return if case .sdSync = process { true } else { false }
+    }
+    
     var shouldShowAlert: Bool {
         locationAuthorization.locationState == .denied
     }
@@ -45,19 +49,32 @@ class TurnOnLocationViewModel: ObservableObject {
             showRequestLocationAlert()
         } else {
             switch process {
-            case .sdClear:
-                restartABLink.toggle()
-            case .sdSync:
-                unplugABLink.toggle()
+            case .sdClear, .sdSync:
+                handleBluetoothOrToggle(for: process)
+                
             case .createSession(let sessionContext):
                 if sessionContext.isMobileSession {
-                    isMobileLinkActive = true
-                } else if bluetoothHandler.isBluetoothDenied() {
-                    isTurnBluetoothOnLinkActive = true
+                    isProceedToSelectDeviceTypeLinkActive = true
                 } else {
-                    isPowerABLinkActive.toggle()
+                    handleBluetoothOrToggle(for: process)
                 }
             }
+        }
+    }
+    
+    private func handleBluetoothOrToggle(for process: TurnOnLocationUiProcess) {
+        if bluetoothHandler.isBluetoothDenied() {
+            isTurnBluetoothOnLinkActive = true
+            return
+        }
+        
+        switch process {
+        case .sdClear:
+            restartABLink.toggle()
+        case .sdSync:
+            unplugABLink.toggle()
+        case .createSession:
+            isPowerABLinkActive.toggle()
         }
     }
     
