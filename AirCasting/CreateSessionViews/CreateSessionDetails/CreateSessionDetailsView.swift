@@ -84,15 +84,18 @@ private extension CreateSessionDetailsView {
     }
     
     var wifiNameAndPasswordEntry: some View {
-        VStack(alignment: .leading, spacing: 25) {
+        VStack(alignment: .leading) {
             provideNameAndPasswordTitle
+            ab5GHzWarningLabel
             wifiSSIDField
+                .padding(.bottom, 20)
+                .padding(.top, 10)
             wifiPasswordField
         }
     }
     
     var wifiPasswordEntry: some View {
-        VStack(alignment: .leading, spacing: 15) {
+        VStack(alignment: .leading, spacing: 20) {
             if viewModel.showWifiPasswordField {
                 providePasswordTitle
                 wifiPasswordField
@@ -224,6 +227,16 @@ private extension CreateSessionDetailsView {
         Text(Strings.WifiPopupView.nameAndPasswordTitle)
             .font(Fonts.muliBoldHeading1)
             .foregroundColor(.aircastingDarkGray)
+    }
+    var ab5GHzWarningLabel: some View {
+        Label(Strings.WifiPopupView.ab5GHzWarning, systemImage: "exclamationmark.triangle.fill")
+            .foregroundColor(.aircastingRed)
+            .font(.subheadline)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(Color.red.opacity(0.1))
+            .cornerRadius(6)
     }
     
     var connectedWifiLabel: some View {
