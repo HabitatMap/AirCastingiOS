@@ -285,7 +285,9 @@ struct Strings {
                                                              comment: "")
         static let passwordTitle: String = NSLocalizedString("Password for %@ network",
                                                              comment: "")
-        static let nameAndPasswordTitle: String = NSLocalizedString("WiFi network name & password:",
+        static let nameAndPasswordTitle: String = NSLocalizedString("2.4 GHz WiFi network name & password:",
+                                                                    comment: "")
+        static let ab5GHzWarning: String = NSLocalizedString("AirBeam can’t connect to 5 GHz networks",
                                                                     comment: "")
         static let connectedNetworkTitle: String = NSLocalizedString("Connected to %@ network",
                                                                       comment: "")
