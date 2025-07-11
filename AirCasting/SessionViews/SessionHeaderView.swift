@@ -31,6 +31,7 @@ struct SessionHeaderView: View {
     @State var showEditView = false
     @State var detectEmailSent = false
     @State var showThresholdAlertModal = false
+    @State private var showFinishSessionAlert = false
     
     var body: some View {
         if #available(iOS 15, *) {
@@ -122,7 +123,11 @@ struct SessionHeaderView: View {
 
 private extension SessionHeaderView {
     var sessionHeader: some View {
-        VStack(alignment: .leading, spacing: 3) {
+        let finishSessionAlertInfo = InAppAlerts.finishSessionAlert(sessionName: session.name, action: {
+            self.finishSessionAlertAction()
+        })
+        
+        return VStack(alignment: .leading, spacing: 3) {
             HStack {
                 SessionTimeView(session: session)
                     .font(Fonts.moderateRegularHeading4)
@@ -132,7 +137,7 @@ private extension SessionHeaderView {
             }
             nameLabelAndExpandButton
         }
-        .alert(item: $alert, content: { $0.makeAlert() })
+        .alert(finishSessionAlertInfo, $showFinishSessionAlert)
         .foregroundColor(.aircastingGray)
     }
     
@@ -193,9 +198,7 @@ private extension SessionHeaderView {
     
     var actionsMenuStopButton: some View {
         Button {
-            alert = InAppAlerts.finishSessionAlert(sessionName: session.name, action: {
-                self.finishSessionAlertAction()
-            })
+            showFinishSessionAlert = true
         } label: {
             Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
         }
