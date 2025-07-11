@@ -23,7 +23,6 @@ struct SessionHeaderView: View {
     @Environment(\.colorScheme) var colorScheme
     @ObservedObject var session: SessionEntity
     @State private var showingNoConnectionAlert = false
-    @State private var alert: AlertInfo?
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     @State var showDeleteModal = false
     @State var showAddNoteModal = false
@@ -31,7 +30,8 @@ struct SessionHeaderView: View {
     @State var showEditView = false
     @State var detectEmailSent = false
     @State var showThresholdAlertModal = false
-    @State private var showFinishSessionAlert = false
+    @State private var isShowingFinishSessionAlert = false
+    @State private var isShowingEmailSentAlert = false
     
     var body: some View {
         if #available(iOS 15, *) {
@@ -51,7 +51,7 @@ struct SessionHeaderView: View {
                                                 }
                                             })).onDisappear(perform: {
                                                 if detectEmailSent {
-                                                    alert = InAppAlerts.shareFileRequestSent()
+                                                    isShowingEmailSentAlert = true
                                                 }
                                             })
                     }
@@ -82,7 +82,7 @@ struct SessionHeaderView: View {
                                     ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(), exitRoute: { result in
                                         showShareModal.toggle()
                                         if result == .fileShared {
-                                            alert = InAppAlerts.shareFileRequestSent()
+                                            isShowingEmailSentAlert = true
                                         }
                                     }))
                                 }
@@ -123,11 +123,7 @@ struct SessionHeaderView: View {
 
 private extension SessionHeaderView {
     var sessionHeader: some View {
-        let finishSessionAlertInfo = InAppAlerts.finishSessionAlert(sessionName: session.name, action: {
-            self.finishSessionAlertAction()
-        })
-        
-        return VStack(alignment: .leading, spacing: 3) {
+        VStack(alignment: .leading, spacing: 3) {
             HStack {
                 SessionTimeView(session: session)
                     .font(Fonts.moderateRegularHeading4)
@@ -137,7 +133,14 @@ private extension SessionHeaderView {
             }
             nameLabelAndExpandButton
         }
-        .alert(finishSessionAlertInfo, $showFinishSessionAlert)
+        .alert(
+            InAppAlerts.finishSessionAlert(
+                sessionName: session.name,
+                action: { self.finishSessionAlertAction() }
+            ),
+            $isShowingFinishSessionAlert
+        )
+        .alert(InAppAlerts.shareFileRequestSent(), $isShowingEmailSentAlert)
         .foregroundColor(.aircastingGray)
     }
     
@@ -198,7 +201,7 @@ private extension SessionHeaderView {
     
     var actionsMenuStopButton: some View {
         Button {
-            showFinishSessionAlert = true
+            isShowingFinishSessionAlert = true
         } label: {
             Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
         }
