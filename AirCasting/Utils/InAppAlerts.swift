@@ -474,3 +474,19 @@ extension AlertInfo {
         }
     }
 }
+
+extension View {
+    nonisolated func alert(_ alertInfo: AlertInfo, _ isPresented: Binding<Bool>) -> some View {
+        self.alert(alertInfo.title, isPresented: isPresented) {
+            ForEach(Array(alertInfo.buttons.enumerated()), id: \.offset) { index, type in
+                switch type {
+                case .cancel(let title): Button(title, role: .cancel, action: { isPresented.wrappedValue = false })
+                case .default(let title, nil): Button(title, action: { isPresented.wrappedValue = false })
+                case .default(let title, let action): Button(title, action: action!)
+                }
+            }
+        } message: {
+            Text(alertInfo.message)
+        }
+    }
+}
