@@ -11,6 +11,8 @@
 		33050871276B568D00D18C69 /* ShareSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33050870276B568D00D18C69 /* ShareSessionViewModel.swift */; };
 		33050876276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33050875276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift */; };
 		33056A812DF0773F0087FA75 /* SDCardMobileSessionFinisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33056A802DF0773F0087FA75 /* SDCardMobileSessionFinisher.swift */; };
+		3310E1F32E252F9400E0281A /* Sequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3310E1F22E252F9400E0281A /* Sequences.swift */; };
+		3310E1F52E2534F800E0281A /* PartitionedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3310E1F42E2534F800E0281A /* PartitionedTests.swift */; };
 		331D32D528328A92001A6414 /* Sessionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331D32D428328A92001A6414 /* Sessionable.swift */; };
 		331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */; };
 		332020A6283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332020A5283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift */; };
@@ -606,6 +608,8 @@
 		33050870276B568D00D18C69 /* ShareSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSessionViewModel.swift; sourceTree = "<group>"; };
 		33050875276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSessionStreamOptionViewModel.swift; sourceTree = "<group>"; };
 		33056A802DF0773F0087FA75 /* SDCardMobileSessionFinisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDCardMobileSessionFinisher.swift; sourceTree = "<group>"; };
+		3310E1F22E252F9400E0281A /* Sequences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequences.swift; sourceTree = "<group>"; };
+		3310E1F42E2534F800E0281A /* PartitionedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartitionedTests.swift; sourceTree = "<group>"; };
 		331D32D428328A92001A6414 /* Sessionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sessionable.swift; sourceTree = "<group>"; };
 		331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmCreatingSessionView.swift; sourceTree = "<group>"; };
 		332020A5283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+Sessionable.swift"; sourceTree = "<group>"; };
@@ -1686,6 +1690,7 @@
 				33F87610286343D70073A3D4 /* DownloadableImage.swift */,
 				ACBF1AD1286C618F006DF793 /* XMarkButton.swift */,
 				33A16E7A2DF6F76400D9142A /* Concurrency.swift */,
+				3310E1F22E252F9400E0281A /* Sequences.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2434,6 +2439,7 @@
 		B3E26A042676DA14001A8E4C /* Other */ = {
 			isa = PBXGroup;
 			children = (
+				3310E1F42E2534F800E0281A /* PartitionedTests.swift */,
 				B3E26A052676DA23001A8E4C /* ArrayExtensionsTests.swift */,
 				B32D089C267A3232006C97ED /* LogErrorPublisherTests.swift */,
 				B3F1447726AE4337006A4612 /* FilterErrorTests.swift */,
@@ -3360,6 +3366,7 @@
 				FA5F782F289A8C0E0016DF79 /* MapDownloaderSensorTypeTests.swift in Sources */,
 				B30BAC212694AEAA00AE0476 /* GraphStatsDataSourceTests.swift in Sources */,
 				4FEEAED3262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift in Sources */,
+				3310E1F52E2534F800E0281A /* PartitionedTests.swift in Sources */,
 				33F96EAC293F86F000FE7F0A /* Session.swift in Sources */,
 				33F96EAA293F846B00FE7F0A /* BluetoothDeviceMock.swift in Sources */,
 				FA5F782D289A8BF60016DF79 /* MapDownloaderMeasurementTypeTests.swift in Sources */,
@@ -3564,6 +3571,7 @@
 				DDCE5D3A26A213620033C211 /* DefaultDeleteSessionViewModel.swift in Sources */,
 				ACCEB21A2763A2230040140B /* SDSyncCompleteView.swift in Sources */,
 				DDB05581274BC60D00DA1A8A /* SessionUpdateService.swift in Sources */,
+				3310E1F32E252F9400E0281A /* Sequences.swift in Sources */,
 				B38E6CD226C5F85000C21C45 /* SyncTriggeringSesionStopperDecorator.swift in Sources */,
 				3320F2EE29250CA500EFFB2D /* BluetoothConnectionHandler.swift in Sources */,
 				ACCEB2292768A13B0040140B /* ThresholdsValue.swift in Sources */,
