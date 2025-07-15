@@ -13,6 +13,7 @@
 		33056A812DF0773F0087FA75 /* SDCardMobileSessionFinisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33056A802DF0773F0087FA75 /* SDCardMobileSessionFinisher.swift */; };
 		3310E1F32E252F9400E0281A /* Sequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3310E1F22E252F9400E0281A /* Sequences.swift */; };
 		3310E1F52E2534F800E0281A /* PartitionedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3310E1F42E2534F800E0281A /* PartitionedTests.swift */; };
+		3310E1F72E269C7200E0281A /* FutureAsyncExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3310E1F62E269C7200E0281A /* FutureAsyncExtensionTests.swift */; };
 		331D32D528328A92001A6414 /* Sessionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331D32D428328A92001A6414 /* Sessionable.swift */; };
 		331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */; };
 		332020A6283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332020A5283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift */; };
@@ -610,6 +611,7 @@
 		33056A802DF0773F0087FA75 /* SDCardMobileSessionFinisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDCardMobileSessionFinisher.swift; sourceTree = "<group>"; };
 		3310E1F22E252F9400E0281A /* Sequences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequences.swift; sourceTree = "<group>"; };
 		3310E1F42E2534F800E0281A /* PartitionedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartitionedTests.swift; sourceTree = "<group>"; };
+		3310E1F62E269C7200E0281A /* FutureAsyncExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FutureAsyncExtensionTests.swift; sourceTree = "<group>"; };
 		331D32D428328A92001A6414 /* Sessionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sessionable.swift; sourceTree = "<group>"; };
 		331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmCreatingSessionView.swift; sourceTree = "<group>"; };
 		332020A5283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+Sessionable.swift"; sourceTree = "<group>"; };
@@ -2439,6 +2441,7 @@
 		B3E26A042676DA14001A8E4C /* Other */ = {
 			isa = PBXGroup;
 			children = (
+				3310E1F62E269C7200E0281A /* FutureAsyncExtensionTests.swift */,
 				3310E1F42E2534F800E0281A /* PartitionedTests.swift */,
 				B3E26A052676DA23001A8E4C /* ArrayExtensionsTests.swift */,
 				B32D089C267A3232006C97ED /* LogErrorPublisherTests.swift */,
@@ -3402,6 +3405,7 @@
 				B31B7ECD267E500B002DAC18 /* SyncDownstreamServiceTests.swift in Sources */,
 				B3C6D080289062E100A25F5F /* CLLocation+Helpers.swift in Sources */,
 				B33B160E27AF0B3600138FFA /* ScheduledLoggerTests.swift in Sources */,
+				3310E1F72E269C7200E0281A /* FutureAsyncExtensionTests.swift in Sources */,
 				3320F30929269AB000EFFB2D /* MobileAirBeamSessionRecordingControllerTests.swift in Sources */,
 				B30BABFB2693509D00AE0476 /* StandardStatisticsCalculatorTests.swift in Sources */,
 				B3C6D07E28905FCC00A25F5F /* LocationServiceAdapterTests.swift in Sources */,

@@ -25,9 +25,9 @@ extension PersistenceController: SessionsFetchable {
 }
 
 extension PersistenceController: SessionInsertable {
-    func insertSessions(_ sessions: [Database.Session], completion: ((Error?) -> Void)?) {
+    func insertSessions(_ sessions: [Database.Session]) async throws {
         let context = self.editContext
-        context.perform {
+        try await context.perform {
             sessions.forEach {
                     // This is added to ensure that we don't add session if a session with this uuid already existis in the database
                     guard (try? context.existingSession(uuid: $0.uuid)) == nil else {
@@ -79,12 +79,8 @@ extension PersistenceController: SessionInsertable {
                         streamEntity.session = sessionEntity
                     }
                 }
-            do {
-                try context.save()
-                completion?(nil)
-            } catch {
-                completion?(error)
-            }
+            
+            try context.save()
         }
     }
 }

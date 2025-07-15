@@ -42,8 +42,8 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
     }
     
     func addSessions(with sessionsData: [SessionsSynchronization.SessionStoreSessionData]) -> Future<Void, Error> {
-        return .init { [sessionsInserter] promise in
-            sessionsInserter
+        return .init {
+            try await self.sessionsInserter
                 .insertSessions(sessionsData.map { sessionData in
                     let streams = sessionData.measurementStreams.map {
                         Database.MeasurementStream(id: MeasurementStreamID($0.id),
@@ -94,12 +94,6 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
                                             measurementStreams: streams,
                                             status: .FINISHED,
                                             notes: notes)
-                }, completion: { error in
-                    if let error = error {
-                        promise(.failure(error))
-                    } else {
-                        promise(.success(()))
-                    }
                 })
         }
     }
