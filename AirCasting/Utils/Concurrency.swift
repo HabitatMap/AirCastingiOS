@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import Combine
 
 func waitFor<T>(_ operation: @escaping () async throws -> T) throws -> T {
     guard !Thread.isMainThread else {
@@ -27,4 +28,19 @@ func waitFor<T>(_ operation: @escaping () async throws -> T) throws -> T {
         throw error
     }
     return result
+}
+
+extension Future where Failure == Error {
+    convenience init(asyncOperation: @escaping () async throws -> Output) {
+        self.init { promise in
+            Task {
+                do {
+                    let result = try await asyncOperation()
+                    promise(.success(result))
+                } catch {
+                    promise(.failure(error))
+                }
+            }
+        }
+    }
 }
