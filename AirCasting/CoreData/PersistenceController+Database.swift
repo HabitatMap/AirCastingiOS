@@ -146,6 +146,32 @@ extension PersistenceController: SessionUpdateable {
             }
         }
     }
+    
+    func updateSessions(with sessionsData: [SessionsSynchronization.SessionStoreSessionData]) async throws {
+        let context = self.editContext
+        var errors: [Error] = []
+        
+        await context.perform {
+            sessionsData.forEach {
+                do {
+                    let sessionEntity = try context.existingSession(uuid: $0.uuid)
+                    sessionEntity.name = $0.name
+                    sessionEntity.tags = $0.tags
+                    sessionEntity.endTime = $0.endTime
+                    sessionEntity.version = if let version = $0.version { Int16(version) } else { sessionEntity.version }
+                    sessionEntity.urlLocation = $0.urlLocation
+                    try context.save()
+                } catch {
+                    Log.error("Error updating session \($0.name): \(error)")
+                    errors.append(error)
+                }
+            }
+        }
+        
+        if !errors.isEmpty {
+            throw BatchError(errors: errors)
+        }
+    }
 }
 
 

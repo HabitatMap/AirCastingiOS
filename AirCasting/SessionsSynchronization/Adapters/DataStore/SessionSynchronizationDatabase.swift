@@ -43,8 +43,12 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
     
     func addSessions(with sessionsData: [SessionsSynchronization.SessionStoreSessionData]) -> Future<Void, Error> {
         return .init {
+            let (existingSessionsUpdatedData, newSessionsData) = sessionsData.partitioned(by: {
+                self.sessionsFetcher.isExisting(uuid: $0.uuid)
+            })
+            
             try await self.sessionsInserter
-                .insertSessions(sessionsData.map { sessionData in
+                .insertSessions(newSessionsData.map { sessionData in
                     let streams = sessionData.measurementStreams.map {
                         Database.MeasurementStream(id: MeasurementStreamID($0.id),
                                                    sensorName: $0.sensorName,
@@ -95,6 +99,8 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
                                             status: .FINISHED,
                                             notes: notes)
                 })
+            
+            try await self.sessionsUpdater.updateSessions(with: existingSessionsUpdatedData)
         }
     }
     
