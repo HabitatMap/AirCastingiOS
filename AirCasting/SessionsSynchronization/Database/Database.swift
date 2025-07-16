@@ -16,6 +16,7 @@ extension Database {
 
 protocol SessionsFetchable {
     func fetchSessions(constrained: Database.Constraint, completion: @escaping (Result<[Database.Session], Error>) -> Void)
+    func isExisting(uuid: SessionUUID) -> Bool
 }
 
 protocol SessionRemovable {

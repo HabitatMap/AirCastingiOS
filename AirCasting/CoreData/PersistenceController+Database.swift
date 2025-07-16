@@ -22,6 +22,9 @@ extension PersistenceController: SessionsFetchable {
             }
         }
     }
+    func isExisting(uuid: SessionUUID) -> Bool {
+        return self.editContext.optionalExistingSession(uuid: uuid) != nil
+    }
 }
 
 extension PersistenceController: SessionInsertable {

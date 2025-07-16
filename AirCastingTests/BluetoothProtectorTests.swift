@@ -182,6 +182,10 @@ class BluetoothProtectorTests: ACTestCase {
     }
     
     class AirBeamDatabaseSpy: SessionsFetchable {
+        func isExisting(uuid: AirCasting.SessionUUID) -> Bool {
+            true
+        }
+        
         var constrainedCalls: [Database.Constraint] = []
         
         func fetchSessions(constrained: Database.Constraint, completion: @escaping (Result<[Database.Session], Error>) -> Void) {
@@ -191,6 +195,10 @@ class BluetoothProtectorTests: ACTestCase {
     }
     
     class AirBeamDatabseStub: SessionsFetchable {
+        func isExisting(uuid: AirCasting.SessionUUID) -> Bool {
+            true
+        }
+        
         private let toReturn: Result<[Database.Session], Error>
         
         init(toReturn: Result<[Database.Session], Error>) {
