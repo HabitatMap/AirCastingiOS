@@ -41,13 +41,14 @@ extension NSManagedObjectContext {
         throw MissingSessionEntityError(uuid: uuid)
     }
     
-    func optionalExistingSession(uuid: SessionUUID) throws -> SessionEntity? {
+    func optionalExistingSession(uuid: SessionUUID) -> SessionEntity? {
         do {
             return try existingSession(uuid: uuid)
         } catch is MissingSessionEntityError {
             return nil
         } catch {
-            throw error
+            Log.error("Error when saving changes in \(uuid) session: \(error.localizedDescription)")
+            return nil
         }
     }
     
@@ -84,7 +85,7 @@ extension NSManagedObjectContext {
     }
     
     func existingSessionable(uuid: SessionUUID) throws -> Sessionable? {
-        if let session = try optionalExistingSession(uuid: uuid) { return session }
+        if let session = optionalExistingSession(uuid: uuid) { return session }
         if let externalSession = try optionalExistingExternalSession(uuid: uuid) { return externalSession }
         return nil
     }
