@@ -36,7 +36,9 @@ final class AirBeamCellularSessionCreator: SessionCreator {
                               startTime: DateBuilder.getFakeUTCDate(),
                               followedAt: DateBuilder.getFakeUTCDate(),
                               isIndoor: isIndoor,
-                              tags: sessionContext.sessionTags)
+                              tags: sessionContext.sessionTags,
+                              status: .FINISHED
+        )
         
         // if session is fixed: create an empty session on server,
         // then send AB auth data to connect to web session and data needed to start recording
