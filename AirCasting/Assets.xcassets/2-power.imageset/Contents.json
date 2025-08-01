@@ -5,12 +5,11 @@
       "scale" : "1x"
     },
     {
-      "filename" : "poweron@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "poweron@3x.png",
+      "filename" : "power_ab.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

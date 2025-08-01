@@ -5,12 +5,11 @@
       "scale" : "1x"
     },
     {
-      "filename" : "connect@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "connect@3x.png",
+      "filename" : "airbeam.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
