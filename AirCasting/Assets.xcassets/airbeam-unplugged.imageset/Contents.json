@@ -5,12 +5,11 @@
       "scale" : "1x"
     },
     {
-      "filename" : "airbeam_cable@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "airbeam_cable@3x.png",
+      "filename" : "ab_unplugged.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
