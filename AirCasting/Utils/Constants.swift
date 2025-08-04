@@ -49,4 +49,8 @@ struct Constants {
     enum PrivacyPolicy {
         static let url = URL(string: "https://www.habitatmap.org/aircasting-app-privacy-policy")
     }
+    
+    enum Loader {
+        static let size: CGFloat = 70
+    }
 }

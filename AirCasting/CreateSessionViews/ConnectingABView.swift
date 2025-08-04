@@ -20,15 +20,7 @@ struct ConnectingABView: View {
         VStack() {
             ProgressView(value: 0.5)
                 .padding(.bottom, 50)
-            ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
-                Image("airbeam-connecting")
-                    .resizable()
-                    .scaledToFit()
-                    .padding(.bottom, 15)
-                loader
-                    .padding()
-                    .padding(.vertical)
-            }).frame(width: UIScreen.main.bounds.width - 40, height:  UIScreen.main.bounds.height / 2, alignment: .center)
+            ABCircleAndLoader(airbeamImage: "airbeam-connecting")
             VStack(alignment: .leading, spacing: 15) {
                titleLabel
                messageLabel
@@ -72,16 +64,5 @@ struct ConnectingABView: View {
         Text(Strings.ConnectingABView.message)
             .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
-    }
-    
-    var loader: some View {
-        ZStack {
-            Color.accentColor
-                .frame(width: 90, height: 90)
-                .clipShape(Circle())
-            ProgressView()
-                .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
-                .scaleEffect(2)
-        }
     }
 }

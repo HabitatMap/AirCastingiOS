@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -1198,6 +1198,10 @@
 		FAFBDBE82BC494C500A9E839 /* NotificationInfoKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationInfoKeys.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		33DBE7D32E40DCFE003234F1 /* CommonUI */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = CommonUI; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		4FB39DF92621B53C00E5E564 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -1801,6 +1805,7 @@
 		AC7EB37425A6FB3A00A7F2AF /* AirCasting */ = {
 			isa = PBXGroup;
 			children = (
+				33DBE7D32E40DCFE003234F1 /* CommonUI */,
 				DD2DDBAA27B535D900807011 /* UIState */,
 				B367A587274E9E05004C605B /* FeatureFlags */,
 				B3EFAB1326EFE2C800E88141 /* Bootstrap */,
@@ -3065,6 +3070,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				33DBE7D32E40DCFE003234F1 /* CommonUI */,
 			);
 			name = AirCasting;
 			packageProductDependencies = (
