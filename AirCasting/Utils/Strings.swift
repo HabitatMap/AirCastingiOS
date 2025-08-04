@@ -298,7 +298,7 @@ struct Strings {
     }
     
     enum OnboardingGetStarted {
-        static let description: String = NSLocalizedString("record and map measurements from health and environmental monitoring devices",
+        static let description: String = NSLocalizedString("Record and map measurements from health and environmental monitoring devices.",
                                                            comment: "")
         static let getStarted: String = NSLocalizedString("Get started",
                                                           comment: "")
@@ -314,7 +314,7 @@ struct Strings {
     enum OnboardingAirBeam {
         static let title: String = NSLocalizedString("Measure and map your exposure to air pollution",
                                                      comment: "")
-        static let description: String = NSLocalizedString("Connect AirBeam to measure air quality humidity, and temperature.",
+        static let description: String = NSLocalizedString("Connect AirBeam to measure particle pollution.",
                                                            comment: "")
         static let sheetButton: String = NSLocalizedString("Learn More",
                                                            comment: "")
@@ -489,7 +489,7 @@ struct Strings {
                                                            comment: "")
         static let airBeamDescriptionText: String = NSLocalizedString("Did you know?",
                                                                       comment: "")
-        static let airBeamDescriptionDescription: String = NSLocalizedString("AirBeam3 & AirBeam Mini are weather resistant. Hang them outside and record a fixed session to keep tabs on your air quality 24/7",
+        static let airBeamDescriptionDescription: String = NSLocalizedString("AirBeam Mini is weather resistant. Hang it outside and record a fixed session to keep tabs on your air quality 24/7",
                                                                              comment: "")
     }
     
