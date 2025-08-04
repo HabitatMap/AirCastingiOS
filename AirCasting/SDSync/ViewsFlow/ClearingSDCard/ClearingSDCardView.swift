@@ -16,12 +16,7 @@ struct ClearingSDCardView<VM: ClearingSDCardViewModel>: View {
         VStack(alignment: .leading, spacing: 40) {
             ProgressView(value: 0.7)
             Spacer()
-            ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
-                syncingImage
-                loader
-                    .padding()
-                    .padding(.vertical)
-            })
+            ABCircleAndLoader()
             Spacer()
             VStack(alignment: .leading, spacing: 15) {
                 titleLabel
@@ -61,17 +56,6 @@ extension ClearingSDCardView {
         Text(Strings.ClearingSDCardView.message)
             .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
-    }
-    
-    var loader: some View {
-        ZStack {
-            Color.accentColor
-                .frame(width: 70, height: 70)
-                .clipShape(Circle())
-            ProgressView()
-                .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
-                .scaleEffect(2)
-        }
     }
     
     var navigationLink: some View {

@@ -18,12 +18,7 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
         VStack(spacing: 40) {
             ProgressView(value: 0.852)
             Spacer()
-            ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
-                syncingImage
-                loader
-                    .padding()
-                    .padding(.vertical)
-            })
+            ABCircleAndLoader()
             Spacer()
             VStack(alignment: .leading, spacing: 15) {
                 titleLabel
@@ -77,17 +72,6 @@ extension SyncingABView {
         Text(Strings.SyncingABView.message)
             .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
-    }
-
-    var loader: some View {
-        ZStack {
-            Color.accentColor
-                .frame(width: 70, height: 70)
-                .clipShape(Circle())
-            ProgressView()
-                .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
-                .scaleEffect(2)
-        }
     }
 
     var navigationLink: some View {

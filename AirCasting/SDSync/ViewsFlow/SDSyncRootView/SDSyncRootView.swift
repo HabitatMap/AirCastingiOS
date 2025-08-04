@@ -13,11 +13,7 @@ struct SDSyncRootView: View {
             VStack(spacing: 40) {
                 ProgressView(value: 0.142)
                 Spacer()
-                ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
-                    syncImage
-                    loader
-                        .offset(x: -reader.size.width / 15, y: -reader.size.height / 80)
-                }).frame(width: reader.size.width / 2.1, height: reader.size.height / 3.1, alignment: .center)
+                ABCircleAndLoader()
                 Spacer()
                 VStack(alignment: .leading, spacing: 15) {
                     titleLabel
@@ -52,17 +48,6 @@ private extension SDSyncRootView {
         Text(Strings.SDSyncRootView.message)
             .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
-    }
-    
-    var loader: some View {
-        ZStack {
-            Color.accentColor
-                .frame(width: 70, height: 70)
-                .clipShape(Circle())
-            ProgressView()
-                .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
-                .scaleEffect(2)
-        }
     }
     
     var navigationLink: some View {
