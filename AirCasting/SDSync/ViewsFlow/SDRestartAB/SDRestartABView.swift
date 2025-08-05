@@ -15,58 +15,13 @@ struct SDRestartABView: View {
     
     var body: some View {
         GeometryReader { reader in
-            VStack(alignment: .leading, spacing: 40) {
-                ProgressView(value: 0.568)
-                Spacer()
-                HStack() {
-                    Spacer()
-                    restartImage
-                        .frame(width: reader.size.width / 2, height: reader.size.height / 3, alignment: .center)
-                    Spacer()
-                }
-                Spacer()
-                VStack(alignment: .leading, spacing: 15) {
-                    titleLabel
-                    messageLabel
-                }
-                continueButton
-            }
+            ProgressFlowAB(progress: 0.568, airbeamImageAsset: "2-power", title: Strings.SDRestartABView.title, message: Strings.SDRestartABView.message, continueButtonOnClick: viewModel.continueSyncFlow)
             .background(selectDeviceLink)
-            .padding()
-            .background(Color.aircastingBackground.ignoresSafeArea())
         }
     }
 }
 
 extension SDRestartABView {
-    
-    var restartImage: some View {
-        Image("2-power")
-            .aspectRatio(contentMode: .fit)
-    }
-    
-    var titleLabel: some View {
-        Text(Strings.SDRestartABView.title)
-            .font(Fonts.moderateBoldTitle3)
-            .foregroundColor(.accentColor)
-    }
-    
-    var messageLabel: some View {
-        Text(Strings.SDRestartABView.message)
-            .font(Fonts.moderateRegularHeading1)
-            .foregroundColor(.aircastingGray)
-    }
-    
-    var continueButton: some View {
-        Button {
-            viewModel.continueSyncFlow()
-        } label: {
-            Text(Strings.Commons.continue)
-        }
-        .buttonStyle(BlueButtonStyle())
-        .padding(.bottom, 15)
-    }
-
     var selectDeviceLink: some View {
         NavigationLink(
             destination: SelectPeripheralView(SDClearingRouteProcess: viewModel.isSDClearProcess, creatingSessionFlowContinues: $creatingSessionFlowContinues, syncMode: !viewModel.isSDClearProcess),

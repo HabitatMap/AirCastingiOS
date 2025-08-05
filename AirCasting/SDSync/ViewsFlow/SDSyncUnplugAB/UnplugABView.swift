@@ -15,58 +15,13 @@ struct UnplugABView: View {
     
     var body: some View {
         GeometryReader { reader in
-            VStack(alignment: .leading, spacing: 40) {
-                ProgressView(value: 0.426)
-                Spacer()
-                HStack() {
-                    Spacer()
-                    unplugImage
-                        .frame(width: reader.size.width / 2, height: reader.size.height / 3, alignment: .center)
-                    Spacer()
-                }
-                Spacer()
-                VStack(alignment: .leading, spacing: 15) {
-                    titleLabel
-                    messageLabel
-                }
-                continueButton
-            }
+            ProgressFlowAB(progress: 0.426, airbeamImageAsset: "airbeam-unplugged", title: Strings.UnplugAirbeamView.title, message: Strings.UnplugAirbeamView.message, continueButtonOnClick: viewModel.continueButtonTapped)
             .background(navigationLink)
-            .padding()
-            .background(Color.aircastingBackground.ignoresSafeArea())
         }
     }
 }
 
 extension UnplugABView {
-    
-    var unplugImage: some View {
-        Image("airbeam-unplugged")
-            .aspectRatio(contentMode: .fit)
-    }
-    
-    var titleLabel: some View {
-        Text(Strings.UnplugAirbeamView.title)
-            .font(Fonts.moderateBoldTitle3)
-            .foregroundColor(.accentColor)
-    }
-    
-    var messageLabel: some View {
-        Text(Strings.UnplugAirbeamView.message)
-            .font(Fonts.moderateRegularHeading1)
-            .foregroundColor(.aircastingGray)
-    }
-    
-    var continueButton: some View {
-        Button {
-            viewModel.continueButtonTapped()
-        } label: {
-            Text(Strings.Commons.continue)
-        }
-        .buttonStyle(BlueButtonStyle())
-        .padding(.bottom, 15)
-    }
-    
     var navigationLink: some View {
         NavigationLink(
             destination: SDRestartABView(isSDClearProcess: viewModel.isSDClearProcess, creatingSessionFlowContinues: $creatingSessionFlowContinues),

@@ -10,20 +10,8 @@ struct SDSyncRootView: View {
     
     var body: some View {
         GeometryReader { reader in
-            VStack(spacing: 40) {
-                ProgressView(value: 0.142)
-                Spacer()
-                ABCircleAndLoader()
-                Spacer()
-                VStack(alignment: .leading, spacing: 15) {
-                    titleLabel
-                    messageLabel
-                }
-                Spacer()
-            }
-            .padding()
+            ProgressFlowAB(progress: 0.142, abImage: ABCircleAndLoader(), title: Strings.SDSyncRootView.title, message: Strings.SDSyncRootView.message)
             .background(navigationLink)
-            .background(Color.aircastingBackground.ignoresSafeArea())
             .onAppear() {
                 finishAndSyncButtonTapped.finishAndSyncButtonWasTapped = false
                 viewModel.executeBackendSync()
@@ -33,23 +21,6 @@ struct SDSyncRootView: View {
 }
 
 private extension SDSyncRootView {
-    var syncImage: some View {
-        Image("airbeam")
-            .aspectRatio(contentMode: .fit)
-    }
-    
-    var titleLabel: some View {
-        Text(Strings.SDSyncRootView.title)
-            .font(Fonts.moderateBoldTitle3)
-            .foregroundColor(.accentColor)
-    }
-    
-    var messageLabel: some View {
-        Text(Strings.SDSyncRootView.message)
-            .font(Fonts.moderateRegularHeading1)
-            .foregroundColor(.aircastingGray)
-    }
-    
     var navigationLink: some View {
         NavigationLink(
             destination: BackendSyncCompletedView(viewModel: BackendSyncCompletedViewModelDefault(),

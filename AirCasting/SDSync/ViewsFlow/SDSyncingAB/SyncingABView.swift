@@ -15,22 +15,18 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
     @Binding var creatingSessionFlowContinues: Bool
 
     var body: some View {
-        VStack(spacing: 40) {
-            ProgressView(value: 0.852)
-            Spacer()
-            ABCircleAndLoader()
-            Spacer()
-            VStack(alignment: .leading, spacing: 15) {
-                titleLabel
-                messageLabel
-            }
-            Spacer()
+        let title = if viewModel.isDownloadingFinished {
+            Strings.SyncingABView.finishingSyncTitle
+        } else if let progressTitle {
+            "Syncing \(progressTitle.lowercased()) \(progressCount ?? "")"
+        } else {
+            Strings.SyncingABView.startingSyncTitle
         }
+        
+        ProgressFlowAB(progress: 0.852, abImage: ABCircleAndLoader(), title: title, message: Strings.SyncingABView.message)
         .alert(item: $viewModel.alert, content: { $0.makeAlert() })
         .onChange(of: viewModel.shouldDismiss, perform: { $0 ? creatingSessionFlowContinues = false : nil })
-        .padding()
         .background(navigationLink)
-        .background(Color.aircastingBackground.ignoresSafeArea())
         .onReceive(viewModel.progress, perform: { newProgress in
             if let progress = newProgress {
                 self.progressTitle = progress.title
@@ -49,31 +45,6 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
 }
 
 extension SyncingABView {
-    var syncingImage: some View {
-        Image("airbeam")
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-    }
-
-    var titleLabel: some View {
-        VStack(alignment: .leading) {
-            if viewModel.isDownloadingFinished {
-                Text(Strings.SyncingABView.finishingSyncTitle)
-            } else {
-                progressTitle != nil ? Text("Syncing " + progressTitle!.lowercased()) : Text(Strings.SyncingABView.startingSyncTitle)
-                Text(progressCount ?? "")
-            }
-        }
-            .font(Fonts.moderateBoldTitle3)
-            .foregroundColor(.accentColor)
-    }
-
-    var messageLabel: some View {
-        Text(Strings.SyncingABView.message)
-            .font(Fonts.moderateRegularHeading1)
-            .foregroundColor(.aircastingGray)
-    }
-
     var navigationLink: some View {
         NavigationLink(
         destination: SDSyncCompleteView(viewModel: SDSyncCompleteViewModelDefault(), creatingSessionFlowContinues: $creatingSessionFlowContinues, isSDClearProcess: false),
