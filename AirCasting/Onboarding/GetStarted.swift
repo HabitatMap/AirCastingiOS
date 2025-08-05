@@ -63,6 +63,8 @@ private extension GetStarted {
             .font(Fonts.muliRegularHeading2)
             .lineSpacing(10.0)
             .foregroundColor(.aircastingGray)
+            .frame(maxWidth: .infinity)
+            .multilineTextAlignment(.center)
     }
     
     var startButton: some View {
