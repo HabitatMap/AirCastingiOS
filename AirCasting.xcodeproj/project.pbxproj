@@ -1200,6 +1200,7 @@
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		33DBE7D32E40DCFE003234F1 /* CommonUI */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = CommonUI; sourceTree = "<group>"; };
+		33DBE7DB2E41FC88003234F1 /* Preview */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Preview; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1653,6 +1654,7 @@
 		AC32040625CC122900A68520 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				33DBE7DB2E41FC88003234F1 /* Preview */,
 				3310E1F82E27D6FE00E0281A /* BatchError.swift */,
 				FAFBDBE32BC4942500A9E839 /* Notifications */,
 				3320F2E22922657C00EFFB2D /* Bluetooth */,
@@ -3073,6 +3075,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				33DBE7D32E40DCFE003234F1 /* CommonUI */,
+				33DBE7DB2E41FC88003234F1 /* Preview */,
 			);
 			name = AirCasting;
 			packageProductDependencies = (

@@ -17,16 +17,7 @@ struct ConnectingABView: View {
     }
     
     var body: some View {
-        VStack() {
-            ProgressView(value: 0.5)
-                .padding(.bottom, 50)
-            ABCircleAndLoader(airbeamImage: "airbeam-connecting")
-            VStack(alignment: .leading, spacing: 15) {
-               titleLabel
-               messageLabel
-           }
-            Spacer()
-        }
+        ProgressFlowAB(progress: 0.5, abImage: ABCircleAndLoader(airbeamImage: "airbeam-connecting"), title: Strings.ConnectingABView.title, message: Strings.ConnectingABView.message)
         .background(
             NavigationLink(
                 destination: ABConnectedView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
@@ -36,7 +27,6 @@ struct ConnectingABView: View {
                 }
             )
         )
-        .padding()
         .onChange(of: viewModel.isDeviceConnected, perform: { isConnected in
             showNextScreen = isConnected
         })
@@ -51,18 +41,9 @@ struct ConnectingABView: View {
                 viewModel.connectToAirBeam()
             }
         })
-        .background(Color.aircastingBackground.ignoresSafeArea())
     }
-    
-    var titleLabel: some View {
-        Text(Strings.ConnectingABView.title)
-            .font(Fonts.moderateBoldTitle3)
-            .foregroundColor(.accentColor)
-    }
-    
-    var messageLabel: some View {
-        Text(Strings.ConnectingABView.message)
-            .font(Fonts.moderateRegularHeading1)
-            .foregroundColor(.aircastingGray)
-    }
+}
+
+#Preview {
+    ConnectingABView(sessionContext: CreateSessionContext(), device: PreviewBluetoothDevice(), creatingSessionFlowContinues: .constant(true))
 }

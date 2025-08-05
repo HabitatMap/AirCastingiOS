@@ -20,19 +20,19 @@ struct TurnOnBluetoothView: View {
     var isSDClearProcess: Bool = false
 
     var body: some View {
-        VStack(spacing: 50) {
-            ProgressView(value: sdSyncContinues ? 0.355 : 0.125)
-            Image("1-bluetooth")
-                .resizable()
-                .scaledToFit()
-            Spacer()
-            VStack(alignment: .leading, spacing: 15) {
-                titleLabel
-                messageLabel
+        ProgressFlowAB(progress: sdSyncContinues ? 0.355 : 0.125, airbeamImageAsset: "1-bluetooth", title: Strings.TurnOnBluetoothView.title, message: Strings.TurnOnBluetoothView.messageText, continueButtonOnClick: {
+            if bluetoothManager.authorizationState == .denied {
+                settingsRedirection.goToBluetoothSettings(type: .app)
+            } else if bluetoothManager.deviceState != .poweredOn {
+                settingsRedirection.goToBluetoothSettings(type: .global)
+            } else {
+                if isSDClearProcess {
+                    presentRestartScreen.toggle()
+                } else {
+                    sdSyncContinues ? presentUnplugScreen.toggle() : isPowerABLinkActive.toggle()
+                }
             }
-            continueButton
-                .buttonStyle(BlueButtonStyle())
-        }
+        })
         .background(
             Group {
                 NavigationLink(
@@ -60,41 +60,5 @@ struct TurnOnBluetoothView: View {
         .onAppear(perform: {
             bluetoothManager.forceBluetoothPermissionPopup()
         })
-        .padding()
-        .background(Color.aircastingBackground.ignoresSafeArea())
-    }
-
-    var titleLabel: some View {
-        Text(Strings.TurnOnBluetoothView.title)
-            .font(Fonts.moderateBoldTitle3)
-            .foregroundColor(.accentColor)
-    }
-
-    var messageLabel: some View {
-        Text(Strings.TurnOnBluetoothView.messageText)
-            .font(Fonts.moderateRegularHeading1)
-            .foregroundColor(.aircastingGray)
-            .lineSpacing(10.0)
-    }
-
-    var continueButton: some View {
-        Button(action: {
-            if bluetoothManager.authorizationState == .denied {
-                settingsRedirection.goToBluetoothSettings(type: .app)
-            } else if bluetoothManager.deviceState != .poweredOn {
-                settingsRedirection.goToBluetoothSettings(type: .global)
-            } else {
-                if isSDClearProcess {
-                    presentRestartScreen.toggle()
-                } else {
-                    sdSyncContinues ? presentUnplugScreen.toggle() : isPowerABLinkActive.toggle()
-                }
-            }
-        }, label: {
-            Text(Strings.Commons.continue)
-                .font(Fonts.muliBoldHeading1)
-        })
-        .frame(maxWidth: .infinity)
-        .buttonStyle(BlueButtonStyle())
     }
 }

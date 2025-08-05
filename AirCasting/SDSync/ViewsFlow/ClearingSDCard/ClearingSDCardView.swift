@@ -13,17 +13,7 @@ struct ClearingSDCardView<VM: ClearingSDCardViewModel>: View {
     @Binding var creatingSessionFlowContinues: Bool
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 40) {
-            ProgressView(value: 0.7)
-            Spacer()
-            ABCircleAndLoader()
-            Spacer()
-            VStack(alignment: .leading, spacing: 15) {
-                titleLabel
-                messageLabel
-            }
-            Spacer()
-        }
+        ProgressFlowAB(progress: 0.7, abImage: ABCircleAndLoader(), title: Strings.ClearingSDCardView.title, message: Strings.ClearingSDCardView.message)
         .alert(item: $viewModel.alert, content: { $0.makeAlert() })
         .onReceive(viewModel.shouldDismiss, perform: { value in
             if value {
@@ -33,31 +23,11 @@ struct ClearingSDCardView<VM: ClearingSDCardViewModel>: View {
         .onAppear(perform: {
             viewModel.clearSDCardButtonTapped()
         })
-        .padding()
         .background(navigationLink)
-        .background(Color.aircastingBackground.ignoresSafeArea())
     }
 }
 
 extension ClearingSDCardView {
-    var syncingImage: some View {
-        Image("airbeam")
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-    }
-    
-    var titleLabel: some View {
-        Text(Strings.ClearingSDCardView.title)
-            .font(Fonts.moderateBoldTitle3)
-            .foregroundColor(.accentColor)
-    }
-    
-    var messageLabel: some View {
-        Text(Strings.ClearingSDCardView.message)
-            .font(Fonts.moderateRegularHeading1)
-            .foregroundColor(.aircastingGray)
-    }
-    
     var navigationLink: some View {
         NavigationLink(
             destination: SDSyncCompleteView(viewModel: SDSyncCompleteViewModelDefault(), creatingSessionFlowContinues: $creatingSessionFlowContinues, isSDClearProcess: viewModel.isSDClearProcess),

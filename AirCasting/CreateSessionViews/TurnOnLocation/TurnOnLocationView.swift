@@ -8,20 +8,7 @@ struct TurnOnLocationView: View {
     @StateObject var viewModel: TurnOnLocationViewModel
     
     var body: some View {
-        VStack(spacing: 50) {
-            ProgressView(value: 0.125)
-            Image("location-1")
-                .resizable()
-                .scaledToFit()
-            Spacer()
-            VStack(alignment: .leading, spacing: 15) {
-                titleLabel
-                messageLabel
-            }
-            continueButton
-        }
-        .padding()
-        .background(Color.aircastingBackground.ignoresSafeArea())
+        ProgressFlowAB(progress: 0.125, airbeamImageAsset: "location-1", title: Strings.TurnOnLocationView.title, message: Strings.TurnOnLocationView.messageText, continueButtonOnClick: viewModel.onButtonClick)
         .alert(item: $viewModel.alert, content: { $0.makeAlert() })
         .background(
             Group {
@@ -45,29 +32,6 @@ struct TurnOnLocationView: View {
                 viewModel.requestLocationAuthorisation()
             }
         }
-    }
-    
-    var titleLabel: some View {
-        Text(Strings.TurnOnLocationView.title)
-            .font(Fonts.moderateBoldTitle3)
-            .foregroundColor(.accentColor)
-    }
-    
-    var messageLabel: some View {
-        Text(Strings.TurnOnLocationView.messageText)
-            .font(Fonts.moderateRegularHeading1)
-            .foregroundColor(.aircastingGray)
-            .lineSpacing(10.0)
-    }
-    
-    var continueButton: some View {
-        Button(action: {
-            viewModel.onButtonClick()
-        }, label: {
-            Text(Strings.Commons.continue)
-        })
-        .frame(maxWidth: .infinity)
-        .buttonStyle(BlueButtonStyle())
     }
     
     var proceedToPowerABView: some View {

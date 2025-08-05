@@ -10,58 +10,13 @@ struct BackendSyncCompletedView<VM: BackendSyncCompletedViewModel>: View {
     
     var body: some View {
         GeometryReader { reader in
-            VStack(alignment: .leading, spacing: 40) {
-                ProgressView(value: 0.284)
-                Spacer()
-                HStack() {
-                    Spacer()
-                    connectedImage
-                        .frame(width: reader.size.width / 2, height: reader.size.height / 3, alignment: .center)
-                    Spacer()
-                }
-                Spacer()
-                VStack(alignment: .leading, spacing: 15) {
-                    titleLabel
-                    messageLabel
-                }
-                continueButton
-            }
+            ProgressFlowAB(progress: 0.284, airbeamImageAsset: "4-connected", title: Strings.SDSyncSuccessView.title, message: Strings.SDSyncSuccessView.message, continueButtonOnClick: viewModel.continueButtonTapped)
             .background(Group { restartNavigationLink; BTNavigationLink; locationNavigationLink })
-            .padding()
-            .background(Color.aircastingBackground.ignoresSafeArea())
         }
     }
 }
 
 private extension BackendSyncCompletedView {
-    
-    var connectedImage: some View {
-        Image("4-connected")
-            .aspectRatio(contentMode: .fit)
-    }
-    
-    var titleLabel: some View {
-        Text(Strings.SDSyncSuccessView.title)
-            .font(Fonts.moderateBoldTitle3)
-            .foregroundColor(.accentColor)
-    }
-    
-    var messageLabel: some View {
-        Text(Strings.SDSyncSuccessView.message)
-            .font(Fonts.moderateRegularHeading1)
-            .foregroundColor(.aircastingGray)
-    }
-    
-    var continueButton: some View {
-        Button {
-            viewModel.continueButtonTapped()
-        } label: {
-            Text(Strings.Commons.continue)
-        }
-        .buttonStyle(BlueButtonStyle())
-        .padding(.bottom, 15)
-    }
-    
     var locationNavigationLink: some View {
         NavigationLink(
             destination: TurnOnLocationView(creatingSessionFlowContinues: $creatingSessionFlowContinues, viewModel: TurnOnLocationViewModel(process: .sdSync)),
