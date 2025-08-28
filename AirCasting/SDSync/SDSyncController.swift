@@ -133,7 +133,12 @@ class SDSyncController {
         let mobileFilesDirectoryURL = filesDirectories.first(where: { $0.1 == SDCardSessionType.mobile })?.0
         let fixedFilesDirectoryURL = filesDirectories.first(where: { $0.1 == SDCardSessionType.fixed })?.0
         
-        func handleFixedFiles(at fixedFilesDirectoryURL: URL) {
+        func handleFixedFilesAndComplete(_ fixedFilesDirectoryURL: URL?) {
+            guard let fixedFilesDirectoryURL else {
+                Log.info("[SD Sync] There was no fixed directory.")
+                completion(.success(()))
+                return
+            }
             process(fixedSessionsFilesDirectory: fixedFilesDirectoryURL, deviceID: sensorName) { result in
                 switch result {
                 case .success(let fixedSessionsUUIDs):
@@ -146,27 +151,26 @@ class SDSyncController {
             }
         }
         
-        if let mobileFilesDirectoryURL = mobileFilesDirectoryURL {
+        if let mobileFilesDirectoryURL {
             process(mobileSessionFilesDirectory: mobileFilesDirectoryURL, deviceID: sensorName) { mobileResult in
                 guard mobileResult else {
                     completion(.failure(.mobileSessionsProcessingFailure))
                     return
                 }
+                
                 do {
                     try self.finishStandaloneSessionIfPresent(completion)
                 } catch {
                     completion(.failure(.mobileSessionsProcessingFailure))
                     return
                 }
+                
+                handleFixedFilesAndComplete(fixedFilesDirectoryURL)
             }
-        } else { Log.info("[SD Sync] There was no mobile directory.") }
-        
-        if let fixedFilesDirectoryURL = fixedFilesDirectoryURL {
-            handleFixedFiles(at: fixedFilesDirectoryURL)
-        } else { Log.info("[SD Sync] There was no fixed directory.") }
-        
-        Log.info("[SD Sync] Completion success.")
-        completion(.success(()))
+        } else {
+            Log.info("[SD Sync] There was no mobile directory.")
+            handleFixedFilesAndComplete(fixedFilesDirectoryURL)
+        }
     }
     
     private func process(fixedSessionsFilesDirectory: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
