@@ -41,6 +41,7 @@ final class CreateSessionContext: ObservableObject {
     
     func saveCurrentLocation(lat: Double, log: Double) {
         startingLocation = CLLocationCoordinate2D(latitude: lat, longitude: log)
+        Log.warning("saved in context \(String(describing: self.startingLocation))")
     }
     var isMobileSession: Bool {
         sessionType == .mobile

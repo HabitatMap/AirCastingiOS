@@ -21,6 +21,7 @@ struct ConfirmCreatingSessionView: View {
     @EnvironmentObject var selectedSection: SelectedSection
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @Injected private var locationTracker: LocationTracker
+    private var constantTracker: ConstantTracker?
     @Injected private var downloadMeasurementsService: DownloadMeasurementsService
     @EnvironmentObject private var tabSelection: TabBarSelector
     @Binding var creatingSessionFlowContinues: Bool
@@ -31,9 +32,14 @@ struct ConfirmCreatingSessionView: View {
     private var shouldTrackLocation: Bool { sessionContext.sessionType == .mobile && !sessionContext.locationless }
     
     init(creatingSessionFlowContinues: Binding<Bool>, sessionName: String, initialLocation: CLLocation? = nil) {
+        Log.warning("Confirm creating session view initial location: \(initialLocation)")
         _creatingSessionFlowContinues = .init(projectedValue: creatingSessionFlowContinues)
         self.sessionName = sessionName
         self.initialLocation = initialLocation
+        
+        if let initialLocation = initialLocation {
+            self.constantTracker = ConstantTracker(location: initialLocation)
+        }
     }
 
     var body: some View {
@@ -123,7 +129,7 @@ struct ConfirmCreatingSessionView: View {
                                  type: .normal,
                                  trackingStyle: .none,
                                  userIndicatorStyle: .none,
-                                 locationTracker: ConstantTracker(location: initialLocation!),
+                                 locationTracker: constantTracker!,
                                  markers: [])
                         .disabled(true)
                         // It needs to be disabled to prevent user interaction (swiping map) because it is only conformation screen
@@ -178,13 +184,48 @@ extension ConfirmCreatingSessionView {
         sessionContext.saveCurrentLocation(lat: krakowLat, log: krakowLong)
         return
         #endif
-        if sessionContext.sessionType == .fixed || sessionContext.locationless {
-            if sessionContext.isIndoor! || sessionContext.locationless {
-                sessionContext.saveCurrentLocation(lat: 200, log: 200)
+        Log.warning("getAndSaveStartingLocation location entered")
+        
+        if (sessionContext.sessionType == .fixed && sessionContext.isIndoor!) || sessionContext.locationless {
+            Log.warning("getAndSaveStartingLocation location entered \(sessionContext.sessionType == .fixed ), locationless: \(sessionContext.locationless)")
+            Log.warning("getAndSaveStartingLocation location entered 2 \(sessionContext.isIndoor!)")
+            sessionContext.saveCurrentLocation(lat: 200, log: 200)
+        } else if (sessionContext.sessionType == .fixed && !sessionContext.isIndoor!) {
+            
+            guard let lat = (constantTracker?.location.coordinate.latitude),
+                  let lon = (constantTracker?.location.coordinate.longitude)
+            else {
+                Log.error("No location found!")
+                return
             }
+            
+            Log.warning("HERE lat: \(lat), lon: \(lon)")
+            //  MARTA: Above is working but the session is in the ocean
+            // Chek: Was michael's example the same? Maybe just 0,0 is in the ocean but now this is fixed?
+            // This can be due to area instead of specific place differences
+            // Check: Did my changes actually fix anything? Or was is still in a good place just not zoomed out?
+            // Map is still not fixed (or is it just showing the sea?)
+            // W pewnym momencie lokalizacja sie zmienia w ConfirmCreatingSessionView
+            
+            /*[09-29-2025 15:32:16.664] ConfirmCreatingSessionView.swift: ⚠️ Confirm creating session view initial location: Optional((51.507, -0.128))
+            [09-29-2025 15:32:17.184] ConfirmCreatingSessionView.swift: ⚠️ Confirm creating session view initial location: Optional((51.507, -0.128))
+            [09-29-2025 15:32:17.453] ChooseCustomLocationView.swift: ⚠️ 1: <+51.35636507,+1.96028609> +/- 0.00m (speed -1.00 mps / course -1.00) @ 29/09/2025, 17:32:17 Central European Summer Time
+            [09-29-2025 15:32:17.454] ConfirmCreatingSessionView.swift: ⚠️ Confirm creating session view initial location: Optional((51.356, 1.960))
+            [09-29-2025 15:32:17.941] ConfirmCreatingSessionView.swift: ⚠️ Confirm creating session view initial location: Optional((51.356, 1.960))*/
+            
+            sessionContext.saveCurrentLocation(lat: lat, log: lon)
+            
         } else {
+            //Log.warning("getAndSaveStartingLocation check for lat and long: \(locationTracker.location.value as Any)")
+            
             guard let lat = (locationTracker.location.value?.coordinate.latitude),
-                  let lon = (locationTracker.location.value?.coordinate.longitude) else { return }
+                  let lon = (locationTracker.location.value?.coordinate.longitude)
+            else {
+                Log.error("No location found!")
+                return
+            }
+            
+            //Log.warning("getAndSaveStartingLocation lat: \(lat), lon: \(lon)")
             sessionContext.saveCurrentLocation(lat: lat, log: lon)
         }
     }
@@ -199,8 +240,8 @@ extension ConfirmCreatingSessionView {
         } else if sessionContext.sessionType == .mobile {
             return MobilePeripheralSessionCreator()
         } else {
-            return nil
             Log.info("Can't set the session creator storage")
+            return nil
         }
     }
 

@@ -172,13 +172,17 @@ class MapLocationTrackerAdapter: MapLocationTracker {
 }
 
 struct ConstantTracker: MapLocationTracker {
+    
     let location: CLLocation
     
     func getLastKnownLocation() -> CLLocation? {
-        location
+        Log.warning("Constant tracker get last known location location: \(location)")
+        return location
     }
     
     func startTrackingUserPosition(_ newPos: @escaping (CLLocation) -> Void) -> MapLocationTrackerStoper {
+        Log.warning("Constant tracker start tracking user position location: \(location)")
+
         newPos(location)
         return Stoper()
     }
