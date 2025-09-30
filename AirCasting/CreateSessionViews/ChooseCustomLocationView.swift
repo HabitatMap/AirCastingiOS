@@ -38,9 +38,8 @@ struct ChooseCustomLocationView: View {
         }
         .background(confirmCreatingSessionLink)
         .sheet(isPresented: $isLocationPopupPresented, onDismiss: {
-            
             guard let newLocation = location else { return }
-            Log.warning("2: \(newLocation)")
+            
             locationChangedProgramatically = true
             locationTracker.ovverridenLocation = newLocation
         }, content: {
@@ -62,7 +61,6 @@ struct ChooseCustomLocationView: View {
                  locationTracker: locationTracker,
                  stickHardToTheUser: true)
         .indicateMapLocationChange { newLocation in
-            Log.warning("1: \(newLocation)")
             if !locationChangedProgramatically {
                 locationChangedProgramatically = false
                 location = .init(latitude: newLocation.coordinate.latitude,
