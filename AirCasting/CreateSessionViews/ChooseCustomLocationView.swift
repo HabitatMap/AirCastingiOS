@@ -14,6 +14,7 @@ struct ChooseCustomLocationView: View {
     @Binding var creatingSessionFlowContinues: Bool
     @StateObject private var locationTracker = BindableLocationTracker()
     var sessionName: String
+    @State private var locationChangedProgramatically: Bool = false
     @Injected private var AppLocationTracker: LocationTracker
     
     @EnvironmentObject private var sessionContext: CreateSessionContext
@@ -38,6 +39,8 @@ struct ChooseCustomLocationView: View {
         .background(confirmCreatingSessionLink)
         .sheet(isPresented: $isLocationPopupPresented, onDismiss: {
             guard let newLocation = location else { return }
+            
+            locationChangedProgramatically = true
             locationTracker.ovverridenLocation = newLocation
         }, content: {
             PlacePicker(service: ChooseLocationPickerService(address: $locationName,
@@ -58,8 +61,11 @@ struct ChooseCustomLocationView: View {
                  locationTracker: locationTracker,
                  stickHardToTheUser: true)
         .indicateMapLocationChange { newLocation in
-            location = .init(latitude: newLocation.coordinate.latitude,
-                             longitude: newLocation.coordinate.longitude)
+            if !locationChangedProgramatically {
+                locationChangedProgramatically = false
+                location = .init(latitude: newLocation.coordinate.latitude,
+                                 longitude: newLocation.coordinate.longitude)
+            }
         }
         .onMyLocationButtonTapped {
             locationTracker.ovverridenLocation = nil
