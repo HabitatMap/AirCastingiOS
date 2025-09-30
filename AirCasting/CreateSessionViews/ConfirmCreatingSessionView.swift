@@ -21,7 +21,6 @@ struct ConfirmCreatingSessionView: View {
     @EnvironmentObject var selectedSection: SelectedSection
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @Injected private var locationTracker: LocationTracker
-    private var constantTracker: ConstantTracker?
     @Injected private var downloadMeasurementsService: DownloadMeasurementsService
     @EnvironmentObject private var tabSelection: TabBarSelector
     @Binding var creatingSessionFlowContinues: Bool
@@ -35,10 +34,6 @@ struct ConfirmCreatingSessionView: View {
         _creatingSessionFlowContinues = .init(projectedValue: creatingSessionFlowContinues)
         self.sessionName = sessionName
         self.initialLocation = initialLocation
-        
-        if let initialLocation = initialLocation {
-            self.constantTracker = ConstantTracker(location: initialLocation)
-        }
     }
 
     var body: some View {
@@ -128,7 +123,7 @@ struct ConfirmCreatingSessionView: View {
                                  type: .normal,
                                  trackingStyle: .none,
                                  userIndicatorStyle: .none,
-                                 locationTracker: constantTracker!,
+                                 locationTracker: ConstantTracker(location: initialLocation!),
                                  markers: [])
                         .disabled(true)
                         // It needs to be disabled to prevent user interaction (swiping map) because it is only conformation screen
@@ -183,27 +178,13 @@ extension ConfirmCreatingSessionView {
         sessionContext.saveCurrentLocation(lat: krakowLat, log: krakowLong)
         return
         #endif
-        
-        if (sessionContext.sessionType == .fixed && sessionContext.isIndoor!) || sessionContext.locationless {
-            sessionContext.saveCurrentLocation(lat: 200, log: 200)
-        } else if (sessionContext.sessionType == .fixed && !sessionContext.isIndoor!) {
-            
-            guard let lat = (constantTracker?.location.coordinate.latitude),
-                  let lon = (constantTracker?.location.coordinate.longitude)
-            else {
-                Log.error("No location found!")
-                return
+        if sessionContext.sessionType == .fixed || sessionContext.locationless {
+            if sessionContext.isIndoor! || sessionContext.locationless {
+                sessionContext.saveCurrentLocation(lat: 200, log: 200)
             }
-            
-            sessionContext.saveCurrentLocation(lat: lat, log: lon)
-            
         } else {
             guard let lat = (locationTracker.location.value?.coordinate.latitude),
-                  let lon = (locationTracker.location.value?.coordinate.longitude)
-            else {
-                Log.error("No location found!")
-                return
-            }
+                  let lon = (locationTracker.location.value?.coordinate.longitude) else { return }
             sessionContext.saveCurrentLocation(lat: lat, log: lon)
         }
     }
@@ -218,8 +199,8 @@ extension ConfirmCreatingSessionView {
         } else if sessionContext.sessionType == .mobile {
             return MobilePeripheralSessionCreator()
         } else {
-            Log.info("Can't set the session creator storage")
             return nil
+            Log.info("Can't set the session creator storage")
         }
     }
 
