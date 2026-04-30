@@ -456,6 +456,9 @@
 		D1A0670130042026000001AB /* FirmwareVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000002AB /* FirmwareVersion.swift */; };
 		D1A0670130042026000003AB /* AirBeamMiniV2Configurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000004AB /* AirBeamMiniV2Configurator.swift */; };
 		D1A0670130042026000007AB /* V2BinaryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000008AB /* V2BinaryProtocol.swift */; };
+		D1A0670130042026000009AB /* V2ResponseDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000010AB /* V2ResponseDispatcher.swift */; };
+		D1A0670130042026000011AB /* V2MeasurementParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000012AB /* V2MeasurementParser.swift */; };
+		D1A0670130042026000013AB /* V2ConfiguratorRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000014AB /* V2ConfiguratorRegistry.swift */; };
 		DD009D662698844A009F0443 /* DeleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD009D652698844A009F0443 /* DeleteView.swift */; };
 		DD123EBF27BD1CD3001083C3 /* SearchMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD123EBE27BD1CD3001083C3 /* SearchMapView.swift */; };
 		DD123EC227BD2C53001083C3 /* SearchMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD123EC127BD2C53001083C3 /* SearchMapViewModel.swift */; };
@@ -1064,6 +1067,9 @@
 		D1A0670130042026000002AB /* FirmwareVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirmwareVersion.swift; sourceTree = "<group>"; };
 		D1A0670130042026000004AB /* AirBeamMiniV2Configurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamMiniV2Configurator.swift; sourceTree = "<group>"; };
 		D1A0670130042026000008AB /* V2BinaryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2BinaryProtocol.swift; sourceTree = "<group>"; };
+		D1A0670130042026000010AB /* V2ResponseDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2ResponseDispatcher.swift; sourceTree = "<group>"; };
+		D1A0670130042026000012AB /* V2MeasurementParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2MeasurementParser.swift; sourceTree = "<group>"; };
+		D1A0670130042026000014AB /* V2ConfiguratorRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2ConfiguratorRegistry.swift; sourceTree = "<group>"; };
 		DD009D652698844A009F0443 /* DeleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteView.swift; sourceTree = "<group>"; };
 		DD123EBE27BD1CD3001083C3 /* SearchMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMapView.swift; sourceTree = "<group>"; };
 		DD123EC127BD2C53001083C3 /* SearchMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMapViewModel.swift; sourceTree = "<group>"; };
@@ -2708,6 +2714,9 @@
 			children = (
 				D1A0670130042026000004AB /* AirBeamMiniV2Configurator.swift */,
 				D1A0670130042026000008AB /* V2BinaryProtocol.swift */,
+				D1A0670130042026000010AB /* V2ResponseDispatcher.swift */,
+				D1A0670130042026000012AB /* V2MeasurementParser.swift */,
+				D1A0670130042026000014AB /* V2ConfiguratorRegistry.swift */,
 			);
 			path = V2;
 			sourceTree = "<group>";
@@ -3610,6 +3619,9 @@
 				D1A0670130042026000001AB /* FirmwareVersion.swift in Sources */,
 				D1A0670130042026000003AB /* AirBeamMiniV2Configurator.swift in Sources */,
 				D1A0670130042026000007AB /* V2BinaryProtocol.swift in Sources */,
+				D1A0670130042026000009AB /* V2ResponseDispatcher.swift in Sources */,
+				D1A0670130042026000011AB /* V2MeasurementParser.swift in Sources */,
+				D1A0670130042026000013AB /* V2ConfiguratorRegistry.swift in Sources */,
 				335B54BF28BD01C300BA92D2 /* CustomSwipeAction.swift in Sources */,
 				FA4F1B75281809B2002711B4 /* AirBeamStreamSuffixes.swift in Sources */,
 				33A16E7B2DF6F76400D9142A /* Concurrency.swift in Sources */,

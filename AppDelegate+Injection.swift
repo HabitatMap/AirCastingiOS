@@ -163,8 +163,10 @@ extension Resolver: ResolverRegistering {
         main.register { NotificationsManager() }.scope(.application)
 
         // MARK: - AirBeam configuration
-        main.register { (_, args) -> AirBeamMiniV2Configurator in
-            AirBeamMiniV2Configurator(device: args())
+        main.register { V2ConfiguratorRegistry() }.scope(.application)
+        main.register { (resolver, args) -> AirBeamMiniV2Configurator in
+            let device: any BluetoothDevice = args()
+            return resolver.resolve(V2ConfiguratorRegistry.self).configurator(for: device)
         }
         main.register { (resolver, args) -> AirBeamConfigurator in
             let device: any BluetoothDevice = args()

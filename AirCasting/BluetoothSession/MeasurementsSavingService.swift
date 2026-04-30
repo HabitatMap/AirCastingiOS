@@ -9,11 +9,18 @@ protocol MeasurementsSavingService {
     func handlePeripheralMeasurement(_ measurement: ABMeasurementStream, sessionUUID: SessionUUID, locationless: Bool)
     func createSession(session: Session, device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void)
     func changeStatusToRecording(for sessionUUID: SessionUUID)
+    /// V2 path: save a single measurement with the device-provided timestamp.
+    /// Bypasses the V1 batching path used for AB3/Mini-V1 (which generates a fake current time per N readings).
+    func saveV2LiveMeasurement(_ measurement: ABMeasurementStream,
+                               sessionUUID: SessionUUID,
+                               time: Date,
+                               locationless: Bool)
 }
 
 class DefaultMeasurementsSaver: MeasurementsSavingService {
     @Injected private var persistence: MobileSessionRecordingStorage
     @Injected private var uiStorage: UIStorage
+    @Injected private var locationTracker: LocationTracker
     private var peripheralMeasurementManager: PeripheralMeasurementTimeLocationManager?
     private var expectedMeasurementThreshold = 1
 
@@ -97,6 +104,14 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
                 Log.error("Failed to change session status to recording")
             }
         }
+    }
+
+    func saveV2LiveMeasurement(_ measurement: ABMeasurementStream,
+                               sessionUUID: SessionUUID,
+                               time: Date,
+                               locationless: Bool) {
+        let location = locationless ? .undefined : (locationTracker.location.value?.coordinate ?? .undefined)
+        updateStreams(stream: measurement, sessionUUID: sessionUUID, location: location, time: time)
     }
 
     private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, location: CLLocationCoordinate2D?, time: Date) {

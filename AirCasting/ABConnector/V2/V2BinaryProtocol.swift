@@ -54,6 +54,87 @@ enum V2BinaryProtocol {
     static let settleDelaySeconds: TimeInterval = 0.3
     static let statusFallbackReadDelaySeconds: TimeInterval = 1.0
 
+    static let mobileIntervalSeconds: UInt16 = 1
+    static let fixedIntervalSeconds: UInt16 = 60
+
+    enum SessionMode: UInt8 {
+        case fixed  = 0x00
+        case mobile = 0x01
+    }
+
+    static func buildDiscardSession() -> Data {
+        Data([OpCode.discardSession.rawValue])
+    }
+
+    static func buildContinueSession() -> Data {
+        Data([OpCode.continueSession.rawValue])
+    }
+
+    static func buildGetSensors() -> Data {
+        Data([OpCode.getSensors.rawValue])
+    }
+
+    static func buildSetTime(date: Date = Date()) -> Data {
+        var bytes = Data([OpCode.setTime.rawValue])
+        var seconds = Int64(date.timeIntervalSince1970).littleEndian
+        withUnsafeBytes(of: &seconds) { bytes.append(contentsOf: $0) }
+        return bytes
+    }
+
+    /// Mobile NewSessionConfig: 20 bytes, NO session_token.
+    /// `[0x13] + UUID_LE(16) + interval=1_LE(2) + 0x01`
+    static func buildNewSessionConfigMobile(uuid: UUID,
+                                            interval: UInt16 = mobileIntervalSeconds) -> Data {
+        var data = Data([OpCode.newSessionConfig.rawValue])
+        data.append(uuid.toV2LEBytes())
+        var le = interval.littleEndian
+        withUnsafeBytes(of: &le) { data.append(contentsOf: $0) }
+        data.append(SessionMode.mobile.rawValue)
+        return data
+    }
+
+    enum ResponseFrame: Equatable {
+        case ack
+        case nack(NackError, raw: UInt8)
+        case ready
+        case sensorInfo(String)
+        case syncInfo(ssid: String, password: String)
+        case unknown(UInt8)
+    }
+
+    static func decodeResponse(_ data: Data) -> ResponseFrame? {
+        guard let first = data.first else { return nil }
+        guard let code = ResponseCode(rawValue: first) else {
+            return .unknown(first)
+        }
+        switch code {
+        case .ack: return .ack
+        case .ready: return .ready
+        case .nack:
+            guard data.count >= 2 else { return .nack(.invalidConfig, raw: 0) }
+            let raw = data[data.startIndex + 1]
+            let mapped = NackError(rawValue: raw) ?? .invalidConfig
+            return .nack(mapped, raw: raw)
+        case .sensorInfo:
+            let payload = data.dropFirst()
+            let str = String(data: payload, encoding: .utf8) ?? ""
+            return .sensorInfo(str)
+        case .syncInfo:
+            // 32B SSID + 64B password (null-padded)
+            guard data.count >= 1 + 32 + 64 else { return nil }
+            let ssidEnd = data.startIndex + 1 + 32
+            let pwdEnd  = ssidEnd + 64
+            let ssidBytes = data.subdata(in: (data.startIndex + 1)..<ssidEnd)
+            let pwdBytes  = data.subdata(in: ssidEnd..<pwdEnd)
+            return .syncInfo(ssid: trimNulls(ssidBytes), password: trimNulls(pwdBytes))
+        }
+    }
+
+    private static func trimNulls(_ data: Data) -> String {
+        let trimmed = data.prefix { $0 != 0 }
+        return String(data: trimmed, encoding: .utf8) ?? ""
+    }
+
     enum Status: Equatable {
         case idle(battery: BatteryReading)
         case hasSavedSession(battery: BatteryReading, sessionUUID: UUID, hasMeasurements: Bool)
