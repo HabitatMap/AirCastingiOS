@@ -22,7 +22,6 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
     @Injected private var locationTracker: LocationTracker
     @Injected private var btManager: BluetoothConnectionHandler
-    @Injected private var v2Registry: V2ConfiguratorRegistry
     private var isRecording = false
 
     func startRecording(session: Session, device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
@@ -129,7 +128,7 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
             if device.firmwareVersion == .v1 {
                 self.measurementsRecorder.stopRecording()
             } else {
-                self.v2Registry.release(deviceUUID: device.uuid)
+                Resolver.resolve(V2ConfiguratorRegistry.self).release(deviceUUID: device.uuid)
             }
             self.isRecording = false
         }

@@ -20,7 +20,6 @@ protocol MeasurementsSavingService {
 class DefaultMeasurementsSaver: MeasurementsSavingService {
     @Injected private var persistence: MobileSessionRecordingStorage
     @Injected private var uiStorage: UIStorage
-    @Injected private var locationTracker: LocationTracker
     private var peripheralMeasurementManager: PeripheralMeasurementTimeLocationManager?
     private var expectedMeasurementThreshold = 1
 
@@ -110,7 +109,16 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
                                sessionUUID: SessionUUID,
                                time: Date,
                                locationless: Bool) {
-        let location = locationless ? .undefined : (locationTracker.location.value?.coordinate ?? .undefined)
+        // Resolve LocationTracker lazily inside the call so DefaultMeasurementsSaver
+        // (eagerly built at app boot via the BluetoothSessionRecordingController inject
+        // chain) doesn't force CLLocationManager init during launch.
+        let location: CLLocationCoordinate2D
+        if locationless {
+            location = .undefined
+        } else {
+            let tracker = Resolver.resolve(LocationTracker.self)
+            location = tracker.location.value?.coordinate ?? .undefined
+        }
         updateStreams(stream: measurement, sessionUUID: sessionUUID, location: location, time: time)
     }
 
