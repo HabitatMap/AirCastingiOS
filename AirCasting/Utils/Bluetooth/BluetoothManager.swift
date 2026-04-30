@@ -92,11 +92,13 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         fileprivate let peripheral: CBPeripheral
         var name: String?
         var uuid: String
-        
-        init(peripheral: CBPeripheral) {
+        var firmwareVersion: FirmwareVersion
+
+        init(peripheral: CBPeripheral, firmwareVersion: FirmwareVersion = .v1) {
             self.peripheral = peripheral
             name = peripheral.name
             uuid = peripheral.identifier.description
+            self.firmwareVersion = firmwareVersion
         }
     }
     

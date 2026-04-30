@@ -163,8 +163,14 @@ extension Resolver: ResolverRegistering {
         main.register { NotificationsManager() }.scope(.application)
 
         // MARK: - AirBeam configuration
-        main.register { (_, args) in
-            AirBeam3Configurator(device: args()) as AirBeamConfigurator
+        main.register { (_, args) -> AirBeamConfigurator in
+            let device: any BluetoothDevice = args()
+            switch device.firmwareVersion {
+            case .v2:
+                return AirBeamMiniV2Configurator(device: device)
+            case .v1:
+                return AirBeam3Configurator(device: device)
+            }
         }
 
         // MARK: - Session stopping

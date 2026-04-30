@@ -24,6 +24,13 @@ protocol AirBeamConfigurator {
                                    completion: @escaping (Result<Void, Error>) -> Void)
     func configureSDSync(completion: @escaping (Result<Void, Error>) -> Void)
     func clearSDCard(completion: @escaping (Result<Void, Error>) -> Void)
+    func discardSession(completion: @escaping (Result<Void, Error>) -> Void)
+}
+
+extension AirBeamConfigurator {
+    func discardSession(completion: @escaping (Result<Void, Error>) -> Void) {
+        completion(.success(()))
+    }
 }
 
 struct AirBeam3Configurator: AirBeamConfigurator {

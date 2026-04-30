@@ -230,6 +230,8 @@
 		AC8CFF7225E7DA2D00FB2918 /* ABMeasurementStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF7125E7DA2D00FB2918 /* ABMeasurementStream.swift */; };
 		AC8CFF7725ECF8B100FB2918 /* HexMessagesBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF7625ECF8B100FB2918 /* HexMessagesBuilder.swift */; };
 		AC8CFF7E25EE5F9200FB2918 /* AirBeam3Configurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF7D25EE5F9200FB2918 /* AirBeam3Configurator.swift */; };
+		D1A0670130042026000001AB /* FirmwareVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000002AB /* FirmwareVersion.swift */; };
+		D1A0670130042026000003AB /* AirBeamMiniV2Configurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000004AB /* AirBeamMiniV2Configurator.swift */; };
 		AC8D6C6A25C049E300ED74D1 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8D6C6925C049E300ED74D1 /* Environment.swift */; };
 		AC8D6C6E25C056B400ED74D1 /* HeatMapPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8D6C6D25C056B400ED74D1 /* HeatMapPoint.swift */; };
 		AC8D6C7225C0574800ED74D1 /* LocationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8D6C7125C0574800ED74D1 /* LocationTracker.swift */; };
@@ -839,6 +841,8 @@
 		AC8CFF7125E7DA2D00FB2918 /* ABMeasurementStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABMeasurementStream.swift; sourceTree = "<group>"; };
 		AC8CFF7625ECF8B100FB2918 /* HexMessagesBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMessagesBuilder.swift; sourceTree = "<group>"; };
 		AC8CFF7D25EE5F9200FB2918 /* AirBeam3Configurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeam3Configurator.swift; sourceTree = "<group>"; };
+		D1A0670130042026000002AB /* FirmwareVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirmwareVersion.swift; sourceTree = "<group>"; };
+		D1A0670130042026000004AB /* AirBeamMiniV2Configurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamMiniV2Configurator.swift; sourceTree = "<group>"; };
 		AC8D6C6925C049E300ED74D1 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		AC8D6C6D25C056B400ED74D1 /* HeatMapPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatMapPoint.swift; sourceTree = "<group>"; };
 		AC8D6C7125C0574800ED74D1 /* LocationTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTracker.swift; sourceTree = "<group>"; };
@@ -1283,6 +1287,7 @@
 				3320F2F129250CEC00EFFB2D /* BluetoothStateHandler.swift */,
 				3320F2FD292692F000EFFB2D /* BluetoothPeripheralConnectionChecker.swift */,
 				33F96EA7293E7F4F00FE7F0A /* BluetoothDevice.swift */,
+				D1A0670130042026000002AB /* FirmwareVersion.swift */,
 			);
 			path = Bluetooth;
 			sourceTree = "<group>";
@@ -1647,8 +1652,17 @@
 				DD28047826B3D7370060F55E /* AirBeamConnectionController.swift */,
 				AC8CFF7D25EE5F9200FB2918 /* AirBeam3Configurator.swift */,
 				AC8CFF7625ECF8B100FB2918 /* HexMessagesBuilder.swift */,
+				D1A0670130042026000005AB /* V2 */,
 			);
 			path = ABConnector;
+			sourceTree = "<group>";
+		};
+		D1A0670130042026000005AB /* V2 */ = {
+			isa = PBXGroup;
+			children = (
+				D1A0670130042026000004AB /* AirBeamMiniV2Configurator.swift */,
+			);
+			path = V2;
 			sourceTree = "<group>";
 		};
 		AC32040625CC122900A68520 /* Utils */ = {
@@ -3578,6 +3592,8 @@
 				B3EBB10626A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift in Sources */,
 				AC08A662266E2AEC0081697C /* ABMeasurementsView.swift in Sources */,
 				33F96EA8293E7F4F00FE7F0A /* BluetoothDevice.swift in Sources */,
+				D1A0670130042026000001AB /* FirmwareVersion.swift in Sources */,
+				D1A0670130042026000003AB /* AirBeamMiniV2Configurator.swift in Sources */,
 				335B54BF28BD01C300BA92D2 /* CustomSwipeAction.swift in Sources */,
 				FA4F1B75281809B2002711B4 /* AirBeamStreamSuffixes.swift in Sources */,
 				33A16E7B2DF6F76400D9142A /* Concurrency.swift in Sources */,

@@ -6,6 +6,11 @@ import Foundation
 protocol BluetoothDevice {
     var name: String? { get }
     var uuid: String { get }
+    var firmwareVersion: FirmwareVersion { get }
+}
+
+extension BluetoothDevice {
+    var firmwareVersion: FirmwareVersion { .v1 }
 }
 
 extension BluetoothDevice {
