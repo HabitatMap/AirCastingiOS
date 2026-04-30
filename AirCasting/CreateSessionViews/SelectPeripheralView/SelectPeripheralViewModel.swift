@@ -40,7 +40,10 @@ class SelectPeripheralViewModel: ObservableObject {
     
     private func addDevice(_ device: any BluetoothDevice) {
         DispatchQueue.main.async {
-            if device.name?.contains("AirBeam") == true {
+            // Case-insensitive: V2 firmware advertises as "airbeammini" lowercase in
+            // CBAdvertisementDataLocalNameKey, while CBPeripheral.name (when populated
+            // from GAP) tends to be "AirBeamMini" capitalized.
+            if device.name?.range(of: "airbeam", options: .caseInsensitive) != nil {
                 guard !self.airbeams.contains(where: { $0.uuid == device.uuid }) else { return }
                 self.airbeams.append(device)
             } else if !(device.name?.isEmpty ?? true) {

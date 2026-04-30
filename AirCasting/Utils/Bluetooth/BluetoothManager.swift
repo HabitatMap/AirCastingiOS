@@ -109,9 +109,13 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         var uuid: String
         var firmwareVersion: FirmwareVersion
 
-        init(peripheral: CBPeripheral, firmwareVersion: FirmwareVersion = .v1) {
+        init(peripheral: CBPeripheral, firmwareVersion: FirmwareVersion = .v1, advertisedName: String? = nil) {
             self.peripheral = peripheral
-            name = peripheral.name
+            // Prefer advertisedName from CBAdvertisementDataLocalNameKey: peripheral.name is
+            // often nil at didDiscover time and only filled in once the device has been
+            // connected or its GAP name characteristic read. Falling back kept airbeams out
+            // of the SelectPeripheral list when iOS hadn't cached the name yet.
+            name = advertisedName ?? peripheral.name
             uuid = peripheral.identifier.description
             self.firmwareVersion = firmwareVersion
         }
@@ -150,9 +154,15 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         let resolved: FirmwareVersion = (stored == .v2 || detected == .v2) ? .v2 : .v1
         if resolved == .v2 && stored != .v2 { setFirmwareVersion(.v2, for: peripheral) }
 
+        let advertisedName = advertisementData[CBAdvertisementDataLocalNameKey] as? String
+
         queue.async {
             self.deviceDiscoveryCallbacks.forEach { callback in
-                self.callbackQueue.async { callback(Device(peripheral: peripheral, firmwareVersion: resolved)) }
+                self.callbackQueue.async {
+                    callback(Device(peripheral: peripheral,
+                                    firmwareVersion: resolved,
+                                    advertisedName: advertisedName))
+                }
             }
         }
     }
