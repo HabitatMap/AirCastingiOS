@@ -5,6 +5,8 @@ import Foundation
 import CoreBluetooth
 import Resolver
 
+private let v2ServiceCBUUID = CBUUID(string: "a0e1f000-0001-4b3c-8e9a-1f2d3c4b5a60")
+
 public enum BluetoothDeviceAuthorizationState {
     case notDetermined
     case denied
@@ -87,7 +89,20 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
     
     private typealias DiscoveryCallback = (Device) -> Void
     private var deviceDiscoveryCallbacks: [DiscoveryCallback] = []
-    
+
+    private var firmwareVersionByPeripheral: [CBPeripheral: FirmwareVersion] = [:]
+    private let firmwareVersionLock = NSRecursiveLock()
+
+    private func firmwareVersion(for peripheral: CBPeripheral) -> FirmwareVersion {
+        firmwareVersionLock.lock(); defer { firmwareVersionLock.unlock() }
+        return firmwareVersionByPeripheral[peripheral] ?? .v1
+    }
+
+    fileprivate func setFirmwareVersion(_ version: FirmwareVersion, for peripheral: CBPeripheral) {
+        firmwareVersionLock.lock(); defer { firmwareVersionLock.unlock() }
+        firmwareVersionByPeripheral[peripheral] = version
+    }
+
     private struct Device: BluetoothDevice {
         fileprivate let peripheral: CBPeripheral
         var name: String?
@@ -128,9 +143,16 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
+        let advertisedServices = advertisementData[CBAdvertisementDataServiceUUIDsKey] as? [CBUUID] ?? []
+        let detected: FirmwareVersion = advertisedServices.contains(v2ServiceCBUUID) ? .v2 : .v1
+        // Promote to .v2 when advertisement says so; never downgrade an already-confirmed v2.
+        let stored = firmwareVersion(for: peripheral)
+        let resolved: FirmwareVersion = (stored == .v2 || detected == .v2) ? .v2 : .v1
+        if resolved == .v2 && stored != .v2 { setFirmwareVersion(.v2, for: peripheral) }
+
         queue.async {
             self.deviceDiscoveryCallbacks.forEach { callback in
-                self.callbackQueue.async { callback(Device(peripheral: peripheral)) }
+                self.callbackQueue.async { callback(Device(peripheral: peripheral, firmwareVersion: resolved)) }
             }
         }
     }
@@ -247,8 +269,9 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         Log.info("Disconnected peripheral \(peripheral) with error: \(String(describing: error?.localizedDescription))")
+        let version = firmwareVersion(for: peripheral)
         queue.async {
-            self.callConnectionObserversWithDisconnect(for: .init(peripheral: peripheral))
+            self.callConnectionObserversWithDisconnect(for: .init(peripheral: peripheral, firmwareVersion: version))
         }
     }
     
@@ -349,6 +372,11 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
     }
     
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        if let services = peripheral.services,
+           services.contains(where: { $0.uuid == v2ServiceCBUUID }) {
+            // Connection-time confirmation: stamp v2 once GATT discovery proves the V2 service is present.
+            setFirmwareVersion(.v2, for: peripheral)
+        }
         queue.async {
             if let services = peripheral.services {
                 for service in services {
@@ -435,6 +463,21 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         return characteristic
     }
     
+    func readValue(for device: any BluetoothDevice, serviceID: String, characteristicID: String) throws {
+        guard let device = device as? Device else { Log.error("BluetoothManager received unexpected device type"); throw WrongDeviceType() }
+        let serviceUUID = CBUUID(string: serviceID)
+        let characteristicUUID = CBUUID(string: characteristicID)
+        guard let characteristic = getCharacteristic(serviceID: serviceUUID,
+                                                     charID: characteristicUUID,
+                                                     peripheral: device.peripheral) else {
+            Log.error("Unable to read value: characteristic \(characteristicID) not found")
+            return
+        }
+        queue.async {
+            device.peripheral.readValue(for: characteristic)
+        }
+    }
+
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
         queue.async {
             Log.verbose("Did write value for characteristic: \(characteristic), error: \(String(describing: error))")

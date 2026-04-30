@@ -151,7 +151,7 @@ extension Resolver: ResolverRegistering {
         .scope(.cached)
         main.register { UserState() }.scope(.application)
         main.register { SyncedMeasurementsDownloadingService() as SyncedMeasurementsDownloader }
-        main.register { ConnectingAirBeamServicesBluetooth() as ConnectingAirBeamServices }
+        main.register { ConnectingAirBeamServicesBluetooth() as ConnectingAirBeamServices }.scope(.application)
         main.register { DefaultAirBeamConnectionController() as AirBeamConnectionController }
         main.register { DefaultSessionUpdateService() as SessionUpdateService }
         main.register { DefaultLogoutController() as LogoutController }
@@ -163,11 +163,14 @@ extension Resolver: ResolverRegistering {
         main.register { NotificationsManager() }.scope(.application)
 
         // MARK: - AirBeam configuration
-        main.register { (_, args) -> AirBeamConfigurator in
+        main.register { (_, args) -> AirBeamMiniV2Configurator in
+            AirBeamMiniV2Configurator(device: args())
+        }
+        main.register { (resolver, args) -> AirBeamConfigurator in
             let device: any BluetoothDevice = args()
             switch device.firmwareVersion {
             case .v2:
-                return AirBeamMiniV2Configurator(device: device)
+                return resolver.resolve(AirBeamMiniV2Configurator.self, args: device)
             case .v1:
                 return AirBeam3Configurator(device: device)
             }

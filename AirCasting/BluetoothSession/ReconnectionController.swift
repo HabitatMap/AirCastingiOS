@@ -29,7 +29,7 @@ class DefaultReconnectionController: ReconnectionController, BluetoothConnection
     
     func didDisconnect(device: any BluetoothDevice) {
         guard delegate?.shouldReconnect(to: device) ?? false else { return }
-        
+
         do {
             try bluetootConnector.connect(to: device, timeout: 10) { result in
                 switch result {
@@ -40,7 +40,7 @@ class DefaultReconnectionController: ReconnectionController, BluetoothConnection
                             switch result {
                             case .success:
                                 Log.info("Discovered characteristics for: \(device)")
-                                self.delegate?.didReconnect(to: device)
+                                self.completeReconnection(for: device)
                             case .failure(_):
                                 self.delegate?.didFailToReconnect(to: device)
                             }
@@ -55,6 +55,28 @@ class DefaultReconnectionController: ReconnectionController, BluetoothConnection
             }
         } catch {
             Log.error("Faild to reconnect: \(error)")
+        }
+    }
+
+    private func completeReconnection(for device: any BluetoothDevice) {
+        switch device.firmwareVersion {
+        case .v1:
+            self.delegate?.didReconnect(to: device)
+        case .v2:
+            // V2 path defers any post-reconnect action until the first Status notification arrives
+            // so callers can read the device state before issuing commands.
+            let configurator = Resolver.resolve(AirBeamMiniV2Configurator.self, args: device)
+            configurator.subscribeAndAwaitStatus { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let status):
+                    Log.info("V2 reconnection ready. Status=\(status)")
+                    self.delegate?.didReconnect(to: device)
+                case .failure(let error):
+                    Log.error("V2 reconnection status failed: \(error)")
+                    self.delegate?.didFailToReconnect(to: device)
+                }
+            }
         }
     }
 }
