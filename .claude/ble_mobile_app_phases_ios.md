@@ -1,14 +1,14 @@
 # Airbeam Mini V2 — iOS Implementation Phases
 
-Phased plan for porting V2 firmware support to `HabitatMap/AirCastingiOS`. Each phase is shippable in isolation and leaves V1 fully intact. Phase boundaries mirror the Android rollout (commits since `9c91d24856e0be6bd5794a0ef2b74a3cce5ceed5`) so Android source can be referenced 1:1 while implementing.
+Phased plan for porting V2 firmware support to `HabitatMap/AirCastingiOS`. Each phase is shippable in isolation and leaves V1 fully intact. Phase boundaries mirror the Android rollout (commits reachable from `origin/dev`) so Android source can be referenced 1:1 while implementing.
 
 Always read `.claude/ble_mobile_app_guide_ios.md` alongside this file — it has the protocol details. This file is the **work breakdown**.
 
 **Reference repos:**
-- Android implementation: https://github.com/HabitatMap/AircastingAndroid/tree/feat/ab-integration
+- Android implementation: https://github.com/HabitatMap/AircastingAndroid/tree/dev (all commit hashes below are fetchable from this branch)
 - Firmware: https://github.com/HabitatMap/AirbeamMiniFirmware
 
-**Out of scope until firmware support lands:** the full-file `StartSync (0x12)` flow (SD-sync replacement + pre-new-session "sync first?" path). The **active sync** during mobile reconnection (firmware-driven, on the Sync characteristic) IS in scope and is covered in Phase 3.
+**Status (May 2026):** BLE manual sync via `StartBleSync (0x16)` has shipped on firmware and Android. Phase 6 below now covers implementing it on iOS — it is no longer deferred. The legacy WiFi-SoftAP `StartWiFiSync (0x12)` path is dormant on Android; **skip it entirely on iOS**.
 
 ---
 
@@ -28,55 +28,59 @@ Always read `.claude/ble_mobile_app_guide_ios.md` alongside this file — it has
 
 **Reference Android commit:** none (Android did this inline with Phase 1).
 
+**Status: shipped in iOS.** Phases 1 + 2 are also shipped (confirmed via the iOS-side handoff that produced this guide).
+
 ---
 
-## Phase 1 — V2 BLE Connection Infrastructure (2–3 days)
+## Phase 1 — V2 BLE Connection Infrastructure (2–3 days) — **SHIPPED**
 
 **Goal:** Detect a V2 device, connect, subscribe to all 5 characteristics, decode Status, decode battery. No commands sent yet.
 
 **Tasks**
-- [ ] **Scan-time detection**: in `BluetoothManager.swift` `centralManager(_:didDiscover:advertisementData:rssi:)`, read `advertisementData[CBAdvertisementDataServiceUUIDsKey] as? [CBUUID]` and stamp `firmwareVersion = .v2` on the discovered `BluetoothDevice` if it contains `a0e1f000-0001-...`
-- [ ] **Connection-time confirmation**: re-stamp `firmwareVersion = .v2` after `peripheral(_:didDiscoverServices:)` confirms the V2 service. Persist on the `Device` Core Data entity (Android commit `bf0325243`)
-- [ ] **GATT discovery in `AirBeamMiniV2Configurator`**: discover service `a0e1f000-0001-...`; discover all 5 characteristics; verify all present (fail connection otherwise)
-- [ ] **Subscribe** to Status, Response, Measurement, Sync via `setNotifyValue(true, for:)`
-- [ ] **300ms settle delay** before any command (`DispatchQueue.main.asyncAfter`)
-- [ ] **Status decoder** in `V2BinaryProtocol.swift`:
+- [x] **Scan-time detection**: in `BluetoothManager.swift` `centralManager(_:didDiscover:advertisementData:rssi:)`, read `advertisementData[CBAdvertisementDataServiceUUIDsKey] as? [CBUUID]` and stamp `firmwareVersion = .v2` on the discovered `BluetoothDevice` if it contains `a0e1f000-0001-...`
+- [x] **Connection-time confirmation**: re-stamp `firmwareVersion = .v2` after `peripheral(_:didDiscoverServices:)` confirms the V2 service. Persist on the `Device` Core Data entity (Android commit `bf0325243`)
+- [x] **GATT discovery in `AirBeamMiniV2Configurator`**: discover service `a0e1f000-0001-...`; discover all 5 characteristics; verify all present (fail connection otherwise)
+- [x] **Subscribe** to Status, Response, Measurement, Sync via `setNotifyValue(true, for:)`
+- [x] **300ms settle delay** before any command (`DispatchQueue.main.asyncAfter`)
+- [x] **Status decoder** in `V2BinaryProtocol.swift`:
   - `0x00` Idle → `(battery, isCharging)`
-  - `0x01` HasSavedSession → `(battery, isCharging, sessionUUID, hasMeasurements)`
-  - `0x02` Running → `(battery, isCharging, sessionUUID)`
-- [ ] **Battery decoder**: `Int8(bitPattern: byte)`; `abs()` is %; sign is charging direction
-- [ ] **UUID LE helpers**: `UUID.toLEBytes()` and `UUID.fromLEBytes(_:)` (see guide §5)
-- [ ] **Status fallback read**: if no Status notification arrives within 1s of subscription, explicitly `readValue(for: statusCharacteristic)` (Android commit `9ec55ffb2`)
-- [ ] **Reconnection plumbing**: ensure `ReconnectionController.swift` defers any V2 action until the first Status notification arrives (Android commit `2ae1e99fa`)
+  - `0x01` HasSavedSession → `(battery, isCharging, sessionUUID, hasMeasurements, fileSize)` — **27-byte payload** (was 19; FW commit `3990cf22`)
+  - `0x02` Running → `(battery, isCharging, sessionUUID)` (18 bytes; no `hasMeasurements`)
+  - `0x03` ReadyToSync → `(fileSize, password_bytes)` — **no battery byte at offset 1**; parser must short-circuit (FW commit `ed751b180`)
+- [x] **Battery decoder**: `Int8(bitPattern: byte)`; `abs()` is %; sign is charging direction (skip for `0x03`)
+- [x] **UUID LE helpers**: `UUID.toLEBytes()` and `UUID.fromLEBytes(_:)` (see guide §5)
+- [x] **Status fallback read**: if no Status notification arrives within 1s of subscription, explicitly `readValue(for: statusCharacteristic)` (Android commit `9ec55ffb2`)
+- [x] **Reconnection plumbing**: ensure `ReconnectionController.swift` defers any V2 action until the first Status notification arrives (Android commit `2ae1e99fa`)
+- [ ] **Optional**: read GATT Firmware Revision String (`0x2A26`) and log for diagnostics (Android commit `974a12652`)
 
 **Done when:** Plug in a V2 device, connect, observe correct Status state and battery % (incl. charging sign) in the UI / logs. No session can be started yet.
 
-**Reference Android commits:** `f63f3abf3`, `bf0325243`, `9ec55ffb2`, `ab84c44f6`, `2ae1e99fa`, `8ac3349b3`, `6bef8ab73`.
+**Reference Android commits:** `f63f3abf3`, `bf0325243`, `9ec55ffb2`, `ab84c44f6`, `2ae1e99fa`, `8ac3349b3`, `6bef8ab73`, `974a12652`.
 
 ---
 
-## Phase 2 — V2 Mobile Session: Configure + Live Streaming (3–4 days)
+## Phase 2 — V2 Mobile Session: Configure + Live Streaming (3–4 days) — **SHIPPED**
 
 **Goal:** Start a mobile session on a V2 device and stream live measurements directly to Core Data.
 
 **Tasks**
-- [ ] **Command writer** in `AirBeamMiniV2Configurator`: write opcode bytes via `peripheral.writeValue(_:for: commandChar, type: .withResponse)`
-- [ ] **Response dispatcher** (`V2ResponseDispatcher.swift`):
+- [x] **Command writer** in `AirBeamMiniV2Configurator`: write opcode bytes via `peripheral.writeValue(_:for: commandChar, type: .withResponse)`
+- [x] **Response dispatcher** (`V2ResponseDispatcher.swift`):
   - First byte switch: `0x20 Ack`, `0x21 Nack(errorCode)`, `0x22 Ready`, `0x23 SensorInfo`, `0x24 SyncInfo`
   - Per-pending-command completion handlers; clear on terminal response
   - **Idempotent Ready**: track which `Ready` is "first" (completes setup) vs subsequent (heartbeat); only the first fires the user-visible callback (Android commit `913e1d58d`, `b266c57ab`)
-- [ ] **`GetSensors (0x14)`** on connect → store `"PM1,μg/m3;PM2.5,μg/m3"` for stream metadata
-- [ ] **`SetTime (0x15)`** on connect (immediate) and on a 1-hour `Timer` (mobile sessions only)
-- [ ] **`DiscardSession (0x11)`** on Status = `HasSavedSession` before starting a new session (Android commit `ac5925900`)
-- [ ] **`NewSessionConfig (0x13)` mobile payload** (build per guide §5.D):
-  - `[0x13] + UUID_LE(16) + interval=1_LE(2) + 0x01` = 20 bytes total, NO session_token
+- [x] **`GetSensors (0x14)`** on connect → store `"PM1,μg/m3;PM2.5,μg/m3"` for stream metadata
+- [x] **`SetTime (0x15)`** on connect (immediate) and on a 1-hour `Timer` (mobile sessions only)
+- [x] **`DiscardSession (0x11)`** on Status = `HasSavedSession` before starting a new session (Android commit `ac5925900`)
+- [x] **`NewSessionConfig (0x13)` mobile payload** (build per guide §5.D):
+  - `[0x13] + UUID_LE(16) + interval_LE(2) + 0x01` = 20 bytes total, NO session_token
   - Wait for `Ack` then `Ready` before signalling success
-- [ ] **Live measurement parser** (`V2MeasurementParser.swift`): decode 9-byte indication
-- [ ] **Direct DB save**: write to `MeasurementsSavingService` directly (V2 owns its writes); do NOT go through V1's measurement-observer pipeline for V2 mobile sessions (Android commit `18e16b89f`)
-- [ ] **UI refresh notification**: post a `NotificationCenter` event so live-graph and active controllers refresh (Android commit `3d69a19c3`)
-- [ ] **`DiscardSession` on stop**: when the user finishes the session, write `0x11` and **wait for `Ready`** before disconnecting (Android commits `a8f4a8c15`, `1b89ba35d`)
-- [ ] **Error dialog**: surface `Nack` errors via a single `UIAlertController` (Android commits `884cbd24b`, `d6749096e`, `bd92f041b`)
-- [ ] **Off-by-one fix**: when wiring V2 sensors into the live-graph presenter, double-check `indexOf` arithmetic (Android commit `d35b566e6` crashed on first measurement here)
+- [x] **Live measurement parser** (`V2MeasurementParser.swift`): decode 9-byte indication
+- [x] **Direct DB save**: write to `MeasurementsSavingService` directly (V2 owns its writes); do NOT go through V1's measurement-observer pipeline for V2 mobile sessions (Android commit `18e16b89f`)
+- [x] **UI refresh notification**: post a `NotificationCenter` event so live-graph and active controllers refresh (Android commit `3d69a19c3`)
+- [x] **`DiscardSession` on stop**: when the user finishes the session, write `0x11` and **wait for `Ready`** before disconnecting (Android commits `a8f4a8c15`, `1b89ba35d`)
+- [x] **Error dialog**: surface `Nack` errors via a single `UIAlertController` (Android commits `884cbd24b`, `d6749096e`, `bd92f041b`)
+- [x] **Off-by-one fix**: when wiring V2 sensors into the live-graph presenter, double-check `indexOf` arithmetic (Android commit `d35b566e6` crashed on first measurement here)
 
 **Done when:** Start a V2 mobile session, watch live PM1 / PM2.5 values stream, stop the session, verify the device returns to Idle on next connection.
 
@@ -84,9 +88,9 @@ Always read `.claude/ble_mobile_app_guide_ios.md` alongside this file — it has
 
 ---
 
-## Phase 3 — V2 Mobile Session Reconnection + Sync (2–3 days)
+## Phase 3 — V2 Mobile Session Reconnection + Active Sync (2–3 days)
 
-**Goal:** Handle BLE reconnection mid-session; consume sync chunks from the device storage.
+**Goal:** Handle BLE reconnection mid-session; consume the firmware's auto-stream of stored chunks on the Sync characteristic.
 
 **Tasks**
 - [ ] **Sync chunk parser**: 244-byte indication → `[count_u8, padding_2B, record_0(8B), ...]`; each record = `[ts_u32_LE, pm1_u16_LE, pm25_u16_LE]`
@@ -94,15 +98,15 @@ Always read `.claude/ble_mobile_app_guide_ios.md` alongside this file — it has
 - [ ] **Session UUID validation**: compare `savedSessionUuid` (decoded from last Status via `UUID.fromLEBytes`) to current app session UUID; if mismatch → **discard the chunk** (it's stale storage from an older session). Android commits `18e16b89f`, `489902d59`
 - [ ] **Scenario A — Status `Running` on reconnect**: do nothing; chunks + live measurements stream automatically (interleaved); both must be parsed
 - [ ] **Scenario B — Status `HasSavedSession` on reconnect**: send `ContinueSession (0x10)`; on `Ack` device transitions to Running and starts sync + live; same parsing as Scenario A
-- [ ] **`ContinueSession` Nack(0x03 StorageHasMeasurements)**: should not occur — firmware streams live + stored automatically on `Ack`. If it does occur, log + show a generic error. Do NOT port the Android auto-recover via `StartSync` (Android `db3cebf24` / `AirBeamMiniV2Configurator.kt:755-778` is incorrect; the path is unreachable in real firmware behavior).
-- [ ] **Sync confirmation dialog (start path)**: if user picks a V2 device with unsynced measurements before starting a new session, show a dialog with **Discard** (sends `DiscardSession`) or **Cancel** options. The "Sync" option will be added once firmware supports `StartSync` (Android commits `b7e2c2ca2`, `3086e1dc0`, `a586b0702`)
-- [ ] **Sync confirmation dialog (finish path)**: if user finishes a V2 session and unsynced measurements remain, show the same Discard/Cancel dialog
-- [ ] **Disconnected-view handling**: V2 dialog must also fire from the disconnected-view path (Android commit `3086e1dc0`)
+- [ ] **`ContinueSession` Nack(0x03 StorageHasMeasurements)**: should not occur — firmware streams live + stored automatically on `Ack`. If it does occur, log + show a generic error. Do NOT port the Android auto-recover via `StartSync` (Android `db3cebf24` / `AirBeamMiniV2Configurator.kt:755-778` is incorrect; unreachable in real firmware behavior).
+- [ ] **Active-sync drain detection**: `Running` Status has no `has_measurements` byte. Set a `isActiveSyncDraining` flag on every Sync (`0006`) indication and reset it after 3 s of no chunks (Android commit `daf8cef01`). Expose this as an observable property — Phase 6 / drain-aware finish dialog consume it.
+- [ ] **Don't drop synced rows that predate latest live row**: rely on the unique-index dedupe (next bullet), not on timestamp filtering (Android commit `a76d43451`)
+- [ ] **Unique index on `(session, stream, time)`** in the `Measurement` Core Data entity to dedupe overlapping live + synced rows (Android commit `357d4002c`)
 - [ ] **Active sessions DB writes**: synced measurements must be written to the same table the live-graph reads (Android commit `a6af1ee59`)
 
 **Done when:** Force-quit the app mid-session, relaunch, reconnect — sync chunks restore the missing window without duplicates or stale data; live data resumes; UI graph updates correctly.
 
-**Reference Android commits:** `84050172a`, `a6af1ee59`, `eaf4c1f55`, `db3cebf24`, `7d6d15771`, `f48436cab`, `1c29a7e16`, `b7e2c2ca2`, `3086e1dc0`, `a586b0702`, `18e16b89f`, `489902d59`.
+**Reference Android commits:** `84050172a`, `a6af1ee59`, `eaf4c1f55`, `db3cebf24`, `7d6d15771`, `f48436cab`, `1c29a7e16`, `18e16b89f`, `489902d59`, `daf8cef01`, `a76d43451`, `357d4002c`.
 
 ---
 
@@ -118,7 +122,7 @@ Always read `.claude/ble_mobile_app_guide_ios.md` alongside this file — it has
   - `[0x13] + UUID_LE(16) + interval=60_LE(2) + 0x00 + pm1_idx(1) + pm25_idx(1) + token_LE(16) + ssid_padded(32) + password_padded(64)`
   - Strings null-byte padded to container length
   - **Byte 19 is the mode byte (0x00=FIXED)** — order matters (Android commit `6c6cc9b40`)
-- [ ] **Interval = 60s** for fixed (Android commit `7659eeb01`)
+- [ ] **Interval = 60s (hard-coded, no UI input)** for fixed (Android commits `7659eeb01`, `47c19f0aa` — Android removed the user-configurable interval input on the fixed-session screen)
 - [ ] **NO hourly `SetTime`** for fixed — firmware gets time from `X-Server-Time` header on WiFi POSTs (Android commit `8198f4445`)
 - [ ] **Configure outcome handling**:
   - `Ack` → `Ready` = success
@@ -128,47 +132,118 @@ Always read `.claude/ble_mobile_app_guide_ios.md` alongside this file — it has
 - [ ] **Single error dialog, locked-down**: not dismissable except via OK; user can't double-start (Android commits `3708d75e4`, `bd92f041b`, `d6749096e`)
 - [ ] **Keep local fixed-session row on failure**: don't delete from Core Data when configure fails — let the user retry without re-entering everything (Android commit `dd05d7989`)
 - [ ] **Disconnect BLE on configure success**: device runs the fixed session over WiFi from this point; reconnect lazily for status / stop (Android commit `3708d75e4`)
+- [ ] **Stop foreground/recording services on configure success** so BLE-power consumers tear down for a WiFi-only session (Android commit `4e3ee96c4`)
 - [ ] **Per-measurement `Ready` heartbeat**: while BLE is connected during a running fixed session, treat repeated `Ready` as idempotent heartbeat — do NOT re-trigger configure-success handlers (Android commit `913e1d58d`, `b266c57ab`)
 - [ ] **Firmware-side resume**: on later BLE reconnect, Status may already be `Running` with a known session UUID — trust Status, do not re-configure (guide §6b, Android docs commit `157b31747`)
-- [ ] **Parse fixed `end_time` as UTC** in any backend response handlers (Android commit `b21931159`)
+- [ ] **Parse fixed `end_time` as UTC for indoor sessions** (`is_indoor == true`), phone-default for mapped — see guide §8a (Android commits `b21931159`, `0d148625c`, `338c2b1f1`, `9999289ce`, `ffc79d2bf`, `fa52f77f0`, `f1fe732d4`)
 - [ ] **DiscardSession on user-stop** (same as mobile, applies to fixed too) (Android commit `a8f4a8c15`)
-- [ ] **Pre-start unsynced check**: also gate fixed-session start on the V2 unsynced-measurements dialog (Android commit `a586b0702`)
 
-**Done when:** Configure a fixed session over a real WiFi network, unplug from app, leave overnight, see measurements in the AirCasting backend, return next day, reconnect BLE, see Status = `Running` with the correct session UUID, stop session cleanly.
+**Done when:** Configure a fixed session over a real WiFi network, unplug from app, leave overnight, see measurements in the AirCasting backend, return next day, reconnect BLE, see Status = `Running` with the correct session UUID, stop session cleanly. Indoor session timestamps match real wall-clock time on the dashboard.
 
-**Reference Android commits:** `5b48f6159`, `b71d6416f`, `6c6cc9b40`, `7659eeb01`, `97bbe0f38`, `caf2dc3b0`, `39c0a59b0`, `448cff1a5`, `c821f623f`, `e1278dd58`, `73cf51072`, `913e1d58d`, `b266c57ab`, `3708d75e4`, `dd05d7989`, `bd92f041b`, `8198f4445`, `b21931159`, `a586b0702`, `157b31747`.
+**Reference Android commits:** `5b48f6159`, `b71d6416f`, `6c6cc9b40`, `7659eeb01`, `97bbe0f38`, `caf2dc3b0`, `39c0a59b0`, `448cff1a5`, `c821f623f`, `e1278dd58`, `73cf51072`, `913e1d58d`, `b266c57ab`, `3708d75e4`, `dd05d7989`, `bd92f041b`, `8198f4445`, `b21931159`, `157b31747`, `47c19f0aa`, `4e3ee96c4`, `0d148625c`, `338c2b1f1`, `9999289ce`, `ffc79d2bf`, `fa52f77f0`, `f1fe732d4`.
 
 ---
 
-## Phase 5 — Polish & Hardening (1–2 days)
+## Phase 5 — User-Configurable Mobile Interval + Sparse-Interval Averaging (1–2 days)
+
+**Goal:** Let the user pick a mobile-session sample interval (≥ 1s) without breaking AirCasting's averaging logic.
+
+**Background:** Averaging assumes the native sample rate is finer than the averaging window. A 5s-native session in the FIRST(5s) window — or any session with native ≥ window — has ≤ 1 sample per window; the averaging pass then wipes the rows via its leftover-sweep. Result: session card stays, but `measurements` is empty (graph/map/share/upload fail silently).
+
+**Tasks**
+- [ ] **UI**: add an "Interval (seconds)" integer input on the **mobile** new-session-details screen; default 1, accept ≥ 1. **Do not add this control on the fixed-session screen** (interval is hard-coded 60s — Android commit `47c19f0aa`).
+- [ ] **Plumbing**: thread `intervalSeconds: Int?` from the session-details screen → the iOS session-creator pipeline → `AirBeamMiniV2Configurator.sendNewSessionConfig` → mobile payload builder. Default to 1s when the param is null (legacy/non-V2 paths). Android commit `02d0baeba`.
+- [ ] **Core Data migration**: add `measurementInterval: Int16?` to the `Session` entity (lightweight migration). Persist the native interval per session on insert (V2 sessions only; V1/external rows stay `nil` and are interpreted as 1s native).
+- [ ] **Averaging gate**: in whatever the iOS equivalent of `AveragingService` is, skip averaging for any window where `nativeInterval >= window.value`:
+  - 1s session → averages at FIRST(5s) and SECOND(60s).
+  - 5s session → skips FIRST(5s), runs SECOND(60s).
+  - ≥60s session → skips both; do not schedule periodic averaging at all.
+    Also apply the same per-tick gate to the periodic (live) averaging path so a 5s live session doesn't write a misleading `averagingFrequency=5` before crossing 9 h.
+- [ ] **If iOS has no equivalent averaging logic**: leave the column in place for future use; just guard any future averaging scheduler on the same rule.
+
+**Done when:** Start mobile sessions at 1s, 5s, 10s, 60s, and 600s — the session card always shows measurements; graph populates; share/upload work end-to-end.
+
+**Reference Android commits:** `02d0baeba`, `c4cdd9b9a`, `47c19f0aa`.
+
+---
+
+## Phase 6 — V2 BLE Manual Sync (`StartBleSync 0x16`) + Drain-Aware Finish (3–5 days)
+
+**Goal:** Replace the V1 SD-sync flow on V2 devices with a BLE-only manual sync, and gate session-finish on draining stored measurements. Also gate new-session-start on syncing any pre-existing stored measurements.
+
+**This used to be the "deferred Phase 6" — firmware has now shipped `StartBleSync 0x16` and Android has it in production. iOS should implement it now.**
+
+**Tasks**
+- [ ] **New opcode constant** `OPCODE_START_BLE_SYNC = 0x16` and **new Nack code** `NACK_SYNC_FAILED = 0x06` in `V2BinaryProtocol.swift`
+- [ ] **`V2BleSyncOrchestrator.swift`**:
+  - Writes `0x16` to the Command characteristic; expects `Ack (0x20)`.
+  - Routes Sync-characteristic indications through a **registered manual-sync handler** while a manual sync is in flight (bypasses the default reconnect-time DB save path so mobile vs fixed routing is correct).
+  - Observes `ReadyToSync (Status 0x03)` **in parallel** (subscribe before writing `0x16`) to pick up `file_size` ~100 ms after the write — do **not** `await` it from a serial chain after the post-stream `Ready 0x22` (by then every chunk has already arrived with `expectedSize == 0` and progress stays at 0%).
+  - Computes progress per chunk: `receivedBytes += 5 + 8 × chunk.count`; `pct = receivedBytes × 100 / file_size`; clamp 0..99 mid-stream; set to 100 on `Ready 0x22`.
+  - Settles on `Ready (0x22)` (success), `Nack (0x06 SyncFailed)` (failure — records remain on device for retry), or `Nack (0x04 ClearStorageFailed)` (post-stream wipe failed).
+  - **No app-side `DiscardSession`** on success — firmware auto-clears storage in its Stop handler.
+- [ ] **Sync confirmation dialog (start path) — `SyncBeforeNewV2SessionDialog.swift`**:
+  - Fires when the user picks a V2 device in `HasSavedSession` to start a new session.
+  - Three buttons: **Sync** (drives `StartBleSync`), **Discard** (drives `DiscardSession`), **Cancel**.
+  - Use `file_size` from the Status payload for the ETA hint via `estimateSyncSeconds(fileSize)` (calibrate `BYTES_PER_SECOND` constant on iOS empirically; Android uses ~1700).
+  - On post-sync success, **keep the BLE link open** and proceed straight to `NewSessionConfig` — do not bounce (Android commit `83abfb408`).
+  - Drive the actual sync from inside the dialog (Android commit `7e4115d0b`).
+- [ ] **Sync confirmation dialog (finish path) — `SyncAndFinishV2SessionDialog.swift`**:
+  - Show the standard `FinishSessionConfirmationDialog` first to confirm intent.
+  - **Re-evaluate `hasSavedMeasurements || isActiveSyncDraining` at confirm time, not at button-tap time** (Android commit `991f6f6e4`).
+  - If true at confirm, present the sync-and-finish dialog (chained, not replacing). Non-cancelable; auto-start `StartBleSync (0x16)` on open (Android commit `2425b0be3`) so `ReadyToSync (0x03)` lands with `file_size` and gives a fresh ETA even when the user opened it from a `Running` Status that lacked the suffix.
+  - Show progress percent during the stream.
+  - **"Discard & Finish"** cancels the orchestrator's job mid-stream; firmware honors `DiscardSession (0x11)` even while `StartBleSync` is in flight, wiping on-device storage. Records collected so far are NOT inserted into the DB on this branch.
+  - On success: insert records, mark session FINISHED in local DB, push to backend on confirm (Android commit `87fe4fa39`).
+  - On failure (`Nack 0x06`): show error; on confirm, post the equivalent of `StopRecordingEvent` — the trailing `0x11` write wipes on-device data.
+- [ ] **Disconnected-view path**: fires the same sync-and-finish dialog from the disconnected-session view (Android commit `3086e1dc0`).
+- [ ] **ETA UI polish**: bold the ETA hint, format with localized "min." / "sec.", line-break the description (Android commits `cdc938108`, `340e677c9`, `c798a9921`, `376f91c81`).
+- [ ] **SD-sync wizard "Unplug AirBeam" screen**: skip entirely on V2; reorder to AFTER the "successfully synced" screen on V1 (Android commit `dcef0b695`).
+- [ ] **Drain idle-timeout constant**: 3 s (`SYNC_DRAIN_IDLE_TIMEOUT_MS`).
+
+**Done when:** Start a mobile session, accumulate stored measurements (force-quit + relaunch), then tap Finish — the sync-and-finish dialog appears, streams the backlog to the DB, then completes the session and pushes to backend. Discard mid-stream wipes the device cleanly. Starting a new session with a stored backlog offers Sync / Discard / Cancel and uses the ETA from `HasSavedSession.file_size`.
+
+**Reference Android commits:** `975ca4c9b`, `c91f5bb4a`, `19e2e4b05`, `28ea5d5ae`, `c356f630d`, `0b23711fa`, `cdc938108`, `340e677c9`, `376f91c81`, `daf8cef01`, `886058649`, `3526b79f8`, `2ab5f4377`, `2425b0be3`, `991f6f6e4`, `7e05a35e8`, `c798a9921`, `87fe4fa39`, `7e4115d0b`, `83abfb408`, `f1fe732d4`, `dcef0b695`, `a586b0702`, `b7e2c2ca2`, `3086e1dc0`.
+
+---
+
+## Phase 7 — V2 → V1 Fallback + Reconnection Hardening (1–2 days)
+
+**Goal:** Edge cases around mixed-firmware fleets, repeated reconnects, and stale state-flow observers. Skip portions that don't apply to CoreBluetooth.
+
+**Tasks**
+- [ ] **Don't tear down session state on "V2 service not supported"**: if a V1 device is reached via the V2 attempt path, the `peripheral(_:didDiscoverServices:)` will return without the V2 service — handle this as a **fallback transition**, not a true disconnect. Do NOT post the unexpected-disconnect notification or stop the recording service before the V1 attempt. (Android Nordic equivalent: commits `9033d2640`, `62ddc827a`, `484cd11e4`.)
+- [ ] **Capture V2/V1 leg at closure creation**: if iOS queues a V2 attempt then a V1 attempt, any failure-callback closure on the V2 attempt must close over `let isV2Leg = true` at queue time — do not read a mutable "current attempt" property at callback time (Android commit `67656474d`, `f38cb2089`).
+- [ ] **Per-leg idempotent failure callbacks**: guard against duplicate V2-failure / V1-failure callbacks (Android commit `9b6dbd044`).
+- [ ] **Explicit V2 state reset** between fallback attempts: clear the V2 configurator's characteristics, pending commands, and observable state before the V1 attempt starts (Android commit `484cd11e4`).
+- [ ] **Reconnection loop**: no hard cap on attempts; surface "still reconnecting…" UI rather than a permanent failure (Android commit `c31e1797e`).
+- [ ] **Route `.fail` to connection-failed path, not disconnect path**: disconnect handlers tear down state the next attempt needs (Android commit `b838eb4f6`).
+- [ ] **Cancel previous observer subscriptions on each reconnect**: when the V2 configurator is recreated, cancel previous Combine subscriptions / async tasks so the new instance owns the stream (Android commits `57154f2df`, `17f6182bb`, `8e6ade2fc`).
+- [ ] **Use `Task.sleep` / `DispatchQueue` delay between retries**, not a blocking sleep (Android commit `2b9502e1e`).
+- [ ] **Finalize with an error when retries exhaust** (Android commit `ca5988b35`).
+- [ ] **`[RECONNECT]` log tags** across the reconnection path (Android commit `b8787fbc6`).
+
+> If iOS doesn't support mixed V1/V2 in a single session-creation flow, the V2→V1 fallback bullets can be deferred. The reconnection-hardening bullets apply regardless.
+
+**Reference Android commits:** `9033d2640`, `62ddc827a`, `484cd11e4`, `9b6dbd044`, `67656474d`, `f38cb2089`, `c31e1797e`, `b838eb4f6`, `b8787fbc6`, `57154f2df`, `ca5988b35`, `2b9502e1e`, `17f6182bb`, `8e6ade2fc`.
+
+---
+
+## Phase 8 — Polish & Hardening (1–2 days)
 
 **Goal:** Edge-case fixes, diagnostics, parity with Android final state.
 
 **Tasks**
 - [ ] **Bluetooth on/off cycles**: ensure V2 reconnects after repeated BT toggles (Android commit `8ac3349b3`)
-- [ ] **Single-disconnect events**: don't fire duplicate disconnect callbacks during connect retries (Android commit `6bef8ab73` — drop equivalent of `retry()`)
+- [ ] **Single-disconnect events**: don't fire duplicate disconnect callbacks during connect retries (Android commit `6bef8ab73`)
 - [ ] **Defer reconnect until Status arrives**: tighten the reconnection controller (Android commit `2ae1e99fa`)
 - [ ] **Live-graph fallback when no entries**: show current time as chart end-time fallback (Android commit `c071e441a`)
 - [ ] **Remove diagnostic logging** from V2 measurement path before shipping (Android commits `a364aa545`, `7c920a0d0`, `3b8653217`, `3f02a0587`, `165543392`)
-- [ ] **MTU verification**: confirm 244-byte sync chunks arrive intact on the lowest-supported iPhone model. iOS has no `requestMtu()` — if truncation appears, escalate to firmware to chunk smaller (Android `1c29a7e16` requested MTU 247; iOS relies on system negotiation)
-- [ ] **End-to-end smoke test**: V1 Mini still works, V2 Mini mobile session start/stop/reconnect/sync works, V2 Mini fixed session works
-- [ ] **Update `.claude/ble_mobile_app_guide_ios.md`** with anything learned during integration (parity with Android's "always update the guide" rule from CLAUDE.md)
+- [ ] **MTU verification**: confirm 244-byte sync chunks arrive intact on the lowest-supported iPhone model. iOS has no `requestMtu()` — if truncation appears, escalate to firmware to chunk smaller (Android `1c29a7e16` requested MTU 247; iOS relies on system negotiation).
+- [ ] **End-to-end smoke test**: V1 Mini still works, V2 Mini mobile session start/stop/reconnect/sync works, V2 Mini fixed session works (indoor + outdoor), drain-aware finish works, sync-before-new-session works, mobile interval picker works.
+- [ ] **Update `.claude/ble_mobile_app_guide_ios.md`** with anything learned during integration (parity with Android's "always update the guide" rule from CLAUDE.md).
 
 **Done when:** Both V1 and V2 paths pass full QA. Guide reflects ground truth.
-
----
-
-## Phase 6 — DEFERRED: Full-File `StartSync (0x12)` (post-firmware support)
-
-**Goal:** Once firmware ships the `StartSync (0x12)` opcode, replace the V1 SD-sync flow on V2 devices and switch the unsynced-measurements dialogs from "Discard or Cancel" to "Sync, Discard, or Cancel."
-
-**Tasks (do NOT start until firmware confirms support)**
-- [ ] Wire `StartSync (0x12)` in `AirBeamMiniV2Configurator`: write opcode, await `Ack` → `SyncInfo (0x24)` (32B SSID + 64B password) → consume Sync-characteristic chunks → `Ready (0x22)` (Android `5b48f6159` for Kotlin reference)
-- [ ] Replace SD-sync flow on V2 devices: `SDSyncController` is bypassed; use V2 chunks → `MeasurementsSavingService` directly
-- [ ] Add **Sync** option to the unsynced-measurements confirmation dialogs (start path + finish path + disconnected view)
-- [ ] Update guide §5.C and §10 to remove the "not yet implemented" caveats
-
-(Note: do **NOT** add the Android-style `Nack(0x03) → StartSync → retry ContinueSession` auto-recovery. That Android path is incorrect — `ContinueSession` does not Nack on stored measurements; it Acks and streams both automatically.)
 
 ---
 
@@ -176,7 +251,8 @@ Always read `.claude/ble_mobile_app_guide_ios.md` alongside this file — it has
 
 - **Backward compatibility**: V1 paths (`AirBeam3Configurator`, `HexMessagesBuilder`, `MeasurementsRecordingServices`, `BluetoothSDCardAirBeamServices`, `MiniSDCardMeasurementsParser`, `MiniSDSyncFileFactory`, `SDSyncController`, `UploadFixedSessionAPIService`) **must remain untouched**. V2 is a parallel stack.
 - **Minimal changes**: do not refactor the V1 stack to "fit" V2 — branch at the DI seam (`AppDelegate+Injection.swift`), at the scan filter, and at the session-creator. Everything else is V2-only new code.
+- **Skip the legacy WiFi-SoftAP manual sync path entirely on iOS.** Android keeps `V2SyncOrchestrator` / `V2WifiApConnector` / `V2SyncFileDownloader` as dormant code; iOS should not implement them at all. Manual sync is BLE-only via `StartBleSync (0x16)`.
 - **Always build before commit** (matches the project CLAUDE.md rule for the Android repo; same discipline for iOS — `xcodebuild` or run in Xcode before each commit).
 - **Reference firmware** when in doubt: https://github.com/HabitatMap/AirbeamMiniFirmware
-- **Reference Android impl** for any ambiguity: https://github.com/HabitatMap/AircastingAndroid/tree/feat/ab-integration — every commit hash in this doc lives there.
+- **Reference Android impl** for any ambiguity: https://github.com/HabitatMap/AircastingAndroid/tree/dev — every commit hash in this doc is reachable from that branch (verified May 2026).
 - **Update the iOS guide** (`.claude/ble_mobile_app_guide_ios.md`) whenever new V2 behavior is learned during integration — same rule as the Android guide.

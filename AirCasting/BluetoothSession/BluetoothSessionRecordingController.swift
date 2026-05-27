@@ -115,22 +115,29 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
         guard let activeSession = activeSessionProvider.activeSession, activeSession.session.uuid == uuid else { return }
 
         let device = activeSession.device
+        let locationless = activeSession.session.locationless
 
-        // V2: send DiscardSession (0x11) and wait for Ready before disconnecting; firmware
-        // would otherwise stay in Running. Disconnect anyway on Nack/timeout.
+        // Tear down reconnection-relevant state synchronously, BEFORE any async wait
+        // (V2 DiscardSession Ready) and before triggering BLE disconnect. Otherwise a
+        // disconnect — whether driven by our cancelPeripheralConnection or by the user
+        // power-cycling the device mid-stop — fires didDisconnectPeripheral while
+        // activeSession is still set, the reconnection controller sees
+        // shouldReconnect == true, and the app silently reconnects (and stays
+        // connected, hiding the device from the next scan list).
+        activeSessionProvider.clearActiveSession()
+        isRecording = false
+        if !locationless {
+            locationTracker.stop()
+        }
+
         let proceedToDisconnect: () -> Void = { [weak self] in
             guard let self = self else { return }
             try? self.btManager.disconnect(from: device)
-            if !activeSession.session.locationless {
-                self.locationTracker.stop()
-            }
-            self.activeSessionProvider.clearActiveSession()
             if device.firmwareVersion == .v1 {
                 self.measurementsRecorder.stopRecording()
             } else {
                 Resolver.resolve(V2ConfiguratorRegistry.self).release(deviceUUID: device.uuid)
             }
-            self.isRecording = false
         }
 
         switch device.firmwareVersion {
