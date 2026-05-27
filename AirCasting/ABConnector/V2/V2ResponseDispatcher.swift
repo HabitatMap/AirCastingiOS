@@ -8,8 +8,6 @@ import Foundation
 /// whether the very first `Ready` after a `NewSessionConfig`/`ContinueSession` has
 /// fired so subsequent `Ready` notifications act as idempotent heartbeats only.
 final class V2ResponseDispatcher {
-    enum Phase { case awaitingAck, awaitingReady, idle }
-
     enum DispatchError: Error, LocalizedError {
         case nack(V2BinaryProtocol.NackError, raw: UInt8)
         case malformed
@@ -35,48 +33,70 @@ final class V2ResponseDispatcher {
         }
     }
 
-    private let queue = DispatchQueue(label: "ab.v2.dispatcher")
+    private let lock = NSLock()
 
+    // All access to these guarded by `lock`. Handlers are read+nil'd under lock
+    // and then invoked OUTSIDE the lock so callers can re-enter the dispatcher
+    // (e.g. arm the next Ack→Ready cycle) without deadlocking.
     private var ackHandler: ((Result<Void, Error>) -> Void)?
     private var readyHandler: ((Result<Void, Error>) -> Void)?
     private var sensorInfoHandler: ((Result<String, Error>) -> Void)?
-    private(set) var firstReadyConsumed: Bool = false
+    private var firstReadyConsumedStorage: Bool = false
+
+    var firstReadyConsumed: Bool {
+        lock.lock(); defer { lock.unlock() }
+        return firstReadyConsumedStorage
+    }
 
     func resetSessionStartGuard() {
-        queue.sync { firstReadyConsumed = false }
+        lock.lock(); defer { lock.unlock() }
+        firstReadyConsumedStorage = false
     }
 
     /// Wait for an Ack, then a Ready. Calls `completion` on Ready or any failure.
     func awaitAckThenReady(completion: @escaping (Result<Void, Error>) -> Void) {
-        queue.sync {
-            ackHandler = { [weak self] result in
-                switch result {
-                case .success:
-                    self?.readyHandler = completion
-                case .failure(let err):
-                    completion(.failure(err))
-                }
+        lock.lock()
+        ackHandler = { [weak self] result in
+            switch result {
+            case .success:
+                self?.installReadyHandler(completion)
+            case .failure(let err):
+                completion(.failure(err))
             }
         }
+        lock.unlock()
+    }
+
+    private func installReadyHandler(_ completion: @escaping (Result<Void, Error>) -> Void) {
+        lock.lock()
+        readyHandler = completion
+        lock.unlock()
     }
 
     /// Wait for a single terminal Ready (e.g. DiscardSession). Forwards Nack as failure.
     func awaitReady(completion: @escaping (Result<Void, Error>) -> Void) {
-        queue.sync { readyHandler = completion }
+        lock.lock()
+        readyHandler = completion
+        lock.unlock()
     }
 
     /// Wait for a SensorInfo (0x23) reply.
     func awaitSensorInfo(completion: @escaping (Result<String, Error>) -> Void) {
-        queue.sync { sensorInfoHandler = completion }
+        lock.lock()
+        sensorInfoHandler = completion
+        lock.unlock()
     }
 
     /// Drop any pending handlers (used when tearing down).
     func cancelAll(_ error: Error) {
-        queue.sync {
-            ackHandler?(.failure(error)); ackHandler = nil
-            readyHandler?(.failure(error)); readyHandler = nil
-            sensorInfoHandler?(.failure(error)); sensorInfoHandler = nil
-        }
+        lock.lock()
+        let ack = ackHandler; ackHandler = nil
+        let ready = readyHandler; readyHandler = nil
+        let sensor = sensorInfoHandler; sensorInfoHandler = nil
+        lock.unlock()
+        ack?(.failure(error))
+        ready?(.failure(error))
+        sensor?(.failure(error))
     }
 
     func handleNotification(_ data: Data) {
@@ -84,36 +104,42 @@ final class V2ResponseDispatcher {
             Log.warning("V2 response decode failed: raw=\(data as NSData)")
             return
         }
-        queue.sync { dispatch(frame) }
+        dispatch(frame)
     }
 
     private func dispatch(_ frame: V2BinaryProtocol.ResponseFrame) {
         switch frame {
         case .ack:
             Log.info("V2 response: Ack")
+            lock.lock()
             let h = ackHandler; ackHandler = nil
+            lock.unlock()
             h?(.success(()))
         case .ready:
-            Log.info("V2 response: Ready (firstReadyConsumed=\(self.firstReadyConsumed))")
-            if !firstReadyConsumed {
-                firstReadyConsumed = true
-                let h = readyHandler; readyHandler = nil
-                h?(.success(()))
-            } else {
-                // Heartbeat / sync-done — currently no-op for Phase 2 mobile.
-                let h = readyHandler; readyHandler = nil
-                h?(.success(()))
-            }
+            lock.lock()
+            let alreadyConsumed = firstReadyConsumedStorage
+            firstReadyConsumedStorage = true
+            let h = readyHandler; readyHandler = nil
+            lock.unlock()
+            Log.info("V2 response: Ready (firstReadyConsumed=\(alreadyConsumed))")
+            // First Ready completes a Setup-class command (NewSessionConfig /
+            // ContinueSession / DiscardSession). Subsequent Readys are heartbeats —
+            // forward to any installed handler, otherwise no-op.
+            h?(.success(()))
         case .nack(let err, let raw):
             Log.error("V2 response: Nack(0x\(String(raw, radix: 16)))")
             let dispatchError = DispatchError.nack(err, raw: raw)
+            lock.lock()
             let ack = ackHandler; ackHandler = nil
             let ready = readyHandler; readyHandler = nil
+            lock.unlock()
             ack?(.failure(dispatchError))
             ready?(.failure(dispatchError))
         case .sensorInfo(let info):
             Log.info("V2 response: SensorInfo \"\(info)\"")
+            lock.lock()
             let h = sensorInfoHandler; sensorInfoHandler = nil
+            lock.unlock()
             h?(.success(info))
         case .syncInfo:
             Log.info("V2 response: SyncInfo (Phase 2 ignores; deferred to StartSync flow)")

@@ -154,7 +154,24 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         let resolved: FirmwareVersion = (stored == .v2 || detected == .v2) ? .v2 : .v1
         if resolved == .v2 && stored != .v2 { setFirmwareVersion(.v2, for: peripheral) }
 
-        let advertisedName = advertisementData[CBAdvertisementDataLocalNameKey] as? String
+        let rawAdvertisedName = advertisementData[CBAdvertisementDataLocalNameKey] as? String
+        // Some Mini V2 firmware builds advertise the underlying BLE stack's default GAP
+        // name ("nimble") instead of "airbeammini". When the V2 service UUID is present
+        // but the advertised / peripheral name isn't AirBeam-shaped, synthesize one
+        // (`AirBeamMini-XXXXXX`) so the device shows up in the AirBeams section of the
+        // scan list with a recognizable label.
+        let candidateName = rawAdvertisedName ?? peripheral.name
+        let looksAirbeam = candidateName?.range(of: "airbeam", options: .caseInsensitive) != nil
+        let advertisedName: String?
+        if resolved == .v2 && !looksAirbeam {
+            let suffix = peripheral.identifier.uuidString
+                .replacingOccurrences(of: "-", with: "")
+                .suffix(6)
+                .uppercased()
+            advertisedName = "AirBeamMini-\(suffix)"
+        } else {
+            advertisedName = rawAdvertisedName
+        }
 
         queue.async {
             self.deviceDiscoveryCallbacks.forEach { callback in
