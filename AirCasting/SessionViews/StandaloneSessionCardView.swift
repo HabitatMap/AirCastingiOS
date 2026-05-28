@@ -13,7 +13,13 @@ struct StandaloneSessionCardView: View {
     @EnvironmentObject var selectedSection: SelectedSection
     @Injected private var networkChecker: NetworkChecker
     @InjectedObject private var userSettings: UserSettings
+    @StateObject private var reconnectViewModel: ReconnectSessionCardViewModel
     @State private var alert: AlertInfo?
+
+    init(session: SessionEntity) {
+        self.session = session
+        _reconnectViewModel = StateObject(wrappedValue: ReconnectSessionCardViewModel(session: session))
+    }
     
     var body: some View {
         Group {
@@ -50,12 +56,23 @@ struct StandaloneSessionCardView: View {
             Text(Strings.StandaloneSessionCardView.description)
                 .font(Fonts.moderateRegularHeading3)
                 .multilineTextAlignment(.center)
+            reconnectButton
             finishAndSyncButton
             finishAndDontSyncButton
             .padding()
         }
         .alert(item: $alert, content: { $0.makeAlert() })
+        .alert(item: $reconnectViewModel.alert, content: { $0.makeAlert() })
         .padding()
+    }
+
+    var reconnectButton: some View {
+        Button(reconnectViewModel.buttonLabel) {
+            reconnectViewModel.onRecconectTap()
+        }
+        .disabled(reconnectViewModel.connectingState != .idle)
+        .font(Fonts.muliBoldHeading1)
+        .buttonStyle(BlueButtonStyle())
     }
 
     var finishAndSyncButton: some View {

@@ -830,8 +830,12 @@ struct Strings {
                                                                 comment: "")
         static let finishAndDontSyncButtonLabel = NSLocalizedString("Finish recording & don't sync",
                                                                     comment: "")
+        static let reconnectButtonLabel = NSLocalizedString("Reconnect",
+                                                            comment: "Manual reconnect button on the disconnected session card")
+        static let reconnectingButtonLabel = NSLocalizedString("Reconnecting…",
+                                                               comment: "Manual reconnect button while a connect attempt is in flight")
     }
-    
+
     enum ReconnectSessionCardView {
         static let heading = NSLocalizedString("Measurement device disconnected",
                                                comment: "")

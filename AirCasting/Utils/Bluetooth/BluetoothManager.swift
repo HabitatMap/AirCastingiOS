@@ -68,6 +68,7 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         case .resetting:
             Log.info("central.state is .resetting")
             deviceState = .resetting
+            notifyConnectedAsDisconnected()
         case .unsupported:
             Log.info("central.state is .unsupported")
             deviceState = .unsupported
@@ -77,11 +78,29 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         case .poweredOff:
             Log.info("central.state is .poweredOff")
             deviceState = .poweredOff
+            // Toggling BT off does not fire didDisconnectPeripheral for connected
+            // peripherals — synthesize a disconnect for each tracked peripheral so
+            // the reconnection controller's retry loop kicks in and the active
+            // session card flips to DISCONNECTED.
+            notifyConnectedAsDisconnected()
         case .poweredOn:
             Log.info("central.state is .poweredOn")
             deviceState = .poweredOn
         @unknown default:
             fatalError()
+        }
+    }
+
+    private func notifyConnectedAsDisconnected() {
+        queue.async {
+            let snapshot = self.trackedConnectedPeripherals
+            guard !snapshot.isEmpty else { return }
+            Log.info("BT central went down; synthesizing disconnect for \(snapshot.count) tracked peripheral(s)")
+            for peripheral in snapshot {
+                let version = self.firmwareVersion(for: peripheral)
+                self.callConnectionObserversWithDisconnect(for: .init(peripheral: peripheral, firmwareVersion: version))
+            }
+            self.trackedConnectedPeripherals.removeAll()
         }
     }
     
@@ -188,6 +207,10 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
     
     private var callbackQueue = DispatchQueue(label: "bluetooth.driver.callback.queue")
     private var connectionObservers: [BluetoothConnectionObserver] = []
+    /// Peripherals we have an active connection to. Needed so we can synthesize
+    /// disconnect events when the central goes `.poweredOff` (e.g., user toggles
+    /// BT off on the phone) — CoreBluetooth does not fire didDisconnect in that case.
+    private var trackedConnectedPeripherals: Set<CBPeripheral> = []
     
     func addConnectionObserver(_ observer: BluetoothConnectionObserver) {
         queue.async {
@@ -272,6 +295,7 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         queue.async {
             Log.verbose("Did connect to BT device \(peripheral.name ?? "unnamed")")
             peripheral.delegate = self
+            self.trackedConnectedPeripherals.insert(peripheral)
             guard let callbacks = self.connectionCallbacks[peripheral] else {
                 return
             }
@@ -298,6 +322,7 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         Log.info("Disconnected peripheral \(peripheral) with error: \(String(describing: error?.localizedDescription))")
         let version = firmwareVersion(for: peripheral)
         queue.async {
+            self.trackedConnectedPeripherals.remove(peripheral)
             self.callConnectionObserversWithDisconnect(for: .init(peripheral: peripheral, firmwareVersion: version))
         }
     }

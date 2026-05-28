@@ -18,6 +18,8 @@ final class SessionManagingReconnectionControllerTests: ACTestCase {
         Resolver.test.register { self.activeSessionProvider as ActiveMobileSessionProvidingService }
         Resolver.test.register { self.standaloneController as StandaloneModeController }
         Resolver.test.register { self.bluetoothSessionController as BluetoothSessionRecordingController }
+        Resolver.test.register { MeasurementsSavingServiceMock() as MeasurementsSavingService }
+        Resolver.test.register { MobileSessionRecordingStorageMock() as MobileSessionRecordingStorage }
     }
 
     func testShouldReconnect_withActiveSessionWithTheDevice_returnsTrue() {
@@ -57,4 +59,8 @@ class StandaloneModeControllerSpy: StandaloneModeController {
     func moveActiveSessionToStandaloneMode() {
         moveToStandaloneModeCount += 1
     }
+}
+
+class MobileSessionRecordingStorageMock: MobileSessionRecordingStorage {
+    func accessStorage(_ task: @escaping (HiddenMobileSessionRecordingStorage) -> Void) { }
 }

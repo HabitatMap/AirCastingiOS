@@ -377,6 +377,12 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         queue.async { [weak self] in
             guard let self = self else { return }
             self.configuredSessionUUID = uuid
+            // Open the live-measurement gate immediately. The Core Data session row
+            // already exists (we're resuming, not creating), and ContinueSession's
+            // Ready can lag the device's first live indication by several seconds
+            // (12 s observed on real firmware) — gating measurements on the Ready
+            // callback drops them silently in that window.
+            self.mobileSessionActive = true
             guard let parsedExpected = UUID(uuidString: uuid.rawValue) else {
                 completion(.failure(AirBeamMiniV2ConfiguratorError.missingSessionUUID))
                 return
@@ -387,6 +393,16 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                 case .failure(let error):
                     completion(.failure(error))
                 case .success(let status):
+                    // Firmware loses wall-clock across power-cycle reboots — live
+                    // Measurement indications stream with timestamps in the boot-counter
+                    // range (epoch ≈ device uptime), which fall outside the session's
+                    // 2026 chart window. Push SetTime before any session-state command
+                    // so subsequent live indications carry the correct wall-clock.
+                    self.writeCommand(V2BinaryProtocol.buildSetTime()) { writeResult in
+                        if case .failure(let error) = writeResult {
+                            Log.error("V2 reconnect SetTime write failed: \(error)")
+                        }
+                    }
                     switch status {
                     case .running(_, let deviceUUID):
                         guard deviceUUID == parsedExpected else {
