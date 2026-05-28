@@ -15,6 +15,11 @@ protocol MeasurementsSavingService {
                                sessionUUID: SessionUUID,
                                time: Date,
                                locationless: Bool)
+    /// V2 path: save a synced measurement using the device-stored timestamp.
+    /// Location is `.undefined` because firmware does not persist per-record GPS during storage.
+    func saveV2SyncMeasurement(_ measurement: ABMeasurementStream,
+                               sessionUUID: SessionUUID,
+                               time: Date)
 }
 
 class DefaultMeasurementsSaver: MeasurementsSavingService {
@@ -120,6 +125,13 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
             location = tracker.location.value?.coordinate ?? .undefined
         }
         updateStreams(stream: measurement, sessionUUID: sessionUUID, location: location, time: time)
+    }
+
+    func saveV2SyncMeasurement(_ measurement: ABMeasurementStream,
+                               sessionUUID: SessionUUID,
+                               time: Date) {
+        // Synced records carry no location (firmware only persists timestamp + PM values).
+        updateStreams(stream: measurement, sessionUUID: sessionUUID, location: .undefined, time: time)
     }
 
     private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, location: CLLocationCoordinate2D?, time: Date) {

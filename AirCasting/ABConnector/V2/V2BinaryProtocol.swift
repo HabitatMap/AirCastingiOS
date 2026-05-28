@@ -43,6 +43,7 @@ enum V2BinaryProtocol {
         case storageHasMeasurements   = 0x03
         case clearOrSyncStorageFailed = 0x04
         case invalidWifiCredentials   = 0x05
+        case syncFailed               = 0x06
     }
 
     enum StatusCode: UInt8 {
@@ -139,6 +140,14 @@ enum V2BinaryProtocol {
         case idle(battery: BatteryReading)
         case hasSavedSession(battery: BatteryReading, sessionUUID: UUID, hasMeasurements: Bool)
         case running(battery: BatteryReading, sessionUUID: UUID)
+
+        var sessionUUID: UUID? {
+            switch self {
+            case .idle: return nil
+            case .hasSavedSession(_, let uuid, _): return uuid
+            case .running(_, let uuid): return uuid
+            }
+        }
     }
 
     struct BatteryReading: Equatable {

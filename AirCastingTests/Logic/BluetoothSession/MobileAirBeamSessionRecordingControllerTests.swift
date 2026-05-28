@@ -173,6 +173,15 @@ class MeasurementsSavingServiceMock: MeasurementsSavingService {
     func changeStatusToRecording(for sessionUUID: AirCasting.SessionUUID) {
         changeStatusToRecordingCalls += 1
     }
+
+    func saveV2LiveMeasurement(_ measurement: ABMeasurementStream,
+                               sessionUUID: AirCasting.SessionUUID,
+                               time: Date,
+                               locationless: Bool) { }
+
+    func saveV2SyncMeasurement(_ measurement: ABMeasurementStream,
+                               sessionUUID: AirCasting.SessionUUID,
+                               time: Date) { }
 }
 
 class MeasurementsRecordingServicesMock: MeasurementsRecordingServices {

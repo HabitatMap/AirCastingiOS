@@ -66,20 +66,30 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
     }
 
     func resumeRecording(device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
-        // V2: firmware auto-resumes streaming on reconnect (live + sync chunks). The
-        // running configurator still owns its measurement subscription, so this side
-        // just needs to keep isRecording / location tracking truthful. Phase 3 will
-        // wire ContinueSession + sync-chunk parsing.
+        // V2: firmware auto-resumes streaming on reconnect. Status determines which
+        // scenario applies:
+        //   - Running: nothing to send; sync chunks + live indications flow on their own.
+        //   - HasSavedSession: send ContinueSession (0x10) to transition the device to Running.
         if device.firmwareVersion == .v2 {
             guard let activeSession = self.activeSessionProvider.activeSession else {
                 completion(.success(()))
                 return
             }
-            if !activeSession.session.locationless {
-                self.locationTracker.start()
+            let configurator = Resolver.resolve(AirBeamMiniV2Configurator.self, args: device)
+            configurator.resumeSessionAfterReconnect(uuid: activeSession.session.uuid) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success:
+                    if !activeSession.session.locationless {
+                        self.locationTracker.start()
+                    }
+                    self.isRecording = true
+                    completion(.success(()))
+                case .failure(let error):
+                    Log.error("V2 resume after reconnect failed: \(error)")
+                    completion(.failure(error))
+                }
             }
-            self.isRecording = true
-            completion(.success(()))
             return
         }
 

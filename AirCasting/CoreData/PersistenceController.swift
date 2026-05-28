@@ -42,13 +42,21 @@ class PersistenceController: ObservableObject {
         let ctx = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         ctx.parent = sourceOfTruthContext
         ctx.automaticallyMergesChangesFromParent = true
+        ctx.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
         ctx.name = "viewContext"
         return ctx
     }()
-    
+
     private let container: NSPersistentContainer
-    
-    private lazy var sourceOfTruthContext: NSManagedObjectContext = container.newBackgroundContext()
+
+    // V2 sync chunks can overlap live measurements on `(stream, time)`.
+    // The unique constraint on MeasurementEntity dedupes them — keep the existing row
+    // so live writes that landed first aren't clobbered by a later sync replay.
+    private lazy var sourceOfTruthContext: NSManagedObjectContext = {
+        let ctx = container.newBackgroundContext()
+        ctx.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
+        return ctx
+    }()
 
     init(inMemory: Bool = false) {
         container = NSPersistentContainer(name: "AirCasting")
@@ -82,14 +90,16 @@ class PersistenceController: ObservableObject {
         let ctx = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         ctx.parent = sourceOfTruthContext
         ctx.automaticallyMergesChangesFromParent = true
+        ctx.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
         ctx.name = "editContext"
         return ctx
     }()
-    
+
     func createContext() -> NSManagedObjectContext {
         let ctx = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         ctx.parent = sourceOfTruthContext
         ctx.automaticallyMergesChangesFromParent = true
+        ctx.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
         ctx.name = "createContext"
         return ctx
     }

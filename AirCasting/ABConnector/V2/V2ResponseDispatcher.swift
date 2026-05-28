@@ -26,6 +26,8 @@ final class V2ResponseDispatcher {
                     return "AirBeam failed to clear / sync stored measurements."
                 case .noSession:
                     return "AirBeam reported no active session."
+                case .syncFailed:
+                    return "AirBeam reported a sync failure. Measurements remain on the device."
                 }
             case .malformed:
                 return "AirBeam sent a malformed response."
