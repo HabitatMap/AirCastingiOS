@@ -88,25 +88,38 @@ Always read `.claude/ble_mobile_app_guide_ios.md` alongside this file — it has
 
 ---
 
-## Phase 3 — V2 Mobile Session Reconnection + Active Sync (2–3 days)
+## Phase 3 — V2 Mobile Session Reconnection + Active Sync (2–3 days) — **SHIPPED**
 
 **Goal:** Handle BLE reconnection mid-session; consume the firmware's auto-stream of stored chunks on the Sync characteristic.
 
 **Tasks**
-- [ ] **Sync chunk parser**: 244-byte indication → `[count_u8, padding_2B, record_0(8B), ...]`; each record = `[ts_u32_LE, pm1_u16_LE, pm25_u16_LE]`
-- [ ] **Per-chunk DB save**: write each chunk's records to Core Data immediately (do not accumulate)
-- [ ] **Session UUID validation**: compare `savedSessionUuid` (decoded from last Status via `UUID.fromLEBytes`) to current app session UUID; if mismatch → **discard the chunk** (it's stale storage from an older session). Android commits `18e16b89f`, `489902d59`
-- [ ] **Scenario A — Status `Running` on reconnect**: do nothing; chunks + live measurements stream automatically (interleaved); both must be parsed
-- [ ] **Scenario B — Status `HasSavedSession` on reconnect**: send `ContinueSession (0x10)`; on `Ack` device transitions to Running and starts sync + live; same parsing as Scenario A
-- [ ] **`ContinueSession` Nack(0x03 StorageHasMeasurements)**: should not occur — firmware streams live + stored automatically on `Ack`. If it does occur, log + show a generic error. Do NOT port the Android auto-recover via `StartSync` (Android `db3cebf24` / `AirBeamMiniV2Configurator.kt:755-778` is incorrect; unreachable in real firmware behavior).
-- [ ] **Active-sync drain detection**: `Running` Status has no `has_measurements` byte. Set a `isActiveSyncDraining` flag on every Sync (`0006`) indication and reset it after 3 s of no chunks (Android commit `daf8cef01`). Expose this as an observable property — Phase 6 / drain-aware finish dialog consume it.
-- [ ] **Don't drop synced rows that predate latest live row**: rely on the unique-index dedupe (next bullet), not on timestamp filtering (Android commit `a76d43451`)
-- [ ] **Unique index on `(session, stream, time)`** in the `Measurement` Core Data entity to dedupe overlapping live + synced rows (Android commit `357d4002c`)
-- [ ] **Active sessions DB writes**: synced measurements must be written to the same table the live-graph reads (Android commit `a6af1ee59`)
+- [x] **Sync chunk parser**: 244-byte indication → `[count_u8, padding_2B, record_0(8B), ...]`; each record = `[ts_u32_LE, pm1_u16_LE, pm25_u16_LE]` — `V2MeasurementParser.parseSyncChunk`
+- [x] **Per-chunk DB save**: write each chunk's records to Core Data immediately (do not accumulate) — `AirBeamMiniV2Configurator.persistSyncChunkLocked` calls `MeasurementsSavingService.saveV2SyncMeasurement` per record
+- [x] **Session UUID validation**: compare `savedSessionUuid` (decoded from last Status via `UUID.fromLEBytes`) to current app session UUID; if mismatch → **discard the chunk**. `persistSyncChunkLocked` reads `lastStatus?.sessionUUID` and bails on mismatch. Android commits `18e16b89f`, `489902d59`
+- [x] **Scenario A — Status `Running` on reconnect**: passive; chunks + live measurements stream automatically. `resumeSessionAfterReconnect.case .running` just sets `mobileSessionActive = true` + `scheduleHourlySetTime`; subscriptions already re-armed by `prepareForReconnect`.
+- [x] **Scenario B — Status `HasSavedSession` on reconnect**: send `ContinueSession (0x10)`. `resumeSessionAfterReconnect.case .hasSavedSession` → `sendContinueSession` (awaitAckThenReady).
+- [x] **`ContinueSession` Nack(0x03 StorageHasMeasurements)**: dispatcher maps to `DispatchError.nack(.storageHasMeasurements, ...)`, propagated through `sendContinueSession` completion. No auto-recover via `StartSync` (Android `db3cebf24` deliberately skipped).
+- [x] **Active-sync drain detection**: `isActiveSyncDrainingStorage` flag on the configurator, set on every Sync indication via `bumpActiveSyncDrainingLocked`; reset 3 s after the last chunk via `syncDrainResetWorkItem`. Exposed via `isActiveSyncDraining: Bool` accessor and posted on `NotificationCenter.v2SyncDrainChanged` (`AirCastingNotificationKeys.V2SyncDrainChanged.{deviceUUID, isDraining}`). Android commit `daf8cef01`.
+- [x] **Don't drop synced rows that predate latest live row**: `persistSyncChunkLocked` writes every parsed record without any timestamp filter. Dedupe happens at the Core Data layer via the unique constraint below. Android commit `a76d43451`.
+- [x] **Unique index on `(session, stream, time)`**: Core Data **v10** model adds `uniquenessConstraints` on `MeasurementEntity` for `(measurementStream, time)` (stream→session is 1:1, so equivalent). All contexts in `PersistenceController` now use `NSMergeByPropertyStoreTrumpMergePolicy` so the existing live row wins on a sync replay collision. Android commit `357d4002c`.
+- [x] **Active sessions DB writes**: `saveV2SyncMeasurement` routes through `MeasurementsSavingService.updateStreams` — same `addMeasurementValue` path the live-graph observer reads. Android commit `a6af1ee59`.
+
+**Extra hardening shipped during Phase 3 integration** (Phase 7 / 8 territory, pulled forward because real-device testing surfaced them):
+
+- [x] **Reconnect retry loop** in `DefaultReconnectionController`: 10 s connect timeout, 3 s delay between attempts, 40-attempt cap (~8.5 min). Power-cycle reboot exceeds a single 10 s timeout, so a single-shot reconnect always failed; the loop runs through the reboot window. Logs tagged `[RECONNECT]`.
+- [x] **`AirBeamMiniV2Configurator.prepareForReconnect()`**: wipes `subscriptionTokens`, `lastStatus`, drain timer, and dispatcher session-start guard before re-subscribing. CoreBluetooth invalidates per-peripheral subscriptions across a disconnect; without the wipe `ensureSubscriptions()` no-ops on reconnect (tokens still in array) and `subscribeAndAwaitStatus` returns a stale cached status.
+- [x] **`SetTime` on reconnect**: pushed before the Scenario A/B branch so post-power-cycle live indications carry a 2026 wall-clock instead of the firmware's boot-counter range (was producing `1970-01-01` timestamps that fell outside the session's chart window).
+- [x] **DISCONNECTED status flip during retry**: new `didStartReconnecting` delegate method on `ReconnectionControllerDelegate`; `SessionManagingReconnectionController` flips the active session to `.DISCONNECTED` on the first disconnect and back to `.RECORDING` via `changeStatusToRecording` on successful resume. Card surfaces the "Disconnected" affordance while the retry loop runs.
+- [x] **Reconnect chain dedupe** via `activeReconnects: Set<String>`: CoreBluetooth emits two `didDisconnectPeripheral` events when a connect attempt times out (real disconnect + cleanup disconnect), each spawning a chain that thrashed `deviceBusy` against the other. Dedup ensures one chain per device UUID.
+- [x] **Synthetic disconnect on `.poweredOff` / `.resetting`** in `BluetoothManager`: track `trackedConnectedPeripherals` and fire `didDisconnect` on observers when central goes down. CoreBluetooth doesn't fire `didDisconnectPeripheral` on a phone-side BT toggle, so the auto-retry chain wouldn't kick in.
+- [x] **Open live-measurement gate at resume entry**: `mobileSessionActive = true` is set at the top of `resumeSessionAfterReconnect`, not after `ContinueSession Ready`. Real firmware can lag `Ready` ~12 s behind `Ack`; live indications arriving in that window were dropped by the `guard mobileSessionActive` check.
+- [x] **Manual Reconnect button** on `StandaloneSessionCardView` (reusing `ReconnectSessionCardViewModel`). Branch A (active session matches device) calls the new `ReconnectionController.kickReconnectNow(for:)`, which skips the current retry sleep and triggers the next `attemptReconnect` immediately — no parallel BLE connect from the manual path. Branch B (post-exhaustion, no active session) still scans+connects via the original `UserTriggeredReconnectionController` flow and flips status via `changeStatusToRecording`.
 
 **Done when:** Force-quit the app mid-session, relaunch, reconnect — sync chunks restore the missing window without duplicates or stale data; live data resumes; UI graph updates correctly.
 
 **Reference Android commits:** `84050172a`, `a6af1ee59`, `eaf4c1f55`, `db3cebf24`, `7d6d15771`, `f48436cab`, `1c29a7e16`, `18e16b89f`, `489902d59`, `daf8cef01`, `a76d43451`, `357d4002c`.
+
+**iOS commits:** `b7f65fe8` (core Phase 3), `494b0adb` (retry loop), `38fe8852` (chain dedupe + DISCONNECTED flip + live gate), `b26453f0` (SetTime on reconnect), `a71cfc82` (BT-toggle synthetic disconnect), `7670f8b9` / `4e366e53` / `b292a975` / `214a9ba5` / `7027eb02` (manual Reconnect button + UI state).
 
 ---
 

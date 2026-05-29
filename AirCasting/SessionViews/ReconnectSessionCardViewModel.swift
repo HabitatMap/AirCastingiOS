@@ -16,18 +16,21 @@ class ReconnectSessionCardViewModel: ObservableObject {
                 buttonLabel = Strings.ReconnectSessionCardView.reconnectLabel
             case .connecting:
                 buttonLabel = Strings.ReconnectSessionCardView.connectingLabel
-            case .connected:
-                buttonLabel = Strings.ReconnectSessionCardView.connectedLabel
             }
         }
     }
-    let session: SessionEntity    
-    
+    let session: SessionEntity
+
     enum ConnectingState {
         case idle
         case connecting
-        case connected
     }
+
+    /// Tap → kicks the auto-retry chain. The card unmounts when status flips
+    /// DISCONNECTED→RECORDING. If that flip doesn't happen inside this window
+    /// (auto chain still retrying / device not back yet) revert to idle so the
+    /// user can tap again.
+    private static let connectingTimeoutSeconds: TimeInterval = 30
     
     init(session: SessionEntity) {
         self.session = session
@@ -72,13 +75,20 @@ class ReconnectSessionCardViewModel: ObservableObject {
     
     private func connect(with uuid: String) {
         connectingState = .connecting
+        // Revert to idle if the card hasn't unmounted (status flipped) within the
+        // window. Keeps the button tappable when the auto chain is still chewing.
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.connectingTimeoutSeconds) { [weak self] in
+            guard let self = self, self.connectingState == .connecting else { return }
+            self.connectingState = .idle
+        }
         reconnectionController.reconnectWithPeripheral(deviceUUID: uuid, session: Session(uuid: session.uuid, type: session.type, name: session.name, deviceType: session.deviceType, location: session.location, startTime: session.startTime)) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success():
-                DispatchQueue.main.async {
-                    self.connectingState = .connected
-                }
+                // No state change — stay in `.connecting` until the status flip
+                // unmounts the card. Branch A returns success immediately after
+                // kicking the auto chain, so `.connected` here would lie.
+                break
             case .failure(let error):
                 Log.info("Failed to reconnect: \(error)")
                 DispatchQueue.main.async {

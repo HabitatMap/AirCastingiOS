@@ -23,6 +23,10 @@ protocol ReconnectionController {
     /// Used when the user taps the manual Reconnect button so the manual attempt
     /// doesn't race the retry loop.
     func cancelReconnect(deviceUUID: String)
+    /// Skip the current retry sleep and try the next reconnect attempt immediately.
+    /// If no chain is active, start one. Returns true if a chain is now active.
+    @discardableResult
+    func kickReconnectNow(for device: any BluetoothDevice) -> Bool
 }
 
 class DefaultReconnectionController: ReconnectionController, BluetoothConnectionObserver {
@@ -87,6 +91,27 @@ class DefaultReconnectionController: ReconnectionController, BluetoothConnection
         clearInFlight(deviceUUID)
     }
 
+    @discardableResult
+    func kickReconnectNow(for device: any BluetoothDevice) -> Bool {
+        // Manual Reconnect tap: ensure a chain is active and try the next attempt
+        // immediately instead of waiting out the 3 s retry sleep. If no chain is
+        // active (e.g., manual tap from post-exhaustion standalone), start one.
+        activeReconnectsLock.lock()
+        let wasInFlight = activeReconnects.contains(device.uuid)
+        if !wasInFlight {
+            activeReconnects.insert(device.uuid)
+        }
+        activeReconnectsLock.unlock()
+        Log.info("[RECONNECT] Manual kick for \(device.uuid) (wasInFlight=\(wasInFlight))")
+        if !wasInFlight {
+            delegate?.didStartReconnecting(to: device)
+        }
+        retryQueue.async { [weak self] in
+            self?.attemptReconnect(device: device, attempt: 1)
+        }
+        return true
+    }
+
     private func attemptReconnect(device: any BluetoothDevice, attempt: Int) {
         // Re-check on every retry: user may have stopped the session mid-loop,
         // or fired a manual Reconnect that cancelled the auto chain.
@@ -107,12 +132,20 @@ class DefaultReconnectionController: ReconnectionController, BluetoothConnection
         do {
             try bluetootConnector.connect(to: device, timeout: Self.connectAttemptTimeout) { [weak self] result in
                 guard let self = self else { return }
+                guard self.isStillActive(device.uuid) else {
+                    Log.info("[RECONNECT] connect callback fired after cancel; dropping (attempt #\(attempt))")
+                    return
+                }
                 switch result {
                 case .success:
                     Log.info("[RECONNECT] Connected to peripheral (attempt #\(attempt)): \(device)")
                     do {
                         try self.bluetootConnector.discoverCharacteristics(for: device, timeout: 10) { [weak self] result in
                             guard let self = self else { return }
+                            guard self.isStillActive(device.uuid) else {
+                                Log.info("[RECONNECT] discoverCharacteristics callback fired after cancel; dropping")
+                                return
+                            }
                             switch result {
                             case .success:
                                 Log.info("[RECONNECT] Discovered characteristics for: \(device)")
@@ -135,6 +168,11 @@ class DefaultReconnectionController: ReconnectionController, BluetoothConnection
             Log.error("[RECONNECT] connect threw (attempt #\(attempt)): \(error). Scheduling retry.")
             scheduleRetry(device: device, attempt: attempt)
         }
+    }
+
+    private func isStillActive(_ uuid: String) -> Bool {
+        activeReconnectsLock.lock(); defer { activeReconnectsLock.unlock() }
+        return activeReconnects.contains(uuid)
     }
 
     private func scheduleRetry(device: any BluetoothDevice, attempt: Int) {

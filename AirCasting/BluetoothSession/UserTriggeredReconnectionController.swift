@@ -20,30 +20,20 @@ class DefaultUserTriggeredReconnectionController: UserTriggeredReconnectionContr
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
     @Injected private var sessionRecorder: BluetoothSessionRecordingController
     @Injected private var reconnectionController: ReconnectionController
+    @Injected private var measurementsSaver: MeasurementsSavingService
 
     func reconnectWithPeripheral(deviceUUID: String, session: Session, completion: @escaping (Result<Void, UserTriggeredReconnectionError>) -> Void) {
-        // Branch A — active session still owns the device (auto-retry chain may
-        // be in flight after a disconnect). Cancel the chain, reuse the cached
-        // BluetoothDevice, run one immediate connect attempt. No scan needed.
+        // Branch A — active session still owns the device. Don't run a parallel
+        // BLE connect from here; that races the auto-retry chain over the shared
+        // V2 configurator (subscribe / awaiter slot / status cache). Instead kick
+        // the existing chain to attempt immediately. Auto chain handles connect →
+        // discover → V2 status → ContinueSession → SetTime → resumeRecording →
+        // status flip RECORDING. Card unmounts on the status flip.
         if let active = activeSessionProvider.activeSession,
            active.device.uuid == deviceUUID {
-            Log.info("Manual reconnect requested; cancelling auto-retry chain and connecting directly to \(deviceUUID)")
-            reconnectionController.cancelReconnect(deviceUUID: deviceUUID)
-            connect(to: active.device, session: session) { [weak self] result in
-                switch result {
-                case .success():
-                    self?.sessionRecorder.resumeRecording(device: active.device) { resumeResult in
-                        switch resumeResult {
-                        case .success(): completion(.success(()))
-                        case .failure(let error):
-                            Log.error("Manual reconnect: resumeRecording failed: \(error)")
-                            completion(.failure(.failedToConnect))
-                        }
-                    }
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            }
+            Log.info("Manual reconnect requested; kicking auto-retry chain for \(deviceUUID)")
+            reconnectionController.kickReconnectNow(for: active.device)
+            completion(.success(()))
             return
         }
 
@@ -104,9 +94,10 @@ class DefaultUserTriggeredReconnectionController: UserTriggeredReconnectionContr
     
     private func resume(_ session: Session, device: any BluetoothDevice, completion: @escaping (Result<Void, UserTriggeredReconnectionError>) -> Void) {
         activeSessionProvider.setActiveSession(session: session, device: device)
-        sessionRecorder.resumeRecording(device: device) { result in
+        sessionRecorder.resumeRecording(device: device) { [weak self] result in
             switch result {
             case .success():
+                self?.measurementsSaver.changeStatusToRecording(for: session.uuid)
                 completion(.success(()))
             case .failure(let error):
                 Log.error("Failed to resume recording: \(error)")
