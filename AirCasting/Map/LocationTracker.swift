@@ -18,7 +18,7 @@ protocol LocationAuthorization {
 protocol LocationTracker {
     func start()
     func stop()
-    func oneTimeLocationUpdate() async throws -> CLLocation 
+    func oneTimeLocationUpdate() async throws -> CLLocation
     var location: CurrentValueSubject<CLLocation?, Never> { get }
 }
 
@@ -41,7 +41,7 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
     private var locationContinuation: CheckedContinuation<CLLocation, Error>?
     
     var location: CurrentValueSubject<CLLocation?, Never> = .init(nil)
-    
+
     init(locationManager: CLLocationManager) {
         self.locationManager = locationManager
         super.init()
@@ -65,7 +65,13 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
         locationStartReference -= 1
         if locationStartReference == 0 {
             locationManager.stopUpdatingLocation()
-            location.value = nil
+            // Keep last-known location in `location.value` across stop/start cycles.
+            // Mobile-session reconnect briefly drops refcount to 0 when SwiftUI
+            // re-evaluates the session card body across the DISCONNECTED status flip,
+            // and the V2 measurement-save path falls back to `.undefined` (200,200)
+            // whenever `location.value == nil`. Retaining the last fix mirrors
+            // Android's fused-location behavior — CoreLocation overwrites it on the
+            // next real update once tracking resumes.
         }
         Log.info("Stopped location tracking (refcount: \(self.locationStartReference))")
         assert(locationStartReference >= 0)

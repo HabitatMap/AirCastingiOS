@@ -321,15 +321,18 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
             return
         }
 
+        let locationless = active.session.locationless
         for record in records {
             let streams = V2StreamFactory.makeStreams(pm1: Double(record.pm1),
                                                       pm25: Double(record.pm25))
             measurementsSaver.saveV2SyncMeasurement(streams.pm1,
                                                     sessionUUID: sessionUUID,
-                                                    time: record.timestamp)
+                                                    time: record.timestamp,
+                                                    locationless: locationless)
             measurementsSaver.saveV2SyncMeasurement(streams.pm25,
                                                     sessionUUID: sessionUUID,
-                                                    time: record.timestamp)
+                                                    time: record.timestamp,
+                                                    locationless: locationless)
         }
         NotificationCenter.default.post(
             name: .v2MeasurementSaved,

@@ -16,10 +16,14 @@ protocol MeasurementsSavingService {
                                time: Date,
                                locationless: Bool)
     /// V2 path: save a synced measurement using the device-stored timestamp.
-    /// Location is `.undefined` because firmware does not persist per-record GPS during storage.
+    /// Firmware doesn't persist per-record GPS, so we use the phone's last-known
+    /// location as best-effort approximation (sessions are typically stationary or
+    /// slow-moving during a brief BLE outage). Pass `locationless: true` to keep
+    /// the row coordinate-free.
     func saveV2SyncMeasurement(_ measurement: ABMeasurementStream,
                                sessionUUID: SessionUUID,
-                               time: Date)
+                               time: Date,
+                               locationless: Bool)
 }
 
 class DefaultMeasurementsSaver: MeasurementsSavingService {
@@ -129,9 +133,20 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
 
     func saveV2SyncMeasurement(_ measurement: ABMeasurementStream,
                                sessionUUID: SessionUUID,
-                               time: Date) {
-        // Synced records carry no location (firmware only persists timestamp + PM values).
-        updateStreams(stream: measurement, sessionUUID: sessionUUID, location: .undefined, time: time)
+                               time: Date,
+                               locationless: Bool) {
+        // Firmware doesn't persist GPS with stored chunks. Use the phone's last
+        // known fix (retained on LocationTracker.location.value even when the
+        // refcount drops to 0) as best-effort approximation — sessions are
+        // usually stationary or slow-moving during a brief BLE outage.
+        let location: CLLocationCoordinate2D
+        if locationless {
+            location = .undefined
+        } else {
+            let tracker = Resolver.resolve(LocationTracker.self)
+            location = tracker.location.value?.coordinate ?? .undefined
+        }
+        updateStreams(stream: measurement, sessionUUID: sessionUUID, location: location, time: time)
     }
 
     private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, location: CLLocationCoordinate2D?, time: Date) {
