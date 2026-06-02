@@ -549,6 +549,10 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         completion(.failure(AirBeamMiniV2ConfiguratorError.notImplemented))
     }
 
+    /// V1 protocol entry point — not used for V2 fixed sessions.
+    /// The V2 path goes through `configureV2FixedSession(...)` from
+    /// `AirBeamFixedWifiSessionCreator` after `POST /api/v3/fixed_sessions`
+    /// returns the session_token + sensor indices.
     func configureFixedWifiSession(uuid: SessionUUID,
                                    location: CLLocationCoordinate2D,
                                    date: Date,
@@ -556,6 +560,57 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                                    wifiPassword: String,
                                    completion: @escaping (Result<Void, Error>) -> Void) {
         completion(.failure(AirBeamMiniV2ConfiguratorError.notImplemented))
+    }
+
+    /// V2 fixed session — sends `NewSessionConfig (0x13)` with mode=fixed, the
+    /// session_token from the backend's `/api/v3/fixed_sessions` response, and
+    /// the user's WiFi credentials. Waits for Ack→Ready before completing.
+    /// Caller is responsible for disconnecting BLE on success.
+    func configureV2FixedSession(uuid: SessionUUID,
+                                 sessionTokenHex: String,
+                                 pm1Index: UInt8,
+                                 pm25Index: UInt8,
+                                 wifiSSID: String,
+                                 wifiPassword: String,
+                                 completion: @escaping (Result<Void, Error>) -> Void) {
+        configuredSessionUUID = uuid
+        guard let parsedUUID = UUID(uuidString: uuid.rawValue) else {
+            completion(.failure(AirBeamMiniV2ConfiguratorError.missingSessionUUID))
+            return
+        }
+        guard let payload = V2BinaryProtocol.buildNewSessionConfigFixed(
+            uuid: parsedUUID,
+            pm1Index: pm1Index,
+            pm25Index: pm25Index,
+            sessionTokenHex: sessionTokenHex,
+            wifiSSID: wifiSSID,
+            wifiPassword: wifiPassword
+        ) else {
+            completion(.failure(AirBeamMiniV2ConfiguratorError.statusDecodeFailed))
+            return
+        }
+        let preview = payload.prefix(38).map { String(format: "%02x", $0) }.joined()
+        Log.info("V2 NewSessionConfig fixed payload (\(payload.count)B) header[0..38]=\(preview) ssid.len=\(wifiSSID.utf8.count) pwd.len=\(wifiPassword.utf8.count)")
+        let proceed: () -> Void = { [weak self] in
+            guard let self = self else { return }
+            self.dispatcher.resetSessionStartGuard()
+            self.dispatcher.awaitAckThenReady(completion: completion)
+            self.writeCommand(payload) { [weak self] result in
+                if case .failure(let error) = result {
+                    self?.dispatcher.cancelAll(error)
+                }
+            }
+        }
+        if case .hasSavedSession = lastStatus {
+            sendDiscardSession { result in
+                switch result {
+                case .success: proceed()
+                case .failure(let error): completion(.failure(error))
+                }
+            }
+        } else {
+            proceed()
+        }
     }
 
     func configureSDSync(completion: @escaping (Result<Void, Error>) -> Void) {

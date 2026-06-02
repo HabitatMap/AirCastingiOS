@@ -47,6 +47,17 @@ extension Date {
         let date = self
         return Date(timeIntervalSinceReferenceDate: (date.timeIntervalSinceReferenceDate / 3600.0).rounded(.towardZero) * 3600.0)
     }
+
+    /// Apply the indoor-fixed-session TZ shift. The BE writes session timestamps
+    /// using "session-TZ wall-clock numerals tagged with Z" — for outdoor sessions
+    /// the session TZ matches the phone, so the numerals already line up with the
+    /// app's fakeUTCDate convention and no shift is needed. For indoor sessions
+    /// the BE has no lat/lng and uses UTC, so the Z'd numerals are real UTC and
+    /// must be moved to the phone's wall clock to display correctly.
+    func shiftedForFixedSession(isIndoor: Bool) -> Date {
+        guard isIndoor else { return self }
+        return self.currentUTCTimeZoneDate
+    }
 }
 // swiftlint:enable airCasting_date
 

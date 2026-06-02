@@ -94,6 +94,60 @@ enum V2BinaryProtocol {
         return data
     }
 
+    /// Fixed NewSessionConfig: 134 bytes.
+    /// `[0x13] + UUID_LE(16) + interval=60_LE(2) + 0x00 + pm1_idx(1) + pm25_idx(1) +
+    ///  token_LE(16) + ssid_padded(32) + password_padded(64)`
+    /// Byte 19 is the mode byte (0x00 = FIXED) — order matters; the session_token
+    /// comes AFTER the indices, not immediately after the UUID. The session token
+    /// is delivered as a 32-char hex string from the backend (16 raw bytes big-endian);
+    /// firmware reads it via `u128::from_le_bytes` so the bytes are reversed here.
+    static func buildNewSessionConfigFixed(uuid: UUID,
+                                           pm1Index: UInt8,
+                                           pm25Index: UInt8,
+                                           sessionTokenHex: String,
+                                           wifiSSID: String,
+                                           wifiPassword: String,
+                                           interval: UInt16 = fixedIntervalSeconds) -> Data? {
+        guard let tokenBytes = sessionTokenBytesLE(fromHex: sessionTokenHex) else { return nil }
+        var data = Data([OpCode.newSessionConfig.rawValue])
+        data.append(uuid.toV2LEBytes())
+        var le = interval.littleEndian
+        withUnsafeBytes(of: &le) { data.append(contentsOf: $0) }
+        data.append(SessionMode.fixed.rawValue)
+        data.append(pm1Index)
+        data.append(pm25Index)
+        data.append(tokenBytes)
+        data.append(padNullTerminated(wifiSSID, length: 32))
+        data.append(padNullTerminated(wifiPassword, length: 64))
+        return data
+    }
+
+    /// Decode the BE-hex session_token (32 hex chars = 16 bytes, big-endian MSB-first)
+    /// and reverse to little-endian for the firmware's `u128::from_le_bytes`.
+    static func sessionTokenBytesLE(fromHex hex: String) -> Data? {
+        let trimmed = hex.hasPrefix("0x") ? String(hex.dropFirst(2)) : hex
+        guard trimmed.count == 32 else { return nil }
+        var bytes = [UInt8]()
+        bytes.reserveCapacity(16)
+        var idx = trimmed.startIndex
+        while idx < trimmed.endIndex {
+            let next = trimmed.index(idx, offsetBy: 2)
+            guard let byte = UInt8(trimmed[idx..<next], radix: 16) else { return nil }
+            bytes.append(byte)
+            idx = next
+        }
+        return Data(bytes.reversed())
+    }
+
+    /// UTF-8-encode `s`, truncate / null-pad to exactly `length` bytes.
+    static func padNullTerminated(_ s: String, length: Int) -> Data {
+        var bytes = Array(s.utf8.prefix(length))
+        if bytes.count < length {
+            bytes.append(contentsOf: [UInt8](repeating: 0, count: length - bytes.count))
+        }
+        return Data(bytes)
+    }
+
     enum ResponseFrame: Equatable {
         case ack
         case nack(NackError, raw: UInt8)

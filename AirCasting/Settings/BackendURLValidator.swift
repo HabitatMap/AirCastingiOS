@@ -52,7 +52,9 @@ class BackendURLValidator {
     private func appendURLWithSchemeIfNotPresent(url: String) -> String {
         var newUrl = url
         if !url.hasPrefix("http") {
-            newUrl = "http://" + url
+            // Default to HTTPS: production + experimental both 301 HTTP→HTTPS,
+            // and the V3 endpoints reject plain HTTP entirely.
+            newUrl = "https://" + url
         }
         return newUrl
     }

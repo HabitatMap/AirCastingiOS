@@ -136,7 +136,7 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
     
     public func readSession(with uuid: SessionUUID) -> Future<SessionsSynchronization.SessionStoreSessionData, Error> {
         Future { [sessionsFetcher, dataConverter] promise in
-            sessionsFetcher.fetchSessions(constrained: .predicate(NSPredicate(format: "uuid == %@", uuid.rawValue)), completion: { [dataConverter] result in
+            sessionsFetcher.fetchSessions(constrained: .predicate(NSPredicate(format: "uuid ==[c] %@", uuid.rawValue)), completion: { [dataConverter] result in
                 switch result {
                 case .failure(let error):
                     promise(.failure(error))

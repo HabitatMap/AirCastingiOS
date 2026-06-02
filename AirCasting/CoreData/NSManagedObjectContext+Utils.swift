@@ -31,7 +31,14 @@ extension NSManagedObjectContext {
     
     func existingSession(uuid: SessionUUID) throws -> SessionEntity  {
         let fetchRequest: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "uuid == %@", uuid.rawValue)
+        // Case-insensitive match: UUIDs are case-insensitive identifiers per
+        // RFC-4122, and the BE has historically returned uuids in mixed cases
+        // (Swift-generated uppercase legacy rows vs. lowercase-normalised new
+        // ones from Android / V2 fixed sessions). A case-sensitive `uuid == %@`
+        // here caused download responses for a freshly-created lowercase fixed
+        // session to spawn a duplicate phantom row (measurements landed on the
+        // duplicate, the original stayed empty, graph rendered nothing).
+        fetchRequest.predicate = NSPredicate(format: "uuid ==[c] %@", uuid.rawValue)
 
         let results = try self.fetch(fetchRequest)
         if let existing  = results.first {
@@ -59,7 +66,7 @@ extension NSManagedObjectContext {
     
     func existingExternalSession(uuid: SessionUUID) throws -> ExternalSessionEntity {
         let fetchRequest: NSFetchRequest<ExternalSessionEntity> = ExternalSessionEntity.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "uuid == %@", uuid.rawValue)
+        fetchRequest.predicate = NSPredicate(format: "uuid ==[c] %@", uuid.rawValue)
 
         let results = try self.fetch(fetchRequest)
         
@@ -109,7 +116,7 @@ extension NSManagedObjectContext {
     func newOrExisting<T: NSManagedObject>(uuid: SessionUUID) throws -> T  {
         let className = NSStringFromClass(T.classForCoder())
         let fetchRequest = NSFetchRequest<T>(entityName: className)
-        fetchRequest.predicate = NSPredicate(format: "uuid == %@", uuid.rawValue)
+        fetchRequest.predicate = NSPredicate(format: "uuid ==[c] %@", uuid.rawValue)
         
         let results = try self.fetch(fetchRequest)
         if let existing  = results.first {

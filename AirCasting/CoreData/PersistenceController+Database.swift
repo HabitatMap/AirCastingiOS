@@ -129,7 +129,7 @@ extension PersistenceController: SessionUpdateable {
         context.perform {
             do {
                 let request = NSFetchRequest<NoteEntity>(entityName: "NoteEntity")
-                let predicate = NSPredicate(format: "session.uuid == %@ AND number IN %@", session.rawValue, notesUrls.map(\.noteNumber))
+                let predicate = NSPredicate(format: "session.uuid ==[c] %@ AND number IN %@", session.rawValue, notesUrls.map(\.noteNumber))
                 request.predicate = predicate
                 let notes = try context.fetch(request)
                 notesUrls.forEach { noteInfo in

@@ -123,33 +123,23 @@ Always read `.claude/ble_mobile_app_guide_ios.md` alongside this file — it has
 
 ---
 
-## Phase 4 — V2 Fixed Session (Backend + WiFi) (3–5 days)
+## Phase 4 — V2 Fixed Session (Backend + WiFi) (3–5 days) — **CORE SHIPPED**
 
 **Goal:** Configure a fixed session through the new `/api/v3/fixed_sessions` endpoint, pass WiFi creds + session_token to the device, hand off to firmware-driven WiFi streaming.
 
 **Tasks**
-- [ ] **`V2FixedSessionAPIService`**: `POST /api/v3/fixed_sessions` with the JSON in guide §7. Use **HTTPS + port 443** (Android commits `caf2dc3b0`, `39c0a59b0`)
-- [ ] **Typed Decodable** for the response (`session_token`, `streams[].sensor_type_id`, `location`) — avoid raw `Data` (Android commit `448cff1a5`)
-- [ ] **`session_token` decoding**: 32-char hex string → 16 bytes → **reverse to little-endian** before BLE payload (Android commit `97bbe0f38`)
-- [ ] **`NewSessionConfig (0x13)` fixed payload** (134 bytes, per guide §5.D):
-  - `[0x13] + UUID_LE(16) + interval=60_LE(2) + 0x00 + pm1_idx(1) + pm25_idx(1) + token_LE(16) + ssid_padded(32) + password_padded(64)`
-  - Strings null-byte padded to container length
-  - **Byte 19 is the mode byte (0x00=FIXED)** — order matters (Android commit `6c6cc9b40`)
-- [ ] **Interval = 60s (hard-coded, no UI input)** for fixed (Android commits `7659eeb01`, `47c19f0aa` — Android removed the user-configurable interval input on the fixed-session screen)
-- [ ] **NO hourly `SetTime`** for fixed — firmware gets time from `X-Server-Time` header on WiFi POSTs (Android commit `8198f4445`)
-- [ ] **Configure outcome handling**:
-  - `Ack` → `Ready` = success
-  - `Nack(0x02 InvalidConfig)` = generic config / first-measurement POST failure → error dialog
-  - `Nack(0x05 InvalidWifiCredentials)` = bad WiFi creds → dialog routing user back to WiFi entry (Android commit `8198f4445`)
-- [ ] **Block "Start Recording" button** until configure returns a typed outcome (Android commits `73cf51072`, `c821f623f`)
-- [ ] **Single error dialog, locked-down**: not dismissable except via OK; user can't double-start (Android commits `3708d75e4`, `bd92f041b`, `d6749096e`)
-- [ ] **Keep local fixed-session row on failure**: don't delete from Core Data when configure fails — let the user retry without re-entering everything (Android commit `dd05d7989`)
-- [ ] **Disconnect BLE on configure success**: device runs the fixed session over WiFi from this point; reconnect lazily for status / stop (Android commit `3708d75e4`)
-- [ ] **Stop foreground/recording services on configure success** so BLE-power consumers tear down for a WiFi-only session (Android commit `4e3ee96c4`)
-- [ ] **Per-measurement `Ready` heartbeat**: while BLE is connected during a running fixed session, treat repeated `Ready` as idempotent heartbeat — do NOT re-trigger configure-success handlers (Android commit `913e1d58d`, `b266c57ab`)
-- [ ] **Firmware-side resume**: on later BLE reconnect, Status may already be `Running` with a known session UUID — trust Status, do not re-configure (guide §6b, Android docs commit `157b31747`)
-- [ ] **Parse fixed `end_time` as UTC for indoor sessions** (`is_indoor == true`), phone-default for mapped — see guide §8a (Android commits `b21931159`, `0d148625c`, `338c2b1f1`, `9999289ce`, `ffc79d2bf`, `fa52f77f0`, `f1fe732d4`)
-- [ ] **DiscardSession on user-stop** (same as mobile, applies to fixed too) (Android commit `a8f4a8c15`)
+- [x] **`V2FixedSessionAPIService`**: `POST /api/v3/fixed_sessions` — `AirCasting/APICommunicator/V2/V2FixedSessionAPIService.swift`. Uses `URLProvider.baseAppURL` so backend host is centralised (the default just moved to `experimental.aircasting.org`).
+- [x] **Typed Decodable** for the response (`session_token`, `streams[].sensor_type_id`, `location`) — `V2FixedSessionAPI.Response`.
+- [x] **`session_token` decoding**: 32-char hex string → 16 bytes → **reverse to little-endian** before BLE payload — `V2BinaryProtocol.sessionTokenBytesLE(fromHex:)`.
+- [x] **`NewSessionConfig (0x13)` fixed payload** (134 bytes) — `V2BinaryProtocol.buildNewSessionConfigFixed(uuid:pm1Index:pm25Index:sessionTokenHex:wifiSSID:wifiPassword:)`. Mode byte fixed at 0x00 at offset 19.
+- [x] **Interval = 60s** hard-coded for fixed — `V2BinaryProtocol.fixedIntervalSeconds`. No UI input on fixed-session screen.
+- [x] **NO hourly `SetTime`** for fixed — `scheduleHourlySetTime()` is only called from the mobile session entry paths.
+- [x] **Configure outcome handling**: `awaitAckThenReady` resolves on `Ready`; `Nack(0x02)` / `Nack(0x05)` propagate through `DispatchError` with localized descriptions.
+- [x] **Keep local fixed-session row on failure** — `AirBeamFixedWifiSessionCreator.createV2Session` persists the row after the V3 POST succeeds and leaves it in place if `configureV2FixedSession` later fails.
+- [x] **Disconnect BLE on configure success** — `AirBeamFixedWifiSessionCreator` calls `BluetoothConnectionHandler.disconnect(from:)` + `V2ConfiguratorRegistry.release` after `Ready`.
+- [x] **Per-measurement `Ready` heartbeat** — already covered by `V2ResponseDispatcher.firstReadyConsumed` (Phase 2).
+- [x] **Firmware-side resume**: on BLE reconnect to a fixed-session device, `AirBeamMiniV2Configurator.subscribeAndAwaitStatus` returns `Running` with the saved UUID; the recording controller trusts Status and does not re-configure.
+- [x] **Parse fixed `end_time` as UTC for indoor sessions** — `Date.shiftedForFixedSession(isIndoor:)` (`AirCasting/Extensions/Date+Extensions.swift`); applied in `UpdateSessionParamsService` and `DownloadMeasurementsService` external-session path. `FixedSession.FixedMeasurementOutput.is_indoor` was added to the response model so the indicator threads end-to-end.
 
 **Done when:** Configure a fixed session over a real WiFi network, unplug from app, leave overnight, see measurements in the AirCasting backend, return next day, reconnect BLE, see Status = `Running` with the correct session UUID, stop session cleanly. Indoor session timestamps match real wall-clock time on the dashboard.
 

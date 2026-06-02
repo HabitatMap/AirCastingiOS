@@ -52,7 +52,14 @@ public struct SessionUUID: Codable, RawRepresentable, Hashable, CustomStringConv
     public let rawValue: String
 
     public init() {
-        rawValue = UUID().uuidString
+        // Canonical RFC-4122 form is lowercase. Kotlin's `UUID.toString()` and
+        // Rust's `Uuid` formatter both emit lowercase, so the BE round-trips
+        // lowercase end-to-end (mobile-app POST, firmware measurement POST,
+        // sync_measurements GET). Swift's `UUID().uuidString` is the outlier
+        // (uppercase), which caused V2 fixed-session measurement POSTs from
+        // firmware to 404 because the BE stored the uuid uppercase but the
+        // firmware-built URL is lowercase — surfaced as Nack(0x02 InvalidConfig).
+        rawValue = UUID().uuidString.lowercased()
     }
     
     public init(stringLiteral value: StringLiteralType) {

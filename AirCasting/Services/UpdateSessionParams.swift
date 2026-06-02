@@ -16,12 +16,20 @@ final class UpdateSessionParamsService {
 
     func updateSessionsParams(session: SessionEntity, output: FixedSession.FixedMeasurementOutput) throws {
         Log.info("Updating session params in core data for session: \(session.uuid) [\(session.name ?? "N/A")]")
+        // Indoor fixed sessions have `session.time_zone == UTC` on the BE because
+        // there is no lat/lng for it to derive a zone from. The BE serializer
+        // still tags the wall-clock numerals with a trailing "Z", so iOS parses
+        // them as real UTC. The rest of the app stores Dates with the
+        // fakeUTCDate convention (wall-clock numerals as a UTC moment in the
+        // phone's TZ), so indoor times must be shifted from real-UTC to the
+        // user's local wall clock before persisting.
+        let isIndoor = session.isIndoor || (output.is_indoor ?? false)
         session.uuid = output.uuid
         session.type = output.type
         session.name = output.title
         session.tags  = output.tag_list
-        session.startTime = output.start_time
-        session.endTime = output.end_time
+        session.startTime = output.start_time.shiftedForFixedSession(isIndoor: isIndoor)
+        session.endTime = output.end_time.shiftedForFixedSession(isIndoor: isIndoor)
         session.version = output.version
         guard let context = session.managedObjectContext else {
             throw Error.missingContext(output)
@@ -67,18 +75,18 @@ final class UpdateSessionParamsService {
 
             let oldMeasurements = oldStream.measurements?.array as? [MeasurementEntity] ?? []
             let measurementDiff = diff(oldMeasurements, streamOutput.measurements) {
-                return $0.time == $1.time && $0.value == Double($1.value)
+                return $0.time == $1.time.shiftedForFixedSession(isIndoor: isIndoor) && $0.value == Double($1.value)
             }
             measurementDiff.inserted.forEach {
                 let newMeasurement = MeasurementEntity(context: context)
-                fillMeasurement(newMeasurement, with: $0)
+                fillMeasurement(newMeasurement, with: $0, isIndoor: isIndoor)
                 newMeasurement.measurementStream = oldStream
             }
-            
+
             measurementDiff.common.forEach { oldMeasurement, measurementOutput in
                 oldMeasurement.value = Double(measurementOutput.value)
                 oldMeasurement.location = CLLocationCoordinate2D(latitude: measurementOutput.latitude, longitude: measurementOutput.longitude)
-                oldMeasurement.time = measurementOutput.time
+                oldMeasurement.time = measurementOutput.time.shiftedForFixedSession(isIndoor: isIndoor)
             }
         }
     }
@@ -105,10 +113,10 @@ final class UpdateSessionParamsService {
 }
 
 private extension UpdateSessionParamsService {
-    func fillMeasurement(_ entity: MeasurementEntity, with measurement: FixedSession.MeasurementOutput) {
+    func fillMeasurement(_ entity: MeasurementEntity, with measurement: FixedSession.MeasurementOutput, isIndoor: Bool = false) {
         entity.value = Double(measurement.value)
         entity.location = CLLocationCoordinate2D(latitude: measurement.latitude, longitude: measurement.longitude)
-        entity.time = measurement.time
+        entity.time = measurement.time.shiftedForFixedSession(isIndoor: isIndoor)
     }
 
     func fillStream(_ entity: MeasurementStreamEntity, with streamOutput: FixedSession.StreamOutput) throws {

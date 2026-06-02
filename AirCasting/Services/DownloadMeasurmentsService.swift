@@ -150,13 +150,14 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
                 } else {
                     Log.info("Processing external session response")
                     let session = try context.existingExternalSession(uuid: sessionUUID)
-                    session.endTime = output.end_time
+                    let isIndoor = output.is_indoor ?? false
+                    session.endTime = output.end_time.shiftedForFixedSession(isIndoor: isIndoor)
                     output.streams.forEach({ stream in
                         if let sessionStream = session.allStreams.first(where: { $0.sensorName == stream.key }) {
                             stream.value.measurements.forEach({ measurement in
                                 let newMeasurement = MeasurementEntity(context: context)
                                 newMeasurement.location = CLLocationCoordinate2D(latitude: measurement.latitude, longitude: measurement.longitude)
-                                newMeasurement.time = measurement.time
+                                newMeasurement.time = measurement.time.shiftedForFixedSession(isIndoor: isIndoor)
                                 newMeasurement.value = Double(measurement.value)
                                 sessionStream.addToMeasurements(newMeasurement)
                             })

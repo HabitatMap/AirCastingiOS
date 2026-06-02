@@ -30,6 +30,14 @@ struct BackendSettingsView: View {
         return components.port
     }
 
+    private var defaultPort: Int {
+        // Match the URL scheme: 443 for https, 80 for http. Without this the
+        // placeholder always showed "80" even when the stored URL was https,
+        // which was misleading on the experimental backend.
+        let scheme = urlProvider.baseAppURL.scheme?.lowercased()
+        return scheme == "https" ? 443 : 80
+    }
+
     @State private var buttonEnabled: Bool = false
     
     var body: some View {
@@ -44,7 +52,7 @@ struct BackendSettingsView: View {
                     .onChange(of: pathText) { _ in
                         updateURL()
                     }
-                createTextfield(placeholder: "\(Strings.BackendSettings.currentPort): \(port ?? 80)", binding: $portText)
+                createTextfield(placeholder: "\(Strings.BackendSettings.currentPort): \(port ?? defaultPort)", binding: $portText)
                     .onChange(of: portText) { _ in
                         updateURL()
                     }
@@ -75,7 +83,7 @@ struct BackendSettingsView: View {
                 return
             }
             
-            urlProvider.baseAppURL = url ?? URL(string: "http://aircasting.org/")!
+            urlProvider.baseAppURL = url ?? URL(string: "https://experimental.aircasting.org/")!
             presentationMode.wrappedValue.dismiss()
             do {
                 userState.currentState = .loggingOut

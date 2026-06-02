@@ -459,6 +459,7 @@
 		D1A0670130042026000009AB /* V2ResponseDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000010AB /* V2ResponseDispatcher.swift */; };
 		D1A0670130042026000011AB /* V2MeasurementParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000012AB /* V2MeasurementParser.swift */; };
 		D1A0670130042026000013AB /* V2ConfiguratorRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000014AB /* V2ConfiguratorRegistry.swift */; };
+		D1A0670130042026000015AB /* V2FixedSessionAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000016AB /* V2FixedSessionAPIService.swift */; };
 		DD009D662698844A009F0443 /* DeleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD009D652698844A009F0443 /* DeleteView.swift */; };
 		DD123EBF27BD1CD3001083C3 /* SearchMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD123EBE27BD1CD3001083C3 /* SearchMapView.swift */; };
 		DD123EC227BD2C53001083C3 /* SearchMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD123EC127BD2C53001083C3 /* SearchMapViewModel.swift */; };
@@ -1071,6 +1072,7 @@
 		D1A0670130042026000010AB /* V2ResponseDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2ResponseDispatcher.swift; sourceTree = "<group>"; };
 		D1A0670130042026000012AB /* V2MeasurementParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2MeasurementParser.swift; sourceTree = "<group>"; };
 		D1A0670130042026000014AB /* V2ConfiguratorRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2ConfiguratorRegistry.swift; sourceTree = "<group>"; };
+		D1A0670130042026000016AB /* V2FixedSessionAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2FixedSessionAPIService.swift; sourceTree = "<group>"; };
 		DD009D652698844A009F0443 /* DeleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteView.swift; sourceTree = "<group>"; };
 		DD123EBE27BD1CD3001083C3 /* SearchMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMapView.swift; sourceTree = "<group>"; };
 		DD123EC127BD2C53001083C3 /* SearchMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMapViewModel.swift; sourceTree = "<group>"; };
@@ -1954,8 +1956,17 @@
 				3392B3F928A1601000432B92 /* DeleteThresholdAlertService.swift */,
 				3392B3FD28A3D5D000432B92 /* FetchThresholdAlertsService.swift */,
 				332066A72892DB2F00798AC1 /* DormantStreamAlertService.swift */,
+				D1A0670130042026000017AB /* V2 */,
 			);
 			path = APICommunicator;
+			sourceTree = "<group>";
+		};
+		D1A0670130042026000017AB /* V2 */ = {
+			isa = PBXGroup;
+			children = (
+				D1A0670130042026000016AB /* V2FixedSessionAPIService.swift */,
+			);
+			path = V2;
 			sourceTree = "<group>";
 		};
 		AC8CFF7025E7D94C00FB2918 /* Models */ = {
@@ -3622,6 +3633,7 @@
 				D1A0670130042026000007AB /* V2BinaryProtocol.swift in Sources */,
 				D1A0670130042026000009AB /* V2ResponseDispatcher.swift in Sources */,
 				D1A0670130042026000011AB /* V2MeasurementParser.swift in Sources */,
+				D1A0670130042026000015AB /* V2FixedSessionAPIService.swift in Sources */,
 				D1A0670130042026000013AB /* V2ConfiguratorRegistry.swift in Sources */,
 				335B54BF28BD01C300BA92D2 /* CustomSwipeAction.swift in Sources */,
 				FA4F1B75281809B2002711B4 /* AirBeamStreamSuffixes.swift in Sources */,
