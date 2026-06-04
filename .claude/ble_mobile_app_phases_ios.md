@@ -147,26 +147,23 @@ Always read `.claude/ble_mobile_app_guide_ios.md` alongside this file — it has
 
 ---
 
-## Phase 5 — User-Configurable Mobile Interval + Sparse-Interval Averaging (1–2 days)
+## Phase 5 — User-Configurable Mobile Interval + Sparse-Interval Averaging (1–2 days) — **SHIPPED**
 
 **Goal:** Let the user pick a mobile-session sample interval (≥ 1s) without breaking AirCasting's averaging logic.
 
 **Background:** Averaging assumes the native sample rate is finer than the averaging window. A 5s-native session in the FIRST(5s) window — or any session with native ≥ window — has ≤ 1 sample per window; the averaging pass then wipes the rows via its leftover-sweep. Result: session card stays, but `measurements` is empty (graph/map/share/upload fail silently).
 
 **Tasks**
-- [ ] **UI**: add an "Interval (seconds)" integer input on the **mobile** new-session-details screen; default 1, accept ≥ 1. **Do not add this control on the fixed-session screen** (interval is hard-coded 60s — Android commit `47c19f0aa`).
-- [ ] **Plumbing**: thread `intervalSeconds: Int?` from the session-details screen → the iOS session-creator pipeline → `AirBeamMiniV2Configurator.sendNewSessionConfig` → mobile payload builder. Default to 1s when the param is null (legacy/non-V2 paths). Android commit `02d0baeba`.
-- [ ] **Core Data migration**: add `measurementInterval: Int16?` to the `Session` entity (lightweight migration). Persist the native interval per session on insert (V2 sessions only; V1/external rows stay `nil` and are interpreted as 1s native).
-- [ ] **Averaging gate**: in whatever the iOS equivalent of `AveragingService` is, skip averaging for any window where `nativeInterval >= window.value`:
-  - 1s session → averages at FIRST(5s) and SECOND(60s).
-  - 5s session → skips FIRST(5s), runs SECOND(60s).
-  - ≥60s session → skips both; do not schedule periodic averaging at all.
-    Also apply the same per-tick gate to the periodic (live) averaging path so a 5s live session doesn't write a misleading `averagingFrequency=5` before crossing 9 h.
-- [ ] **If iOS has no equivalent averaging logic**: leave the column in place for future use; just guard any future averaging scheduler on the same rule.
+- [x] **UI**: "Measurement interval (seconds)" integer textfield on `CreateSessionDetailsView` (`AirCasting/CreateSessionViews/CreateSessionDetails/CreateSessionDetailsView.swift`, `mobileIntervalField`). Default `"1"`, integers ≥ 1; bad input falls back to 1s in `CreateSessionDetailsViewModel.parsedIntervalSeconds()`. **Gated on V2 only** via `isV2MobileDevice` (`sessionType == .mobile && device.firmwareVersion == .v2`) — V1 firmware streams at a hardware-fixed 1s cadence with no opcode for a configurable interval; fixed sessions hard-code 60s (Android commit `47c19f0aa`).
+- [x] **Plumbing**: `intervalSeconds: Int?` added to `CreateSessionContext`; populated only when `device.firmwareVersion == .v2` in `CreateSessionDetailsViewModel.onContinueClick`. `MobilePeripheralSessionCreator` lifts it onto the `Session` value object as `measurementInterval: Int16?` (`AirCasting/Models/SessionCreator.swift`). `MobileAirBeamSessionRecordingController.startRecording` reads `session.measurementInterval` and passes through the new `intervalSeconds:` parameter on `AirBeamConfigurator.configureMobileSession(location:intervalSeconds:completion:)`. `AirBeamMiniV2Configurator.sendNewSessionConfigMobile(uuid:intervalSeconds:completion:)` clamps to `UInt16` and feeds `V2BinaryProtocol.buildNewSessionConfigMobile(uuid:interval:)`. V1 (`AirBeam3Configurator`) accepts the parameter and intentionally ignores it. Resume-after-reconnect path passes `nil`. Android commit `02d0baeba`.
+- [x] **Core Data migration**: `measurementInterval` attribute (`Integer 16`, optional, default `0` = "unknown/legacy → 1s") added to `SessionEntity` in the active `AirCasting v10.xcdatamodel` (lightweight migration — adding an optional scalar with a default value is automatically inferred). `SessionEntity.nativeMeasurementIntervalSeconds` helper maps `0 → 1s` so legacy rows and V1/fixed rows behave as before. `UpdateSessionParamsService.updateSessionsParams(_:session:)` writes `session.measurementInterval ?? 0`. Non-V2 paths leave `Session.measurementInterval` nil → DB column stays `0` (sentinel) → helper returns 1s. **DB note:** true `null` was considered but rejected — `0` is functionally equivalent through the helper, no downstream consumer reads the raw scalar, and the single-table `SessionEntity` (discriminated by `type`) requires no schema split between mobile and fixed.
+- [x] **Averaging gate**: `ActiveSessionsAveragingController.scheduleAveraging` reads `session.nativeMeasurementIntervalSeconds` and short-circuits when native ≥ 60s (`AveragingWindow.secondThresholdWindow.rawValue`) — no periodic averaging scheduled at all. When native ≥ 5s but < 60s, the initial timer is created with `.secondThresholdWindow` instead of `.firstThresholdWindow` so the 2h-threshold tick goes straight to the 60s bucket. `averagingWindowFor(startTime:nativeInterval:)` enforces the same rule per tick — a coarser-than-window native rate returns `.zeroWindow` (passthrough) so a 5s live session doesn't write a misleading `averagingWindow=5` before crossing 9h. Android commit `c4cdd9b9a`.
 
 **Done when:** Start mobile sessions at 1s, 5s, 10s, 60s, and 600s — the session card always shows measurements; graph populates; share/upload work end-to-end.
 
 **Reference Android commits:** `02d0baeba`, `c4cdd9b9a`, `47c19f0aa`.
+
+**iOS commits:** `6eaa4a4d` (core Phase 5: UI + plumbing + migration + averaging gate), `3e144577` (V1/fixed picker gate fix).
 
 ---
 

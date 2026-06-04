@@ -38,6 +38,19 @@ public class SessionEntity: NSManagedObject, Identifiable {
     @NSManaged public var urlLocation: String?
     @NSManaged public var version: Int16
     @NSManaged public var changesCount: Int32
+
+    /// Native measurement interval (seconds) the device was configured with for V2 mobile
+    /// sessions. `0` means "unknown / legacy" and should be interpreted as 1s. See
+    /// `nativeMeasurementIntervalSeconds`.
+    @NSManaged public var measurementInterval: Int16
+
+    /// Native sample interval in seconds, with the `0 == legacy 1s` fallback applied.
+    /// Used by the averaging gate so windows finer than the device's native rate are
+    /// skipped (e.g. a 5s-native session would produce ≤1 sample per 5s window and the
+    /// post-average leftover-sweep would wipe its rows).
+    public var nativeMeasurementIntervalSeconds: Int {
+        measurementInterval > 0 ? Int(measurementInterval) : 1
+    }
     
     // UserInterface state
     @NSManaged public var userInterface: UIStateEntity?

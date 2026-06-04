@@ -221,7 +221,7 @@ class AirBeamConfiguratorMock: AirBeamConfigurator {
         self.device = device
     }
 
-    func configureMobileSession(location: CLLocationCoordinate2D, completion: @escaping (Result<Void, Error>) -> Void) {
+    func configureMobileSession(location: CLLocationCoordinate2D, intervalSeconds: Int?, completion: @escaping (Result<Void, Error>) -> Void) {
         callsHistory.append(.configureMobileSession)
         completion(fakeResult)
 

@@ -24,9 +24,12 @@ public struct Session {
     let version: Int16
     let measurementStreams: [Any]?
     let status: SessionStatus?
+    /// Native sample interval (seconds) for V2 mobile sessions. `nil` for V1/external
+    /// sessions, where the firmware sample rate is implicitly 1s.
+    let measurementInterval: Int16?
 
     init(uuid: SessionUUID, type: SessionType, name: String?, deviceType: DeviceType?, location: CLLocationCoordinate2D?, startTime: Date?,
-         contribute: Bool = true, locationless: Bool = false, deviceId: String? = nil, endTime: Date? = nil, followedAt: Date? = nil, gotDeleted: Bool = false, isIndoor: Bool = false, tags: String? = nil, urlLocation: String? = nil, version: Int16 = 0, measurementStreams: [Any]? = nil, status: SessionStatus? = nil) {
+         contribute: Bool = true, locationless: Bool = false, deviceId: String? = nil, endTime: Date? = nil, followedAt: Date? = nil, gotDeleted: Bool = false, isIndoor: Bool = false, tags: String? = nil, urlLocation: String? = nil, version: Int16 = 0, measurementStreams: [Any]? = nil, status: SessionStatus? = nil, measurementInterval: Int16? = nil) {
         self.uuid = uuid
         self.type = type
         self.name = name
@@ -45,6 +48,7 @@ public struct Session {
         self.version = version
         self.measurementStreams = measurementStreams
         self.status = status
+        self.measurementInterval = measurementInterval
     }
 }
 
@@ -171,6 +175,7 @@ extension Session {
               urlLocation: newLocation,
               version: version,
               measurementStreams: measurementStreams,
-              status: status)
+              status: status,
+              measurementInterval: measurementInterval)
     }
 }

@@ -69,14 +69,31 @@ final class ActiveSessionsAveragingController: NSObject {
     private func scheduleAveraging(session: SessionEntity) {
         let uuid = session.uuid
         guard let startTime = session.startTime else { return }
-        
+
+        // Sparse-interval gate: if the user picked a native interval ≥ the 60s second
+        // window (the coarsest averaging bucket), every bucket would hold ≤ 1 sample
+        // and the leftover-sweep in `perform(...)` would wipe the only row in the
+        // window. Skip scheduling entirely. Android parity: commit `c4cdd9b9a`.
+        let nativeInterval = session.nativeMeasurementIntervalSeconds
+        guard nativeInterval < AveragingWindow.secondThresholdWindow.rawValue else {
+            Log.info("Skipping periodic averaging schedule for \(session.uuid): native interval \(nativeInterval)s ≥ 60s")
+            return
+        }
+
+        // First-window pick: if the native interval ≥ 5s, the 5s window is also too
+        // coarse — fast-forward straight to the 60s window (still scheduled at the
+        // 2h threshold so the FRC delegate doesn't have to re-pick later).
+        let initialWindow: AveragingWindow = nativeInterval < AveragingWindow.firstThresholdWindow.rawValue
+            ? .firstThresholdWindow
+            : .secondThresholdWindow
+
         let fromSessionStartToFirstThreshold = (startTime.timeIntervalSince(DateBuilder.getFakeUTCDate()) + Double(TimeThreshold.firstThreshold.rawValue) + Double(1))
-        Log.info("Scheduling periodic averaging start in \(fromSessionStartToFirstThreshold)s for \(session.uuid) [\(session.name ?? "unnamed")]")
+        Log.info("Scheduling periodic averaging start in \(fromSessionStartToFirstThreshold)s for \(session.uuid) [\(session.name ?? "unnamed")] firstWindow=\(initialWindow.rawValue)s nativeInterval=\(nativeInterval)s")
         let timer = Timer.publish(every: TimeInterval(fromSessionStartToFirstThreshold), on: .main, in: .common)
             .autoconnect()
             .first()
             .sink { [weak self] _ in
-                self?.startPeriodicAveraging(uuid: uuid, window: .firstThresholdWindow)
+                self?.startPeriodicAveraging(uuid: uuid, window: initialWindow)
             }
         timers[uuid] = timer
     }
@@ -92,7 +109,8 @@ final class ActiveSessionsAveragingController: NSObject {
                         Log.info("Couldnt get session with uuid:\(uuid) from db to start periodic averaging")
                         return }
                     Log.info("Periodic averaging fired for \(session.name ?? "N/A")")
-                    guard let checkWindow = self.averagingWindowFor(startTime: session.startTime) else {return}
+                    guard let checkWindow = self.averagingWindowFor(startTime: session.startTime,
+                                                                    nativeInterval: session.nativeMeasurementIntervalSeconds) else {return}
                     let windowDidChange = checkWindow != window
                     if windowDidChange {
                         self.startPeriodicAveraging(uuid: uuid, window: checkWindow)
@@ -129,7 +147,7 @@ final class ActiveSessionsAveragingController: NSObject {
         }
     }
     
-    private func averagingWindowFor(startTime: Date?) -> AveragingWindow? {
+    private func averagingWindowFor(startTime: Date?, nativeInterval: Int) -> AveragingWindow? {
         guard let startTime = startTime else {
             Log.info("Can't calculate averaging window, session doesn't have the startTime")
             return nil
@@ -138,9 +156,15 @@ final class ActiveSessionsAveragingController: NSObject {
         if sessionDuration <= TimeInterval(TimeThreshold.firstThreshold.rawValue) {
             return .zeroWindow
         } else if sessionDuration <= TimeInterval(TimeThreshold.secondThreshold.rawValue) {
-            return .firstThresholdWindow
+            // 5s-native sessions can't be averaged at the 5s window (≤ 1 sample per
+            // bucket → leftover-sweep wipes the row); fall back to zero/passthrough
+            // until the duration crosses into the 60s-window range.
+            return nativeInterval < AveragingWindow.firstThresholdWindow.rawValue ? .firstThresholdWindow : .zeroWindow
         }
-        return .secondThresholdWindow
+        // 60s+ native sessions also can't be averaged at the 60s window — keep them
+        // at the passthrough zero window. (scheduleAveraging short-circuits before
+        // we ever get here for ≥ 60s native, but the gate stays for safety.)
+        return nativeInterval < AveragingWindow.secondThresholdWindow.rawValue ? .secondThresholdWindow : .zeroWindow
     }
 }
 

@@ -513,13 +513,13 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         }
     }
 
-    func configureMobileSession(location: CLLocationCoordinate2D, completion: @escaping (Result<Void, Error>) -> Void) {
+    func configureMobileSession(location: CLLocationCoordinate2D, intervalSeconds: Int?, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let uuid = configuredSessionUUID else {
             completion(.failure(AirBeamMiniV2ConfiguratorError.missingSessionUUID))
             return
         }
         let proceedNewSession: () -> Void = { [weak self] in
-            self?.sendNewSessionConfigMobile(uuid: uuid) { result in
+            self?.sendNewSessionConfigMobile(uuid: uuid, intervalSeconds: intervalSeconds) { result in
                 switch result {
                 case .success:
                     self?.queue.async { self?.mobileSessionActive = true }
@@ -662,14 +662,24 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
     }
 
     private func sendNewSessionConfigMobile(uuid: SessionUUID,
+                                            intervalSeconds: Int?,
                                             completion: @escaping (Result<Void, Error>) -> Void) {
         guard let parsedUUID = UUID(uuidString: uuid.rawValue) else {
             completion(.failure(AirBeamMiniV2ConfiguratorError.missingSessionUUID))
             return
         }
+        // Clamp into the wire-format u16 range; anything below 1 falls back to the
+        // V2 mobile default (1s). Values above UInt16.max are pinned — firmware
+        // wouldn't accept a wider field anyway.
+        let interval: UInt16
+        if let raw = intervalSeconds, raw >= 1 {
+            interval = UInt16(min(raw, Int(UInt16.max)))
+        } else {
+            interval = V2BinaryProtocol.mobileIntervalSeconds
+        }
         dispatcher.resetSessionStartGuard()
         dispatcher.awaitAckThenReady(completion: completion)
-        writeCommand(V2BinaryProtocol.buildNewSessionConfigMobile(uuid: parsedUUID)) { [weak self] result in
+        writeCommand(V2BinaryProtocol.buildNewSessionConfigMobile(uuid: parsedUUID, interval: interval)) { [weak self] result in
             if case .failure(let error) = result {
                 self?.dispatcher.cancelAll(error)
             }

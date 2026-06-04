@@ -33,8 +33,10 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
             return
         }
         // Step 1: Configure AB for mobile session
+        let intervalSeconds = session.measurementInterval.flatMap { Int($0) }
         Resolver.resolve(AirBeamConfigurator.self, args: device)
-            .configureMobileSession(location: session.location ?? CLLocationCoordinate2D(latitude: 200, longitude: 200)) { [self] result in
+            .configureMobileSession(location: session.location ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
+                                    intervalSeconds: intervalSeconds) { [self] result in
                 switch result {
                 case .success():
                     Log.info("Successfully configured AB")
@@ -94,7 +96,8 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
         }
 
         Resolver.resolve(AirBeamConfigurator.self, args: device)
-            .configureMobileSession(location: locationTracker.location.value?.coordinate ?? .undefined) { [weak self] result in
+            .configureMobileSession(location: locationTracker.location.value?.coordinate ?? .undefined,
+                                    intervalSeconds: nil) { [weak self] result in
                 switch result {
                 case .success():
                     defer { completion(.success(())) }

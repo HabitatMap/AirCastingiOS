@@ -109,6 +109,8 @@ final class UpdateSessionParamsService {
         entity.urlLocation = session.urlLocation
         entity.version = session.version
         entity.status = session.status
+        // 0 = "unknown / legacy" — interpreted as 1s native by the averaging gate.
+        entity.measurementInterval = session.measurementInterval ?? 0
     }
 }
 

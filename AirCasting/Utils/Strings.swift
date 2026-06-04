@@ -752,6 +752,20 @@ struct Strings {
                                                                       comment: "")
         static let sessionTagPlaceholder: String = NSLocalizedString("Tags",
                                                                      comment: "")
+        static let intervalTitle: String = NSLocalizedString("Measurement interval",
+                                                             comment: "")
+        static let intervalTip: String = NSLocalizedString("Choosing longer measurement interval will help conserve AirBeam's battery",
+                                                          comment: "")
+        static let interval1Second: String = NSLocalizedString("1 second",
+                                                               comment: "")
+        static let interval5Seconds: String = NSLocalizedString("5 seconds",
+                                                                comment: "")
+        static let interval1Minute: String = NSLocalizedString("1 minute",
+                                                               comment: "")
+        static let interval5Minutes: String = NSLocalizedString("5 minutes",
+                                                                comment: "")
+        static let interval10Minutes: String = NSLocalizedString("10 minutes",
+                                                                 comment: "")
     }
     
     enum AirBeamConnector {

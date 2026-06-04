@@ -4,10 +4,35 @@ import Foundation
 import SystemConfiguration.CaptiveNetwork
 import Resolver
 
+/// Discrete preset options shown in the V2 mobile-session interval wheel picker.
+/// Backed by raw seconds so it can be lifted straight onto the wire payload
+/// (`V2BinaryProtocol.buildNewSessionConfigMobile(uuid:interval:)`).
+enum MobileMeasurementInterval: Int, CaseIterable, Identifiable {
+    case oneSecond   = 1
+    case fiveSeconds = 5
+    case oneMinute   = 60
+    case fiveMinutes = 300
+    case tenMinutes  = 600
+
+    var id: Int { rawValue }
+
+    var label: String {
+        switch self {
+        case .oneSecond:   return Strings.CreateSessionDetailsView.interval1Second
+        case .fiveSeconds: return Strings.CreateSessionDetailsView.interval5Seconds
+        case .oneMinute:   return Strings.CreateSessionDetailsView.interval1Minute
+        case .fiveMinutes: return Strings.CreateSessionDetailsView.interval5Minutes
+        case .tenMinutes:  return Strings.CreateSessionDetailsView.interval10Minutes
+        }
+    }
+}
+
 class CreateSessionDetailsViewModel: ObservableObject {
-    
+
     @Published var sessionName: String = ""
     @Published var sessionTags: String = ""
+    /// Bound to the wheel picker on the V2 mobile new-session screen. Defaults to 1s.
+    @Published var measurementInterval: MobileMeasurementInterval = .oneSecond
     @Published var isIndoor = true
     @Published var isWiFi = true
     @Published var wifiPassword: String = ""
@@ -45,8 +70,17 @@ class CreateSessionDetailsViewModel: ObservableObject {
         guard !sessionName.isEmpty else { showErrorIndicator = true; return sessionContext }
         sessionContext.sessionName = sessionName
         sessionContext.sessionTags = sessionTags
-        
+
         guard sessionContext.sessionType == .fixed else {
+            // V2-mobile-only: thread the user-picked native interval (seconds, ≥ 1)
+            // through CreateSessionContext → MobilePeripheralSessionCreator →
+            // V2 NewSessionConfig payload. V1 firmware has no opcode for a configurable
+            // interval and fixed sessions hard-code 60s, so leave `intervalSeconds` nil
+            // on those paths — the DB column stays unset and the averaging gate falls
+            // back to its 1s-native default.
+            if sessionContext.device?.firmwareVersion == .v2 {
+                sessionContext.intervalSeconds = measurementInterval.rawValue
+            }
             sessionContext.isIndoor = false
             isConfirmCreatingSessionActive = true
             return sessionContext
@@ -102,6 +136,6 @@ class CreateSessionDetailsViewModel: ObservableObject {
     }
     
     func shouldShowCompleteCredentials() -> Bool {
-        isWiFi 
+        isWiFi
     }
 }

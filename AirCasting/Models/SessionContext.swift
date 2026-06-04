@@ -23,7 +23,11 @@ final class CreateSessionContext: ObservableObject {
     var deviceType: DeviceType?
     var contribute: Bool?
     var locationless: Bool = false
-    
+    /// User-picked native sample interval (seconds) for V2 mobile sessions.
+    /// `nil` keeps the V2 mobile default (1s) and is the only value used by V1 / fixed
+    /// flows (where this control is not shown).
+    var intervalSeconds: Int?
+
     func ovverride(sessionContext: CreateSessionContext) {
         sessionName = sessionContext.sessionName
         sessionTags = sessionContext.sessionTags
@@ -37,6 +41,7 @@ final class CreateSessionContext: ObservableObject {
         deviceType = sessionContext.deviceType
         contribute = sessionContext.contribute
         locationless = sessionContext.locationless
+        intervalSeconds = sessionContext.intervalSeconds
     }
     
     func saveCurrentLocation(lat: Double, log: Double) {

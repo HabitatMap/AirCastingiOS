@@ -11,6 +11,13 @@ struct CreateSessionDetailsView: View {
     @Binding var creatingSessionFlowContinues: Bool
     @Injected private var locationTracker: LocationTracker
     private var shouldTrackLocation: Bool { sessionContext.sessionType == .fixed || !sessionContext.locationless }
+    /// V2 mobile sessions are the only place a user-picked native sample interval
+    /// applies — V1 firmware streams at a hardware-fixed cadence (no opcode), and
+    /// fixed sessions hard-code 60s. Gate the picker on the device's discovered
+    /// firmware version (stamped on `BluetoothDevice` at scan time in Phase 1).
+    private var isV2MobileDevice: Bool {
+        sessionContext.sessionType == .mobile && sessionContext.device?.firmwareVersion == .v2
+    }
     
     init(creatingSessionFlowContinues: Binding<Bool>) {
         self._creatingSessionFlowContinues = creatingSessionFlowContinues
@@ -28,6 +35,7 @@ struct CreateSessionDetailsView: View {
                         sessionTagsField
                             .padding(.top, 20)
                     }
+                    if isV2MobileDevice { mobileIntervalSection }
                     if sessionContext.sessionType == SessionType.fixed { fixedSessionDetails }
                     Spacer()
                     continueButton
@@ -127,6 +135,55 @@ private extension CreateSessionDetailsView {
             .font(Fonts.moderateRegularHeading2)
     }
     
+    /// Apple-doc "Wheels" date-picker idiom: section title + current-value pill in a
+    /// header row, divider, and the wheel in a single rounded card. Tip line sits
+    /// below the card. Hidden via `isV2MobileDevice` for V1 / fixed sessions.
+    var mobileIntervalSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            mobileIntervalCard
+            Text(Strings.CreateSessionDetailsView.intervalTip)
+                .font(Fonts.moderateRegularHeading4)
+                .foregroundColor(.aircastingGray)
+        }
+    }
+
+    var mobileIntervalCard: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Text(Strings.CreateSessionDetailsView.intervalTitle)
+                    .font(Fonts.moderateBoldHeading1)
+                    .foregroundColor(.aircastingDarkGray)
+                Spacer()
+                Text(viewModel.measurementInterval.label)
+                    .font(Fonts.moderateMediumHeading1)
+                    .foregroundColor(.accentColor)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(Color.accentColor.opacity(0.12))
+                    .clipShape(Capsule())
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+
+            Divider()
+
+            Picker("", selection: $viewModel.measurementInterval) {
+                ForEach(MobileMeasurementInterval.allCases) { interval in
+                    Text(interval.label).tag(interval)
+                }
+            }
+            .pickerStyle(.wheel)
+            .frame(height: 140)
+            .clipped()
+        }
+        .background(Color(.systemBackground))
+        .cornerRadius(12)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color(.systemGray5), lineWidth: 1)
+        )
+    }
+
     var sessionTagsField: some View {
         createTextfield(placeholder: Strings.CreateSessionDetailsView.sessionTagPlaceholder, binding: $viewModel.sessionTags)
             .font(Fonts.moderateRegularHeading2)

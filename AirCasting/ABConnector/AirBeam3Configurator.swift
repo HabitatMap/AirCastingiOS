@@ -10,7 +10,10 @@ import CoreLocation
 import Resolver
 
 protocol AirBeamConfigurator {
-    func configureMobileSession(location: CLLocationCoordinate2D, completion: @escaping (Result<Void, Error>) -> Void)
+    /// `intervalSeconds`: V2 mobile native sample interval (≥ 1). `nil` keeps the default
+    /// (1s for V2, ignored entirely on V1 — the AirBeam3/Mini V1 firmware doesn't expose
+    /// a configurable interval).
+    func configureMobileSession(location: CLLocationCoordinate2D, intervalSeconds: Int?, completion: @escaping (Result<Void, Error>) -> Void)
     func configureSession(uuid: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void)
     func configureFixedCellularSession(uuid: SessionUUID,
                                        location: CLLocationCoordinate2D,
@@ -51,7 +54,9 @@ struct AirBeam3Configurator: AirBeamConfigurator {
         self.device = device
     }
     
-    func configureMobileSession(location: CLLocationCoordinate2D, completion: @escaping (Result<Void, Error>) -> Void) {
+    func configureMobileSession(location: CLLocationCoordinate2D, intervalSeconds: Int?, completion: @escaping (Result<Void, Error>) -> Void) {
+        // V1 firmware streams at a hardware-fixed cadence and has no opcode for a
+        // user-picked interval, so the parameter is intentionally ignored here.
         Log.info("Starting configuring mobile session.")
         sendLocationConfiguration(location: location) { result in
             switch result {
