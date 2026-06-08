@@ -34,6 +34,14 @@ struct ConnectingABView: View {
             if shouldDismiss { presentationMode.wrappedValue.dismiss() }
         })
         .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+        .sheet(isPresented: Binding(
+            get: { viewModel.pendingSyncDialog != nil },
+            set: { newValue in if !newValue { viewModel.pendingSyncDialog = nil } }
+        )) {
+            if let dialogVM = viewModel.pendingSyncDialog {
+                SyncBeforeNewV2SessionDialog(viewModel: dialogVM)
+            }
+        }
         .onAppear(perform: {
             /* App is pushing the next view before this view is fully loaded. It resulted with showing next view and going back to this one.
              The async enables app to load this view and then push the next one. */

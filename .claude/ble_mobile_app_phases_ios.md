@@ -167,28 +167,28 @@ Always read `.claude/ble_mobile_app_guide_ios.md` alongside this file — it has
 
 ---
 
-## Phase 6 — V2 BLE Manual Sync (`StartBleSync 0x16`) + Drain-Aware Finish (3–5 days)
+## Phase 6 — V2 BLE Manual Sync (`StartBleSync 0x16`) + Drain-Aware Finish (3–5 days) — **SHIPPED**
 
 **Goal:** Replace the V1 SD-sync flow on V2 devices with a BLE-only manual sync, and gate session-finish on draining stored measurements. Also gate new-session-start on syncing any pre-existing stored measurements.
 
 **This used to be the "deferred Phase 6" — firmware has now shipped `StartBleSync 0x16` and Android has it in production. iOS should implement it now.**
 
 **Tasks**
-- [ ] **New opcode constant** `OPCODE_START_BLE_SYNC = 0x16` and **new Nack code** `NACK_SYNC_FAILED = 0x06` in `V2BinaryProtocol.swift`
-- [ ] **`V2BleSyncOrchestrator.swift`**:
+- [x] **New opcode constant** `OPCODE_START_BLE_SYNC = 0x16` and **new Nack code** `NACK_SYNC_FAILED = 0x06` in `V2BinaryProtocol.swift`
+- [x] **`V2BleSyncOrchestrator.swift`**:
   - Writes `0x16` to the Command characteristic; expects `Ack (0x20)`.
   - Routes Sync-characteristic indications through a **registered manual-sync handler** while a manual sync is in flight (bypasses the default reconnect-time DB save path so mobile vs fixed routing is correct).
   - Observes `ReadyToSync (Status 0x03)` **in parallel** (subscribe before writing `0x16`) to pick up `file_size` ~100 ms after the write — do **not** `await` it from a serial chain after the post-stream `Ready 0x22` (by then every chunk has already arrived with `expectedSize == 0` and progress stays at 0%).
   - Computes progress per chunk: `receivedBytes += 5 + 8 × chunk.count`; `pct = receivedBytes × 100 / file_size`; clamp 0..99 mid-stream; set to 100 on `Ready 0x22`.
   - Settles on `Ready (0x22)` (success), `Nack (0x06 SyncFailed)` (failure — records remain on device for retry), or `Nack (0x04 ClearStorageFailed)` (post-stream wipe failed).
   - **No app-side `DiscardSession`** on success — firmware auto-clears storage in its Stop handler.
-- [ ] **Sync confirmation dialog (start path) — `SyncBeforeNewV2SessionDialog.swift`**:
+- [x] **Sync confirmation dialog (start path) — `SyncBeforeNewV2SessionDialog.swift`**:
   - Fires when the user picks a V2 device in `HasSavedSession` to start a new session.
   - Three buttons: **Sync** (drives `StartBleSync`), **Discard** (drives `DiscardSession`), **Cancel**.
   - Use `file_size` from the Status payload for the ETA hint via `estimateSyncSeconds(fileSize)` (calibrate `BYTES_PER_SECOND` constant on iOS empirically; Android uses ~1700).
   - On post-sync success, **keep the BLE link open** and proceed straight to `NewSessionConfig` — do not bounce (Android commit `83abfb408`).
   - Drive the actual sync from inside the dialog (Android commit `7e4115d0b`).
-- [ ] **Sync confirmation dialog (finish path) — `SyncAndFinishV2SessionDialog.swift`**:
+- [x] **Sync confirmation dialog (finish path) — `SyncAndFinishV2SessionDialog.swift`**:
   - Show the standard `FinishSessionConfirmationDialog` first to confirm intent.
   - **Re-evaluate `hasSavedMeasurements || isActiveSyncDraining` at confirm time, not at button-tap time** (Android commit `991f6f6e4`).
   - If true at confirm, present the sync-and-finish dialog (chained, not replacing). Non-cancelable; auto-start `StartBleSync (0x16)` on open (Android commit `2425b0be3`) so `ReadyToSync (0x03)` lands with `file_size` and gives a fresh ETA even when the user opened it from a `Running` Status that lacked the suffix.
@@ -196,10 +196,15 @@ Always read `.claude/ble_mobile_app_guide_ios.md` alongside this file — it has
   - **"Discard & Finish"** cancels the orchestrator's job mid-stream; firmware honors `DiscardSession (0x11)` even while `StartBleSync` is in flight, wiping on-device storage. Records collected so far are NOT inserted into the DB on this branch.
   - On success: insert records, mark session FINISHED in local DB, push to backend on confirm (Android commit `87fe4fa39`).
   - On failure (`Nack 0x06`): show error; on confirm, post the equivalent of `StopRecordingEvent` — the trailing `0x11` write wipes on-device data.
-- [ ] **Disconnected-view path**: fires the same sync-and-finish dialog from the disconnected-session view (Android commit `3086e1dc0`).
-- [ ] **ETA UI polish**: bold the ETA hint, format with localized "min." / "sec.", line-break the description (Android commits `cdc938108`, `340e677c9`, `c798a9921`, `376f91c81`).
-- [ ] **SD-sync wizard "Unplug AirBeam" screen**: skip entirely on V2; reorder to AFTER the "successfully synced" screen on V1 (Android commit `dcef0b695`).
-- [ ] **Drain idle-timeout constant**: 3 s (`SYNC_DRAIN_IDLE_TIMEOUT_MS`).
+- [x] **Disconnected-view path**: `ReconnectSessionCardView` now surfaces a "Finish & sync" button when `session.deviceFirmwareVersion == .v2`. Tap routes through the same shared-state path used by `StandaloneSessionCardView` (`finishAndSyncButtonTapped` + `standaloneSessionToSyncAndFinish.setSession(uuid, isV2: true)`), which opens the SD-sync wizard. The wizard branches on `isV2` in `BackendSyncCompletedView` (skip "Unplug AirBeam") and in `SDSyncViewModelDefault.connectToAirBeamAndSync` (run `V2BleSyncOrchestrator` instead of the V1 CSV download). Android commit `3086e1dc0`.
+- [x] **ETA UI polish**: ETA value now bold via `Text` concatenation (`Text(prefix) + Text(eta).bold() + Text(suffix)`), with a `\n` line-break between the rationale and the ETA hint. Implemented in both `SyncBeforeNewV2SessionDialog` and `SyncAndFinishV2SessionDialog` via a `DescriptionState` enum on the VM. Android commits `cdc938108`, `340e677c9`, `c798a9921`, `376f91c81`.
+- [x] **SD-sync wizard "Unplug AirBeam" screen**: V2 skips it (`BackendSyncCompletedView.destinationForRestart` branches on `standaloneSessionToSyncAndFinish.isV2` → `SelectPeripheralView` directly). V1 reordered: `BackendSyncCompletedView` continue → `SDRestartABView` (skip pre-sync Unplug), and the Unplug screen is now appended after `SDSyncCompleteView` as a terminal step via `UnplugABFinalView`. Android commit `dcef0b695`.
+- [x] **Drain idle-timeout constant**: 3 s — already shipped in Phase 3 (`AirBeamMiniV2Configurator.syncDrainIdleTimeoutSeconds`).
+
+**Deferred sub-tasks**:
+- [ ] **Calibrate `bleSyncBytesPerSecond`** empirically against real-device throughput; currently set to 1700 (Android's value) in `V2BinaryProtocol.bleSyncBytesPerSecond`. Needs real-device measurement to refine.
+
+**SD-sync wizard V2 integration**: the SD-sync wizard (originally V1-only) is now V2-aware end-to-end. Persisted firmware version on `BluetoothConnectionEntity.firmwareVersionRaw` (Core Data v10 lightweight migration; `SessionEntity.deviceFirmwareVersion`) keeps the V2 detection working across app restarts when the `BluetoothManager` in-memory cache is empty. The "Finish & sync" button on both `StandaloneSessionCardView` (V1 + V2) and `ReconnectSessionCardView` (V2 only) routes through the same wizard entry; the wizard branches downstream based on `standaloneSessionToSyncAndFinish.isV2`.
 
 **Done when:** Start a mobile session, accumulate stored measurements (force-quit + relaunch), then tap Finish — the sync-and-finish dialog appears, streams the backlog to the DB, then completes the session and pushes to backend. Discard mid-stream wipes the device cleanly. Starting a new session with a stored backlog offers Sync / Discard / Cancel and uses the ETA from `HasSavedSession.file_size`.
 

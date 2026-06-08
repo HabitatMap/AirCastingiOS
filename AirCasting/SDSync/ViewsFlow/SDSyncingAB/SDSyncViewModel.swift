@@ -34,7 +34,11 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     @Injected private var airBeamConnectionController: AirBeamConnectionController
     @Injected private var btConnectionChecker: BluetoothPeripheralConnectionChecker
     @Injected private var sdSyncController: SDSyncController
+    @Injected private var measurementsSaver: MeasurementsSavingService
+    @Injected private var sessionFinisher: SessionFinisher
+    @Injected private var persistenceController: PersistenceController
     private let sessionContext: CreateSessionContext
+    private var v2Orchestrator: V2BleSyncOrchestrator?
 
     init(sessionContext: CreateSessionContext,
          device: any BluetoothDevice) {
@@ -52,7 +56,15 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                 }
                 return
             }
-            
+            // V2 has no SD card — use the BLE manual-sync flow (StartBleSync 0x16)
+            // instead of the V1 SDCardAirBeamServices CSV download. Persisted records
+            // are saved through `MeasurementsSavingService.saveV2SyncMeasurement`
+            // which does not require an active session, so the standalone-finish
+            // path works the same as for V1.
+            if self.device.firmwareVersion == .v2 {
+                self.runV2ManualSync(standaloneSessionToSyncAndFinish)
+                return
+            }
             self.sdSyncController.syncFromAirbeam(standaloneSessionToSyncAndFinish: standaloneSessionToSyncAndFinish,
                                                   self.device,
                                                   progress: { [weak self] newStatus in
@@ -87,6 +99,122 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                     self.disconnectAirBeam()
                 }
             })
+        }
+    }
+
+    // MARK: - V2 BLE manual sync (Phase 6)
+
+    private func runV2ManualSync(_ standaloneSessionToSyncAndFinish: StandaloneSessionToSyncAndFinish) {
+        guard let sessionUUID = standaloneSessionToSyncAndFinish.uuid else {
+            Log.error("[SD SYNC V2] Missing standalone session UUID")
+            DispatchQueue.main.async {
+                self.alert = InAppAlerts.failedSDClearingAlert { self.shouldDismiss = true }
+                self.presentNextScreen = false
+            }
+            self.disconnectAirBeam()
+            return
+        }
+        let configurator = Resolver.resolve(AirBeamMiniV2Configurator.self, args: device)
+        configurator.configureSession(uuid: sessionUUID) { [weak self] configureResult in
+            guard let self = self else { return }
+            switch configureResult {
+            case .failure(let error):
+                Log.error("[SD SYNC V2] configureSession failed: \(error)")
+                DispatchQueue.main.async {
+                    self.alert = self.alertForError(.readingDataFailure)
+                    self.presentNextScreen = false
+                }
+                self.disconnectAirBeam()
+            case .success:
+                // Tag mobile-session status for progress UI parity with the V1 path.
+                DispatchQueue.main.async {
+                    self.progressValue = .init(title: Strings.SyncingABView.mobile, current: "0", total: "100")
+                }
+                let orchestrator = configurator.makeManualSyncOrchestrator()
+                self.v2Orchestrator = orchestrator
+                orchestrator.start(progress: { [weak self] progress in
+                    DispatchQueue.main.async {
+                        self?.progressValue = .init(title: Strings.SyncingABView.mobile,
+                                                     current: String(progress.percent),
+                                                     total: "100")
+                    }
+                }, completion: { [weak self] result in
+                    guard let self = self else { return }
+                    self.v2Orchestrator = nil
+                    switch result {
+                    case .success(let records):
+                        Log.info("[SD SYNC V2] orchestrator completed with \(records.count) records")
+                        self.persistV2Records(records, sessionUUID: sessionUUID)
+                        self.finishV2StandaloneSession(uuid: sessionUUID) { finishResult in
+                            DispatchQueue.main.async {
+                                switch finishResult {
+                                case .success:
+                                    self.isDownloadingFinished = true
+                                    self.presentNextScreen = true
+                                case .failure:
+                                    self.alert = self.alertForError(.mobileSessionsProcessingFailure)
+                                    self.presentNextScreen = false
+                                }
+                            }
+                            DispatchQueue.main.async {
+                                standaloneSessionToSyncAndFinish.clearSessionUuid()
+                            }
+                            self.disconnectAirBeam()
+                        }
+                    case .failure(let error):
+                        Log.error("[SD SYNC V2] orchestrator failed: \(error)")
+                        DispatchQueue.main.async {
+                            self.alert = self.alertForError(.readingDataFailure)
+                            self.presentNextScreen = false
+                        }
+                        self.disconnectAirBeam()
+                    }
+                })
+            }
+        }
+    }
+
+    private func persistV2Records(_ records: [V2SyncRecord], sessionUUID: SessionUUID) {
+        let isLocationless = readLocationless(sessionUUID: sessionUUID)
+        for record in records {
+            let streams = V2StreamFactory.makeStreams(pm1: Double(record.pm1),
+                                                      pm25: Double(record.pm25))
+            measurementsSaver.saveV2SyncMeasurement(streams.pm1,
+                                                    sessionUUID: sessionUUID,
+                                                    time: record.timestamp,
+                                                    locationless: isLocationless)
+            measurementsSaver.saveV2SyncMeasurement(streams.pm25,
+                                                    sessionUUID: sessionUUID,
+                                                    time: record.timestamp,
+                                                    locationless: isLocationless)
+        }
+    }
+
+    private func readLocationless(sessionUUID: SessionUUID) -> Bool {
+        // Best-effort: missing/inaccessible session falls back to false (let
+        // saveV2SyncMeasurement use the phone's last-known fix). Either way the
+        // record gets persisted with valid PM values; only location accuracy
+        // differs.
+        let ctx = persistenceController.editContext
+        var result = false
+        ctx.performAndWait {
+            if let session = try? ctx.existingSession(uuid: sessionUUID) {
+                result = session.locationless
+            }
+        }
+        return result
+    }
+
+    private func finishV2StandaloneSession(uuid: SessionUUID,
+                                           completion: @escaping (Result<Void, Error>) -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                try self.sessionFinisher(uuid: uuid)
+                completion(.success(()))
+            } catch {
+                Log.error("[SD SYNC V2] finishStandaloneSession failed: \(error)")
+                completion(.failure(error))
+            }
         }
     }
 

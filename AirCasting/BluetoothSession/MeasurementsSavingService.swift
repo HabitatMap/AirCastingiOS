@@ -61,6 +61,7 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
                 let sessionReturned = try storage.createSession(session)
                 let entity = BluetoothConnectionEntity(context: sessionReturned.managedObjectContext!)
                 entity.peripheralUUID = device.uuid
+                entity.firmwareVersionRaw = Int16(device.firmwareVersion == .v2 ? 1 : 0)
                 entity.session = sessionReturned
                 self.uiStorage.accessStorage { storage in
                     do {

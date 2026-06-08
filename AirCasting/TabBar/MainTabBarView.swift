@@ -234,13 +234,20 @@ class FinishAndSyncButtonTapped: ObservableObject {
 
 class StandaloneSessionToSyncAndFinish: ObservableObject {
     @Published var uuid: SessionUUID?
-    
-    func setSession(_ sessionUuid: SessionUUID?) {
+    /// Phase 6: stamped when the user opens the sync wizard so downstream views
+    /// (BackendSyncCompletedViewModel) can skip the V1-only "Unplug AirBeam" +
+    /// "Power on AirBeam" screens for V2 devices, which have no SD card and no
+    /// physical-unplug step.
+    @Published var isV2: Bool = false
+
+    func setSession(_ sessionUuid: SessionUUID?, isV2: Bool = false) {
         uuid = sessionUuid
+        self.isV2 = isV2
     }
-    
+
     func clearSessionUuid() {
         uuid = nil
+        isV2 = false
     }
 }
 

@@ -27,6 +27,7 @@ enum V2BinaryProtocol {
         case newSessionConfig = 0x13
         case getSensors       = 0x14
         case setTime          = 0x15
+        case startBleSync     = 0x16
     }
 
     enum ResponseCode: UInt8 {
@@ -50,6 +51,7 @@ enum V2BinaryProtocol {
         case idle             = 0x00
         case hasSavedSession  = 0x01
         case running          = 0x02
+        case readyToSync      = 0x03
     }
 
     static let settleDelaySeconds: TimeInterval = 0.3
@@ -73,6 +75,10 @@ enum V2BinaryProtocol {
 
     static func buildGetSensors() -> Data {
         Data([OpCode.getSensors.rawValue])
+    }
+
+    static func buildStartBleSync() -> Data {
+        Data([OpCode.startBleSync.rawValue])
     }
 
     static func buildSetTime(date: Date = Date()) -> Data {
@@ -192,14 +198,23 @@ enum V2BinaryProtocol {
 
     enum Status: Equatable {
         case idle(battery: BatteryReading)
-        case hasSavedSession(battery: BatteryReading, sessionUUID: UUID, hasMeasurements: Bool)
+        case hasSavedSession(battery: BatteryReading, sessionUUID: UUID, hasMeasurements: Bool, fileSize: UInt64?)
         case running(battery: BatteryReading, sessionUUID: UUID)
+        case readyToSync(fileSize: UInt64)
 
         var sessionUUID: UUID? {
             switch self {
-            case .idle: return nil
-            case .hasSavedSession(_, let uuid, _): return uuid
+            case .idle, .readyToSync: return nil
+            case .hasSavedSession(_, let uuid, _, _): return uuid
             case .running(_, let uuid): return uuid
+            }
+        }
+
+        var fileSize: UInt64? {
+            switch self {
+            case .hasSavedSession(_, _, _, let size): return size
+            case .readyToSync(let size): return size
+            case .idle, .running: return nil
             }
         }
     }
@@ -222,12 +237,19 @@ enum V2BinaryProtocol {
 
     static func decodeStatus(_ data: Data) -> Result<Status, DecodeError> {
         guard let first = data.first else { return .failure(.empty) }
-        guard data.count >= 2 else { return .failure(.truncated) }
-        let battery = decodeBattery(data[data.startIndex + 1])
-
         guard let code = StatusCode(rawValue: first) else {
             return .failure(.unknownStatusCode(first))
         }
+        // ReadyToSync (0x03) has no battery byte at offset 1 — short-circuit before the
+        // generic battery decoder (FW commit `ed751b180`). Payload = [0x03, file_size_u64_LE, ...password].
+        if code == .readyToSync {
+            guard data.count >= 1 + 8 else { return .failure(.truncated) }
+            let size = readU64LE(data, at: data.startIndex + 1)
+            return .success(.readyToSync(fileSize: size))
+        }
+        guard data.count >= 2 else { return .failure(.truncated) }
+        let battery = decodeBattery(data[data.startIndex + 1])
+
         switch code {
         case .idle:
             return .success(.idle(battery: battery))
@@ -237,14 +259,43 @@ enum V2BinaryProtocol {
             else { return .failure(.truncated) }
             return .success(.running(battery: battery, sessionUUID: uuid))
         case .hasSavedSession:
+            // 27-byte payload: [opcode, battery, uuid_16B, has_measurements, file_size_u64_LE] (FW commit `3990cf22`).
+            // Older firmware emits 19 bytes without file_size — accept either.
             guard data.count >= 2 + 16 + 1,
                   let uuid = UUID.fromV2LEBytes(data.subdata(in: (data.startIndex + 2)..<(data.startIndex + 18)))
             else { return .failure(.truncated) }
             let hasMeasurements = data[data.startIndex + 18] != 0
+            let fileSize: UInt64?
+            if data.count >= 2 + 16 + 1 + 8 {
+                fileSize = readU64LE(data, at: data.startIndex + 19)
+            } else {
+                fileSize = nil
+            }
             return .success(.hasSavedSession(battery: battery,
                                              sessionUUID: uuid,
-                                             hasMeasurements: hasMeasurements))
+                                             hasMeasurements: hasMeasurements,
+                                             fileSize: fileSize))
+        case .readyToSync:
+            return .failure(.truncated) // handled above
         }
+    }
+
+    private static func readU64LE(_ data: Data, at index: Data.Index) -> UInt64 {
+        var value: UInt64 = 0
+        for i in 0..<8 {
+            value |= UInt64(data[index + i]) << (8 * i)
+        }
+        return value
+    }
+
+    /// Crude ETA estimator for the StartBleSync (0x16) flow. `bytesPerSecond` is a
+    /// hand-calibrated throughput baseline; Android uses ~1700 B/s — iOS BLE
+    /// throughput is similar in practice. Returns ≥ 1 s.
+    static let bleSyncBytesPerSecond: Double = 1700
+    static func estimateSyncSeconds(fileSize: UInt64?) -> Int {
+        guard let size = fileSize, size > 0 else { return 1 }
+        let seconds = Double(size) / bleSyncBytesPerSecond
+        return max(1, Int(seconds.rounded(.up)))
     }
 }
 

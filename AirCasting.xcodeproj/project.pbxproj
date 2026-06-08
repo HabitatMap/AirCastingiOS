@@ -459,6 +459,9 @@
 		D1A0670130042026000009AB /* V2ResponseDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000010AB /* V2ResponseDispatcher.swift */; };
 		D1A0670130042026000011AB /* V2MeasurementParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000012AB /* V2MeasurementParser.swift */; };
 		D1A0670130042026000013AB /* V2ConfiguratorRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000014AB /* V2ConfiguratorRegistry.swift */; };
+		D1A0670130042026000021AB /* V2BleSyncOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000022AB /* V2BleSyncOrchestrator.swift */; };
+		D1A0670130042026000023AB /* SyncBeforeNewV2SessionDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000024AB /* SyncBeforeNewV2SessionDialog.swift */; };
+		D1A0670130042026000025AB /* SyncAndFinishV2SessionDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000026AB /* SyncAndFinishV2SessionDialog.swift */; };
 		D1A0670130042026000015AB /* V2FixedSessionAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000016AB /* V2FixedSessionAPIService.swift */; };
 		DD009D662698844A009F0443 /* DeleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD009D652698844A009F0443 /* DeleteView.swift */; };
 		DD123EBF27BD1CD3001083C3 /* SearchMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD123EBE27BD1CD3001083C3 /* SearchMapView.swift */; };
@@ -1072,6 +1075,9 @@
 		D1A0670130042026000010AB /* V2ResponseDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2ResponseDispatcher.swift; sourceTree = "<group>"; };
 		D1A0670130042026000012AB /* V2MeasurementParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2MeasurementParser.swift; sourceTree = "<group>"; };
 		D1A0670130042026000014AB /* V2ConfiguratorRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2ConfiguratorRegistry.swift; sourceTree = "<group>"; };
+		D1A0670130042026000022AB /* V2BleSyncOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2BleSyncOrchestrator.swift; sourceTree = "<group>"; };
+		D1A0670130042026000024AB /* SyncBeforeNewV2SessionDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SyncBeforeNewV2SessionDialog.swift; path = V2/SyncBeforeNewV2SessionDialog.swift; sourceTree = "<group>"; };
+		D1A0670130042026000026AB /* SyncAndFinishV2SessionDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SyncAndFinishV2SessionDialog.swift; path = V2/SyncAndFinishV2SessionDialog.swift; sourceTree = "<group>"; };
 		D1A0670130042026000016AB /* V2FixedSessionAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2FixedSessionAPIService.swift; sourceTree = "<group>"; };
 		DD009D652698844A009F0443 /* DeleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteView.swift; sourceTree = "<group>"; };
 		DD123EBE27BD1CD3001083C3 /* SearchMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMapView.swift; sourceTree = "<group>"; };
@@ -1431,6 +1437,7 @@
 				B31DD84329252ED600AF491B /* StandaloneModeController.swift */,
 				B31DD83F29252EBD00AF491B /* ActiveMobileSessionProvidingService.swift */,
 				3320F2F5292657F800EFFB2D /* MeasurementsSavingService.swift */,
+				D1A0670130042026000026AB /* SyncAndFinishV2SessionDialog.swift */,
 			);
 			path = BluetoothSession;
 			sourceTree = "<group>";
@@ -1762,6 +1769,7 @@
 				DD80AE2127BA5EF500D9B123 /* ChooseLocationPickerService.swift */,
 				DD80AE2527BA5F1D00D9B123 /* PlacePicker */,
 				331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */,
+				D1A0670130042026000024AB /* SyncBeforeNewV2SessionDialog.swift */,
 			);
 			path = CreateSessionViews;
 			sourceTree = "<group>";
@@ -2729,6 +2737,7 @@
 				D1A0670130042026000010AB /* V2ResponseDispatcher.swift */,
 				D1A0670130042026000012AB /* V2MeasurementParser.swift */,
 				D1A0670130042026000014AB /* V2ConfiguratorRegistry.swift */,
+				D1A0670130042026000022AB /* V2BleSyncOrchestrator.swift */,
 			);
 			path = V2;
 			sourceTree = "<group>";
@@ -3635,6 +3644,9 @@
 				D1A0670130042026000011AB /* V2MeasurementParser.swift in Sources */,
 				D1A0670130042026000015AB /* V2FixedSessionAPIService.swift in Sources */,
 				D1A0670130042026000013AB /* V2ConfiguratorRegistry.swift in Sources */,
+				D1A0670130042026000021AB /* V2BleSyncOrchestrator.swift in Sources */,
+				D1A0670130042026000023AB /* SyncBeforeNewV2SessionDialog.swift in Sources */,
+				D1A0670130042026000025AB /* SyncAndFinishV2SessionDialog.swift in Sources */,
 				335B54BF28BD01C300BA92D2 /* CustomSwipeAction.swift in Sources */,
 				FA4F1B75281809B2002711B4 /* AirBeamStreamSuffixes.swift in Sources */,
 				33A16E7B2DF6F76400D9142A /* Concurrency.swift in Sources */,

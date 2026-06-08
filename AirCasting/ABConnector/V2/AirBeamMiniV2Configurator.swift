@@ -70,6 +70,12 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
     }
     private var _syncChunkInterceptor: ((Data) -> Void)?
 
+    /// Active manual BLE sync (`StartBleSync 0x16`) orchestrator. While set,
+    /// the configurator routes status / sync / response events to the
+    /// orchestrator instead of the default reconnect-time + dispatcher paths.
+    /// Phase 6.
+    private var activeManualSync: V2BleSyncOrchestrator?
+
     init(device: any BluetoothDevice) {
         self.device = device
     }
@@ -219,6 +225,14 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                 switch V2BinaryProtocol.decodeStatus(data) {
                 case .success(let status):
                     Log.info("V2 status decoded: \(status)")
+                    // ReadyToSync (0x03) only arrives during a manual sync —
+                    // it carries the file_size for the progress UI. Don't
+                    // overwrite `lastStatus` (which callers query for ETA on
+                    // the start-path dialog from the prior HasSavedSession).
+                    if case .readyToSync(let fileSize) = status {
+                        self.activeManualSync?.handleReadyToSync(fileSize: fileSize)
+                        return
+                    }
                     self.lastStatus = status
                     self.fallbackReadWorkItem?.cancel()
                     let awaiter = self.statusAwaiter
@@ -243,6 +257,33 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         switch result {
         case .success(let data):
             guard let data = data else { return }
+            // While a manual sync is in flight, the orchestrator owns Ready /
+            // Nack: Ready (0x22) settles the sync (success), Nack (0x06/0x04)
+            // fails it. Ack is forwarded both ways so any concurrent setup
+            // command still resolves (but in practice nothing else runs).
+            let manual = queue.sync { self.activeManualSync }
+            if let manual = manual,
+               let frame = V2BinaryProtocol.decodeResponse(data) {
+                switch frame {
+                case .ready:
+                    Log.info("V2 manual sync: Ready terminal")
+                    manual.handleReady()
+                    return
+                case .nack(let err, let raw):
+                    Log.error("V2 manual sync: Nack(0x\(String(raw, radix: 16))) \(err)")
+                    manual.handleNack(err, raw: raw)
+                    return
+                case .ack:
+                    Log.info("V2 manual sync: Ack")
+                    // Fall through to dispatcher so other awaiters (if any)
+                    // resolve too. In practice the manual flow has no
+                    // outstanding ackHandler — but keeping the dispatcher
+                    // call is harmless.
+                    break
+                default:
+                    break
+                }
+            }
             dispatcher.handleNotification(data)
         case .failure(let error):
             Log.error("V2 response notification error: \(error)")
@@ -290,12 +331,116 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         queue.async { [weak self] in
             guard let self = self else { return }
             self.bumpActiveSyncDrainingLocked()
+            if let manual = self.activeManualSync {
+                manual.handleSyncChunk(data)
+                return
+            }
             if let intercept = self._syncChunkInterceptor {
                 intercept(data)
                 return
             }
             self.persistSyncChunkLocked(data)
         }
+    }
+
+    // MARK: - Manual BLE sync (Phase 6 — StartBleSync 0x16)
+
+    /// Called by `V2BleSyncOrchestrator.start(...)` to register itself as the
+    /// active sync orchestrator and kick off the `StartBleSync (0x16)` write.
+    /// Status `ReadyToSync (0x03)` and sync-characteristic chunks are routed
+    /// to the orchestrator until `endManualSync` is called.
+    func beginManualSync(orchestrator: V2BleSyncOrchestrator) {
+        queue.async { [weak self] in
+            guard let self = self else { return }
+            self.activeManualSync = orchestrator
+            self.dispatcher.cancelAll(AirBeamMiniV2ConfiguratorError.notImplemented)
+            self.dispatcher.resetSessionStartGuard()
+            self.writeCommand(V2BinaryProtocol.buildStartBleSync()) { [weak self] result in
+                if case .failure(let error) = result {
+                    Log.error("V2 manual sync: write 0x16 failed: \(error)")
+                    self?.queue.async {
+                        guard let self = self, self.activeManualSync === orchestrator else { return }
+                        orchestrator.handleAbort(V2BleSyncOrchestrator.SyncError.writeFailed(error))
+                    }
+                }
+            }
+        }
+    }
+
+    /// Sends `DiscardSession (0x11)` mid-stream — firmware honors it even
+    /// while `StartBleSync` is in flight, wiping on-device storage. The
+    /// orchestrator's completion will resolve with `.cancelled` once Ready
+    /// arrives (or it can ignore subsequent traffic if disconnected).
+    func cancelManualSync(orchestrator: V2BleSyncOrchestrator) {
+        queue.async { [weak self] in
+            guard let self = self, self.activeManualSync === orchestrator else { return }
+            self.writeCommand(V2BinaryProtocol.buildDiscardSession()) { result in
+                if case .failure(let error) = result {
+                    Log.error("V2 manual sync cancel: write 0x11 failed: \(error)")
+                }
+            }
+        }
+    }
+
+    /// Called by the orchestrator on terminal Ready / Nack / abort to clear
+    /// the active reference. Idempotent.
+    func endManualSync(orchestrator: V2BleSyncOrchestrator) {
+        queue.async { [weak self] in
+            guard let self = self else { return }
+            if self.activeManualSync === orchestrator {
+                self.activeManualSync = nil
+            }
+        }
+    }
+
+    /// Persist a batch of records collected by the manual-sync orchestrator
+    /// for the currently active mobile session. Mirrors `persistSyncChunkLocked`
+    /// but takes already-parsed records (the orchestrator parses incrementally
+    /// for progress accounting).
+    func persistManualSyncRecords(_ records: [V2SyncRecord]) {
+        queue.async { [weak self] in
+            guard let self = self, !records.isEmpty else { return }
+            guard let sessionUUID = self.configuredSessionUUID else {
+                Log.info("V2 manual sync persist: no configured session UUID (\(records.count) records).")
+                return
+            }
+            if let statusUUID = self.lastStatus?.sessionUUID,
+               let configuredParsed = UUID(uuidString: sessionUUID.rawValue),
+               statusUUID != configuredParsed {
+                Log.warning("V2 manual sync persist dropped: device session \(statusUUID) != active \(configuredParsed)")
+                return
+            }
+            guard let active = self.activeSessionProvider.activeSession,
+                  active.session.uuid == sessionUUID else {
+                Log.info("V2 manual sync persist: active session missing or uuid mismatch.")
+                return
+            }
+            let locationless = active.session.locationless
+            for record in records {
+                let streams = V2StreamFactory.makeStreams(pm1: Double(record.pm1),
+                                                          pm25: Double(record.pm25))
+                self.measurementsSaver.saveV2SyncMeasurement(streams.pm1,
+                                                             sessionUUID: sessionUUID,
+                                                             time: record.timestamp,
+                                                             locationless: locationless)
+                self.measurementsSaver.saveV2SyncMeasurement(streams.pm25,
+                                                             sessionUUID: sessionUUID,
+                                                             time: record.timestamp,
+                                                             locationless: locationless)
+            }
+            NotificationCenter.default.post(
+                name: .v2MeasurementSaved,
+                object: nil,
+                userInfo: [AirCastingNotificationKeys.V2MeasurementSaved.sessionUUID: sessionUUID]
+            )
+        }
+    }
+
+    /// Convenience: build + return the orchestrator. The caller owns its
+    /// lifetime; while the orchestrator is `start`ed, it's referenced from
+    /// `activeManualSync` on this configurator.
+    func makeManualSyncOrchestrator() -> V2BleSyncOrchestrator {
+        V2BleSyncOrchestrator(configurator: self)
     }
 
     private func persistSyncChunkLocked(_ data: Data) {
@@ -417,7 +562,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                         self.queue.async { self.mobileSessionActive = true }
                         self.scheduleHourlySetTime()
                         completion(.success(()))
-                    case .hasSavedSession(_, let deviceUUID, _):
+                    case .hasSavedSession(_, let deviceUUID, _, _):
                         guard deviceUUID == parsedExpected else {
                             Log.error("V2 reconnect HasSavedSession with mismatched uuid device=\(deviceUUID) app=\(parsedExpected)")
                             completion(.failure(AirBeamMiniV2ConfiguratorError.sessionUUIDMismatch))
@@ -435,7 +580,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                                 completion(.failure(error))
                             }
                         }
-                    case .idle:
+                    case .idle, .readyToSync:
                         completion(.failure(AirBeamMiniV2ConfiguratorError.unexpectedStatusForResume))
                     }
                 }

@@ -51,6 +51,17 @@ public class SessionEntity: NSManagedObject, Identifiable {
     public var nativeMeasurementIntervalSeconds: Int {
         measurementInterval > 0 ? Int(measurementInterval) : 1
     }
+
+    /// Persisted firmware version on the device that recorded this session.
+    /// Stored on `BluetoothConnectionEntity.firmwareVersionRaw` as `0 = .v1`
+    /// (default for legacy rows) and `1 = .v2`. Phase 6 — needed so the
+    /// disconnected-card "Finish & sync" path knows to route through the V2
+    /// BLE-manual-sync flow instead of the V1 SD-card wizard, even after an
+    /// app restart that emptied the BluetoothManager's in-memory cache.
+    var deviceFirmwareVersion: FirmwareVersion {
+        guard let raw = bluetoothConnection?.firmwareVersionRaw else { return .v1 }
+        return raw == 1 ? .v2 : .v1
+    }
     
     // UserInterface state
     @NSManaged public var userInterface: UIStateEntity?

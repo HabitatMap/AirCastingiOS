@@ -1233,4 +1233,40 @@ struct Strings {
         static let settingsItemTitle = NSLocalizedString("Phone microphone calibration", comment: "")
         static let settingsItemDescription = NSLocalizedString("Adjust via trial & error until the measurements in the app match your reference sound level meter. For most phones it's between 80 and 100.", comment: "")
     }
+
+    enum SyncBeforeNewV2SessionDialog {
+        static let title = NSLocalizedString("AirBeam has unsynced measurements", comment: "")
+        /// Split into two parts so the ETA can be rendered in bold via `Text` concatenation
+        /// and the description can line-break between the rationale and the ETA hint.
+        static let descriptionPrefix = NSLocalizedString("Your AirBeam still has measurements stored from a previous session.\nSync now (about ", comment: "")
+        static let descriptionSuffix = NSLocalizedString(") before starting a new session, discard them, or cancel.", comment: "")
+        static let syncingDescription = NSLocalizedString("Syncing stored measurements from AirBeam…", comment: "")
+        static let syncFailedDescription = NSLocalizedString("Sync failed. Measurements remain on the device. Try again or discard.", comment: "")
+        static let syncButton = NSLocalizedString("Sync", comment: "")
+        static let discardButton = NSLocalizedString("Discard", comment: "")
+        static let progressFormat = NSLocalizedString("Progress: %d%%", comment: "")
+        static let secondsFormat = NSLocalizedString("%d sec.", comment: "")
+        static let minutesFormat = NSLocalizedString("%d min.", comment: "")
+    }
+
+    enum SyncAndFinishV2SessionDialog {
+        static let title = NSLocalizedString("Syncing measurements", comment: "")
+        static let succeededTitle = NSLocalizedString("Sync complete", comment: "")
+        static let failedTitle = NSLocalizedString("Sync failed", comment: "")
+        /// Split into three parts so the ETA can be rendered in bold via `Text`
+        /// concatenation, matching the Android layout: "Syncing unsaved
+        /// measurements from your AirBeam. This will take **about <ETA>**.
+        /// The session will finish once the sync completes."
+        static let descriptionPrefix = NSLocalizedString("Syncing unsaved measurements from your AirBeam. This will take ", comment: "")
+        static let descriptionEtaPrefix = NSLocalizedString("about ", comment: "")
+        static let descriptionSuffix = NSLocalizedString(". The session will finish once the sync completes.", comment: "")
+        static let descriptionNoEta = NSLocalizedString("Syncing unsaved measurements from your AirBeam. The session will finish once the sync completes.", comment: "")
+        static let syncSucceededDescription = NSLocalizedString("The measurements from your AirBeam were synchronized. The session has been finished.", comment: "")
+        static let syncFailedDescription = NSLocalizedString("We couldn't sync the measurements from your AirBeam. The data is still on the device — please try again from the dashboard.", comment: "")
+        static let preparingButton = NSLocalizedString("Preparing sync…", comment: "")
+        static let syncingProgressFormat = NSLocalizedString("Syncing… %d%%", comment: "")
+        static let discardAndFinishButton = NSLocalizedString("Discard & Finish", comment: "")
+        static let doneButton = NSLocalizedString("Done", comment: "")
+        static let continueButton = NSLocalizedString("Continue", comment: "")
+    }
 }
