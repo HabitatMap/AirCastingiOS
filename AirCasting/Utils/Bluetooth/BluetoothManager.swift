@@ -174,20 +174,20 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         if resolved == .v2 && stored != .v2 { setFirmwareVersion(.v2, for: peripheral) }
 
         let rawAdvertisedName = advertisementData[CBAdvertisementDataLocalNameKey] as? String
-        // Some Mini V2 firmware builds advertise the underlying BLE stack's default GAP
-        // name ("nimble") instead of "airbeammini". When the V2 service UUID is present
-        // but the advertised / peripheral name isn't AirBeam-shaped, synthesize one
-        // (`AirBeamMini-XXXXXX`) so the device shows up in the AirBeams section of the
-        // scan list with a recognizable label.
-        let candidateName = rawAdvertisedName ?? peripheral.name
-        let looksAirbeam = candidateName?.range(of: "airbeam", options: .caseInsensitive) != nil
+        // V2 firmware advertises a bare `"airbeammini"` (some builds even fall through
+        // to the BLE stack's default GAP name `"nimble"`), so the scan list would
+        // either render the bare model name or hide the device under "Other". V1
+        // AirBeam3 advertises `"AirBeam3:<12-hex MAC>"` end-to-end, and the rest of
+        // the app expects that shape. Mirror it for V2 — `AirBeamMini:<12-hex>` —
+        // synthesised from the per-app CoreBluetooth UUID because iOS doesn't
+        // expose the real BLE MAC. The suffix is stable per (app, device).
         let advertisedName: String?
-        if resolved == .v2 && !looksAirbeam {
+        if resolved == .v2 {
             let suffix = peripheral.identifier.uuidString
                 .replacingOccurrences(of: "-", with: "")
-                .suffix(6)
-                .uppercased()
-            advertisedName = "AirBeamMini-\(suffix)"
+                .suffix(12)
+                .lowercased()
+            advertisedName = "AirBeamMini:\(suffix)"
         } else {
             advertisedName = rawAdvertisedName
         }

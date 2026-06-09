@@ -58,7 +58,7 @@ final class UpdateSessionParamsService {
         
         try streamDiff.common.forEach { oldStream, streamOutput in
             oldStream.sensorName = streamOutput.sensor_name
-            oldStream.sensorPackageName = streamOutput.sensor_package_name
+            oldStream.sensorPackageName = derivedPackageName(from: streamOutput)
             oldStream.measurementType = streamOutput.measurement_type
             oldStream.measurementShortType = streamOutput.measurement_short_type
             oldStream.unitName = streamOutput.unit_name
@@ -164,6 +164,22 @@ extension UpdateSessionParamsService {
 }
 
 private extension UpdateSessionParamsService {
+    /// Fixed-session streams from the BE carry `sensor_package_name` derived
+    /// from the airbeam record's `mac_address`. For V2 Mini sessions the iOS
+    /// app has no real BLE MAC available, so the BE ends up storing whatever
+    /// MAC-like string the app synthesized (e.g. "BD:F1:54:09:78:1E") — and
+    /// `SessionTypeIndicator` splits on `:` / `-` and renders the leading hex
+    /// pair as the device label. Recover the model name from `sensor_name`
+    /// instead, which the app controls and ships in the canonical
+    /// `"{model}-{stream}"` shape ("AirBeamMini-PM1", "AirBeam3-PM1", ...).
+    func derivedPackageName(from streamOutput: FixedSession.StreamOutput) -> String {
+        if let prefix = streamOutput.sensor_name.split(separator: "-", maxSplits: 1, omittingEmptySubsequences: false).first,
+           !prefix.isEmpty {
+            return String(prefix)
+        }
+        return streamOutput.sensor_package_name
+    }
+
     func fillMeasurement(_ entity: MeasurementEntity, with measurement: FixedSession.MeasurementOutput, isIndoor: Bool = false) {
         entity.value = Double(measurement.value)
         entity.location = CLLocationCoordinate2D(latitude: measurement.latitude, longitude: measurement.longitude)
@@ -173,7 +189,7 @@ private extension UpdateSessionParamsService {
     func fillStream(_ entity: MeasurementStreamEntity, with streamOutput: FixedSession.StreamOutput) throws {
         entity.id = streamOutput.id
         entity.sensorName = streamOutput.sensor_name
-        entity.sensorPackageName = streamOutput.sensor_package_name
+        entity.sensorPackageName = derivedPackageName(from: streamOutput)
         entity.measurementType = streamOutput.measurement_type
         entity.measurementShortType = streamOutput.measurement_short_type
         entity.unitName = streamOutput.unit_name

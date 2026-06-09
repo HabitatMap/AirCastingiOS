@@ -161,6 +161,15 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                                  wifiPassword: String,
                                  completion: @escaping (Result<Void, Error>) -> Void) {
         let coordinate = session.location ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
+        // iOS has no access to the BLE MAC; CoreBluetooth only exposes a per-app
+        // UUID. The BE keys the airbeam record off `mac_address` and uses it to
+        // derive `sensor_package_name` — when we sent the raw UUID (e.g.
+        // "A81AE1F5-XXXX-…"), the dashboard's session header split it on `-`
+        // and rendered the leading hex segment instead of "AirBeamMini". Format
+        // the UUID as a colon-separated MAC-like string so the BE takes the
+        // colon path Android also exercises and stores a sensor_package_name
+        // that includes the model prefix.
+        let macAddress = macAddressLike(from: device.uuid)
         let body = V2FixedSessionAPI.RequestBody(
             uuid: sessionUUID.rawValue,
             title: name,
@@ -168,9 +177,9 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
             longitude: coordinate.longitude,
             contribute: contribute,
             is_indoor: isIndoor,
-            airbeam: .init(mac_address: device.uuid,
+            airbeam: .init(mac_address: macAddress,
                            model: "AirBeamMini",
-                           name: device.name ?? "AirBeam Mini"),
+                           name: name),
             streams: [
                 .init(sensor_name: MeasurementStreamSensorName.mini_pm1.rawValue, unit_symbol: "µg/m³"),
                 .init(sensor_name: MeasurementStreamSensorName.mini_pm2_5.rawValue, unit_symbol: "µg/m³"),
@@ -236,5 +245,18 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                 }
             }
         }
+    }
+
+    /// Derive a stable MAC-like identifier from the per-app CoreBluetooth UUID.
+    /// Format: "XX:XX:XX:XX:XX:XX" (uppercase hex). Uses the last 12 hex chars
+    /// of the UUID — they are the most-randomised section.
+    private func macAddressLike(from uuid: String) -> String {
+        let hex = uuid.replacingOccurrences(of: "-", with: "").uppercased()
+        let tail = String(hex.suffix(12)).padding(toLength: 12, withPad: "0", startingAt: 0)
+        return stride(from: 0, to: tail.count, by: 2).map {
+            let start = tail.index(tail.startIndex, offsetBy: $0)
+            let end = tail.index(start, offsetBy: 2)
+            return String(tail[start..<end])
+        }.joined(separator: ":")
     }
 }

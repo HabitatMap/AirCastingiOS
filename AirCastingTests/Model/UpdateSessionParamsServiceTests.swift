@@ -120,7 +120,11 @@ final class UpdateSessionParamsServiceTests: ACTestCase {
             XCTAssertEqual(databaseMeasurementStream.measurementShortType, modelMeasurementStream.measurement_short_type)
             XCTAssertEqual(databaseMeasurementStream.measurementType, modelMeasurementStream.measurement_type)
             XCTAssertEqual(databaseMeasurementStream.sensorName, modelMeasurementStream.sensor_name)
-            XCTAssertEqual(databaseMeasurementStream.sensorPackageName, modelMeasurementStream.sensor_package_name)
+            // `sensorPackageName` is derived from `sensor_name`'s model prefix
+            // because the BE's value is a MAC-like string that the dashboard
+            // session header would split on `-` / `:` and render as a hex pair.
+            XCTAssertEqual(databaseMeasurementStream.sensorPackageName,
+                           modelMeasurementStream.sensor_name.split(separator: "-", maxSplits: 1, omittingEmptySubsequences: false).first.map(String.init))
             XCTAssertEqual(databaseMeasurementStream.thresholdHigh, modelMeasurementStream.threshold_high)
             XCTAssertEqual(databaseMeasurementStream.thresholdLow, modelMeasurementStream.threshold_low)
             XCTAssertEqual(databaseMeasurementStream.thresholdMedium, modelMeasurementStream.threshold_medium)
