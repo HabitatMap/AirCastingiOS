@@ -23,7 +23,7 @@ final class AirCastingSessionUploadService: SessionUploadService {
     
     func upload(session: SessionsSynchronization.SessionUploadData) -> Future<Void, Error> {
         .init { [client, authorization, encoder] promise in
-            let url = URL(string: "https://experimental.aircasting.org/api/sessions")!
+            let url = URL(string: "https://aircasting.org/api/sessions")!
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
             request.addValue("application/json", forHTTPHeaderField: "Accept")

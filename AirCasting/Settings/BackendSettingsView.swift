@@ -83,7 +83,7 @@ struct BackendSettingsView: View {
                 return
             }
             
-            urlProvider.baseAppURL = url ?? URL(string: "https://experimental.aircasting.org/")!
+            urlProvider.baseAppURL = url ?? URL(string: "https://aircasting.org/")!
             presentationMode.wrappedValue.dismiss()
             do {
                 userState.currentState = .loggingOut

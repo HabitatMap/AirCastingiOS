@@ -9,6 +9,6 @@ protocol URLProvider: AnyObject {
 
 #if DEBUG
 class DummyURLProvider: URLProvider, ObservableObject {
-    var baseAppURL: URL = URL(string: "https://experimental.aircasting.org/")!
+    var baseAppURL: URL = URL(string: "https://aircasting.org/")!
 }
 #endif

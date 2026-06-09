@@ -4,7 +4,7 @@
 import Foundation
 
 class UserDefaultsURLProvider: URLProvider {
-    private static let defaultBaseURL = URL(string: "https://experimental.aircasting.org/")!
+    private static let defaultBaseURL = URL(string: "https://aircasting.org/")!
 
     /// Hosts earlier dev builds defaulted to. The AirBeam Mini firmware has been
     /// flashed to point at `experimental.aircasting.org` for this branch, so the
