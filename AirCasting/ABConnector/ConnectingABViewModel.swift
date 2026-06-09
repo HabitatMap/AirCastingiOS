@@ -14,9 +14,6 @@ class AirbeamConnectionViewModel: ObservableObject {
     @Published var isDeviceConnected: Bool = false
     @Published var shouldDismiss: Bool = false
     @Published var alert: AlertInfo? = nil
-    /// Phase 6: surface the Sync/Discard/Cancel dialog when a V2 device is in
-    /// `HasSavedSession` and the user is starting a new session.
-    @Published var pendingSyncDialog: SyncBeforeNewV2SessionViewModel? = nil
 
     private let device: any BluetoothDevice
     private let sessionContext: CreateSessionContext
@@ -45,7 +42,7 @@ class AirbeamConnectionViewModel: ObservableObject {
                         switch result {
                         case .success():
                             DispatchQueue.main.async {
-                                self.proceedAfterConfigureOrShowSyncDialog()
+                                self.isDeviceConnected = true
                             }
                         case .failure(let error):
                             Log.error("Couldn't configure AB for fixed session: \(error)")
@@ -66,38 +63,6 @@ class AirbeamConnectionViewModel: ObservableObject {
         }
     }
     
-    /// Phase 6: after the V2 configurator has subscribed and decoded the
-    /// first Status notification, branch on `HasSavedSession` (with stored
-    /// measurements) and surface the Sync / Discard / Cancel dialog before
-    /// navigating onward to the rest of the session-creation flow.
-    private func proceedAfterConfigureOrShowSyncDialog() {
-        guard device.firmwareVersion == .v2 else {
-            isDeviceConnected = true
-            return
-        }
-        let configurator = Resolver.resolve(AirBeamMiniV2Configurator.self, args: device)
-        guard case .hasSavedSession(_, _, let hasMeasurements, _) = configurator.lastStatus,
-              hasMeasurements else {
-            isDeviceConnected = true
-            return
-        }
-        pendingSyncDialog = SyncBeforeNewV2SessionViewModel(
-            configurator: configurator,
-            onResolved: { [weak self] outcome in
-                DispatchQueue.main.async {
-                    guard let self = self else { return }
-                    self.pendingSyncDialog = nil
-                    switch outcome {
-                    case .proceedWithNewSession:
-                        self.isDeviceConnected = true
-                    case .cancel:
-                        self.shouldDismiss = true
-                    }
-                }
-            }
-        )
-    }
-
     private func configureAB(completion: @escaping (Result<Void, Error>) -> Void) {
         guard let sessionUUID = self.sessionContext.sessionUUID else {
             completion(.failure(NoSessionUUID.init()))

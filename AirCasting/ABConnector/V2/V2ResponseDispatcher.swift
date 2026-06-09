@@ -89,7 +89,8 @@ final class V2ResponseDispatcher {
         lock.unlock()
     }
 
-    /// Drop any pending handlers (used when tearing down).
+    /// Drop any pending handlers (used when tearing down). Fires each
+    /// outstanding handler with `.failure(error)` so callers can clean up.
     func cancelAll(_ error: Error) {
         lock.lock()
         let ack = ackHandler; ackHandler = nil
@@ -99,6 +100,20 @@ final class V2ResponseDispatcher {
         ack?(.failure(error))
         ready?(.failure(error))
         sensor?(.failure(error))
+    }
+
+    /// Drop pending handlers WITHOUT firing them. Use when starting a new
+    /// flow on a known-clean state — e.g. `beginManualSync` for the BLE
+    /// manual-sync path. Firing stale completions would trigger their
+    /// captured side effects (a stale `discardSession` completion from a
+    /// previous Stop calls `btManager.disconnect(...)` and tears down the
+    /// freshly re-established BLE link mid-0x16 write).
+    func clearAllSilently() {
+        lock.lock()
+        ackHandler = nil
+        readyHandler = nil
+        sensorInfoHandler = nil
+        lock.unlock()
     }
 
     func handleNotification(_ data: Data) {

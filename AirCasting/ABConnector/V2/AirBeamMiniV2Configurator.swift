@@ -36,6 +36,12 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
 
     private let device: any BluetoothDevice
     private let queue = DispatchQueue(label: "ab.v2.configurator")
+    /// Key used to detect "am I already on `queue`?" so `teardown` (and any
+    /// other `queue.sync` site reachable from a dispatcher completion fired
+    /// inside `queue.async`) can run inline instead of deadlocking on the
+    /// serial queue. See `runOnQueueSync(...)`.
+    private static let queueIdentityKey = DispatchSpecificKey<ObjectIdentifier>()
+    private let queueIdentity = ObjectIdentifier(NSObject())
     private let dispatcher = V2ResponseDispatcher()
 
     private var subscriptionTokens: [AnyHashable] = []
@@ -58,15 +64,23 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
     private var isActiveSyncDrainingStorage: Bool = false
     private static let syncDrainIdleTimeoutSeconds: TimeInterval = 3.0
     var isActiveSyncDraining: Bool {
-        queue.sync { isActiveSyncDrainingStorage }
+        var value = false
+        runOnQueueSync { value = isActiveSyncDrainingStorage }
+        return value
     }
 
     /// When non-nil, sync-characteristic chunks are routed to this closure instead
     /// of the default reconnect-time DB save path. Phase 6 manual sync orchestrator
     /// installs an interceptor while a `StartBleSync (0x16)` is in flight.
     var syncChunkInterceptor: ((Data) -> Void)? {
-        get { queue.sync { _syncChunkInterceptor } }
-        set { queue.sync { _syncChunkInterceptor = newValue } }
+        get {
+            var value: ((Data) -> Void)?
+            runOnQueueSync { value = _syncChunkInterceptor }
+            return value
+        }
+        set {
+            runOnQueueSync { _syncChunkInterceptor = newValue }
+        }
     }
     private var _syncChunkInterceptor: ((Data) -> Void)?
 
@@ -78,6 +92,18 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
 
     init(device: any BluetoothDevice) {
         self.device = device
+        queue.setSpecific(key: Self.queueIdentityKey, value: queueIdentity)
+    }
+
+    /// Runs `work` synchronously on `queue`. If already on `queue` (re-entrant
+    /// call from a dispatcher handler that fired inside an earlier
+    /// `queue.async`), executes inline to avoid the GCD serial-queue deadlock.
+    private func runOnQueueSync(_ work: () -> Void) {
+        if DispatchQueue.getSpecific(key: Self.queueIdentityKey) == queueIdentity {
+            work()
+        } else {
+            queue.sync { work() }
+        }
     }
 
     deinit {
@@ -116,7 +142,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
     /// also need a fresh Status read because the device's state may have changed
     /// (e.g., HasSavedSession after a power cycle that interrupted a Running session).
     func prepareForReconnect() {
-        queue.sync {
+        runOnQueueSync {
             self.fallbackReadWorkItem?.cancel()
             self.fallbackReadWorkItem = nil
             self.statusAwaiter = nil
@@ -135,7 +161,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
     }
 
     func teardown() {
-        queue.sync {
+        runOnQueueSync {
             self.fallbackReadWorkItem?.cancel()
             self.fallbackReadWorkItem = nil
             self.statusAwaiter = nil
@@ -353,7 +379,12 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         queue.async { [weak self] in
             guard let self = self else { return }
             self.activeManualSync = orchestrator
-            self.dispatcher.cancelAll(AirBeamMiniV2ConfiguratorError.notImplemented)
+            // Drop any stale pending handlers without invoking their failure
+            // completions — a stale `discardSession` completion from a
+            // previously stopped session would call `btManager.disconnect`
+            // mid-0x16 write and drop the BLE link before sync starts
+            // (symptom: device LED flips blue → green, sync hangs).
+            self.dispatcher.clearAllSilently()
             self.dispatcher.resetSessionStartGuard()
             self.writeCommand(V2BinaryProtocol.buildStartBleSync()) { [weak self] result in
                 if case .failure(let error) = result {
@@ -847,7 +878,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
 
     private func scheduleHourlySetTime() {
         DispatchQueue.main.async { [weak self] in
-            self?.queue.sync {
+            self?.runOnQueueSync {
                 guard let self = self else { return }
                 self.invalidateSetTimeTimerLocked()
                 let timer = Timer(timeInterval: 3600, repeats: true) { [weak self] _ in
