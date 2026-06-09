@@ -81,7 +81,20 @@ enum V2BinaryProtocol {
         Data([OpCode.startBleSync.rawValue])
     }
 
-    static func buildSetTime(date: Date = Date()) -> Data {
+    /// Default sends "fake-UTC" wall-clock seconds — wall-clock numerals tagged
+    /// as UTC, matching the app-wide convention used by V1 (AirBeam3) and session
+    /// startTime via `DateBuilder.getFakeUTCDate()`. Mobile sessions save device
+    /// timestamps straight to Core Data, so the fake-UTC default keeps live and
+    /// sync rows aligned with the fake-UTC `session.startTime`.
+    ///
+    /// Fixed sessions must override with real `Date()`: the device uploads `u32`
+    /// epoch seconds to the BE which then applies
+    /// `Utils.to_local_as_utc(epoch, session.time_zone)` to derive stored
+    /// "wall-clock numerals + Z" timestamps. Feeding fake-UTC here double-shifts
+    /// the wall clock forward by the phone-TZ offset on outdoor sessions (and
+    /// indoor sessions after the iOS `shiftedForFixedSession` correction),
+    /// putting the card and graph hours ahead of the phone time.
+    static func buildSetTime(date: Date = DateBuilder.getFakeUTCDate()) -> Data {
         var bytes = Data([OpCode.setTime.rawValue])
         var seconds = Int64(date.timeIntervalSince1970).littleEndian
         withUnsafeBytes(of: &seconds) { bytes.append(contentsOf: $0) }

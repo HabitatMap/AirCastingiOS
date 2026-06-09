@@ -136,7 +136,12 @@ enum DateFormatters {
     enum DateExtension {
         static let currentTimeZoneDateFormatter: DateFormatter = {
             let df = DateFormatter()
-            df.timeZone = TimeZone.current
+            // `autoupdatingCurrent` so this static formatter reflects the OS time
+            // zone after the user changes it mid-session — `TimeZone.current`
+            // captures a one-shot snapshot at first access and would keep the
+            // pre-change zone, breaking `shiftedForFixedSession` (indoor /
+            // locationless fixed-session BE-timestamp shift) after a TZ change.
+            df.timeZone = .autoupdatingCurrent
             df.dateFormat = "yyyy-MM-dd HH:mm:ss"
             return df
         }()

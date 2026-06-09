@@ -16,14 +16,21 @@ final class UpdateSessionParamsService {
 
     func updateSessionsParams(session: SessionEntity, output: FixedSession.FixedMeasurementOutput) throws {
         Log.info("Updating session params in core data for session: \(session.uuid) [\(session.name ?? "N/A")]")
-        // Indoor fixed sessions have `session.time_zone == UTC` on the BE because
-        // there is no lat/lng for it to derive a zone from. The BE serializer
-        // still tags the wall-clock numerals with a trailing "Z", so iOS parses
-        // them as real UTC. The rest of the app stores Dates with the
-        // fakeUTCDate convention (wall-clock numerals as a UTC moment in the
-        // phone's TZ), so indoor times must be shifted from real-UTC to the
-        // user's local wall clock before persisting.
-        let isIndoor = session.isIndoor || (output.is_indoor ?? false)
+        // BE persists session/measurement timestamps as wall-clock numerals
+        // tagged with a literal "Z". The wall clock is the session's
+        // `time_zone` column on BE:
+        //   - Indoor sessions: BE defaults `time_zone` to UTC.
+        //   - Outdoor sessions WITH lat/lng: BE looks up the geo TZ (≈ phone TZ).
+        //   - Outdoor sessions WITHOUT a valid lat/lng (nil or 0,0 fallback the
+        //     iOS V2 fixed-session POST sends): BE has no coords to look up, so
+        //     `time_zone` falls back to UTC just like indoor.
+        // iOS uses the fakeUTC convention internally (wall-clock numerals as a
+        // UTC moment in the phone's TZ), so the UTC-tagged real-UTC numerals BE
+        // returns for those two cases must be shifted to the phone's local
+        // wall clock before persisting. Outdoor + valid coords already lines
+        // up because BE's geo TZ matches the phone TZ in normal use.
+        let beUsesUtc = sessionRequiresUtcShift(session: session, output: output)
+        let isIndoor = beUsesUtc
         session.uuid = output.uuid
         session.type = output.type
         session.name = output.title
@@ -111,6 +118,48 @@ final class UpdateSessionParamsService {
         entity.status = session.status
         // 0 = "unknown / legacy" — interpreted as 1s native by the averaging gate.
         entity.measurementInterval = session.measurementInterval ?? 0
+    }
+}
+
+extension UpdateSessionParamsService {
+    /// Returns `true` when the BE persists this fixed session's wall-clock
+    /// numerals in UTC and iOS must shift them back to the phone's wall clock
+    /// to match the fakeUTC display convention.
+    ///
+    /// Only V2 (AirBeam Mini new-firmware) fixed sessions hit this codepath:
+    /// V2 binary measurement uploads (`u32` epoch) go through BE's
+    /// `Utils.to_local_as_utc(epoch, session.time_zone)` ingest, so indoor /
+    /// locationless sessions (BE defaults `session.time_zone` to UTC) land in
+    /// the column as real-UTC numerals and need the shift. V1 sessions upload
+    /// gzipped-JSON Dates that BE writes as wall-clock numerals via
+    /// `skip_time_zone_conversion_for_attributes` — those already align with
+    /// iOS's fakeUTC convention, and shifting double-counts the offset (V1
+    /// indoor in Warsaw rendered 11:00 for a 09:00 wall clock before this
+    /// guard).
+    static func sessionRequiresUtcShift(session: SessionEntity, output: FixedSession.FixedMeasurementOutput) -> Bool {
+        guard session.deviceFirmwareVersion == .v2 else { return false }
+        if session.isIndoor || (output.is_indoor ?? false) { return true }
+        return !sessionHasResolvableLocation(session)
+    }
+
+    private static func sessionHasResolvableLocation(_ session: SessionEntity) -> Bool {
+        guard let coord = session.location else { return false }
+        // Treat any sentinel / out-of-range coordinate the app may have stamped
+        // onto the session as "no location" — BE can't geo-lookup a TZ from any
+        // of these and falls back to UTC just like indoor / nil-location:
+        //   - (200, 200): explicit "no location" sentinel set by
+        //     `ConfirmCreatingSessionView.getAndSaveStartingLocation` for indoor
+        //     and locationless fixed sessions.
+        //   - (0, 0): the V1 fixed POST fallback in `AirBeamFixedWifiSessionCreator`
+        //     when `session.location` is nil.
+        //   - Anything else outside valid lat ∈ [-90, 90] / lon ∈ [-180, 180].
+        let bothZero = coord.latitude == 0 && coord.longitude == 0
+        let outOfRange = abs(coord.latitude) > 90 || abs(coord.longitude) > 180
+        return !(bothZero || outOfRange)
+    }
+
+    func sessionRequiresUtcShift(session: SessionEntity, output: FixedSession.FixedMeasurementOutput) -> Bool {
+        Self.sessionRequiresUtcShift(session: session, output: output)
     }
 }
 

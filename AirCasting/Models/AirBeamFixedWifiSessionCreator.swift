@@ -196,6 +196,15 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                         do {
                             let sessionWithURL = session.withUrlLocation(response.location ?? "")
                             try storage.createSession(sessionWithURL)
+                            // Stamp firmware version so `SessionEntity.deviceFirmwareVersion`
+                            // reports `.v2` for this row — `UpdateSessionParamsService.sessionRequiresUtcShift`
+                            // gates the indoor / locationless UTC shift on it (V1 fixed sessions
+                            // upload via gzipped JSON and BE's
+                            // `skip_time_zone_conversion_for_attributes` already lines up with
+                            // iOS's fakeUTC convention, so shifting them double-counts).
+                            try storage.stampBluetoothConnection(sessionUUID: sessionUUID,
+                                                                 peripheralUUID: device.uuid,
+                                                                 firmwareVersion: .v2)
                             uiStore.accessStorage { $0.giveHighestOrder(to: sessionWithURL.uuid) }
                             Log.info("Created V2 fixed session \(sessionUUID.rawValue), token=\(response.session_token)")
                         } catch {

@@ -740,6 +740,18 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
             guard let self = self else { return }
             self.dispatcher.resetSessionStartGuard()
             self.dispatcher.awaitAckThenReady(completion: completion)
+            // Override the fake-UTC SetTime sent in `configureSession` with real UTC
+            // before NewSessionConfig: BE applies `to_local_as_utc(epoch, session.time_zone)`
+            // when ingesting the device's V2 fixed measurement uploads, so a fake-UTC
+            // device clock would double-shift wall-clock numerals forward by the
+            // phone-TZ offset and put the dashboard card / graph hours ahead of the
+            // phone time. Mobile sessions keep the fake-UTC default since they save
+            // device timestamps directly to Core Data without a BE round-trip.
+            self.writeCommand(V2BinaryProtocol.buildSetTime(date: Date())) { writeResult in
+                if case .failure(let error) = writeResult {
+                    Log.error("V2 fixed SetTime (real UTC) write failed: \(error)")
+                }
+            }
             self.writeCommand(payload) { [weak self] result in
                 if case .failure(let error) = result {
                     self?.dispatcher.cancelAll(error)
