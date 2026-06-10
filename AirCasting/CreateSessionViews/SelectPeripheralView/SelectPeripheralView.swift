@@ -119,21 +119,10 @@ struct SelectPeripheralView: View {
         var destination: AnyView
         if let selection = selection {
             if syncMode == true {
-                // V1 inserts an "Unplug your AirBeam" prompt between device
-                // selection and the sync screen — the firmware can only
-                // enter SD download mode while the device is on USB power,
-                // and the user needs to know to disconnect the cable first.
-                // V2 has no such requirement, so it goes straight to sync.
-                if selection.firmwareVersion == .v1 {
-                    destination = AnyView(PreSyncUnplugABView(sessionContext: sessionContext,
-                                                              device: selection,
-                                                              creatingSessionFlowContinues: $creatingSessionFlowContinues))
-                } else {
-                    let viewModel =
-                    SDSyncViewModelDefault(sessionContext: sessionContext,
-                                           device: selection)
-                    destination = AnyView(SyncingABView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
-                }
+                let viewModel =
+                SDSyncViewModelDefault(sessionContext: sessionContext,
+                                       device: selection)
+                destination = AnyView(SyncingABView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             } else if SDClearingRouteProcess {
                 let viewModel = ClearingSDCardViewModelDefault(isSDClearProcess: SDClearingRouteProcess, device: selection)
                 destination = AnyView(ClearingSDCardView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
@@ -149,34 +138,5 @@ struct SelectPeripheralView: View {
         }
         .font(Fonts.muliBoldHeading1)
         .buttonStyle(BlueButtonStyle())
-    }
-}
-
-/// V1-only "Unplug your AirBeam" prompt inserted between device selection and
-/// the sync screen. The firmware can only enter SD download mode while the
-/// device is off USB power, so the user must physically unplug before we
-/// kick off SyncingABView. V2 has no such requirement and skips this entirely.
-private struct PreSyncUnplugABView: View {
-    let sessionContext: CreateSessionContext
-    let device: any BluetoothDevice
-    @Binding var creatingSessionFlowContinues: Bool
-    @State private var presentNextScreen: Bool = false
-
-    var body: some View {
-        ProgressFlowAB(progress: 0.78,
-                       airbeamImageAsset: "airbeam-unplugged",
-                       title: Strings.UnplugAirbeamView.title,
-                       message: Strings.UnplugAirbeamView.message) {
-            presentNextScreen = true
-        }
-        .background(
-            NavigationLink(
-                destination: SyncingABView(viewModel: SDSyncViewModelDefault(sessionContext: sessionContext,
-                                                                              device: device),
-                                            creatingSessionFlowContinues: $creatingSessionFlowContinues),
-                isActive: $presentNextScreen,
-                label: { EmptyView() }
-            )
-        )
     }
 }
