@@ -26,12 +26,22 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
 
     func startRecording(session: Session, device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
         // Step 1: Configure AB
-        guard !isRecording else {
-            // We want to make sure we are not recording more than one session at once
+        // Gate on `activeSession` (the cross-component source-of-truth for
+        // an in-flight recording) rather than the local `isRecording` flag.
+        // `isRecording` is only flipped false inside `stopRecordingSession`'s
+        // BLE teardown path; SDCardMobileSessionFinisher writes status=FINISHED
+        // + clears `activeSession` without going through stopRecordingSession,
+        // leaving `isRecording` stuck true. The next new-session attempt then
+        // hits this guard and surfaces "SessionRecordingController error 0"
+        // even though there's no live session.
+        guard activeSessionProvider.activeSession == nil else {
             completion(.failure(SessionRecordingControllerError.sessionAlreadyInProgress))
             Log.error("Tried to record a session when there was another session being recorded")
             return
         }
+        // Make sure the local flag reflects reality before we proceed —
+        // `recordMeasurements` will set it back to true.
+        isRecording = false
         // Step 1: Configure AB for mobile session
         let intervalSeconds = session.measurementInterval.flatMap { Int($0) }
         Resolver.resolve(AirBeamConfigurator.self, args: device)
