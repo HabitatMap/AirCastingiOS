@@ -1,4 +1,5 @@
 import Resolver
+import Foundation
 
 class SessionManagingReconnectionController: ReconnectionControllerDelegate {
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
