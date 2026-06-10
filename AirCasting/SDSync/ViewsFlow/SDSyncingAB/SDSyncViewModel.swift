@@ -37,6 +37,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     @Injected private var measurementsSaver: MeasurementsSavingService
     @Injected private var sessionFinisher: SessionFinisher
     @Injected private var persistenceController: PersistenceController
+    @Injected private var reconnectGuard: SessionManagingReconnectionController
     private let sessionContext: CreateSessionContext
     private var v2Orchestrator: V2BleSyncOrchestrator?
 
@@ -47,9 +48,18 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     }
 
     func connectToAirBeamAndSync(_ standaloneSessionToSyncAndFinish: StandaloneSessionToSyncAndFinish) {
+        // Suppress auto-reconnect for the duration of the SD sync flow: if the
+        // user has an active mobile session on this device, `shouldReconnect`
+        // would otherwise return true and the reconnect chain would race the
+        // SD-sync's own explicit connect/disconnect calls (stale
+        // CBCharacteristic pointers → CoreBluetooth malloc abort during clear
+        // SD card step). `disconnectAirBeam` releases the suppression on every
+        // terminal branch of the flow.
+        reconnectGuard.suppressReconnect(deviceUUID: device.uuid)
         self.airBeamConnectionController.connectToAirBeam(device: device) { result in
             Log.info("[SD SYNC] Completed connecting to AB")
             guard result == .success else {
+                self.reconnectGuard.releaseReconnect(deviceUUID: self.device.uuid)
                 DispatchQueue.main.async {
                     self.presentNextScreen = false
                     self.getConnectionAlert(result)
@@ -235,6 +245,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
             guard let self = self else { return }
             guard result == .success else {
                 Log.info("[SD SYNC] Reconnecting failed")
+                self.reconnectGuard.releaseReconnect(deviceUUID: self.device.uuid)
                 DispatchQueue.main.async {
                     self.presentNextScreen = false
                     self.alert = InAppAlerts.failedSDClearingAlert {
@@ -248,6 +259,11 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     }
 
     private func disconnectAirBeam() {
+        // Releasing here covers every SD-sync terminal branch since each one
+        // routes through this helper. After this call the recording-session
+        // auto-reconnect chain is allowed to fire again on the next
+        // didDisconnect event.
+        reconnectGuard.releaseReconnect(deviceUUID: device.uuid)
         airBeamConnectionController.disconnectAirBeam(device: device)
     }
     

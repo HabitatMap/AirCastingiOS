@@ -8,12 +8,44 @@ class SessionManagingReconnectionController: ReconnectionControllerDelegate {
     private let standaloneController: StandaloneModeController = Resolver.resolve(StandaloneModeController.self, args: StandaloneOrigin.device)
     @Injected private var bluetoothSessionController: BluetoothSessionRecordingController
 
+    // Device UUIDs for which automatic reconnect must NOT fire. Used by the SD
+    // sync flow: the user is mid-flow on a device that also has an active
+    // mobile recording session, so without suppression `shouldReconnect`
+    // returns true and the auto-reconnect chain races the SD sync's own
+    // explicit connect/disconnect calls — yielding stale CBCharacteristic
+    // pointers and CoreBluetooth-side malloc crashes during the clear-SD
+    // step.
+    private let suppressedUUIDsLock = NSLock()
+    private var suppressedUUIDs: Set<String> = []
+
     init() {
         reconnectionController.delegate = self
     }
 
+    /// Suppress automatic reconnect for `deviceUUID` until `releaseReconnect`
+    /// is called. Also cancels any in-flight reconnect chain so a retry
+    /// already scheduled stops firing.
+    func suppressReconnect(deviceUUID: String) {
+        suppressedUUIDsLock.lock()
+        suppressedUUIDs.insert(deviceUUID)
+        suppressedUUIDsLock.unlock()
+        reconnectionController.cancelReconnect(deviceUUID: deviceUUID)
+    }
+
+    /// Re-enable automatic reconnect for `deviceUUID`. Pair with a prior
+    /// `suppressReconnect` call from the same flow.
+    func releaseReconnect(deviceUUID: String) {
+        suppressedUUIDsLock.lock()
+        suppressedUUIDs.remove(deviceUUID)
+        suppressedUUIDsLock.unlock()
+    }
+
     func shouldReconnect(to device: any BluetoothDevice) -> Bool {
-        activeSessionProvider.activeSession?.device.uuid == device.uuid
+        suppressedUUIDsLock.lock()
+        let suppressed = suppressedUUIDs.contains(device.uuid)
+        suppressedUUIDsLock.unlock()
+        guard !suppressed else { return false }
+        return activeSessionProvider.activeSession?.device.uuid == device.uuid
     }
 
     func didStartReconnecting(to device: any BluetoothDevice) {
