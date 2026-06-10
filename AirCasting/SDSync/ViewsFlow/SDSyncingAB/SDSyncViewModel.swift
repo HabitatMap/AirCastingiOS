@@ -38,6 +38,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     @Injected private var sessionFinisher: SessionFinisher
     @Injected private var persistenceController: PersistenceController
     @Injected private var reconnectGuard: SessionManagingReconnectionController
+    @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
     private let sessionContext: CreateSessionContext
     private var v2Orchestrator: V2BleSyncOrchestrator?
 
@@ -236,7 +237,26 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                     Log.error("[SD SYNC] Couldn't clear SD card after sync")
                 }
             }
+            // If the user kicked off SD sync while a mobile recording session
+            // was still active on this device, the wizard is logically an
+            // end-of-session intent — stop the active session first so the
+            // subsequent BLE disconnect doesn't trigger the auto-reconnect
+            // chain (`shouldReconnect == true` while `activeSession` matches)
+            // and silently resume recording behind the SDSyncCompleteView.
+            self.finishActiveSessionIfMatchingDevice()
             self.disconnectAirBeam()
+        }
+    }
+
+    private func finishActiveSessionIfMatchingDevice() {
+        guard let active = activeSessionProvider.activeSession,
+              active.device.uuid == device.uuid else { return }
+        let stopper = Resolver.resolve(SessionStoppable.self, args: active.session)
+        do {
+            try stopper.stopSession()
+            Log.info("[SD SYNC] Stopped active session \(active.session.uuid) post-sync")
+        } catch {
+            Log.error("[SD SYNC] Failed to stop active session post-sync: \(error)")
         }
     }
     
