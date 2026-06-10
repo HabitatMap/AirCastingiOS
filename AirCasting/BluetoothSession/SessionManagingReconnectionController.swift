@@ -9,42 +9,55 @@ class SessionManagingReconnectionController: ReconnectionControllerDelegate {
     private let standaloneController: StandaloneModeController = Resolver.resolve(StandaloneModeController.self, args: StandaloneOrigin.device)
     @Injected private var bluetoothSessionController: BluetoothSessionRecordingController
 
-    // Device UUIDs for which automatic reconnect must NOT fire. Used by the SD
-    // sync flow: the user is mid-flow on a device that also has an active
-    // mobile recording session, so without suppression `shouldReconnect`
-    // returns true and the auto-reconnect chain races the SD sync's own
-    // explicit connect/disconnect calls — yielding stale CBCharacteristic
-    // pointers and CoreBluetooth-side malloc crashes during the clear-SD
-    // step.
-    private let suppressedUUIDsLock = NSLock()
-    private var suppressedUUIDs: Set<String> = []
+    // Per-device suppression refcount. Each "owner" in the SD sync wizard
+    // (the SDRestartABView screen, the sync view model, the clear-SD view
+    // model) calls `suppressReconnect` on entry and `releaseReconnect` on
+    // exit. Using a counter rather than a Set lets nested owners overlap
+    // without one prematurely re-enabling auto-reconnect for the other. Auto
+    // reconnect is blocked while count > 0.
+    //
+    // The SD sync flow exists because: with an active mobile recording
+    // session on the same device, `shouldReconnect` returned true and the
+    // reconnect chain ran behind the wizard — resuming recording after the
+    // user-driven AB power cycle, racing the wizard's own connect/disconnect
+    // calls, and yielding stale CBCharacteristic pointers that
+    // CoreBluetooth double-freed during the clear-SD writeValue.
+    private let suppressedCountsLock = NSLock()
+    private var suppressedCounts: [String: Int] = [:]
 
     init() {
         reconnectionController.delegate = self
     }
 
-    /// Suppress automatic reconnect for `deviceUUID` until `releaseReconnect`
-    /// is called. Also cancels any in-flight reconnect chain so a retry
-    /// already scheduled stops firing.
+    /// Increment the reconnect-suppression refcount for `deviceUUID`. While
+    /// count > 0, `shouldReconnect` returns false for that device. Also
+    /// cancels any in-flight reconnect chain so a retry already scheduled
+    /// stops firing. Pair every call with a `releaseReconnect`.
     func suppressReconnect(deviceUUID: String) {
-        suppressedUUIDsLock.lock()
-        suppressedUUIDs.insert(deviceUUID)
-        suppressedUUIDsLock.unlock()
+        suppressedCountsLock.lock()
+        suppressedCounts[deviceUUID, default: 0] += 1
+        suppressedCountsLock.unlock()
         reconnectionController.cancelReconnect(deviceUUID: deviceUUID)
     }
 
-    /// Re-enable automatic reconnect for `deviceUUID`. Pair with a prior
-    /// `suppressReconnect` call from the same flow.
+    /// Decrement the reconnect-suppression refcount for `deviceUUID`. Once
+    /// the count returns to 0 the entry is removed and auto-reconnect can
+    /// fire again on the next disconnect.
     func releaseReconnect(deviceUUID: String) {
-        suppressedUUIDsLock.lock()
-        suppressedUUIDs.remove(deviceUUID)
-        suppressedUUIDsLock.unlock()
+        suppressedCountsLock.lock()
+        let next = (suppressedCounts[deviceUUID] ?? 0) - 1
+        if next <= 0 {
+            suppressedCounts.removeValue(forKey: deviceUUID)
+        } else {
+            suppressedCounts[deviceUUID] = next
+        }
+        suppressedCountsLock.unlock()
     }
 
     func shouldReconnect(to device: any BluetoothDevice) -> Bool {
-        suppressedUUIDsLock.lock()
-        let suppressed = suppressedUUIDs.contains(device.uuid)
-        suppressedUUIDsLock.unlock()
+        suppressedCountsLock.lock()
+        let suppressed = (suppressedCounts[device.uuid] ?? 0) > 0
+        suppressedCountsLock.unlock()
         guard !suppressed else { return false }
         return activeSessionProvider.activeSession?.device.uuid == device.uuid
     }

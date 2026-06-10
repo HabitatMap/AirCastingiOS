@@ -18,6 +18,8 @@ struct SDRestartABView: View {
             ProgressFlowAB(progress: 0.568, airbeamImageAsset: "2-power", title: Strings.SDRestartABView.title, message: Strings.SDRestartABView.message, continueButtonOnClick: viewModel.continueSyncFlow)
             .background(selectDeviceLink)
         }
+        .onAppear { viewModel.onAppear() }
+        .onDisappear { viewModel.onDisappear() }
     }
 }
 
