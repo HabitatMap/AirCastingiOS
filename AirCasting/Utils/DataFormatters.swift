@@ -80,26 +80,32 @@ enum DateFormatters {
     }
     
     enum SessionDownloadService {
+        // `en_US_POSIX` is mandatory for fixed-format date parsing — without it
+        // DateFormatter uses `Locale.current`, and when the user has iOS set to
+        // 12-hour time the "HH" 24-hour token mis-parses (Apple TN/QA1480).
         static let decoderDateFormatter: DateFormatter = {
             let df = DateFormatter()
+            df.locale = Locale(identifier: "en_US_POSIX")
             df.timeZone = TimeZone(abbreviation: "UTC")
             df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
             return df
         }()
     }
-    
+
     enum SessionUploadService {
         static let encoderDateFormatter: DateFormatter = {
             let df = DateFormatter()
+            df.locale = Locale(identifier: "en_US_POSIX")
             df.timeZone = TimeZone(abbreviation: "UTC")
             df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
             return df
         }()
     }
-    
+
     enum CreateSessionAPIService {
         static let encoderDateFormatter: DateFormatter = {
             let df = DateFormatter()
+            df.locale = Locale(identifier: "en_US_POSIX")
             df.timeZone = TimeZone(abbreviation: "UTC")
             df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
             return df
@@ -134,8 +140,13 @@ enum DateFormatters {
     }
     
     enum DateExtension {
+        // POSIX locale required: `getFakeUTCDate()` round-trips wall-clock
+        // numerals through these formatters; if `Locale.current` is in 12h mode
+        // the `HH` token mis-formats and `date(from:)` returns nil, force-unwrap
+        // crashes, and downstream API encodings (start_time, etc.) are wrong.
         static let currentTimeZoneDateFormatter: DateFormatter = {
             let df = DateFormatter()
+            df.locale = Locale(identifier: "en_US_POSIX")
             // `autoupdatingCurrent` so this static formatter reflects the OS time
             // zone after the user changes it mid-session — `TimeZone.current`
             // captures a one-shot snapshot at first access and would keep the
@@ -145,16 +156,18 @@ enum DateFormatters {
             df.dateFormat = "yyyy-MM-dd HH:mm:ss"
             return df
         }()
-        
+
         static let utcTimeZoneDateFormatter: DateFormatter = {
             let df = DateFormatter()
+            df.locale = Locale(identifier: "en_US_POSIX")
             df.timeZone = TimeZone.init(abbreviation: "UTC")
             df.dateFormat = "yyyy-MM-dd HH:mm:ss"
             return df
         }()
-        
+
         static let milisecondsDateFormatter: DateFormatter = {
             let df = DateFormatter()
+            df.locale = Locale(identifier: "en_US_POSIX")
             df.dateFormat = "SSS"
             return df
         }()
@@ -172,6 +185,7 @@ enum DateFormatters {
     enum Debug {
         static let logsFormatter: DateFormatter = {
             let df = DateFormatter()
+            df.locale = Locale(identifier: "en_US_POSIX")
             df.dateFormat = "yyyy-MM-dd HH:mm:ss"
             return df
         }()
