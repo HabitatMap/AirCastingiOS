@@ -16,27 +16,45 @@ final class UpdateSessionParamsService {
 
     func updateSessionsParams(session: SessionEntity, output: FixedSession.FixedMeasurementOutput) throws {
         Log.info("Updating session params in core data for session: \(session.uuid) [\(session.name ?? "N/A")]")
-        // BE persists session/measurement timestamps as wall-clock numerals
-        // tagged with a literal "Z". The wall clock is the session's
-        // `time_zone` column on BE:
-        //   - Indoor sessions: BE defaults `time_zone` to UTC.
-        //   - Outdoor sessions WITH lat/lng: BE looks up the geo TZ (≈ phone TZ).
-        //   - Outdoor sessions WITHOUT a valid lat/lng (nil or 0,0 fallback the
-        //     iOS V2 fixed-session POST sends): BE has no coords to look up, so
-        //     `time_zone` falls back to UTC just like indoor.
-        // iOS uses the fakeUTC convention internally (wall-clock numerals as a
-        // UTC moment in the phone's TZ), so the UTC-tagged real-UTC numerals BE
-        // returns for those two cases must be shifted to the phone's local
-        // wall clock before persisting. Outdoor + valid coords already lines
-        // up because BE's geo TZ matches the phone TZ in normal use.
-        let beUsesUtc = sessionRequiresUtcShift(session: session, output: output)
-        let isIndoor = beUsesUtc
+        // BE persists fixed-session timestamps as wall-clock numerals tagged
+        // with a literal "Z", but the wall clock used depends on which BE
+        // column wrote the value:
+        //
+        //   1. `Session#start_time` is set to the production BE's server
+        //      clock at session-creation time. It is NEVER run through
+        //      `Utils.to_local_as_utc(epoch, session.time_zone)`, so the
+        //      stored numerals are real UTC regardless of indoor / outdoor.
+        //      Symptom before this guard: V2 outdoor session card displayed
+        //      raw-UTC numerals (e.g. "10:00") for sessions started at
+        //      12:00 wall clock in a UTC+2 phone TZ.
+        //   2. `Session#end_time` and `Measurement#time` are written via
+        //      `to_local_as_utc(epoch, session.time_zone)` on every
+        //      measurement ingest. The wall clock is the session's
+        //      `time_zone` column:
+        //        - Indoor sessions: BE defaults `time_zone` to UTC.
+        //        - Outdoor sessions WITH lat/lng: BE looks up the geo TZ
+        //          (≈ phone TZ in normal use).
+        //        - Outdoor sessions WITHOUT a resolvable lat/lng (nil, 0,0,
+        //          200,200 sentinels): BE falls back to UTC like indoor.
+        //      So those numerals are real UTC for case 2's UTC fallback and
+        //      already-phone-aligned otherwise.
+        //
+        // iOS uses the fakeUTC convention (wall-clock numerals as a UTC
+        // moment in the phone's TZ), so any real-UTC numerals BE hands back
+        // must be shifted to the phone's local wall clock before persisting.
+        //
+        // V1 fixed-session timestamps round-trip through BE's
+        // `skip_time_zone_conversion_for_attributes` adapter unchanged, so
+        // V1 stays at fakeUTC end-to-end and neither flag fires.
+        let isV2Fixed = session.deviceFirmwareVersion == .v2
+        let shiftStartTime = isV2Fixed
+        let shiftEndAndMeasurements = isV2Fixed && Self.sessionRequiresUtcShift(session: session, output: output)
         session.uuid = output.uuid
         session.type = output.type
         session.name = output.title
         session.tags  = output.tag_list
-        session.startTime = output.start_time.shiftedForFixedSession(isIndoor: isIndoor)
-        session.endTime = output.end_time.shiftedForFixedSession(isIndoor: isIndoor)
+        session.startTime = output.start_time.shiftedForFixedSession(isIndoor: shiftStartTime)
+        session.endTime = output.end_time.shiftedForFixedSession(isIndoor: shiftEndAndMeasurements)
         session.version = output.version
         guard let context = session.managedObjectContext else {
             throw Error.missingContext(output)
@@ -52,7 +70,7 @@ final class UpdateSessionParamsService {
 
         try streamDiff.inserted.forEach {
             let stream = MeasurementStreamEntity(context: context)
-            try fillStream(stream, with: $0)
+            try fillStream(stream, with: $0, isIndoor: shiftEndAndMeasurements)
             stream.session = session
         }
         
@@ -82,18 +100,18 @@ final class UpdateSessionParamsService {
 
             let oldMeasurements = oldStream.measurements?.array as? [MeasurementEntity] ?? []
             let measurementDiff = diff(oldMeasurements, streamOutput.measurements) {
-                return $0.time == $1.time.shiftedForFixedSession(isIndoor: isIndoor) && $0.value == Double($1.value)
+                return $0.time == $1.time.shiftedForFixedSession(isIndoor: shiftEndAndMeasurements) && $0.value == Double($1.value)
             }
             measurementDiff.inserted.forEach {
                 let newMeasurement = MeasurementEntity(context: context)
-                fillMeasurement(newMeasurement, with: $0, isIndoor: isIndoor)
+                fillMeasurement(newMeasurement, with: $0, isIndoor: shiftEndAndMeasurements)
                 newMeasurement.measurementStream = oldStream
             }
 
             measurementDiff.common.forEach { oldMeasurement, measurementOutput in
                 oldMeasurement.value = Double(measurementOutput.value)
                 oldMeasurement.location = CLLocationCoordinate2D(latitude: measurementOutput.latitude, longitude: measurementOutput.longitude)
-                oldMeasurement.time = measurementOutput.time.shiftedForFixedSession(isIndoor: isIndoor)
+                oldMeasurement.time = measurementOutput.time.shiftedForFixedSession(isIndoor: shiftEndAndMeasurements)
             }
         }
     }
@@ -122,20 +140,27 @@ final class UpdateSessionParamsService {
 }
 
 extension UpdateSessionParamsService {
-    /// Returns `true` when the BE persists this fixed session's wall-clock
-    /// numerals in UTC and iOS must shift them back to the phone's wall clock
-    /// to match the fakeUTC display convention.
+    /// Returns `true` when BE persists this fixed session's measurement /
+    /// end-time numerals in UTC and iOS must shift them back to the phone's
+    /// wall clock to match the fakeUTC display convention.
     ///
-    /// Only V2 (AirBeam Mini new-firmware) fixed sessions hit this codepath:
-    /// V2 binary measurement uploads (`u32` epoch) go through BE's
-    /// `Utils.to_local_as_utc(epoch, session.time_zone)` ingest, so indoor /
-    /// locationless sessions (BE defaults `session.time_zone` to UTC) land in
-    /// the column as real-UTC numerals and need the shift. V1 sessions upload
-    /// gzipped-JSON Dates that BE writes as wall-clock numerals via
-    /// `skip_time_zone_conversion_for_attributes` — those already align with
-    /// iOS's fakeUTC convention, and shifting double-counts the offset (V1
-    /// indoor in Warsaw rendered 11:00 for a 09:00 wall clock before this
-    /// guard).
+    /// Only governs `Measurement#time` and `Session#end_time`, which BE
+    /// writes via `Utils.to_local_as_utc(epoch, session.time_zone)` on every
+    /// V2 binary measurement ingest. Indoor / locationless V2 fixed sessions
+    /// fall back to `session.time_zone == UTC` and land in the column as
+    /// real-UTC numerals — those need the shift. Outdoor V2 with resolvable
+    /// coords uses the geo TZ (≈ phone TZ) and already aligns with fakeUTC.
+    ///
+    /// `Session#start_time` is handled separately at the call site because BE
+    /// writes it once at session creation in the production server clock
+    /// (UTC) without running it through `to_local_as_utc`, so V2 fixed
+    /// `start_time` always needs the shift regardless of indoor / outdoor.
+    ///
+    /// V1 sessions upload gzipped-JSON Dates that BE writes as wall-clock
+    /// numerals via `skip_time_zone_conversion_for_attributes` — those
+    /// already align with iOS's fakeUTC convention, and shifting double-
+    /// counts the offset (V1 indoor in Warsaw rendered 11:00 for a 09:00
+    /// wall clock before this guard).
     static func sessionRequiresUtcShift(session: SessionEntity, output: FixedSession.FixedMeasurementOutput) -> Bool {
         guard session.deviceFirmwareVersion == .v2 else { return false }
         if session.isIndoor || (output.is_indoor ?? false) { return true }
@@ -180,13 +205,13 @@ private extension UpdateSessionParamsService {
         return streamOutput.sensor_package_name
     }
 
-    func fillMeasurement(_ entity: MeasurementEntity, with measurement: FixedSession.MeasurementOutput, isIndoor: Bool = false) {
+    func fillMeasurement(_ entity: MeasurementEntity, with measurement: FixedSession.MeasurementOutput, isIndoor: Bool) {
         entity.value = Double(measurement.value)
         entity.location = CLLocationCoordinate2D(latitude: measurement.latitude, longitude: measurement.longitude)
         entity.time = measurement.time.shiftedForFixedSession(isIndoor: isIndoor)
     }
 
-    func fillStream(_ entity: MeasurementStreamEntity, with streamOutput: FixedSession.StreamOutput) throws {
+    func fillStream(_ entity: MeasurementStreamEntity, with streamOutput: FixedSession.StreamOutput, isIndoor: Bool) throws {
         entity.id = streamOutput.id
         entity.sensorName = streamOutput.sensor_name
         entity.sensorPackageName = derivedPackageName(from: streamOutput)
@@ -203,9 +228,15 @@ private extension UpdateSessionParamsService {
         guard let context = entity.managedObjectContext else {
             throw Error.missingContext(entity)
         }
+        // Propagate the caller's shift flag — first-batch measurements on a
+        // newly-created stream go through this path, and silently defaulting to
+        // `isIndoor: false` here meant V2 indoor / locationless sessions stored
+        // their initial measurement batch in raw UTC while the session times
+        // were correctly shifted, so the graph plotted the first measurement
+        // two hours before the card's start time.
         streamOutput.measurements.forEach {
             let newMeasurement = MeasurementEntity(context: context)
-            fillMeasurement(newMeasurement, with: $0)
+            fillMeasurement(newMeasurement, with: $0, isIndoor: isIndoor)
             newMeasurement.measurementStream = entity
         }
     }
