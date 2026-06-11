@@ -106,6 +106,21 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
             activeV2Configurators[device.uuid] = configurator
             v2Lock.unlock()
 
+            // V2 configurator is cached per-device for the app's lifetime
+            // (V2ConfiguratorRegistry), so a prior connect/disconnect cycle —
+            // e.g. SD sync teardown — leaves a stale `lastStatus` cache and
+            // CoreBluetooth-invalidated subscription tokens behind. Without a
+            // reset, `subscribeAndAwaitStatus` short-circuits on the cache,
+            // no fresh notify subscriptions get armed, and the next
+            // `configureSession` write (GetSensors) silently times out because
+            // its response notification has nowhere to land — UI sits forever
+            // on the Connecting screen. `prepareForReconnect` clears the
+            // cache, drops stale tokens, and re-arms subscriptions on the
+            // following `subscribeAndAwaitStatus`. ReconnectionController
+            // already does this on its path; the user-initiated connect path
+            // needs the same treatment.
+            configurator.prepareForReconnect()
+
             configurator.subscribeAndAwaitStatus { result in
                 switch result {
                 case .success(let status):
