@@ -195,8 +195,14 @@ extension ConfirmCreatingSessionView {
         let newSessionUUID = sessionContext.sessionUUID.flatMap { UUID(uuidString: $0.rawValue) }
         let shouldPrompt: Bool
         switch configurator.lastStatus {
-        case .hasSavedSession:
-            shouldPrompt = true
+        case .hasSavedSession(_, _, let hasMeasurements, _):
+            // After a successful manual BLE sync, firmware may keep the saved-session
+            // shell with hasMeasurements=false / fileSize=0 instead of fully
+            // returning to idle. Don't pester the user about syncing what we
+            // just drained — `configureMobileSession` still sends
+            // DiscardSession (0x11) on any hasSavedSession state to clean up
+            // the device before NewSessionConfig.
+            shouldPrompt = hasMeasurements
         case .running(_, let deviceUUID):
             // Device is recording under a different session UUID than the new
             // one — that previous session must be drained or discarded
