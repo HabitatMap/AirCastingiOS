@@ -10,13 +10,11 @@ import Combine
 final class SessionManagingReconnectionControllerTests: ACTestCase {
     lazy var sut = SessionManagingReconnectionController()
     var activeSessionProvider = ActiveMobileSessionProvidingServiceMock()
-    let standaloneController = StandaloneModeControllerSpy()
     var bluetoothSessionController = BluetoothSessionRecordingControllerMock()
 
     override func setUp() {
         super.setUp()
         Resolver.test.register { self.activeSessionProvider as ActiveMobileSessionProvidingService }
-        Resolver.test.register { self.standaloneController as StandaloneModeController }
         Resolver.test.register { self.bluetoothSessionController as BluetoothSessionRecordingController }
         Resolver.test.register { MeasurementsSavingServiceMock() as MeasurementsSavingService }
         Resolver.test.register { MobileSessionRecordingStorageMock() as MobileSessionRecordingStorage }
@@ -46,19 +44,6 @@ final class SessionManagingReconnectionControllerTests: ACTestCase {
         XCTAssertEqual(bluetoothSessionController.callsHistory, [.resume(device: device)])
     }
 
-    func testDidFailtToReconnect_movesSessionToStandaloneMode() {
-        let device = BluetoothDeviceMock(name: "Device", uuid: "123")
-        activeSessionProvider.setActiveSession(session: .mobileAirBeamMock, device: device)
-        sut.didFailToReconnect(to: device)
-        XCTAssertEqual(standaloneController.moveToStandaloneModeCount, 1)
-    }
-}
-
-class StandaloneModeControllerSpy: StandaloneModeController {
-    var moveToStandaloneModeCount = 0
-    func moveActiveSessionToStandaloneMode() {
-        moveToStandaloneModeCount += 1
-    }
 }
 
 class MobileSessionRecordingStorageMock: MobileSessionRecordingStorage {

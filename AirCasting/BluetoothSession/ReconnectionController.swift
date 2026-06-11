@@ -10,7 +10,6 @@ protocol ReconnectionControllerDelegate: AnyObject {
     /// surface "disconnected / reconnecting…" UI while the loop retries.
     func didStartReconnecting(to device: any BluetoothDevice)
     func didReconnect(to device: any BluetoothDevice)
-    func didFailToReconnect(to device: any BluetoothDevice)
 }
 
 extension ReconnectionControllerDelegate {
@@ -35,13 +34,14 @@ class DefaultReconnectionController: ReconnectionController, BluetoothConnection
     @Injected private var bluetootConnector: BluetoothConnectionHandler
 
     // Retry policy: device power-cycle reboot can exceed the 10 s connect timeout,
-    // so a single shot fails immediately on a hard restart. Keep attempting until
-    // the user-visible delegate stops asking us to reconnect (active session
-    // cleared / user-driven disconnect) or we hit the cap. Cap is generous so
-    // typical Mini Mini reboots (sub-30 s) complete inside the window.
+    // so a single shot fails immediately on a hard restart. Keep attempting
+    // indefinitely; the chain self-terminates once `shouldReconnect` returns
+    // false (active session cleared / user-driven stop) or `cancelReconnect`
+    // is called. Matches Android (neverending attempts) so a user who leaves
+    // their AirBeam off for hours can still resume the same mobile session
+    // when it powers back on instead of being silently moved to standalone.
     private static let connectAttemptTimeout: TimeInterval = 10
     private static let retryDelaySeconds: TimeInterval = 3
-    private static let maxRetryAttempts: Int = 40 // ~10 + (39 × (10 + 3)) ≈ 8.5 minutes
     private let retryQueue = DispatchQueue(label: "ab.reconnection.controller")
 
     // CoreBluetooth emits two disconnect notifications when a connect attempt times out
@@ -176,12 +176,6 @@ class DefaultReconnectionController: ReconnectionController, BluetoothConnection
     }
 
     private func scheduleRetry(device: any BluetoothDevice, attempt: Int) {
-        guard attempt < Self.maxRetryAttempts else {
-            Log.error("[RECONNECT] Exhausted \(Self.maxRetryAttempts) attempts for \(device.uuid). Giving up.")
-            clearInFlight(device.uuid)
-            delegate?.didFailToReconnect(to: device)
-            return
-        }
         retryQueue.asyncAfter(deadline: .now() + Self.retryDelaySeconds) { [weak self] in
             self?.attemptReconnect(device: device, attempt: attempt + 1)
         }
@@ -194,7 +188,7 @@ class DefaultReconnectionController: ReconnectionController, BluetoothConnection
     private func completeReconnection(for device: any BluetoothDevice, attempt: Int) {
         switch device.firmwareVersion {
         case .v1:
-            clearInFlight(device.uuid)
+            guard finalizeReconnectIfStillNeeded(device: device) else { return }
             self.delegate?.didReconnect(to: device)
         case .v2:
             // V2 path defers any post-reconnect action until the first Status notification arrives
@@ -207,7 +201,7 @@ class DefaultReconnectionController: ReconnectionController, BluetoothConnection
                 switch result {
                 case .success(let status):
                     Log.info("[RECONNECT] V2 ready. Status=\(status)")
-                    self.clearInFlight(device.uuid)
+                    guard self.finalizeReconnectIfStillNeeded(device: device) else { return }
                     self.delegate?.didReconnect(to: device)
                 case .failure(let error):
                     Log.error("[RECONNECT] V2 status failed (attempt #\(attempt)): \(error). Scheduling retry.")
@@ -215,5 +209,25 @@ class DefaultReconnectionController: ReconnectionController, BluetoothConnection
                 }
             }
         }
+    }
+
+    /// Final gate before invoking `didReconnect`. The connect / discover /
+    /// V2-status callbacks can fire AFTER `cancelReconnect` (e.g. SD sync
+    /// wizard suppression kicked in mid-callback): without this re-check we
+    /// would call `didReconnect` -> `resumeRecording` and silently race the
+    /// wizard's own BLE traffic. Returns true if the caller should proceed.
+    @discardableResult
+    private func finalizeReconnectIfStillNeeded(device: any BluetoothDevice) -> Bool {
+        guard isStillActive(device.uuid) else {
+            Log.info("[RECONNECT] Finalize aborted (chain cancelled) for \(device.uuid)")
+            return false
+        }
+        guard delegate?.shouldReconnect(to: device) ?? false else {
+            Log.info("[RECONNECT] Finalize aborted (no longer needed) for \(device.uuid)")
+            clearInFlight(device.uuid)
+            return false
+        }
+        clearInFlight(device.uuid)
+        return true
     }
 }

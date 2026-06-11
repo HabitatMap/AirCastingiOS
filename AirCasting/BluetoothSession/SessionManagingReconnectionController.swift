@@ -6,7 +6,6 @@ class SessionManagingReconnectionController: ReconnectionControllerDelegate {
     @Injected private var reconnectionController: ReconnectionController
     @Injected private var measurementsSaver: MeasurementsSavingService
     @Injected private var persistence: MobileSessionRecordingStorage
-    private let standaloneController: StandaloneModeController = Resolver.resolve(StandaloneModeController.self, args: StandaloneOrigin.device)
     @Injected private var bluetoothSessionController: BluetoothSessionRecordingController
 
     // Per-device suppression refcount. Each "owner" in the SD sync wizard
@@ -92,8 +91,4 @@ class SessionManagingReconnectionController: ReconnectionControllerDelegate {
         }
     }
 
-    func didFailToReconnect(to device: any BluetoothDevice) {
-        guard activeSessionProvider.activeSession?.device.uuid == device.uuid else { return }
-        standaloneController.moveActiveSessionToStandaloneMode()
-    }
 }
