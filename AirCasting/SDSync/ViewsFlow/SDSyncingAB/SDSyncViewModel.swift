@@ -170,6 +170,17 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                             DispatchQueue.main.async {
                                 standaloneSessionToSyncAndFinish.clearSessionUuid()
                             }
+                            // V1 parity: when the user kicks off SD sync while a
+                            // mobile session is still active on this device (DB
+                            // status RECORDING/DISCONNECTED, not standalone),
+                            // `SDCardMobileSessionFinisher` guards on
+                            // `isInStandaloneMode` and no-ops — leaving the
+                            // session pinned to the mobile-active tab forever.
+                            // Explicitly stop the active session here so it
+                            // transitions to FINISHED, mirroring the V1
+                            // `clearSDCard` ordering. Safe when there's no
+                            // matching active session (early return).
+                            self.finishActiveSessionIfMatchingDevice()
                             self.disconnectAirBeam()
                         }
                     case .failure(let error):
