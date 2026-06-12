@@ -167,6 +167,17 @@ extension UpdateSessionParamsService {
         return !sessionHasResolvableLocation(session)
     }
 
+    /// Same predicate as `sessionRequiresUtcShift(session:output:)` but
+    /// callable without a downloaded `FixedMeasurementOutput`. Used by the
+    /// download cursor (`last_measurement_sync`) where the BE comparison
+    /// numerals must match the same UTC vs phone-TZ flavor that gated the
+    /// stored timestamps.
+    static func sessionRequiresUtcShift(session: SessionEntity) -> Bool {
+        guard session.deviceFirmwareVersion == .v2 else { return false }
+        if session.isIndoor { return true }
+        return !sessionHasResolvableLocation(session)
+    }
+
     private static func sessionHasResolvableLocation(_ session: SessionEntity) -> Bool {
         guard let coord = session.location else { return false }
         // Treat any sentinel / out-of-range coordinate the app may have stamped

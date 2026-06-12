@@ -104,7 +104,23 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
             .sorted()
             .last
         let syncDate = SyncHelper().calculateLastSync(sessionEndTime: session?.endTime, lastMeasurementTime: lastMeasurementTime)
-        return syncDate
+        // BE compares `last_measurement_sync` against the raw numerals it
+        // stored for `Measurement#time` via `Utils.to_local_as_utc(epoch,
+        // session.time_zone)`. V2 indoor / locationless sessions store those
+        // numerals as real UTC (BE `time_zone == UTC`), while iOS shifted
+        // them to the fakeUTC convention on persist
+        // (`UpdateSessionParamsService.shiftEndAndMeasurements`). Sending
+        // the fakeUTC Date directly through `ISO8601(UTC)` formats it as the
+        // phone-wall-clock numerals — for a UTC+2 phone that's 2h ahead of
+        // BE's stored numerals, so BE returns an empty page and only the
+        // first batch ever lands. Undo the shift here so the cursor lines
+        // up with BE's stored numerals; outdoor V2 + V1 stay untouched
+        // because their numerals already match `ISO8601(UTC)` directly.
+        guard let session = session,
+              UpdateSessionParamsService.sessionRequiresUtcShift(session: session) else {
+            return syncDate
+        }
+        return syncDate.convertedFromUTCToLocal
     }
 
     private func getExternalSessionSyncDate(for session: ExternalSessionEntity?) -> Date {
