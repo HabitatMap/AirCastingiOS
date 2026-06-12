@@ -6,12 +6,10 @@ import Foundation
 class UserDefaultsURLProvider: URLProvider {
     private static let defaultBaseURL = URL(string: "https://aircasting.org/")!
 
-    /// Hosts earlier dev builds defaulted to. The AirBeam Mini firmware has been
-    /// flashed to point at `experimental.aircasting.org` for this branch, so the
-    /// iOS app and the device must agree on experimental for V2 fixed sessions
-    /// to work end-to-end. Rewrite any persisted prod/insecure URL on launch.
+    /// Hosts earlier dev builds defaulted to. Rewrite any persisted
+    /// experimental / legacy host on launch so the iOS app and the AirBeam
+    /// Mini firmware agree on the production backend for V2 fixed sessions.
     private static let migrateAwayFromHosts: Set<String> = [
-        "aircasting.org",
         "experimental.aircasting.org"
     ]
 
@@ -34,7 +32,7 @@ class UserDefaultsURLProvider: URLProvider {
         guard let stored = userDefaults.url(forKey: "baseURL"),
               let host = stored.host?.lowercased(),
               Self.migrateAwayFromHosts.contains(host) else { return }
-        // Always force the experimental + HTTPS canonical form on upgrade.
+        // Always force the production + HTTPS canonical form on upgrade.
         if stored != Self.defaultBaseURL {
             userDefaults.set(Self.defaultBaseURL, forKey: "baseURL")
         }
