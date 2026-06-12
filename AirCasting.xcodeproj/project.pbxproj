@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 63;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -459,10 +459,10 @@
 		D1A0670130042026000009AB /* V2ResponseDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000010AB /* V2ResponseDispatcher.swift */; };
 		D1A0670130042026000011AB /* V2MeasurementParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000012AB /* V2MeasurementParser.swift */; };
 		D1A0670130042026000013AB /* V2ConfiguratorRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000014AB /* V2ConfiguratorRegistry.swift */; };
+		D1A0670130042026000015AB /* V2FixedSessionAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000016AB /* V2FixedSessionAPIService.swift */; };
 		D1A0670130042026000021AB /* V2BleSyncOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000022AB /* V2BleSyncOrchestrator.swift */; };
 		D1A0670130042026000023AB /* SyncBeforeNewV2SessionDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000024AB /* SyncBeforeNewV2SessionDialog.swift */; };
 		D1A0670130042026000025AB /* SyncAndFinishV2SessionDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000026AB /* SyncAndFinishV2SessionDialog.swift */; };
-		D1A0670130042026000015AB /* V2FixedSessionAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000016AB /* V2FixedSessionAPIService.swift */; };
 		DD009D662698844A009F0443 /* DeleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD009D652698844A009F0443 /* DeleteView.swift */; };
 		DD123EBF27BD1CD3001083C3 /* SearchMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD123EBE27BD1CD3001083C3 /* SearchMapView.swift */; };
 		DD123EC227BD2C53001083C3 /* SearchMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD123EC127BD2C53001083C3 /* SearchMapViewModel.swift */; };
@@ -1075,10 +1075,10 @@
 		D1A0670130042026000010AB /* V2ResponseDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2ResponseDispatcher.swift; sourceTree = "<group>"; };
 		D1A0670130042026000012AB /* V2MeasurementParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2MeasurementParser.swift; sourceTree = "<group>"; };
 		D1A0670130042026000014AB /* V2ConfiguratorRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2ConfiguratorRegistry.swift; sourceTree = "<group>"; };
+		D1A0670130042026000016AB /* V2FixedSessionAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2FixedSessionAPIService.swift; sourceTree = "<group>"; };
 		D1A0670130042026000022AB /* V2BleSyncOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2BleSyncOrchestrator.swift; sourceTree = "<group>"; };
 		D1A0670130042026000024AB /* SyncBeforeNewV2SessionDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SyncBeforeNewV2SessionDialog.swift; path = V2/SyncBeforeNewV2SessionDialog.swift; sourceTree = "<group>"; };
 		D1A0670130042026000026AB /* SyncAndFinishV2SessionDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SyncAndFinishV2SessionDialog.swift; path = V2/SyncAndFinishV2SessionDialog.swift; sourceTree = "<group>"; };
-		D1A0670130042026000016AB /* V2FixedSessionAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2FixedSessionAPIService.swift; sourceTree = "<group>"; };
 		DD009D652698844A009F0443 /* DeleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteView.swift; sourceTree = "<group>"; };
 		DD123EBE27BD1CD3001083C3 /* SearchMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMapView.swift; sourceTree = "<group>"; };
 		DD123EC127BD2C53001083C3 /* SearchMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMapViewModel.swift; sourceTree = "<group>"; };
@@ -1220,28 +1220,8 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		33DBE7D32E40DCFE003234F1 /* CommonUI */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = CommonUI;
-			sourceTree = "<group>";
-		};
-		33DBE7DB2E41FC88003234F1 /* Preview */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = Preview;
-			sourceTree = "<group>";
-		};
+		33DBE7D32E40DCFE003234F1 /* CommonUI */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = CommonUI; sourceTree = "<group>"; };
+		33DBE7DB2E41FC88003234F1 /* Preview */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Preview; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1967,14 +1947,6 @@
 				D1A0670130042026000017AB /* V2 */,
 			);
 			path = APICommunicator;
-			sourceTree = "<group>";
-		};
-		D1A0670130042026000017AB /* V2 */ = {
-			isa = PBXGroup;
-			children = (
-				D1A0670130042026000016AB /* V2FixedSessionAPIService.swift */,
-			);
-			path = V2;
 			sourceTree = "<group>";
 		};
 		AC8CFF7025E7D94C00FB2918 /* Models */ = {
@@ -2742,6 +2714,14 @@
 			path = V2;
 			sourceTree = "<group>";
 		};
+		D1A0670130042026000017AB /* V2 */ = {
+			isa = PBXGroup;
+			children = (
+				D1A0670130042026000016AB /* V2FixedSessionAPIService.swift */,
+			);
+			path = V2;
+			sourceTree = "<group>";
+		};
 		DD07575B268B2D3300C8DF88 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
@@ -3315,9 +3295,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AirCasting/Pods-AirCasting-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AirCasting/Pods-AirCasting-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -3332,9 +3316,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AirCasting/Pods-AirCasting-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AirCasting/Pods-AirCasting-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -4217,7 +4205,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Marta's ad hoc 2";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "AC Ad Hoc distribution";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
