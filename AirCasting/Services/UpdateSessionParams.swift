@@ -16,45 +16,41 @@ final class UpdateSessionParamsService {
 
     func updateSessionsParams(session: SessionEntity, output: FixedSession.FixedMeasurementOutput) throws {
         Log.info("Updating session params in core data for session: \(session.uuid) [\(session.name ?? "N/A")]")
-        // BE persists fixed-session timestamps as wall-clock numerals tagged
-        // with a literal "Z", but the wall clock used depends on which BE
-        // column wrote the value:
-        //
-        //   1. `Session#start_time` is set to the production BE's server
-        //      clock at session-creation time. It is NEVER run through
-        //      `Utils.to_local_as_utc(epoch, session.time_zone)`, so the
-        //      stored numerals are real UTC regardless of indoor / outdoor.
-        //      Symptom before this guard: V2 outdoor session card displayed
-        //      raw-UTC numerals (e.g. "10:00") for sessions started at
-        //      12:00 wall clock in a UTC+2 phone TZ.
-        //   2. `Session#end_time` and `Measurement#time` are written via
-        //      `to_local_as_utc(epoch, session.time_zone)` on every
-        //      measurement ingest. The wall clock is the session's
-        //      `time_zone` column:
-        //        - Indoor sessions: BE defaults `time_zone` to UTC.
-        //        - Outdoor sessions WITH lat/lng: BE looks up the geo TZ
-        //          (≈ phone TZ in normal use).
-        //        - Outdoor sessions WITHOUT a resolvable lat/lng (nil, 0,0,
-        //          200,200 sentinels): BE falls back to UTC like indoor.
-        //      So those numerals are real UTC for case 2's UTC fallback and
-        //      already-phone-aligned otherwise.
+        // BE persists fixed-session `Session#start_time`, `Session#end_time`,
+        // and `Measurement#time` via `Utils.to_local_as_utc(epoch,
+        // session.time_zone)` on V2 ingest. The wall clock is the session's
+        // `time_zone` column:
+        //   - Indoor sessions: BE defaults `time_zone` to UTC.
+        //   - Outdoor sessions WITH lat/lng: BE looks up the geo TZ (≈ phone
+        //     TZ in normal use), so the numerals already align with fakeUTC.
+        //   - Outdoor sessions WITHOUT a resolvable lat/lng (nil, 0,0,
+        //     200,200 sentinels): BE falls back to UTC like indoor.
         //
         // iOS uses the fakeUTC convention (wall-clock numerals as a UTC
-        // moment in the phone's TZ), so any real-UTC numerals BE hands back
-        // must be shifted to the phone's local wall clock before persisting.
+        // moment in the phone's TZ). Shift real-UTC numerals (indoor /
+        // locationless V2 fixed) to the phone wall clock on persist; leave
+        // already-aligned geo-TZ numerals alone.
         //
         // V1 fixed-session timestamps round-trip through BE's
         // `skip_time_zone_conversion_for_attributes` adapter unchanged, so
-        // V1 stays at fakeUTC end-to-end and neither flag fires.
-        let isV2Fixed = session.deviceFirmwareVersion == .v2
-        let shiftStartTime = isV2Fixed
-        let shiftEndAndMeasurements = isV2Fixed && Self.sessionRequiresUtcShift(session: session, output: output)
+        // V1 stays at fakeUTC end-to-end and the gate stays false.
+        //
+        // Previously this site split the gate per timestamp kind under the
+        // theory that BE wrote `start_time` as the raw server clock without
+        // geo conversion. Empirically (NYC EDT test, local 05:00) the V2
+        // outdoor card double-shifted to ~01:00 — BE applies the same
+        // `to_local_as_utc` to `start_time` as it does to measurements once
+        // geo resolves. Collapse back to a single gate so V2 outdoor
+        // start_time / end_time / measurements all stay in BE's geo-TZ
+        // numerals untouched, and V2 indoor / locationless all get the UTC
+        // → phone-wall-clock shift.
+        let shiftFixedTimestamps = Self.sessionRequiresUtcShift(session: session, output: output)
         session.uuid = output.uuid
         session.type = output.type
         session.name = output.title
         session.tags  = output.tag_list
-        session.startTime = output.start_time.shiftedForFixedSession(isIndoor: shiftStartTime)
-        session.endTime = output.end_time.shiftedForFixedSession(isIndoor: shiftEndAndMeasurements)
+        session.startTime = output.start_time.shiftedForFixedSession(isIndoor: shiftFixedTimestamps)
+        session.endTime = output.end_time.shiftedForFixedSession(isIndoor: shiftFixedTimestamps)
         session.version = output.version
         guard let context = session.managedObjectContext else {
             throw Error.missingContext(output)
@@ -70,7 +66,7 @@ final class UpdateSessionParamsService {
 
         try streamDiff.inserted.forEach {
             let stream = MeasurementStreamEntity(context: context)
-            try fillStream(stream, with: $0, isIndoor: shiftEndAndMeasurements)
+            try fillStream(stream, with: $0, isIndoor: shiftFixedTimestamps)
             stream.session = session
         }
         
@@ -100,18 +96,18 @@ final class UpdateSessionParamsService {
 
             let oldMeasurements = oldStream.measurements?.array as? [MeasurementEntity] ?? []
             let measurementDiff = diff(oldMeasurements, streamOutput.measurements) {
-                return $0.time == $1.time.shiftedForFixedSession(isIndoor: shiftEndAndMeasurements) && $0.value == Double($1.value)
+                return $0.time == $1.time.shiftedForFixedSession(isIndoor: shiftFixedTimestamps) && $0.value == Double($1.value)
             }
             measurementDiff.inserted.forEach {
                 let newMeasurement = MeasurementEntity(context: context)
-                fillMeasurement(newMeasurement, with: $0, isIndoor: shiftEndAndMeasurements)
+                fillMeasurement(newMeasurement, with: $0, isIndoor: shiftFixedTimestamps)
                 newMeasurement.measurementStream = oldStream
             }
 
             measurementDiff.common.forEach { oldMeasurement, measurementOutput in
                 oldMeasurement.value = Double(measurementOutput.value)
                 oldMeasurement.location = CLLocationCoordinate2D(latitude: measurementOutput.latitude, longitude: measurementOutput.longitude)
-                oldMeasurement.time = measurementOutput.time.shiftedForFixedSession(isIndoor: shiftEndAndMeasurements)
+                oldMeasurement.time = measurementOutput.time.shiftedForFixedSession(isIndoor: shiftFixedTimestamps)
             }
         }
     }
@@ -140,21 +136,19 @@ final class UpdateSessionParamsService {
 }
 
 extension UpdateSessionParamsService {
-    /// Returns `true` when BE persists this fixed session's measurement /
-    /// end-time numerals in UTC and iOS must shift them back to the phone's
-    /// wall clock to match the fakeUTC display convention.
-    ///
-    /// Only governs `Measurement#time` and `Session#end_time`, which BE
-    /// writes via `Utils.to_local_as_utc(epoch, session.time_zone)` on every
-    /// V2 binary measurement ingest. Indoor / locationless V2 fixed sessions
-    /// fall back to `session.time_zone == UTC` and land in the column as
-    /// real-UTC numerals — those need the shift. Outdoor V2 with resolvable
-    /// coords uses the geo TZ (≈ phone TZ) and already aligns with fakeUTC.
-    ///
-    /// `Session#start_time` is handled separately at the call site because BE
-    /// writes it once at session creation in the production server clock
-    /// (UTC) without running it through `to_local_as_utc`, so V2 fixed
-    /// `start_time` always needs the shift regardless of indoor / outdoor.
+    /// Returns `true` when BE persists this fixed session's timestamp
+    /// numerals in UTC and iOS must shift them back to the phone's wall
+    /// clock to match the fakeUTC display convention. Governs
+    /// `Session#start_time`, `Session#end_time`, and `Measurement#time`
+    /// uniformly: BE writes all three via
+    /// `Utils.to_local_as_utc(epoch, session.time_zone)` on V2 ingest.
+    /// Indoor / locationless V2 fixed sessions fall back to
+    /// `session.time_zone == UTC` and land in those columns as real-UTC
+    /// numerals — they need the shift. Outdoor V2 with resolvable coords
+    /// uses the geo TZ (≈ phone TZ) and already aligns with fakeUTC, so it
+    /// stays as-is — shifting it double-counts the offset (NYC EDT outdoor
+    /// session at local 05:00 rendered ~01:00 before this gate was
+    /// collapsed back to the indoor / locationless predicate).
     ///
     /// V1 sessions upload gzipped-JSON Dates that BE writes as wall-clock
     /// numerals via `skip_time_zone_conversion_for_attributes` — those
