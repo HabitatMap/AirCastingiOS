@@ -125,6 +125,10 @@ extension Resolver: ResolverRegistering {
 
         main.register { LocationServiceAdapter(tracker: Resolver.resolve()) as LocationService }.scope(.unique)
 
+        // MARK: - V2 disconnect-window location backfill
+        main.register { DefaultLocationSampleStore() as LocationSampleStore }.scope(.application)
+        main.register { DefaultV2LocationBackfillCoordinator() as V2LocationBackfillCoordinator }.scope(.application)
+
         // MARK: - Settings
         main.register { UserSettings(userDefaults: .standard) }.scope(.cached)
         main.register { DefaultSettingsController() as SettingsController }

@@ -39,6 +39,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     @Injected private var persistenceController: PersistenceController
     @Injected private var reconnectGuard: SessionManagingReconnectionController
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
+    @Injected private var v2LocationBackfillCoordinator: V2LocationBackfillCoordinator
     private let sessionContext: CreateSessionContext
     private var v2Orchestrator: V2BleSyncOrchestrator?
 
@@ -201,14 +202,19 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
         for record in records {
             let streams = V2StreamFactory.makeStreams(pm1: Double(record.pm1),
                                                       pm25: Double(record.pm25))
+            let backfill = isLocationless
+                ? nil
+                : v2LocationBackfillCoordinator.location(for: sessionUUID, at: record.timestamp)
             measurementsSaver.saveV2SyncMeasurement(streams.pm1,
                                                     sessionUUID: sessionUUID,
                                                     time: record.timestamp,
-                                                    locationless: isLocationless)
+                                                    locationless: isLocationless,
+                                                    locationOverride: backfill)
             measurementsSaver.saveV2SyncMeasurement(streams.pm25,
                                                     sessionUUID: sessionUUID,
                                                     time: record.timestamp,
-                                                    locationless: isLocationless)
+                                                    locationless: isLocationless,
+                                                    locationOverride: backfill)
         }
     }
 

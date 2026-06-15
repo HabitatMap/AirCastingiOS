@@ -16,14 +16,16 @@ protocol MeasurementsSavingService {
                                time: Date,
                                locationless: Bool)
     /// V2 path: save a synced measurement using the device-stored timestamp.
-    /// Firmware doesn't persist per-record GPS, so we use the phone's last-known
-    /// location as best-effort approximation (sessions are typically stationary or
-    /// slow-moving during a brief BLE outage). Pass `locationless: true` to keep
-    /// the row coordinate-free.
+    /// Firmware doesn't persist per-record GPS, so callers pass a
+    /// `locationOverride` resolved via [[v2-location-backfill-coordinator]] (matched
+    /// to the record timestamp against the phone-side sample buffer). When the
+    /// override is nil (no buffered match), we fall back to the phone's last-known
+    /// fix. Pass `locationless: true` to keep the row coordinate-free.
     func saveV2SyncMeasurement(_ measurement: ABMeasurementStream,
                                sessionUUID: SessionUUID,
                                time: Date,
-                               locationless: Bool)
+                               locationless: Bool,
+                               locationOverride: CLLocationCoordinate2D?)
 }
 
 class DefaultMeasurementsSaver: MeasurementsSavingService {
@@ -135,14 +137,18 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
     func saveV2SyncMeasurement(_ measurement: ABMeasurementStream,
                                sessionUUID: SessionUUID,
                                time: Date,
-                               locationless: Bool) {
-        // Firmware doesn't persist GPS with stored chunks. Use the phone's last
-        // known fix (retained on LocationTracker.location.value even when the
-        // refcount drops to 0) as best-effort approximation — sessions are
-        // usually stationary or slow-moving during a brief BLE outage.
+                               locationless: Bool,
+                               locationOverride: CLLocationCoordinate2D?) {
+        // Prefer the backfill-coordinator match (phone GPS captured at the record's
+        // timestamp during the disconnect window). Fall back to the phone's last
+        // known fix when no buffered match exists — preserves pre-backfill behavior
+        // for cold-launch races, permission-denied gaps, and outside-tolerance
+        // timestamps.
         let location: CLLocationCoordinate2D
         if locationless {
             location = .undefined
+        } else if let locationOverride {
+            location = locationOverride
         } else {
             let tracker = Resolver.resolve(LocationTracker.self)
             location = tracker.location.value?.coordinate ?? .undefined

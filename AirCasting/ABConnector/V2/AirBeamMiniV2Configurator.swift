@@ -33,6 +33,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
     @Injected private var btPeripheral: BluetoothPeripheralConfigurator
     @Injected private var measurementsSaver: MeasurementsSavingService
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
+    @Injected private var v2LocationBackfillCoordinator: V2LocationBackfillCoordinator
 
     private let device: any BluetoothDevice
     private let queue = DispatchQueue(label: "ab.v2.configurator")
@@ -450,14 +451,19 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
             for record in records {
                 let streams = V2StreamFactory.makeStreams(pm1: Double(record.pm1),
                                                           pm25: Double(record.pm25))
+                let backfill = locationless
+                    ? nil
+                    : self.v2LocationBackfillCoordinator.location(for: sessionUUID, at: record.timestamp)
                 self.measurementsSaver.saveV2SyncMeasurement(streams.pm1,
                                                              sessionUUID: sessionUUID,
                                                              time: record.timestamp,
-                                                             locationless: locationless)
+                                                             locationless: locationless,
+                                                             locationOverride: backfill)
                 self.measurementsSaver.saveV2SyncMeasurement(streams.pm25,
                                                              sessionUUID: sessionUUID,
                                                              time: record.timestamp,
-                                                             locationless: locationless)
+                                                             locationless: locationless,
+                                                             locationOverride: backfill)
             }
             NotificationCenter.default.post(
                 name: .v2MeasurementSaved,
@@ -501,14 +507,19 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         for record in records {
             let streams = V2StreamFactory.makeStreams(pm1: Double(record.pm1),
                                                       pm25: Double(record.pm25))
+            let backfill = locationless
+                ? nil
+                : v2LocationBackfillCoordinator.location(for: sessionUUID, at: record.timestamp)
             measurementsSaver.saveV2SyncMeasurement(streams.pm1,
                                                     sessionUUID: sessionUUID,
                                                     time: record.timestamp,
-                                                    locationless: locationless)
+                                                    locationless: locationless,
+                                                    locationOverride: backfill)
             measurementsSaver.saveV2SyncMeasurement(streams.pm25,
                                                     sessionUUID: sessionUUID,
                                                     time: record.timestamp,
-                                                    locationless: locationless)
+                                                    locationless: locationless,
+                                                    locationOverride: backfill)
         }
         NotificationCenter.default.post(
             name: .v2MeasurementSaved,

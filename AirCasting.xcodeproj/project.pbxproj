@@ -461,6 +461,10 @@
 		D1A0670130042026000013AB /* V2ConfiguratorRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000014AB /* V2ConfiguratorRegistry.swift */; };
 		D1A0670130042026000015AB /* V2FixedSessionAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000016AB /* V2FixedSessionAPIService.swift */; };
 		D1A0670130042026000021AB /* V2BleSyncOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000022AB /* V2BleSyncOrchestrator.swift */; };
+		D1A0670130042026000027AB /* LocationSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000028AB /* LocationSample.swift */; };
+		D1A0670130042026000029AB /* LocationSampleStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000030AB /* LocationSampleStore.swift */; };
+		D1A0670130042026000031AB /* V2LocationSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000032AB /* V2LocationSampler.swift */; };
+		D1A0670130042026000033AB /* V2LocationBackfillCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000034AB /* V2LocationBackfillCoordinator.swift */; };
 		D1A0670130042026000023AB /* SyncBeforeNewV2SessionDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000024AB /* SyncBeforeNewV2SessionDialog.swift */; };
 		D1A0670130042026000025AB /* SyncAndFinishV2SessionDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000026AB /* SyncAndFinishV2SessionDialog.swift */; };
 		DD009D662698844A009F0443 /* DeleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD009D652698844A009F0443 /* DeleteView.swift */; };
@@ -718,6 +722,7 @@
 		33BA3369266E4D1000899343 /* MobileSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSession.swift; sourceTree = "<group>"; };
 		33C9A458290ADB12003CC326 /* AirCasting v9.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v9.xcdatamodel"; sourceTree = "<group>"; };
 		33C9A458290ADB12003CC327 /* AirCasting v10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v10.xcdatamodel"; sourceTree = "<group>"; };
+		33C9A458290ADB12003CC328 /* AirCasting v11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v11.xcdatamodel"; sourceTree = "<group>"; };
 		33D07A232825963000F25B4C /* ExternalSessionEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
 		33D07A242825963000F25B4C /* ExternalSessionEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		33D8031528F84050004A4CFA /* SDSyncAveragingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncAveragingServiceTests.swift; sourceTree = "<group>"; };
@@ -1077,6 +1082,10 @@
 		D1A0670130042026000014AB /* V2ConfiguratorRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2ConfiguratorRegistry.swift; sourceTree = "<group>"; };
 		D1A0670130042026000016AB /* V2FixedSessionAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2FixedSessionAPIService.swift; sourceTree = "<group>"; };
 		D1A0670130042026000022AB /* V2BleSyncOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2BleSyncOrchestrator.swift; sourceTree = "<group>"; };
+		D1A0670130042026000028AB /* LocationSample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSample.swift; sourceTree = "<group>"; };
+		D1A0670130042026000030AB /* LocationSampleStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSampleStore.swift; sourceTree = "<group>"; };
+		D1A0670130042026000032AB /* V2LocationSampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2LocationSampler.swift; sourceTree = "<group>"; };
+		D1A0670130042026000034AB /* V2LocationBackfillCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2LocationBackfillCoordinator.swift; sourceTree = "<group>"; };
 		D1A0670130042026000024AB /* SyncBeforeNewV2SessionDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SyncBeforeNewV2SessionDialog.swift; path = V2/SyncBeforeNewV2SessionDialog.swift; sourceTree = "<group>"; };
 		D1A0670130042026000026AB /* SyncAndFinishV2SessionDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SyncAndFinishV2SessionDialog.swift; path = V2/SyncAndFinishV2SessionDialog.swift; sourceTree = "<group>"; };
 		DD009D652698844A009F0443 /* DeleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteView.swift; sourceTree = "<group>"; };
@@ -2710,8 +2719,20 @@
 				D1A0670130042026000012AB /* V2MeasurementParser.swift */,
 				D1A0670130042026000014AB /* V2ConfiguratorRegistry.swift */,
 				D1A0670130042026000022AB /* V2BleSyncOrchestrator.swift */,
+				D1A0670130042026000035AB /* LocationBackfill */,
 			);
 			path = V2;
+			sourceTree = "<group>";
+		};
+		D1A0670130042026000035AB /* LocationBackfill */ = {
+			isa = PBXGroup;
+			children = (
+				D1A0670130042026000028AB /* LocationSample.swift */,
+				D1A0670130042026000030AB /* LocationSampleStore.swift */,
+				D1A0670130042026000032AB /* V2LocationSampler.swift */,
+				D1A0670130042026000034AB /* V2LocationBackfillCoordinator.swift */,
+			);
+			path = LocationBackfill;
 			sourceTree = "<group>";
 		};
 		D1A0670130042026000017AB /* V2 */ = {
@@ -3633,6 +3654,10 @@
 				D1A0670130042026000015AB /* V2FixedSessionAPIService.swift in Sources */,
 				D1A0670130042026000013AB /* V2ConfiguratorRegistry.swift in Sources */,
 				D1A0670130042026000021AB /* V2BleSyncOrchestrator.swift in Sources */,
+				D1A0670130042026000027AB /* LocationSample.swift in Sources */,
+				D1A0670130042026000029AB /* LocationSampleStore.swift in Sources */,
+				D1A0670130042026000031AB /* V2LocationSampler.swift in Sources */,
+				D1A0670130042026000033AB /* V2LocationBackfillCoordinator.swift in Sources */,
 				D1A0670130042026000023AB /* SyncBeforeNewV2SessionDialog.swift in Sources */,
 				D1A0670130042026000025AB /* SyncAndFinishV2SessionDialog.swift in Sources */,
 				335B54BF28BD01C300BA92D2 /* CustomSwipeAction.swift in Sources */,
@@ -4557,6 +4582,7 @@
 		338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				33C9A458290ADB12003CC328 /* AirCasting v11.xcdatamodel */,
 				33C9A458290ADB12003CC327 /* AirCasting v10.xcdatamodel */,
 				33C9A458290ADB12003CC326 /* AirCasting v9.xcdatamodel */,
 				FA9E08C828926C07006475D6 /* AirCasting v8.xcdatamodel */,
@@ -4568,7 +4594,7 @@
 				DDF551D427985AAB009D1347 /* AirCasting v2.xcdatamodel */,
 				338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */,
 			);
-			currentVersion = 33C9A458290ADB12003CC327 /* AirCasting v10.xcdatamodel */;
+			currentVersion = 33C9A458290ADB12003CC328 /* AirCasting v11.xcdatamodel */;
 			path = AirCasting.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

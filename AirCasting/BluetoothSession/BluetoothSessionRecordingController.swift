@@ -22,6 +22,7 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
     @Injected private var locationTracker: LocationTracker
     @Injected private var btManager: BluetoothConnectionHandler
+    @Injected private var v2LocationBackfillCoordinator: V2LocationBackfillCoordinator
     private var isRecording = false
 
     func startRecording(session: Session, device: any BluetoothDevice, completion: @escaping (Result<Void, Error>) -> Void) {
@@ -60,6 +61,16 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
                             if !session.locationless {
                                 self.locationTracker.start()
                             }
+                            // V2: arm the disconnect-window location backfill so that any
+                            // measurements synced after a BLE outage can be matched to phone
+                            // GPS fixes captured while the device was offline.
+                            if device.firmwareVersion == .v2 && !session.locationless {
+                                let interval = TimeInterval(session.measurementInterval.flatMap(Int.init) ?? 1)
+                                self.v2LocationBackfillCoordinator.startSampling(
+                                    sessionUUID: session.uuid,
+                                    intervalSeconds: interval
+                                )
+                            }
                             // Step 4: Set active session in active session provider
                             self.activeSessionProvider.setActiveSession(session: session, device: device)
                             // Step 5: Start recording measurements
@@ -94,6 +105,17 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
                 case .success:
                     if !activeSession.session.locationless {
                         self.locationTracker.start()
+                    }
+                    // V2: re-arm the backfill sampler. Idempotent — if the app wasn't
+                    // killed, the existing sampler stays; on cold-relaunch this is the
+                    // path that restarts location capture for the previously DISCONNECTED
+                    // session.
+                    if !activeSession.session.locationless {
+                        let interval = TimeInterval(activeSession.session.measurementInterval.flatMap(Int.init) ?? 1)
+                        self.v2LocationBackfillCoordinator.startSampling(
+                            sessionUUID: activeSession.session.uuid,
+                            intervalSeconds: interval
+                        )
                     }
                     self.isRecording = true
                     completion(.success(()))
@@ -152,6 +174,10 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
         if !locationless {
             locationTracker.stop()
         }
+        // V2: tear down backfill sampler + purge persisted samples. Safe to call
+        // unconditionally — coordinator no-ops for unknown UUIDs and the SD-card
+        // V1 path simply won't have a sampler registered.
+        v2LocationBackfillCoordinator.stopSampling(sessionUUID: uuid)
 
         let proceedToDisconnect: () -> Void = { [weak self] in
             guard let self = self else { return }
