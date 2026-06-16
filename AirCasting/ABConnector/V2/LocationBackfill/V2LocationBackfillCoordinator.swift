@@ -50,10 +50,12 @@ final class DefaultV2LocationBackfillCoordinator: V2LocationBackfillCoordinator 
     func location(for sessionUUID: SessionUUID, at timestamp: Date) -> CLLocationCoordinate2D? {
         lock.lock()
         let interval = intervals[sessionUUID] ?? 1.0
+        let hasSampler = samplers[sessionUUID] != nil
         lock.unlock()
         // Tolerance ≈ one interval. Symmetric window catches both
         // sample-before-measurement and sample-after-measurement cases.
         let tolerance = interval + 1.0
+        Log.info("V2LocationBackfill.Coord: lookup \(sessionUUID) target=\(timestamp.timeIntervalSince1970) interval=\(interval)s tol=\(tolerance)s hasActiveSampler=\(hasSampler)")
         guard let match = store.nearest(sessionUUID: sessionUUID,
                                         timestamp: timestamp,
                                         tolerance: tolerance) else {

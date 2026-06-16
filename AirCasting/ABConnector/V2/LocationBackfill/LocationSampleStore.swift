@@ -30,14 +30,17 @@ final class DefaultLocationSampleStore: LocationSampleStore {
             entity.longitude = sample.longitude
             do {
                 try context.save()
+                Log.info("V2LocationBackfill.Store: inserted sample for \(sample.sessionUUID) ts=\(sample.timestamp.timeIntervalSince1970) lat=\(sample.latitude) lon=\(sample.longitude)")
             } catch {
-                Log.error("LocationSampleStore insert failed: \(error)")
+                Log.error("V2LocationBackfill.Store: insert failed: \(error)")
             }
         }
     }
 
     func nearest(sessionUUID: SessionUUID, timestamp: Date, tolerance: TimeInterval) -> LocationSample? {
         var result: LocationSample?
+        var debugRowCount = 0
+        var debugTotalForSession = 0
         context.performAndWait { [context] in
             let request: NSFetchRequest<LocationSampleEntity> = LocationSampleEntity.fetchRequest()
             let lower = timestamp.addingTimeInterval(-tolerance)
@@ -48,6 +51,7 @@ final class DefaultLocationSampleStore: LocationSampleStore {
             )
             do {
                 let rows = try context.fetch(request)
+                debugRowCount = rows.count
                 let best = rows.compactMap { row -> (LocationSampleEntity, Date)? in
                     guard let ts = row.timestamp else { return nil }
                     return (row, ts)
@@ -55,16 +59,29 @@ final class DefaultLocationSampleStore: LocationSampleStore {
                     abs(lhs.1.timeIntervalSince(timestamp)) <
                     abs(rhs.1.timeIntervalSince(timestamp))
                 }
-                guard let (entity, ts) = best else { return }
-                result = LocationSample(
-                    sessionUUID: sessionUUID,
-                    timestamp: ts,
-                    latitude: entity.latitude,
-                    longitude: entity.longitude
-                )
+                if let (entity, ts) = best {
+                    result = LocationSample(
+                        sessionUUID: sessionUUID,
+                        timestamp: ts,
+                        latitude: entity.latitude,
+                        longitude: entity.longitude
+                    )
+                }
+                // Diagnostic — fetch all samples for the session to log how big the
+                // buffer is when a lookup misses. Removable once the feature is stable.
+                if result == nil {
+                    let allReq: NSFetchRequest<LocationSampleEntity> = LocationSampleEntity.fetchRequest()
+                    allReq.predicate = NSPredicate(format: "sessionUUID == %@", sessionUUID.rawValue)
+                    debugTotalForSession = (try? context.count(for: allReq)) ?? -1
+                }
             } catch {
-                Log.error("LocationSampleStore nearest fetch failed: \(error)")
+                Log.error("V2LocationBackfill.Store: nearest fetch failed: \(error)")
             }
+        }
+        if let r = result {
+            Log.info("V2LocationBackfill.Store: lookup HIT \(sessionUUID) target=\(timestamp.timeIntervalSince1970) tol=\(tolerance) → ts=\(r.timestamp.timeIntervalSince1970) Δ=\(r.timestamp.timeIntervalSince(timestamp))s lat=\(r.latitude) lon=\(r.longitude) (\(debugRowCount) in window)")
+        } else {
+            Log.warning("V2LocationBackfill.Store: lookup MISS \(sessionUUID) target=\(timestamp.timeIntervalSince1970) tol=\(tolerance) — 0 in window, \(debugTotalForSession) total samples for session")
         }
         return result
     }

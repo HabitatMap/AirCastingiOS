@@ -145,14 +145,19 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         // for cold-launch races, permission-denied gaps, and outside-tolerance
         // timestamps.
         let location: CLLocationCoordinate2D
+        let source: String
         if locationless {
             location = .undefined
+            source = "locationless"
         } else if let locationOverride {
             location = locationOverride
+            source = "backfill-override"
         } else {
             let tracker = Resolver.resolve(LocationTracker.self)
             location = tracker.location.value?.coordinate ?? .undefined
+            source = "fallback-current-fix"
         }
+        Log.info("V2LocationBackfill.Save: \(sessionUUID) stream=\(measurement.sensorName) ts=\(time.timeIntervalSince1970) src=\(source) lat=\(location.latitude) lon=\(location.longitude)")
         updateStreams(stream: measurement, sessionUUID: sessionUUID, location: location, time: time)
     }
 
