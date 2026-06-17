@@ -240,6 +240,12 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
         DispatchQueue.global(qos: .userInitiated).async {
             do {
                 try self.sessionFinisher(uuid: uuid)
+                // Standalone-finish bypasses `stopRecordingSession`, so the
+                // backfill sampler + persisted buffer would otherwise keep
+                // accumulating writes for a session that is already FINISHED.
+                // Tell the coordinator the session is done so it stops the
+                // sampler and (refcount-permitting) wipes the buffer.
+                self.v2LocationBackfillCoordinator.stopSampling(sessionUUID: uuid)
                 completion(.success(()))
             } catch {
                 Log.error("[SD SYNC V2] finishStandaloneSession failed: \(error)")
