@@ -199,6 +199,8 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
 
     private func persistV2Records(_ records: [V2SyncRecord], sessionUUID: SessionUUID) {
         let isLocationless = readLocationless(sessionUUID: sessionUUID)
+        v2LocationBackfillCoordinator.beginSaveBatch(sessionUUID: sessionUUID)
+        defer { v2LocationBackfillCoordinator.endSaveBatch(sessionUUID: sessionUUID) }
         for record in records {
             let streams = V2StreamFactory.makeStreams(pm1: Double(record.pm1),
                                                       pm25: Double(record.pm25))

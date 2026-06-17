@@ -430,8 +430,30 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
     /// but takes already-parsed records (the orchestrator parses incrementally
     /// for progress accounting).
     func persistManualSyncRecords(_ records: [V2SyncRecord]) {
+        guard !records.isEmpty else { return }
+        // Open a save batch on the backfill coordinator BEFORE the queue.async
+        // hop. The finish-dialog path triggers `stopSampling` synchronously
+        // after calling us; the coordinator's ref counter ensures the sample
+        // buffer wipe is deferred until our save loop ends. Pre-resolving
+        // overrides on the caller thread is belt-and-suspenders so the
+        // captured override survives even if the buffer disappears later.
+        guard let preResolvedUUID = self.configuredSessionUUID else {
+            Log.info("V2 manual sync persist: no configured session UUID (\(records.count) records).")
+            return
+        }
+        let preResolvedLocationless: Bool = {
+            guard let active = self.activeSessionProvider.activeSession,
+                  active.session.uuid == preResolvedUUID else { return false }
+            return active.session.locationless
+        }()
+        v2LocationBackfillCoordinator.beginSaveBatch(sessionUUID: preResolvedUUID)
+        let overrides: [CLLocationCoordinate2D?] = preResolvedLocationless
+            ? Array<CLLocationCoordinate2D?>(repeating: nil, count: records.count)
+            : records.map { v2LocationBackfillCoordinator.location(for: preResolvedUUID, at: $0.timestamp) }
+
         queue.async { [weak self] in
-            guard let self = self, !records.isEmpty else { return }
+            guard let self = self else { return }
+            defer { self.v2LocationBackfillCoordinator.endSaveBatch(sessionUUID: preResolvedUUID) }
             guard let sessionUUID = self.configuredSessionUUID else {
                 Log.info("V2 manual sync persist: no configured session UUID (\(records.count) records).")
                 return
@@ -448,12 +470,10 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                 return
             }
             let locationless = active.session.locationless
-            for record in records {
+            for (index, record) in records.enumerated() {
                 let streams = V2StreamFactory.makeStreams(pm1: Double(record.pm1),
                                                           pm25: Double(record.pm25))
-                let backfill = locationless
-                    ? nil
-                    : self.v2LocationBackfillCoordinator.location(for: sessionUUID, at: record.timestamp)
+                let backfill = locationless ? nil : overrides[index]
                 self.measurementsSaver.saveV2SyncMeasurement(streams.pm1,
                                                              sessionUUID: sessionUUID,
                                                              time: record.timestamp,
@@ -504,6 +524,10 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         }
 
         let locationless = active.session.locationless
+        // Bracket the chunk processing as a save batch so a racing
+        // `stopSampling` defers its buffer wipe until we finish.
+        v2LocationBackfillCoordinator.beginSaveBatch(sessionUUID: sessionUUID)
+        defer { v2LocationBackfillCoordinator.endSaveBatch(sessionUUID: sessionUUID) }
         for record in records {
             let streams = V2StreamFactory.makeStreams(pm1: Double(record.pm1),
                                                       pm25: Double(record.pm25))
