@@ -3,6 +3,7 @@
 
 import Foundation
 import Combine
+import CoreLocation
 import Resolver
 
 struct SDSyncProgressViewModel {
@@ -201,12 +202,19 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
         let isLocationless = readLocationless(sessionUUID: sessionUUID)
         v2LocationBackfillCoordinator.beginSaveBatch(sessionUUID: sessionUUID)
         defer { v2LocationBackfillCoordinator.endSaveBatch(sessionUUID: sessionUUID) }
-        for record in records {
+        let overrides: [CLLocationCoordinate2D?]
+        if isLocationless {
+            overrides = Array(repeating: nil, count: records.count)
+        } else {
+            overrides = v2LocationBackfillCoordinator.locations(
+                for: sessionUUID,
+                at: records.map { $0.timestamp }
+            )
+        }
+        for (index, record) in records.enumerated() {
             let streams = V2StreamFactory.makeStreams(pm1: Double(record.pm1),
                                                       pm25: Double(record.pm25))
-            let backfill = isLocationless
-                ? nil
-                : v2LocationBackfillCoordinator.location(for: sessionUUID, at: record.timestamp)
+            let backfill = overrides[index]
             measurementsSaver.saveV2SyncMeasurement(streams.pm1,
                                                     sessionUUID: sessionUUID,
                                                     time: record.timestamp,

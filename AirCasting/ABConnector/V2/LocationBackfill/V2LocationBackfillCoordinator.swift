@@ -13,6 +13,11 @@ protocol V2LocationBackfillCoordinator {
     func startSampling(sessionUUID: SessionUUID, intervalSeconds: TimeInterval)
     func stopSampling(sessionUUID: SessionUUID)
     func location(for sessionUUID: SessionUUID, at timestamp: Date) -> CLLocationCoordinate2D?
+    /// Batched form of `location(for:at:)` — returns one coordinate per
+    /// input timestamp, in the same order. Backed by a single CoreData
+    /// fetch plus a two-pointer sweep so the cost is O(N + M) rather than
+    /// N per-record fetches.
+    func locations(for sessionUUID: SessionUUID, at timestamps: [Date]) -> [CLLocationCoordinate2D?]
     /// Mark a sync save batch as in flight. Pair with `endSaveBatch`.
     /// While at least one batch is open for a session, a concurrent
     /// `stopSampling` will not wipe the sample buffer — the wipe is
@@ -139,12 +144,7 @@ final class DefaultV2LocationBackfillCoordinator: V2LocationBackfillCoordinator 
     }
 
     func location(for sessionUUID: SessionUUID, at timestamp: Date) -> CLLocationCoordinate2D? {
-        lock.lock()
-        let interval = intervals[sessionUUID] ?? 1.0
-        let hasSampler = samplers[sessionUUID] != nil
-        lock.unlock()
-        // Tolerance ≈ one interval. Symmetric window catches both
-        // sample-before-measurement and sample-after-measurement cases.
+        let (interval, hasSampler) = lookupContext(for: sessionUUID)
         let tolerance = interval + 1.0
         Log.info("V2LocationBackfill.Coord: lookup \(sessionUUID) target=\(timestamp.timeIntervalSince1970) interval=\(interval)s tol=\(tolerance)s hasActiveSampler=\(hasSampler)")
         guard let match = store.nearest(sessionUUID: sessionUUID,
@@ -153,5 +153,23 @@ final class DefaultV2LocationBackfillCoordinator: V2LocationBackfillCoordinator 
             return nil
         }
         return match.coordinate
+    }
+
+    func locations(for sessionUUID: SessionUUID, at timestamps: [Date]) -> [CLLocationCoordinate2D?] {
+        guard !timestamps.isEmpty else { return [] }
+        let (interval, hasSampler) = lookupContext(for: sessionUUID)
+        let tolerance = interval + 1.0
+        Log.info("V2LocationBackfill.Coord: batchLookup \(sessionUUID) n=\(timestamps.count) interval=\(interval)s tol=\(tolerance)s hasActiveSampler=\(hasSampler)")
+        return store
+            .nearestBatch(sessionUUID: sessionUUID, timestamps: timestamps, tolerance: tolerance)
+            .map { $0?.coordinate }
+    }
+
+    private func lookupContext(for sessionUUID: SessionUUID) -> (TimeInterval, Bool) {
+        lock.lock()
+        let interval = intervals[sessionUUID] ?? 1.0
+        let hasSampler = samplers[sessionUUID] != nil
+        lock.unlock()
+        return (interval, hasSampler)
     }
 }

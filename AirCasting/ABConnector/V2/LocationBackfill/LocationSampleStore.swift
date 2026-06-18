@@ -16,6 +16,14 @@ import Resolver
 protocol LocationSampleStore {
     func insert(_ sample: LocationSample)
     func nearest(sessionUUID: SessionUUID, timestamp: Date, tolerance: TimeInterval) -> LocationSample?
+    /// Batched variant — one fetch covering the full timestamp range,
+    /// then a two-pointer sweep. Use for sync replay paths where the
+    /// per-record `nearest(...)` cost (one fetch per record) dominates.
+    /// Returns one element per input timestamp in the same order; nil
+    /// where no sample fell inside tolerance.
+    func nearestBatch(sessionUUID: SessionUUID,
+                      timestamps: [Date],
+                      tolerance: TimeInterval) -> [LocationSample?]
     func deleteAll(sessionUUID: SessionUUID)
     func deleteOrphans(activeSessionUUIDs: Set<SessionUUID>)
 }
@@ -92,6 +100,65 @@ final class DefaultLocationSampleStore: LocationSampleStore {
             Log.warning("V2LocationBackfill.Store: lookup MISS \(sessionUUID) target=\(timestamp.timeIntervalSince1970) tol=\(tolerance) — 0 in window, \(debugTotalForSession) total samples for session")
         }
         return result
+    }
+
+    func nearestBatch(sessionUUID: SessionUUID,
+                      timestamps: [Date],
+                      tolerance: TimeInterval) -> [LocationSample?] {
+        guard !timestamps.isEmpty else { return [] }
+        var results: [LocationSample?] = Array(repeating: nil, count: timestamps.count)
+        var hits = 0
+        var sampleCount = 0
+        context.performAndWait { [context] in
+            let minTs = timestamps.min()!
+            let maxTs = timestamps.max()!
+            let lower = minTs.addingTimeInterval(-tolerance)
+            let upper = maxTs.addingTimeInterval(tolerance)
+            let request = NSFetchRequest<NSManagedObject>(entityName: "LocationSampleEntity")
+            request.predicate = NSPredicate(
+                format: "sessionUUID == %@ AND timestamp >= %@ AND timestamp <= %@",
+                sessionUUID.rawValue, lower as NSDate, upper as NSDate
+            )
+            request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: true)]
+            do {
+                let rows = try context.fetch(request)
+                guard !rows.isEmpty else { return }
+                let samples: [(Date, Double, Double)] = rows.compactMap { row in
+                    guard let ts = row.value(forKey: "timestamp") as? Date,
+                          let lat = row.value(forKey: "latitude") as? Double,
+                          let lon = row.value(forKey: "longitude") as? Double else { return nil }
+                    return (ts, lat, lon)
+                }
+                guard !samples.isEmpty else { return }
+                sampleCount = samples.count
+
+                // Sort timestamps by value to enable two-pointer sweep;
+                // emit each result back into its original input slot.
+                let indexed = timestamps.enumerated().sorted { $0.element < $1.element }
+                var cursor = 0
+                for (originalIndex, target) in indexed {
+                    while cursor + 1 < samples.count,
+                          abs(samples[cursor + 1].0.timeIntervalSince(target)) <
+                          abs(samples[cursor].0.timeIntervalSince(target)) {
+                        cursor += 1
+                    }
+                    let candidate = samples[cursor]
+                    if abs(candidate.0.timeIntervalSince(target)) <= tolerance {
+                        results[originalIndex] = LocationSample(
+                            sessionUUID: sessionUUID,
+                            timestamp: candidate.0,
+                            latitude: candidate.1,
+                            longitude: candidate.2
+                        )
+                        hits += 1
+                    }
+                }
+            } catch {
+                Log.error("V2LocationBackfill.Store: nearestBatch fetch failed: \(error)")
+            }
+        }
+        Log.info("V2LocationBackfill.Store: nearestBatch \(sessionUUID) n=\(timestamps.count) samples=\(sampleCount) tol=\(tolerance) hits=\(hits)")
+        return results
     }
 
     func deleteAll(sessionUUID: SessionUUID) {

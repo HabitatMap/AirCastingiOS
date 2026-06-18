@@ -462,12 +462,19 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                 return
             }
             let locationless = active.session.locationless
-            for record in records {
+            let overrides: [CLLocationCoordinate2D?]
+            if locationless {
+                overrides = Array(repeating: nil, count: records.count)
+            } else {
+                overrides = self.v2LocationBackfillCoordinator.locations(
+                    for: sessionUUID,
+                    at: records.map { $0.timestamp }
+                )
+            }
+            for (index, record) in records.enumerated() {
                 let streams = V2StreamFactory.makeStreams(pm1: Double(record.pm1),
                                                           pm25: Double(record.pm25))
-                let backfill = locationless
-                    ? nil
-                    : self.v2LocationBackfillCoordinator.location(for: sessionUUID, at: record.timestamp)
+                let backfill = overrides[index]
                 self.measurementsSaver.saveV2SyncMeasurement(streams.pm1,
                                                              sessionUUID: sessionUUID,
                                                              time: record.timestamp,
@@ -522,12 +529,19 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         // `stopSampling` defers its buffer wipe until we finish.
         v2LocationBackfillCoordinator.beginSaveBatch(sessionUUID: sessionUUID)
         defer { v2LocationBackfillCoordinator.endSaveBatch(sessionUUID: sessionUUID) }
-        for record in records {
+        let overrides: [CLLocationCoordinate2D?]
+        if locationless {
+            overrides = Array(repeating: nil, count: records.count)
+        } else {
+            overrides = v2LocationBackfillCoordinator.locations(
+                for: sessionUUID,
+                at: records.map { $0.timestamp }
+            )
+        }
+        for (index, record) in records.enumerated() {
             let streams = V2StreamFactory.makeStreams(pm1: Double(record.pm1),
                                                       pm25: Double(record.pm25))
-            let backfill = locationless
-                ? nil
-                : v2LocationBackfillCoordinator.location(for: sessionUUID, at: record.timestamp)
+            let backfill = overrides[index]
             measurementsSaver.saveV2SyncMeasurement(streams.pm1,
                                                     sessionUUID: sessionUUID,
                                                     time: record.timestamp,
