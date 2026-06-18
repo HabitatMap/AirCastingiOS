@@ -7,6 +7,14 @@
 // stationary devices or Xcode debug-location toggles). Sampling runs for the
 // lifetime of the session so the store always has coverage when sync replays
 // measurements from the device.
+//
+// In long, backgrounded mobile sessions CoreLocation aggressively throttles
+// delivery on a stationary phone, so `location.value` can be stale for
+// minutes at a time. Every timer tick checks the fix age and asks for a
+// fresh one-shot update when the cached fix has gone stale. Stale and
+// low-accuracy fixes are dropped before they reach the store to keep the
+// nearest() lookup from snapping every disconnect-window measurement to
+// the same coordinate.
 
 import Foundation
 import Combine
@@ -14,6 +22,12 @@ import CoreLocation
 import Resolver
 
 final class V2LocationSampler {
+    /// Skip persisting a CL fix whose `horizontalAccuracy` is worse than
+    /// this (or negative — CoreLocation uses negative to mean "invalid").
+    /// Tuned for outdoor mobile sessions; raise if needed for dense urban
+    /// canyons or indoor sessions, where CL routinely reports 30–80 m.
+    static let maxAcceptableHorizontalAccuracyMeters: CLLocationAccuracy = 100
+
     private let sessionUUID: SessionUUID
     private let intervalSeconds: TimeInterval
     private let store: LocationSampleStore
@@ -70,14 +84,30 @@ final class V2LocationSampler {
 
     private func tick() {
         let uuidStr = self.sessionUUID.rawValue
+        let interval = self.intervalSeconds
         guard let location = locationTracker.location.value else {
             Log.info("V2LocationBackfill.Sampler[\(uuidStr)]: tick — no current location yet, skipping")
             return
         }
-        persist(location: location, source: "timer-tick")
+        // Stale-fix nudge: CoreLocation may have throttled delivery while
+        // the app is backgrounded. If the cached fix's `timestamp` is
+        // older than 2 × the session interval, ask for a fresh one. The
+        // new fix flows through `didUpdateLocations` → `location.value`
+        // and will be picked up by the next tick.
+        let fixAge = -location.timestamp.timeIntervalSinceNow
+        if fixAge > interval * 2 {
+            Log.info("V2LocationBackfill.Sampler[\(uuidStr)]: tick — fix age \(String(format: "%.1f", fixAge))s > \(interval * 2)s, nudging CoreLocation")
+            locationTracker.requestOneShotUpdate()
+        }
+        guard location.horizontalAccuracy >= 0,
+              location.horizontalAccuracy <= Self.maxAcceptableHorizontalAccuracyMeters else {
+            Log.info("V2LocationBackfill.Sampler[\(uuidStr)]: tick — dropping fix accuracy=\(location.horizontalAccuracy)m age=\(String(format: "%.1f", fixAge))s")
+            return
+        }
+        persist(location: location, source: "timer-tick", fixAge: fixAge)
     }
 
-    private func persist(location: CLLocation, source: String) {
+    private func persist(location: CLLocation, source: String, fixAge: TimeInterval? = nil) {
         let uuidStr = self.sessionUUID.rawValue
         // Use the same "fake-UTC" wall-clock domain that the V2 device stamps
         // its records with (via `buildSetTime` → `getFakeUTCDate`). Phone `Date()`
@@ -90,7 +120,8 @@ final class V2LocationSampler {
             latitude: location.coordinate.latitude,
             longitude: location.coordinate.longitude
         )
-        Log.info("V2LocationBackfill.Sampler[\(uuidStr)]: persist (\(source)) ts=\(now.timeIntervalSince1970) lat=\(location.coordinate.latitude) lon=\(location.coordinate.longitude)")
+        let ageString = fixAge.map { String(format: "%.1f", $0) } ?? "n/a"
+        Log.info("V2LocationBackfill.Sampler[\(uuidStr)]: persist (\(source)) ts=\(now.timeIntervalSince1970) lat=\(location.coordinate.latitude) lon=\(location.coordinate.longitude) acc=\(location.horizontalAccuracy)m age=\(ageString)s")
         store.insert(sample)
     }
 }

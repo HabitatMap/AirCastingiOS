@@ -260,6 +260,7 @@ class LocationTrackerMock: LocationTracker {
     func stop() {
         callsHistory.append(.stop)
     }
+    func requestOneShotUpdate() { }
 }
 
 class ActiveMobileSessionProvidingServiceMock: ActiveMobileSessionProvidingService {

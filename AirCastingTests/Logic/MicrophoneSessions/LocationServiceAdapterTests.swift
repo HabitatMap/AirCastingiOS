@@ -47,11 +47,13 @@ class LocationServiceAdapterTests: XCTestCase {
         func start() {
             calls.append(.start)
         }
-        
+
         func stop() {
             calls.append(.stop)
         }
-        
+
+        func requestOneShotUpdate() { }
+
         var location: CurrentValueSubject<CLLocation?, Never> {
             get { calls.append(.getLocation); return .init(nil) }
         }
@@ -67,7 +69,8 @@ class LocationServiceAdapterTests: XCTestCase {
 
         func start() { }
         func stop() { }
-        
+        func requestOneShotUpdate() { }
+
         init(withStubbedLocation location: CLLocation?) {
             self.location = .init(location)
         }
