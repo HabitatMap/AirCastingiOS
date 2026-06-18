@@ -145,24 +145,61 @@ final class DefaultV2LocationBackfillCoordinator: V2LocationBackfillCoordinator 
 
     func location(for sessionUUID: SessionUUID, at timestamp: Date) -> CLLocationCoordinate2D? {
         let (interval, hasSampler) = lookupContext(for: sessionUUID)
-        let tolerance = interval + 1.0
-        Log.info("V2LocationBackfill.Coord: lookup \(sessionUUID) target=\(timestamp.timeIntervalSince1970) interval=\(interval)s tol=\(tolerance)s hasActiveSampler=\(hasSampler)")
-        guard let match = store.nearest(sessionUUID: sessionUUID,
+        let tight = interval + 1.0
+        let wide = max(tight, interval * Self.wideToleranceMultiplier)
+        Log.info("V2LocationBackfill.Coord: lookup \(sessionUUID) target=\(timestamp.timeIntervalSince1970) interval=\(interval)s tight=\(tight)s wide=\(wide)s hasActiveSampler=\(hasSampler)")
+        if let match = store.nearest(sessionUUID: sessionUUID,
+                                     timestamp: timestamp,
+                                     tolerance: tight) {
+            return match.coordinate
+        }
+        // Tight miss: retry once at wide tolerance. The phone clock may
+        // have drifted relative to the device timestamps, or the sampler
+        // tick may have skipped under background coalescing — either way
+        // a slightly-off sample is still a better override than the
+        // sync-time current fix (which is typically the user's home).
+        guard wide > tight,
+              let match = store.nearest(sessionUUID: sessionUUID,
                                         timestamp: timestamp,
-                                        tolerance: tolerance) else {
+                                        tolerance: wide) else {
             return nil
         }
+        Log.warning("V2LocationBackfill.Coord: lookup \(sessionUUID) — tight miss, wide hit Δ=\(match.timestamp.timeIntervalSince(timestamp))s")
         return match.coordinate
     }
 
     func locations(for sessionUUID: SessionUUID, at timestamps: [Date]) -> [CLLocationCoordinate2D?] {
         guard !timestamps.isEmpty else { return [] }
         let (interval, hasSampler) = lookupContext(for: sessionUUID)
-        let tolerance = interval + 1.0
-        Log.info("V2LocationBackfill.Coord: batchLookup \(sessionUUID) n=\(timestamps.count) interval=\(interval)s tol=\(tolerance)s hasActiveSampler=\(hasSampler)")
-        return store
-            .nearestBatch(sessionUUID: sessionUUID, timestamps: timestamps, tolerance: tolerance)
-            .map { $0?.coordinate }
+        let tight = interval + 1.0
+        let wide = max(tight, interval * Self.wideToleranceMultiplier)
+        let primary = store.nearestBatch(sessionUUID: sessionUUID,
+                                         timestamps: timestamps,
+                                         tolerance: tight)
+        let tightHits = primary.reduce(0) { $0 + ($1 == nil ? 0 : 1) }
+        var coords = primary.map { $0?.coordinate }
+
+        if tightHits == timestamps.count || wide <= tight {
+            Log.info("V2LocationBackfill.Coord: batchLookup \(sessionUUID) n=\(timestamps.count) interval=\(interval)s tight=\(tight)s tightHits=\(tightHits) hasActiveSampler=\(hasSampler)")
+            return coords
+        }
+
+        // Tight miss: retry the missing slots only, at wide tolerance.
+        let missingPairs: [(Int, Date)] = primary.enumerated().compactMap { idx, sample in
+            sample == nil ? (idx, timestamps[idx]) : nil
+        }
+        let wideMatches = store.nearestBatch(sessionUUID: sessionUUID,
+                                             timestamps: missingPairs.map { $0.1 },
+                                             tolerance: wide)
+        var wideHits = 0
+        for ((idx, _), sample) in zip(missingPairs, wideMatches) {
+            if let sample = sample {
+                coords[idx] = sample.coordinate
+                wideHits += 1
+            }
+        }
+        Log.info("V2LocationBackfill.Coord: batchLookup \(sessionUUID) n=\(timestamps.count) interval=\(interval)s tight=\(tight)s wide=\(wide)s tightHits=\(tightHits) wideHits=\(wideHits)/\(missingPairs.count) hasActiveSampler=\(hasSampler)")
+        return coords
     }
 
     private func lookupContext(for sessionUUID: SessionUUID) -> (TimeInterval, Bool) {
@@ -172,4 +209,12 @@ final class DefaultV2LocationBackfillCoordinator: V2LocationBackfillCoordinator 
         lock.unlock()
         return (interval, hasSampler)
     }
+
+    /// Fallback multiplier applied to the session interval when the
+    /// tight tolerance window misses. Tuned to absorb ~5 sampler ticks
+    /// of background coalescing drift before falling through to the
+    /// `MeasurementsSavingService` current-fix fallback (which would
+    /// otherwise snap every disconnect-window measurement to whatever
+    /// the phone's location was at sync time).
+    private static let wideToleranceMultiplier: TimeInterval = 5
 }
