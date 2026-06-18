@@ -5,6 +5,7 @@
 // so that the module can evolve independently with minimal surface area.
 
 import Foundation
+import CoreData
 import CoreLocation
 import Resolver
 
@@ -18,11 +19,18 @@ protocol V2LocationBackfillCoordinator {
     /// deferred until the matching `endSaveBatch` brings the count to 0.
     func beginSaveBatch(sessionUUID: SessionUUID)
     func endSaveBatch(sessionUUID: SessionUUID)
+    /// Cold-launch hook: scan persisted V2 mobile sessions that are still
+    /// in `RECORDING` or `DISCONNECTED` and restart samplers for them.
+    /// Without this, an app kill mid-session leaves the disconnect window
+    /// unsampled until BLE reconnect — which may never happen in the
+    /// "Finish & sync" flow.
+    func bootstrap()
 }
 
 final class DefaultV2LocationBackfillCoordinator: V2LocationBackfillCoordinator {
     @Injected private var store: LocationSampleStore
     @Injected private var locationTracker: LocationTracker
+    @Injected private var persistenceController: PersistenceController
     private let lock = NSLock()
     private var samplers: [SessionUUID: V2LocationSampler] = [:]
     private var intervals: [SessionUUID: TimeInterval] = [:]
@@ -92,6 +100,42 @@ final class DefaultV2LocationBackfillCoordinator: V2LocationBackfillCoordinator 
         if drain {
             store.deleteAll(sessionUUID: sessionUUID)
         }
+    }
+
+    func bootstrap() {
+        let ctx = persistenceController.editContext
+        var resumed: [(SessionUUID, TimeInterval)] = []
+        var activeUUIDs: Set<SessionUUID> = []
+        ctx.performAndWait {
+            let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
+            request.predicate = NSPredicate(
+                format: "type == %@ AND status IN %@ AND locationless == NO",
+                SessionType.mobile.rawValue,
+                [SessionStatus.RECORDING, .DISCONNECTED].map(\.rawValue)
+            )
+            let rows: [SessionEntity]
+            do {
+                rows = try ctx.fetch(request)
+            } catch {
+                Log.error("V2LocationBackfill.bootstrap: fetch failed: \(error)")
+                return
+            }
+            for session in rows {
+                // V2-only — V1 sessions don't go through this backfill path.
+                // The reconnection controller's V1 branch streams new
+                // measurements live with the current fix and doesn't
+                // replay from a device-side buffer.
+                guard session.deviceFirmwareVersion == .v2 else { continue }
+                let interval = TimeInterval(session.nativeMeasurementIntervalSeconds)
+                resumed.append((session.uuid, interval))
+                activeUUIDs.insert(session.uuid)
+            }
+        }
+        for (uuid, interval) in resumed {
+            startSampling(sessionUUID: uuid, intervalSeconds: interval)
+        }
+        Log.info("V2LocationBackfill.bootstrap: resumed \(resumed.count) sampler(s) — \(resumed.map { $0.0.rawValue })")
+        store.deleteOrphans(activeSessionUUIDs: activeUUIDs)
     }
 
     func location(for sessionUUID: SessionUUID, at timestamp: Date) -> CLLocationCoordinate2D? {
