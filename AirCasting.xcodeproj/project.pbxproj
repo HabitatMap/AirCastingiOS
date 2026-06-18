@@ -461,12 +461,13 @@
 		D1A0670130042026000013AB /* V2ConfiguratorRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000014AB /* V2ConfiguratorRegistry.swift */; };
 		D1A0670130042026000015AB /* V2FixedSessionAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000016AB /* V2FixedSessionAPIService.swift */; };
 		D1A0670130042026000021AB /* V2BleSyncOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000022AB /* V2BleSyncOrchestrator.swift */; };
+		D1A0670130042026000023AB /* SyncBeforeNewV2SessionDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000024AB /* SyncBeforeNewV2SessionDialog.swift */; };
+		D1A0670130042026000025AB /* SyncAndFinishV2SessionDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000026AB /* SyncAndFinishV2SessionDialog.swift */; };
 		D1A0670130042026000027AB /* LocationSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000028AB /* LocationSample.swift */; };
 		D1A0670130042026000029AB /* LocationSampleStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000030AB /* LocationSampleStore.swift */; };
 		D1A0670130042026000031AB /* V2LocationSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000032AB /* V2LocationSampler.swift */; };
 		D1A0670130042026000033AB /* V2LocationBackfillCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000034AB /* V2LocationBackfillCoordinator.swift */; };
-		D1A0670130042026000023AB /* SyncBeforeNewV2SessionDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000024AB /* SyncBeforeNewV2SessionDialog.swift */; };
-		D1A0670130042026000025AB /* SyncAndFinishV2SessionDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000026AB /* SyncAndFinishV2SessionDialog.swift */; };
+		D1A0670130042026000037AB /* LocationSampleStoreContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000036AB /* LocationSampleStoreContainer.swift */; };
 		DD009D662698844A009F0443 /* DeleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD009D652698844A009F0443 /* DeleteView.swift */; };
 		DD123EBF27BD1CD3001083C3 /* SearchMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD123EBE27BD1CD3001083C3 /* SearchMapView.swift */; };
 		DD123EC227BD2C53001083C3 /* SearchMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD123EC127BD2C53001083C3 /* SearchMapViewModel.swift */; };
@@ -1082,12 +1083,13 @@
 		D1A0670130042026000014AB /* V2ConfiguratorRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2ConfiguratorRegistry.swift; sourceTree = "<group>"; };
 		D1A0670130042026000016AB /* V2FixedSessionAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2FixedSessionAPIService.swift; sourceTree = "<group>"; };
 		D1A0670130042026000022AB /* V2BleSyncOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2BleSyncOrchestrator.swift; sourceTree = "<group>"; };
+		D1A0670130042026000024AB /* SyncBeforeNewV2SessionDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SyncBeforeNewV2SessionDialog.swift; path = V2/SyncBeforeNewV2SessionDialog.swift; sourceTree = "<group>"; };
+		D1A0670130042026000026AB /* SyncAndFinishV2SessionDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SyncAndFinishV2SessionDialog.swift; path = V2/SyncAndFinishV2SessionDialog.swift; sourceTree = "<group>"; };
 		D1A0670130042026000028AB /* LocationSample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSample.swift; sourceTree = "<group>"; };
 		D1A0670130042026000030AB /* LocationSampleStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSampleStore.swift; sourceTree = "<group>"; };
 		D1A0670130042026000032AB /* V2LocationSampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2LocationSampler.swift; sourceTree = "<group>"; };
 		D1A0670130042026000034AB /* V2LocationBackfillCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2LocationBackfillCoordinator.swift; sourceTree = "<group>"; };
-		D1A0670130042026000024AB /* SyncBeforeNewV2SessionDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SyncBeforeNewV2SessionDialog.swift; path = V2/SyncBeforeNewV2SessionDialog.swift; sourceTree = "<group>"; };
-		D1A0670130042026000026AB /* SyncAndFinishV2SessionDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SyncAndFinishV2SessionDialog.swift; path = V2/SyncAndFinishV2SessionDialog.swift; sourceTree = "<group>"; };
+		D1A0670130042026000036AB /* LocationSampleStoreContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSampleStoreContainer.swift; sourceTree = "<group>"; };
 		DD009D652698844A009F0443 /* DeleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteView.swift; sourceTree = "<group>"; };
 		DD123EBE27BD1CD3001083C3 /* SearchMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMapView.swift; sourceTree = "<group>"; };
 		DD123EC127BD2C53001083C3 /* SearchMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMapViewModel.swift; sourceTree = "<group>"; };
@@ -1229,8 +1231,28 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		33DBE7D32E40DCFE003234F1 /* CommonUI */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = CommonUI; sourceTree = "<group>"; };
-		33DBE7DB2E41FC88003234F1 /* Preview */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Preview; sourceTree = "<group>"; };
+		33DBE7D32E40DCFE003234F1 /* CommonUI */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = CommonUI;
+			sourceTree = "<group>";
+		};
+		33DBE7DB2E41FC88003234F1 /* Preview */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = Preview;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2724,23 +2746,24 @@
 			path = V2;
 			sourceTree = "<group>";
 		};
-		D1A0670130042026000035AB /* LocationBackfill */ = {
-			isa = PBXGroup;
-			children = (
-				D1A0670130042026000028AB /* LocationSample.swift */,
-				D1A0670130042026000030AB /* LocationSampleStore.swift */,
-				D1A0670130042026000032AB /* V2LocationSampler.swift */,
-				D1A0670130042026000034AB /* V2LocationBackfillCoordinator.swift */,
-			);
-			path = LocationBackfill;
-			sourceTree = "<group>";
-		};
 		D1A0670130042026000017AB /* V2 */ = {
 			isa = PBXGroup;
 			children = (
 				D1A0670130042026000016AB /* V2FixedSessionAPIService.swift */,
 			);
 			path = V2;
+			sourceTree = "<group>";
+		};
+		D1A0670130042026000035AB /* LocationBackfill */ = {
+			isa = PBXGroup;
+			children = (
+				D1A0670130042026000028AB /* LocationSample.swift */,
+				D1A0670130042026000030AB /* LocationSampleStore.swift */,
+				D1A0670130042026000036AB /* LocationSampleStoreContainer.swift */,
+				D1A0670130042026000032AB /* V2LocationSampler.swift */,
+				D1A0670130042026000034AB /* V2LocationBackfillCoordinator.swift */,
+			);
+			path = LocationBackfill;
 			sourceTree = "<group>";
 		};
 		DD07575B268B2D3300C8DF88 /* Recovered References */ = {
@@ -3316,13 +3339,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AirCasting/Pods-AirCasting-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AirCasting/Pods-AirCasting-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -3337,13 +3356,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AirCasting/Pods-AirCasting-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AirCasting/Pods-AirCasting-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -3658,6 +3673,7 @@
 				D1A0670130042026000029AB /* LocationSampleStore.swift in Sources */,
 				D1A0670130042026000031AB /* V2LocationSampler.swift in Sources */,
 				D1A0670130042026000033AB /* V2LocationBackfillCoordinator.swift in Sources */,
+				D1A0670130042026000037AB /* LocationSampleStoreContainer.swift in Sources */,
 				D1A0670130042026000023AB /* SyncBeforeNewV2SessionDialog.swift in Sources */,
 				D1A0670130042026000025AB /* SyncAndFinishV2SessionDialog.swift in Sources */,
 				335B54BF28BD01C300BA92D2 /* CustomSwipeAction.swift in Sources */,
