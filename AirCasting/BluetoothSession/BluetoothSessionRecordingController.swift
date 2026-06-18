@@ -156,6 +156,15 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
         // Database change is performed for both active and disconnected sessions
         databaseChange(storage)
 
+        // V2: tear down backfill sampler + purge persisted samples. Must run
+        // for every finish path — including "Finish & don't sync" on a
+        // DISCONNECTED card where `activeSession` is nil (e.g. after a
+        // cold-launch where `bootstrap()` restarted the sampler but the
+        // active-session provider never rebound). Idempotent + safe for
+        // unknown UUIDs, so unconditional invocation is fine for V1 and
+        // for the active branch below alike.
+        v2LocationBackfillCoordinator.stopSampling(sessionUUID: uuid)
+
         // The code below the guard is performed only for active sessions
         guard let activeSession = activeSessionProvider.activeSession, activeSession.session.uuid == uuid else { return }
 
@@ -174,10 +183,6 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
         if !locationless {
             locationTracker.stop()
         }
-        // V2: tear down backfill sampler + purge persisted samples. Safe to call
-        // unconditionally — coordinator no-ops for unknown UUIDs and the SD-card
-        // V1 path simply won't have a sampler registered.
-        v2LocationBackfillCoordinator.stopSampling(sessionUUID: uuid)
 
         let proceedToDisconnect: () -> Void = { [weak self] in
             guard let self = self else { return }
