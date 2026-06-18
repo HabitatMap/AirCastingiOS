@@ -34,6 +34,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
     @Injected private var measurementsSaver: MeasurementsSavingService
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
     @Injected private var v2LocationBackfillCoordinator: V2LocationBackfillCoordinator
+    @Injected private var persistenceController: PersistenceController
 
     private let device: any BluetoothDevice
     private let queue = DispatchQueue(label: "ab.v2.configurator")
@@ -151,6 +152,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
             self.syncDrainResetWorkItem?.cancel()
             self.syncDrainResetWorkItem = nil
             self.isActiveSyncDrainingStorage = false
+            self.exitBurstGateLocked()
             self.dispatcher.resetSessionStartGuard()
             for token in self.subscriptionTokens {
                 _ = self.btCommunicator.unsubscribeCharacteristicObserver(token: token)
@@ -169,6 +171,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
             self.syncDrainResetWorkItem?.cancel()
             self.syncDrainResetWorkItem = nil
             self.isActiveSyncDrainingStorage = false
+            self.exitBurstGateLocked()
             self._syncChunkInterceptor = nil
             self.dispatcher.cancelAll(AirBeamMiniV2ConfiguratorError.notImplemented)
             self.invalidateSetTimeTimerLocked()
@@ -442,10 +445,19 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
             return
         }
         v2LocationBackfillCoordinator.beginSaveBatch(sessionUUID: preResolvedUUID)
+        // Coalesce SwiftUI re-renders for the manual-sync replay's burst — the
+        // active-sync drain gate already fired its idle exit by the time this
+        // path runs (chunks ended; Ready landed; user tapped Done). Without a
+        // fresh burst gate the per-batch save would still hit `viewContext`
+        // merge churn while finishing a multi-thousand-record session.
+        persistenceController.enterSyncBurst()
 
         queue.async { [weak self] in
             guard let self = self else { return }
-            defer { self.v2LocationBackfillCoordinator.endSaveBatch(sessionUUID: preResolvedUUID) }
+            defer {
+                self.v2LocationBackfillCoordinator.endSaveBatch(sessionUUID: preResolvedUUID)
+                self.persistenceController.exitSyncBurst()
+            }
             guard let sessionUUID = self.configuredSessionUUID else {
                 Log.info("V2 manual sync persist: no configured session UUID (\(records.count) records).")
                 return
@@ -471,21 +483,19 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                     at: records.map { $0.timestamp }
                 )
             }
+            var batch: [(pm1: ABMeasurementStream,
+                         pm25: ABMeasurementStream,
+                         time: Date,
+                         locationOverride: CLLocationCoordinate2D?)] = []
+            batch.reserveCapacity(records.count)
             for (index, record) in records.enumerated() {
                 let streams = V2StreamFactory.makeStreams(pm1: Double(record.pm1),
                                                           pm25: Double(record.pm25))
-                let backfill = overrides[index]
-                self.measurementsSaver.saveV2SyncMeasurement(streams.pm1,
-                                                             sessionUUID: sessionUUID,
-                                                             time: record.timestamp,
-                                                             locationless: locationless,
-                                                             locationOverride: backfill)
-                self.measurementsSaver.saveV2SyncMeasurement(streams.pm25,
-                                                             sessionUUID: sessionUUID,
-                                                             time: record.timestamp,
-                                                             locationless: locationless,
-                                                             locationOverride: backfill)
+                batch.append((streams.pm1, streams.pm25, record.timestamp, overrides[index]))
             }
+            self.measurementsSaver.saveV2SyncBatch(batch,
+                                                   sessionUUID: sessionUUID,
+                                                   locationless: locationless)
             NotificationCenter.default.post(
                 name: .v2MeasurementSaved,
                 object: nil,
@@ -538,21 +548,19 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                 at: records.map { $0.timestamp }
             )
         }
+        var batch: [(pm1: ABMeasurementStream,
+                     pm25: ABMeasurementStream,
+                     time: Date,
+                     locationOverride: CLLocationCoordinate2D?)] = []
+        batch.reserveCapacity(records.count)
         for (index, record) in records.enumerated() {
             let streams = V2StreamFactory.makeStreams(pm1: Double(record.pm1),
                                                       pm25: Double(record.pm25))
-            let backfill = overrides[index]
-            measurementsSaver.saveV2SyncMeasurement(streams.pm1,
-                                                    sessionUUID: sessionUUID,
-                                                    time: record.timestamp,
-                                                    locationless: locationless,
-                                                    locationOverride: backfill)
-            measurementsSaver.saveV2SyncMeasurement(streams.pm25,
-                                                    sessionUUID: sessionUUID,
-                                                    time: record.timestamp,
-                                                    locationless: locationless,
-                                                    locationOverride: backfill)
+            batch.append((streams.pm1, streams.pm25, record.timestamp, overrides[index]))
         }
+        measurementsSaver.saveV2SyncBatch(batch,
+                                          sessionUUID: sessionUUID,
+                                          locationless: locationless)
         NotificationCenter.default.post(
             name: .v2MeasurementSaved,
             object: nil,
@@ -569,13 +577,32 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                 guard let self = self, self.isActiveSyncDrainingStorage else { return }
                 self.isActiveSyncDrainingStorage = false
                 self.postSyncDrainNotificationLocked(false)
+                self.exitBurstGateLocked()
             }
         }
         syncDrainResetWorkItem = work
         queue.asyncAfter(deadline: .now() + Self.syncDrainIdleTimeoutSeconds, execute: work)
         if !wasDraining {
             postSyncDrainNotificationLocked(true)
+            enterBurstGateLocked()
         }
+    }
+
+    /// Tracks whether this configurator currently holds a burst-gate slot on
+    /// `PersistenceController`. Prevents double-enter / double-exit and
+    /// guarantees a balanced exit on `prepareForReconnect` / `teardown`.
+    private var burstGateActive: Bool = false
+
+    private func enterBurstGateLocked() {
+        guard !burstGateActive else { return }
+        burstGateActive = true
+        persistenceController.enterSyncBurst()
+    }
+
+    private func exitBurstGateLocked() {
+        guard burstGateActive else { return }
+        burstGateActive = false
+        persistenceController.exitSyncBurst()
     }
 
     private func postSyncDrainNotificationLocked(_ draining: Bool) {
@@ -852,12 +879,71 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         completion(.failure(AirBeamMiniV2ConfiguratorError.notImplemented))
     }
 
+    /// Wait for any in-flight active-sync drain to finish before resolving.
+    /// Used by `stopRecordingSession` so a user-initiated session stop doesn't
+    /// race the firmware's auto-replay: sending `DiscardSession (0x11)` while
+    /// chunks are still streaming wipes on-device storage and permanently
+    /// loses records the app hasn't received yet.
+    ///
+    /// Resolves immediately with `.success` if not currently draining. If
+    /// drain doesn't complete within `timeout`, resolves with `.failure` so
+    /// the caller can surface a warning. Observer is registered/removed on
+    /// the configurator queue to stay consistent with the drain-state
+    /// mutations there.
+    func awaitSyncDrain(timeout: TimeInterval = 60.0,
+                        completion: @escaping (Result<Void, Error>) -> Void) {
+        queue.async { [weak self] in
+            guard let self = self else { completion(.success(())); return }
+            guard self.isActiveSyncDrainingStorage else {
+                completion(.success(()))
+                return
+            }
+            // Need to deliver completion exactly once across the
+            // notification-observer and timeout paths.
+            var delivered = false
+            let lock = NSLock()
+            let deliverOnce: (Result<Void, Error>) -> Void = { result in
+                lock.lock()
+                let firstTime = !delivered
+                delivered = true
+                lock.unlock()
+                if firstTime {
+                    completion(result)
+                }
+            }
+            var observer: NSObjectProtocol?
+            observer = NotificationCenter.default.addObserver(
+                forName: .v2SyncDrainChanged,
+                object: nil,
+                queue: .main
+            ) { note in
+                guard let info = note.userInfo,
+                      let draining = info[AirCastingNotificationKeys.V2SyncDrainChanged.isDraining] as? Bool,
+                      !draining else { return }
+                if let observer = observer {
+                    NotificationCenter.default.removeObserver(observer)
+                }
+                deliverOnce(.success(()))
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + timeout) {
+                if let observer = observer {
+                    NotificationCenter.default.removeObserver(observer)
+                }
+                deliverOnce(.failure(AirBeamMiniV2ConfiguratorError.statusTimeout))
+            }
+        }
+    }
+
     /// Stop a running V2 session: write 0x11, wait for Ready before resolving.
     /// Caller (recording controller) must wait for the completion before disconnecting.
     func discardSession(completion: @escaping (Result<Void, Error>) -> Void) {
         queue.async { [weak self] in
-            self?.mobileSessionActive = false
-            self?.invalidateSetTimeTimerLocked()
+            guard let self = self else { return }
+            self.mobileSessionActive = false
+            self.invalidateSetTimeTimerLocked()
+            if let sessionUUID = self.configuredSessionUUID {
+                self.measurementsSaver.clearV2SyncStreamCache(for: sessionUUID)
+            }
         }
         sendDiscardSession(completion: completion)
     }

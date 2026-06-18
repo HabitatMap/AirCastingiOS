@@ -33,6 +33,7 @@ struct SessionHeaderView: View {
     @State private var isShowingFinishSessionAlert = false
     @State private var isShowingEmailSentAlert = false
     @State private var syncAndFinishViewModel: SyncAndFinishV2SessionViewModel? = nil
+    @StateObject private var activeSyncObserver = V2ActiveSyncObserver()
     
     var body: some View {
         if #available(iOS 15, *) {
@@ -150,6 +151,12 @@ private extension SessionHeaderView {
                 SyncAndFinishV2SessionDialog(viewModel: vm)
             }
         }
+        .sheet(isPresented: Binding(
+            get: { activeSyncObserver.isDraining && session.isActive && syncAndFinishViewModel == nil },
+            set: { _ in }
+        )) {
+            V2ActiveSyncDialog()
+        }
         .foregroundColor(.aircastingGray)
     }
     
@@ -212,8 +219,19 @@ private extension SessionHeaderView {
         Button {
             isShowingFinishSessionAlert = true
         } label: {
-            Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
+            VStack(alignment: .leading) {
+                Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
+                if isStopBlockedBySync {
+                    Text(Strings.V2ActiveSyncDialog.stopDisabledLabel)
+                        .font(Fonts.moderateRegularHeading4)
+                }
+            }
         }
+        .disabled(isStopBlockedBySync)
+    }
+
+    private var isStopBlockedBySync: Bool {
+        session.deviceFirmwareVersion == .v2 && activeSyncObserver.isDraining
     }
     
     var actionsMenuMobileEnterStandaloneMode: some View {

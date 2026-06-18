@@ -49,6 +49,15 @@ class PersistenceController: ObservableObject {
 
     private let container: NSPersistentContainer
 
+    /// Ref-counted "sync burst" gate. While > 0, `mainContextChanged` defers
+    /// its `propagateChangesToUI` call so SwiftUI views don't re-render on
+    /// every per-record save during a V2 active-sync replay. When the count
+    /// transitions back to 0 we fire one coalesced propagate so the dashboard
+    /// catches up. Reads/writes serialized via `syncBurstLock`.
+    private let syncBurstLock = NSLock()
+    private var syncBurstDepth: Int = 0
+    private var syncBurstHasDeferredChange: Bool = false
+
     // V2 sync chunks can overlap live measurements on `(stream, time)`.
     // The unique constraint on MeasurementEntity dedupes them — keep the existing row
     // so live writes that landed first aren't clobbered by a later sync replay.
@@ -121,7 +130,47 @@ class PersistenceController: ObservableObject {
             Log.info("UI suspended, not propagating changes!")
             return
         }
+        syncBurstLock.lock()
+        let inBurst = syncBurstDepth > 0
+        if inBurst {
+            syncBurstHasDeferredChange = true
+        }
+        syncBurstLock.unlock()
+        if inBurst {
+            return
+        }
         propagateChangesToUI()
+    }
+
+    /// Enter a sync-burst window. While at least one burst is active, change
+    /// notifications from the source-of-truth context don't propagate to the
+    /// `viewContext`, so SwiftUI views won't re-render on each per-record
+    /// save. Pair with `exitSyncBurst`. Reference-counted: nested begins are
+    /// allowed (e.g. active-sync + manual-sync overlap).
+    func enterSyncBurst() {
+        syncBurstLock.lock()
+        syncBurstDepth += 1
+        let depth = syncBurstDepth
+        syncBurstLock.unlock()
+        Log.info("V2 sync burst entered (depth=\(depth))")
+    }
+
+    /// Exit a sync-burst window. On the count→0 transition, if any change
+    /// notifications fired while the gate was active, runs a single coalesced
+    /// `propagateChangesToUI` so SwiftUI catches up with the burst's writes.
+    func exitSyncBurst() {
+        syncBurstLock.lock()
+        syncBurstDepth = max(0, syncBurstDepth - 1)
+        let depth = syncBurstDepth
+        let shouldFlush = depth == 0 && syncBurstHasDeferredChange
+        if shouldFlush {
+            syncBurstHasDeferredChange = false
+        }
+        syncBurstLock.unlock()
+        Log.info("V2 sync burst exited (depth=\(depth), flush=\(shouldFlush))")
+        if shouldFlush && !uiSuspended {
+            propagateChangesToUI()
+        }
     }
     
     @objc private func appWillClose() {

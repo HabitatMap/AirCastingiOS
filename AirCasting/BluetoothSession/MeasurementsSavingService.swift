@@ -26,6 +26,20 @@ protocol MeasurementsSavingService {
                                time: Date,
                                locationless: Bool,
                                locationOverride: CLLocationCoordinate2D?)
+    /// V2 path: batched chunk save. Resolves the PM1 + PM2.5 stream IDs once
+    /// for the session and writes all paired records inside a single CoreData
+    /// transaction. Used by `AirBeamMiniV2Configurator.persistSyncChunkLocked`
+    /// and `persistManualSyncRecords` to avoid the per-record `updateStreams`
+    /// storm that froze the UI during active-reconnect sync.
+    func saveV2SyncBatch(_ records: [(pm1: ABMeasurementStream,
+                                      pm25: ABMeasurementStream,
+                                      time: Date,
+                                      locationOverride: CLLocationCoordinate2D?)],
+                         sessionUUID: SessionUUID,
+                         locationless: Bool)
+    /// Drop any cached stream IDs for the session. Call on session stop /
+    /// reconnect-reset so a re-created session doesn't reuse stale IDs.
+    func clearV2SyncStreamCache(for sessionUUID: SessionUUID)
 }
 
 class DefaultMeasurementsSaver: MeasurementsSavingService {
@@ -33,6 +47,13 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
     @Injected private var uiStorage: UIStorage
     private var peripheralMeasurementManager: PeripheralMeasurementTimeLocationManager?
     private var expectedMeasurementThreshold = 1
+
+    /// Per-session cache of resolved PM1 + PM2.5 stream IDs. Populated lazily
+    /// inside `saveV2SyncBatch` (on the storage context queue) and cleared by
+    /// `clearV2SyncStreamCache`. Touched only from inside `accessStorage` so
+    /// no extra locking is needed.
+    private var v2SyncStreamCache: [SessionUUID: (pm1: MeasurementStreamLocalID,
+                                                  pm25: MeasurementStreamLocalID)] = [:]
 
     class PeripheralMeasurementTimeLocationManager {
         @Injected private var locationTracker: LocationTracker
@@ -159,6 +180,90 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         }
         Log.info("V2LocationBackfill.Save: \(sessionUUID) stream=\(measurement.sensorName) ts=\(time.timeIntervalSince1970) src=\(source) lat=\(location.latitude) lon=\(location.longitude)")
         updateStreams(stream: measurement, sessionUUID: sessionUUID, location: location, time: time)
+    }
+
+    func saveV2SyncBatch(_ records: [(pm1: ABMeasurementStream,
+                                      pm25: ABMeasurementStream,
+                                      time: Date,
+                                      locationOverride: CLLocationCoordinate2D?)],
+                         sessionUUID: SessionUUID,
+                         locationless: Bool) {
+        guard !records.isEmpty else { return }
+        // Resolve the fallback (phone last-known fix) once on the caller's
+        // thread — pulling it inside `accessStorage` would hop to the
+        // LocationTracker queue per chunk.
+        let fallbackLocation: CLLocationCoordinate2D
+        if locationless {
+            fallbackLocation = .undefined
+        } else {
+            let tracker = Resolver.resolve(LocationTracker.self)
+            fallbackLocation = tracker.location.value?.coordinate ?? .undefined
+        }
+        persistence.accessStorage { [weak self] storage in
+            guard let self = self else { return }
+            do {
+                let streamIDs = try self.resolveV2SyncStreamIDs(
+                    sessionUUID: sessionUUID,
+                    pm1Template: records[0].pm1,
+                    pm25Template: records[0].pm25,
+                    storage: storage
+                )
+                var entries: [(streamID: MeasurementStreamLocalID,
+                               value: Double,
+                               time: Date,
+                               location: CLLocationCoordinate2D?)] = []
+                entries.reserveCapacity(records.count * 2)
+                for record in records {
+                    let location: CLLocationCoordinate2D
+                    if locationless {
+                        location = .undefined
+                    } else if let override = record.locationOverride {
+                        location = override
+                    } else {
+                        location = fallbackLocation
+                    }
+                    entries.append((streamIDs.pm1, record.pm1.measuredValue, record.time, location))
+                    entries.append((streamIDs.pm25, record.pm25.measuredValue, record.time, location))
+                }
+                try storage.appendMeasurementValues(entries)
+                Log.info("V2 sync batch: \(records.count) records (\(entries.count) measurements) saved for \(sessionUUID)")
+            } catch {
+                Log.error("V2 sync batch save failed: \(error)")
+            }
+        }
+    }
+
+    func clearV2SyncStreamCache(for sessionUUID: SessionUUID) {
+        // Hop onto the storage queue so the cache mutation is serialized with
+        // any in-flight `saveV2SyncBatch` access. `accessStorage` ignores its
+        // task argument here aside from queue scheduling.
+        persistence.accessStorage { [weak self] _ in
+            self?.v2SyncStreamCache.removeValue(forKey: sessionUUID)
+        }
+    }
+
+    private func resolveV2SyncStreamIDs(sessionUUID: SessionUUID,
+                                        pm1Template: ABMeasurementStream,
+                                        pm25Template: ABMeasurementStream,
+                                        storage: HiddenMobileSessionRecordingStorage) throws -> (pm1: MeasurementStreamLocalID, pm25: MeasurementStreamLocalID) {
+        if let cached = v2SyncStreamCache[sessionUUID] {
+            return cached
+        }
+        let pm1ID: MeasurementStreamLocalID
+        if let existing = try storage.existingMeasurementStream(sessionUUID, name: pm1Template.sensorName) {
+            pm1ID = existing
+        } else {
+            pm1ID = try createSessionStream(pm1Template, sessionUUID, storage: storage)
+        }
+        let pm25ID: MeasurementStreamLocalID
+        if let existing = try storage.existingMeasurementStream(sessionUUID, name: pm25Template.sensorName) {
+            pm25ID = existing
+        } else {
+            pm25ID = try createSessionStream(pm25Template, sessionUUID, storage: storage)
+        }
+        let resolved = (pm1: pm1ID, pm25: pm25ID)
+        v2SyncStreamCache[sessionUUID] = resolved
+        return resolved
     }
 
     private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, location: CLLocationCoordinate2D?, time: Date) {

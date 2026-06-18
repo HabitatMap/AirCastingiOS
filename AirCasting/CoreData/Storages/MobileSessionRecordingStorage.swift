@@ -17,6 +17,14 @@ protocol HiddenMobileSessionRecordingStorage {
     func saveMeasurementStream(_ stream: MeasurementStream, for sessionUUID: SessionUUID) throws -> MeasurementStreamLocalID
     func existingMeasurementStream(_ sessionUUID: SessionUUID, name: String) throws -> MeasurementStreamLocalID?
     func addMeasurementValue(_ value: Double, at location: CLLocationCoordinate2D?, toStreamWithID id: MeasurementStreamLocalID, on time: Date) throws
+    /// Bulk-append measurement values across one or more streams in a single
+    /// context transaction. Caller resolves the `streamID` per entry. Used by
+    /// the V2 active-sync replay path so a chunk of ~100 records lands in one
+    /// CoreData save instead of ~200 individual saves.
+    func appendMeasurementValues(_ entries: [(streamID: MeasurementStreamLocalID,
+                                              value: Double,
+                                              time: Date,
+                                              location: CLLocationCoordinate2D?)]) throws
     func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) throws
 }
 
@@ -74,6 +82,30 @@ class DefaultHiddenMobileSessionRecordingStorage: HiddenMobileSessionRecordingSt
     
     func addMeasurementValue(_ value: Double, at location: CLLocationCoordinate2D? = nil, toStreamWithID id: MeasurementStreamLocalID, on time: Date = DateBuilder.getRawDate().currentUTCTimeZoneDate) throws {
         try addMeasurement(Measurement(time: time, value: value, location: location), toStreamWithID: id)
+    }
+
+    func appendMeasurementValues(_ entries: [(streamID: MeasurementStreamLocalID,
+                                              value: Double,
+                                              time: Date,
+                                              location: CLLocationCoordinate2D?)]) throws {
+        guard !entries.isEmpty else { return }
+        // Cache the stream entities by local ID so a burst of records for the
+        // same stream avoids hitting `existingObject(with:)` N times.
+        var streamCache: [NSManagedObjectID: MeasurementStreamEntity] = [:]
+        for entry in entries {
+            let streamEntity: MeasurementStreamEntity
+            if let cached = streamCache[entry.streamID.id] {
+                streamEntity = cached
+            } else {
+                streamEntity = try context.existingObject(with: entry.streamID.id) as! MeasurementStreamEntity
+                streamCache[entry.streamID.id] = streamEntity
+            }
+            let newMeasurement = MeasurementEntity(context: context)
+            newMeasurement.location = entry.location
+            newMeasurement.time = entry.time
+            newMeasurement.value = entry.value
+            streamEntity.addToMeasurements(newMeasurement)
+        }
     }
     
     func saveMeasurementStream(_ stream: MeasurementStream, for sessionUUID: SessionUUID) throws -> MeasurementStreamLocalID {

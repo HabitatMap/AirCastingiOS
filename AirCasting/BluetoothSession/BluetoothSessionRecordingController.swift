@@ -194,11 +194,19 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
             proceedToDisconnect()
         case .v2:
             let configurator = Resolver.resolve(AirBeamMiniV2Configurator.self, args: device)
-            configurator.discardSession { result in
-                if case .failure(let error) = result {
-                    Log.error("V2 DiscardSession on stop failed: \(error). Disconnecting anyway.")
+            // Wait for any in-flight active-sync drain before sending 0x11 —
+            // otherwise firmware wipes on-device storage mid-stream and we
+            // permanently lose records that hadn't been replayed yet.
+            configurator.awaitSyncDrain { drainResult in
+                if case .failure(let error) = drainResult {
+                    Log.error("V2 stop: sync drain wait timed out (\(error)). Proceeding with DiscardSession; some records may be lost.")
                 }
-                proceedToDisconnect()
+                configurator.discardSession { result in
+                    if case .failure(let error) = result {
+                        Log.error("V2 DiscardSession on stop failed: \(error). Disconnecting anyway.")
+                    }
+                    proceedToDisconnect()
+                }
             }
         }
     }
