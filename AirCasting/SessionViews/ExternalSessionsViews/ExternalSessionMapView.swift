@@ -14,10 +14,17 @@ struct ExternalSessionMapView: View {
     @State private var showThresholdsMenu = false
     
     private var pathPoints: [_MapView.PathPoint] {
-        return selectedStream?.allMeasurements?.compactMap {
-            guard let location = $0.location else { return nil }
-            return .init(lat: location.latitude, long: location.longitude, value: $0.value)
-        } ?? []
+        // Mirror the time-sort applied in `SessionMapView.pathPoints`:
+        // `allMeasurements` is insertion-ordered, and external sessions
+        // backfilled from the BE can land out of order during the initial
+        // download. Polyline rendering needs time order to draw a single
+        // contiguous trace.
+        return selectedStream?.allMeasurements?
+            .sorted(by: { $0.time < $1.time })
+            .compactMap {
+                guard let location = $0.location else { return nil }
+                return .init(lat: location.latitude, long: location.longitude, value: $0.value)
+            } ?? []
     }
     
     var body: some View {
