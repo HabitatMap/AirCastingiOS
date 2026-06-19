@@ -527,6 +527,37 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         V2BleSyncOrchestrator(configurator: self)
     }
 
+    /// Read the device's current Status without committing to any particular
+    /// session UUID. Used by the SD-sync entry point that doesn't know the
+    /// session UUID up front — it reads the device's `HasSavedSession.sessionUUID`
+    /// here, matches it to an existing app session, and only then calls
+    /// `configureSession(uuid:)` to drive the manual-sync orchestrator.
+    ///
+    /// Resolves with:
+    ///   - `.success(uuid)` for `HasSavedSession` / `running` — `uuid` is the
+    ///     device's stored or in-flight session.
+    ///   - `.success(nil)` for `idle` — device has nothing to sync.
+    ///   - `.failure` for decode timeouts, BLE errors, or unexpected statuses.
+    func discoverSavedSessionUUID(completion: @escaping (Result<UUID?, Error>) -> Void) {
+        subscribeAndAwaitStatus { result in
+            switch result {
+            case .success(let status):
+                switch status {
+                case .idle:
+                    completion(.success(nil))
+                case .hasSavedSession(_, let uuid, _, _):
+                    completion(.success(uuid))
+                case .running(_, let uuid):
+                    completion(.success(uuid))
+                case .readyToSync:
+                    completion(.failure(AirBeamMiniV2ConfiguratorError.unexpectedStatusForResume))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
     private func persistSyncChunkLocked(_ data: Data) {
         guard let records = V2MeasurementParser.parseSyncChunk(data), !records.isEmpty else {
             Log.warning("V2 sync chunk parse failed or empty: \(data as NSData)")

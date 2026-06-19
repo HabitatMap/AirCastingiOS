@@ -118,15 +118,64 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     // MARK: - V2 BLE manual sync (Phase 6)
 
     private func runV2ManualSync(_ standaloneSessionToSyncAndFinish: StandaloneSessionToSyncAndFinish) {
-        guard let sessionUUID = standaloneSessionToSyncAndFinish.uuid else {
-            Log.error("[SD SYNC V2] Missing standalone session UUID")
-            DispatchQueue.main.async {
-                self.alert = InAppAlerts.failedSDClearingAlert { self.shouldDismiss = true }
-                self.presentNextScreen = false
-            }
-            self.disconnectAirBeam()
+        if let sessionUUID = standaloneSessionToSyncAndFinish.uuid {
+            // Standalone-card "Finish recording & sync" path: caller already
+            // pinned the session UUID via `StandaloneSessionToSyncAndFinish`.
+            startV2ManualSync(sessionUUID: sessionUUID,
+                              standaloneSessionToSyncAndFinish: standaloneSessionToSyncAndFinish)
             return
         }
+        // "Sync data from SD card" entry point (Settings / ChooseSessionType):
+        // V1 ABM has no SD card and works through this path by discovering
+        // session metadata from the BLE stream; V2 should do the same.
+        // Read the device's HasSavedSession Status, match against an existing
+        // app session by UUID, and only then drive the orchestrator.
+        let configurator = Resolver.resolve(AirBeamMiniV2Configurator.self, args: device)
+        configurator.discoverSavedSessionUUID { [weak self] discoverResult in
+            guard let self = self else { return }
+            switch discoverResult {
+            case .failure(let error):
+                Log.error("[SD SYNC V2] discoverSavedSessionUUID failed: \(error)")
+                DispatchQueue.main.async {
+                    self.alert = self.alertForError(.readingDataFailure)
+                    self.presentNextScreen = false
+                }
+                self.disconnectAirBeam()
+            case .success(nil):
+                Log.info("[SD SYNC V2] device idle — nothing to sync")
+                DispatchQueue.main.async {
+                    self.alert = InAppAlerts.v2NoSavedSessionAlert { self.shouldDismiss = true }
+                    self.presentNextScreen = false
+                }
+                self.disconnectAirBeam()
+            case .success(.some(let deviceUUID)):
+                let sessionUUID = SessionUUID(stringLiteral: deviceUUID.uuidString)
+                guard self.appSessionExists(sessionUUID: sessionUUID) else {
+                    Log.error("[SD SYNC V2] no app session matches device UUID \(deviceUUID)")
+                    DispatchQueue.main.async {
+                        self.alert = InAppAlerts.v2NoMatchingAppSessionAlert { self.shouldDismiss = true }
+                        self.presentNextScreen = false
+                    }
+                    self.disconnectAirBeam()
+                    return
+                }
+                self.startV2ManualSync(sessionUUID: sessionUUID,
+                                       standaloneSessionToSyncAndFinish: standaloneSessionToSyncAndFinish)
+            }
+        }
+    }
+
+    private func appSessionExists(sessionUUID: SessionUUID) -> Bool {
+        let ctx = persistenceController.editContext
+        var found = false
+        ctx.performAndWait {
+            found = (try? ctx.existingSession(uuid: sessionUUID)) != nil
+        }
+        return found
+    }
+
+    private func startV2ManualSync(sessionUUID: SessionUUID,
+                                   standaloneSessionToSyncAndFinish: StandaloneSessionToSyncAndFinish) {
         let configurator = Resolver.resolve(AirBeamMiniV2Configurator.self, args: device)
         configurator.configureSession(uuid: sessionUUID) { [weak self] configureResult in
             guard let self = self else { return }

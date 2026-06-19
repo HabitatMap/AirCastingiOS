@@ -928,7 +928,13 @@ struct Strings {
         static let readingDataFailMessage: String = NSLocalizedString("Something interrupted connection with the AirBeam. Please try again.", comment: "")
         static let processingFixedFailMessage: String = NSLocalizedString("Something went wrong when sending fixed sessions data to the server. Please try again later.", comment: "")
         static let processingMobileFailMessage: String = NSLocalizedString("Something went wrong when saving mobile sessions data to the database. Please try again.", comment: "")
-        
+
+        static let v2NoSavedSessionTitle: String = NSLocalizedString("Nothing to sync",
+                                                          comment: "")
+        static let v2NoSavedSessionMessage: String = NSLocalizedString("Your AirBeam has no saved measurements to sync.", comment: "")
+        static let v2NoMatchingAppSessionTitle: String = NSLocalizedString("Session not found",
+                                                          comment: "")
+        static let v2NoMatchingAppSessionMessage: String = NSLocalizedString("Your AirBeam has measurements stored, but the matching session is missing on this device.", comment: "")
     }
     
     enum SDSyncCompleteView {

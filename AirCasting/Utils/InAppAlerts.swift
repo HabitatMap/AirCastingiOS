@@ -412,7 +412,23 @@ struct InAppAlerts {
                     .default(title: Strings.Commons.gotIt,
                              action: dismiss) ])
     }
-    
+
+    static func v2NoSavedSessionAlert(dismiss: (@escaping () -> Void)) -> AlertInfo {
+        AlertInfo(title: Strings.SDSyncAlerts.v2NoSavedSessionTitle,
+                  message: Strings.SDSyncAlerts.v2NoSavedSessionMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss) ])
+    }
+
+    static func v2NoMatchingAppSessionAlert(dismiss: (@escaping () -> Void)) -> AlertInfo {
+        AlertInfo(title: Strings.SDSyncAlerts.v2NoMatchingAppSessionTitle,
+                  message: Strings.SDSyncAlerts.v2NoMatchingAppSessionMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss) ])
+    }
+
     static func sdSyncUnidentifiableDeviceAlert(dismiss: (@escaping () -> Void)) -> AlertInfo {
         AlertInfo(title: Strings.SDSyncAlerts.genericFailTitle,
                   message: Strings.SDSyncAlerts.unidetifiableDeviceMessage,
