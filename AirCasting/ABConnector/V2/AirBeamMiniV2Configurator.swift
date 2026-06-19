@@ -431,9 +431,12 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
     /// Persist a batch of records collected by the manual-sync orchestrator
     /// for the currently active mobile session. Mirrors `persistSyncChunkLocked`
     /// but takes already-parsed records (the orchestrator parses incrementally
-    /// for progress accounting).
-    func persistManualSyncRecords(_ records: [V2SyncRecord]) {
-        guard !records.isEmpty else { return }
+    /// for progress accounting). `completion` fires after the batched save
+    /// transactions have drained on the `editContext` queue, so callers can
+    /// safely tear down the active session knowing the records have landed.
+    func persistManualSyncRecords(_ records: [V2SyncRecord],
+                                  completion: (() -> Void)? = nil) {
+        guard !records.isEmpty else { completion?(); return }
         // Open the save batch on the caller thread so a concurrent
         // `stopSampling` (the finish-dialog calls us then immediately
         // requests stop) defers its buffer wipe until our save loop
@@ -442,6 +445,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         // the SwiftUI dialog button handler that triggered it.
         guard let preResolvedUUID = self.configuredSessionUUID else {
             Log.info("V2 manual sync persist: no configured session UUID (\(records.count) records).")
+            completion?()
             return
         }
         v2LocationBackfillCoordinator.beginSaveBatch(sessionUUID: preResolvedUUID)
@@ -452,25 +456,36 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         // merge churn while finishing a multi-thousand-record session.
         persistenceController.enterSyncBurst()
 
-        queue.async { [weak self] in
-            guard let self = self else { return }
-            defer {
+        let finalize: () -> Void = { [weak self] in
+            guard let self = self else { completion?(); return }
+            // Pair entry/exit with a FIFO tail so the burst exit and
+            // location-backfill close fire after the save lands on
+            // `editContext`. Caller's completion runs after that.
+            self.persistenceController.editContext.perform {
                 self.v2LocationBackfillCoordinator.endSaveBatch(sessionUUID: preResolvedUUID)
                 self.persistenceController.exitSyncBurst()
+                completion?()
             }
+        }
+
+        queue.async { [weak self] in
+            guard let self = self else { completion?(); return }
             guard let sessionUUID = self.configuredSessionUUID else {
                 Log.info("V2 manual sync persist: no configured session UUID (\(records.count) records).")
+                finalize()
                 return
             }
             if let statusUUID = self.lastStatus?.sessionUUID,
                let configuredParsed = UUID(uuidString: sessionUUID.rawValue),
                statusUUID != configuredParsed {
                 Log.warning("V2 manual sync persist dropped: device session \(statusUUID) != active \(configuredParsed)")
+                finalize()
                 return
             }
             guard let active = self.activeSessionProvider.activeSession,
                   active.session.uuid == sessionUUID else {
                 Log.info("V2 manual sync persist: active session missing or uuid mismatch.")
+                finalize()
                 return
             }
             let locationless = active.session.locationless
@@ -501,6 +516,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                 object: nil,
                 userInfo: [AirCastingNotificationKeys.V2MeasurementSaved.sessionUUID: sessionUUID]
             )
+            finalize()
         }
     }
 

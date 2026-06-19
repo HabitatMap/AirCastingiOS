@@ -157,33 +157,40 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                     switch result {
                     case .success(let records):
                         Log.info("[SD SYNC V2] orchestrator completed with \(records.count) records")
-                        self.persistV2Records(records, sessionUUID: sessionUUID)
-                        self.finishV2StandaloneSession(uuid: sessionUUID) { finishResult in
-                            DispatchQueue.main.async {
-                                switch finishResult {
-                                case .success:
-                                    self.isDownloadingFinished = true
-                                    self.presentNextScreen = true
-                                case .failure:
-                                    self.alert = self.alertForError(.mobileSessionsProcessingFailure)
-                                    self.presentNextScreen = false
+                        // Wait for every batched save to drain on the
+                        // `editContext` queue before flipping the session to
+                        // FINISHED. Without this gate `finishV2StandaloneSession`
+                        // raced the saves and the status write could land
+                        // ahead of in-flight measurement transactions.
+                        self.persistV2Records(records, sessionUUID: sessionUUID) { [weak self] in
+                            guard let self = self else { return }
+                            self.finishV2StandaloneSession(uuid: sessionUUID) { finishResult in
+                                DispatchQueue.main.async {
+                                    switch finishResult {
+                                    case .success:
+                                        self.isDownloadingFinished = true
+                                        self.presentNextScreen = true
+                                    case .failure:
+                                        self.alert = self.alertForError(.mobileSessionsProcessingFailure)
+                                        self.presentNextScreen = false
+                                    }
                                 }
+                                DispatchQueue.main.async {
+                                    standaloneSessionToSyncAndFinish.clearSessionUuid()
+                                }
+                                // V1 parity: when the user kicks off SD sync while a
+                                // mobile session is still active on this device (DB
+                                // status RECORDING/DISCONNECTED, not standalone),
+                                // `SDCardMobileSessionFinisher` guards on
+                                // `isInStandaloneMode` and no-ops — leaving the
+                                // session pinned to the mobile-active tab forever.
+                                // Explicitly stop the active session here so it
+                                // transitions to FINISHED, mirroring the V1
+                                // `clearSDCard` ordering. Safe when there's no
+                                // matching active session (early return).
+                                self.finishActiveSessionIfMatchingDevice()
+                                self.disconnectAirBeam()
                             }
-                            DispatchQueue.main.async {
-                                standaloneSessionToSyncAndFinish.clearSessionUuid()
-                            }
-                            // V1 parity: when the user kicks off SD sync while a
-                            // mobile session is still active on this device (DB
-                            // status RECORDING/DISCONNECTED, not standalone),
-                            // `SDCardMobileSessionFinisher` guards on
-                            // `isInStandaloneMode` and no-ops — leaving the
-                            // session pinned to the mobile-active tab forever.
-                            // Explicitly stop the active session here so it
-                            // transitions to FINISHED, mirroring the V1
-                            // `clearSDCard` ordering. Safe when there's no
-                            // matching active session (early return).
-                            self.finishActiveSessionIfMatchingDevice()
-                            self.disconnectAirBeam()
                         }
                     case .failure(let error):
                         Log.error("[SD SYNC V2] orchestrator failed: \(error)")
@@ -198,10 +205,16 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
         }
     }
 
-    private func persistV2Records(_ records: [V2SyncRecord], sessionUUID: SessionUUID) {
+    private func persistV2Records(_ records: [V2SyncRecord],
+                                  sessionUUID: SessionUUID,
+                                  completion: @escaping () -> Void) {
+        guard !records.isEmpty else { completion(); return }
         let isLocationless = readLocationless(sessionUUID: sessionUUID)
         v2LocationBackfillCoordinator.beginSaveBatch(sessionUUID: sessionUUID)
-        defer { v2LocationBackfillCoordinator.endSaveBatch(sessionUUID: sessionUUID) }
+        // Coalesce SwiftUI re-renders for the whole burst — without this gate
+        // the dashboard would attempt to merge changes per chunk save and
+        // churn while we replay a multi-thousand-record session.
+        persistenceController.enterSyncBurst()
         let overrides: [CLLocationCoordinate2D?]
         if isLocationless {
             overrides = Array(repeating: nil, count: records.count)
@@ -211,20 +224,43 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                 at: records.map { $0.timestamp }
             )
         }
+        // Long mobile sessions yield tens of thousands of records. The
+        // per-record `saveV2SyncMeasurement` path queues two `accessStorage`
+        // tasks per record on the shared `editContext` queue and floods it,
+        // racing the FINISHED status write that runs immediately after. Use
+        // the batched `saveV2SyncBatch` API (single transaction per chunk)
+        // and split into bounded chunks so any one CoreData save stays sane.
+        let chunkSize = 1000
+        var batch: [(pm1: ABMeasurementStream,
+                     pm25: ABMeasurementStream,
+                     time: Date,
+                     locationOverride: CLLocationCoordinate2D?)] = []
+        batch.reserveCapacity(min(chunkSize, records.count))
         for (index, record) in records.enumerated() {
             let streams = V2StreamFactory.makeStreams(pm1: Double(record.pm1),
                                                       pm25: Double(record.pm25))
-            let backfill = overrides[index]
-            measurementsSaver.saveV2SyncMeasurement(streams.pm1,
-                                                    sessionUUID: sessionUUID,
-                                                    time: record.timestamp,
-                                                    locationless: isLocationless,
-                                                    locationOverride: backfill)
-            measurementsSaver.saveV2SyncMeasurement(streams.pm25,
-                                                    sessionUUID: sessionUUID,
-                                                    time: record.timestamp,
-                                                    locationless: isLocationless,
-                                                    locationOverride: backfill)
+            batch.append((streams.pm1, streams.pm25, record.timestamp, overrides[index]))
+            if batch.count >= chunkSize {
+                measurementsSaver.saveV2SyncBatch(batch,
+                                                  sessionUUID: sessionUUID,
+                                                  locationless: isLocationless)
+                batch.removeAll(keepingCapacity: true)
+            }
+        }
+        if !batch.isEmpty {
+            measurementsSaver.saveV2SyncBatch(batch,
+                                              sessionUUID: sessionUUID,
+                                              locationless: isLocationless)
+        }
+        // Tail the chunk submissions with a no-op perform on the same
+        // `editContext`. The queue is FIFO so this block runs after every
+        // `saveV2SyncBatch` transaction above has saved; only then do we
+        // release the location-backfill save batch and hand control back to
+        // the caller (who will write the FINISHED status next).
+        persistenceController.editContext.perform { [weak self] in
+            self?.v2LocationBackfillCoordinator.endSaveBatch(sessionUUID: sessionUUID)
+            self?.persistenceController.exitSyncBurst()
+            completion()
         }
     }
 

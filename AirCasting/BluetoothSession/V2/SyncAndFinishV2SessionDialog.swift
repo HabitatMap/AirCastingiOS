@@ -158,10 +158,19 @@ final class SyncAndFinishV2SessionViewModel: ObservableObject {
 
     /// Post-success or post-failure finish. On success, the collected records
     /// are persisted to the local DB before the session is marked FINISHED.
+    /// `onFinish` runs *after* the persist transaction has drained so the
+    /// caller's `stopSession` teardown (which clears the active-session
+    /// reference) doesn't race the save loop — the configurator's save block
+    /// guards on `activeSessionProvider.activeSession` and would drop the
+    /// records if it ran on a still-pending `queue.async` slot.
     func finish() {
         if state == .succeeded, !pendingRecords.isEmpty {
-            configurator.persistManualSyncRecords(pendingRecords)
+            let records = pendingRecords
             pendingRecords.removeAll()
+            configurator.persistManualSyncRecords(records) { [weak self] in
+                DispatchQueue.main.async { self?.onFinish(true) }
+            }
+            return
         }
         onFinish(true)
     }
