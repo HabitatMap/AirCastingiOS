@@ -174,6 +174,25 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         if resolved == .v2 && stored != .v2 { setFirmwareVersion(.v2, for: peripheral) }
 
         let rawAdvertisedName = advertisementData[CBAdvertisementDataLocalNameKey] as? String
+
+        // DIAGNOSTIC: dump full advertisement payload for V2 devices to confirm whether
+        // firmware embeds MAC (or any stable unique ID) in advert/scan-response data.
+        if resolved == .v2 {
+            let mfgData = advertisementData[CBAdvertisementDataManufacturerDataKey] as? Data
+            let serviceData = advertisementData[CBAdvertisementDataServiceDataKey] as? [CBUUID: Data]
+            let serviceUUIDs = advertisementData[CBAdvertisementDataServiceUUIDsKey] as? [CBUUID]
+            let overflowUUIDs = advertisementData[CBAdvertisementDataOverflowServiceUUIDsKey] as? [CBUUID]
+            let solicitedUUIDs = advertisementData[CBAdvertisementDataSolicitedServiceUUIDsKey] as? [CBUUID]
+            let isConnectable = advertisementData[CBAdvertisementDataIsConnectable] as? NSNumber
+            let txPower = advertisementData[CBAdvertisementDataTxPowerLevelKey] as? NSNumber
+            Log.info("[ADVERT-DIAG V2] peripheral.identifier=\(peripheral.identifier.uuidString) peripheral.name=\(peripheral.name ?? "nil") localName=\(rawAdvertisedName ?? "nil")")
+            Log.info("[ADVERT-DIAG V2] manufacturerData=\(mfgData?.map { String(format: "%02x", $0) }.joined() ?? "nil") (\(mfgData?.count ?? 0) bytes)")
+            Log.info("[ADVERT-DIAG V2] serviceData=\(serviceData?.mapValues { $0.map { String(format: "%02x", $0) }.joined() } ?? [:])")
+            Log.info("[ADVERT-DIAG V2] serviceUUIDs=\(serviceUUIDs?.map { $0.uuidString } ?? []) overflowUUIDs=\(overflowUUIDs?.map { $0.uuidString } ?? []) solicitedUUIDs=\(solicitedUUIDs?.map { $0.uuidString } ?? [])")
+            Log.info("[ADVERT-DIAG V2] isConnectable=\(isConnectable?.boolValue.description ?? "nil") txPower=\(txPower?.stringValue ?? "nil") rssi=\(RSSI)")
+            Log.info("[ADVERT-DIAG V2] rawKeys=\(advertisementData.keys.sorted())")
+        }
+
         // V2 firmware advertises a bare `"airbeammini"` (some builds even fall through
         // to the BLE stack's default GAP name `"nimble"`), so the scan list would
         // either render the bare model name or hide the device under "Other". V1
