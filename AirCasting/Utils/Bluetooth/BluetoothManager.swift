@@ -127,8 +127,9 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         var name: String?
         var uuid: String
         var firmwareVersion: FirmwareVersion
+        var realMacAddress: String?
 
-        init(peripheral: CBPeripheral, firmwareVersion: FirmwareVersion = .v1, advertisedName: String? = nil) {
+        init(peripheral: CBPeripheral, firmwareVersion: FirmwareVersion = .v1, advertisedName: String? = nil, realMacAddress: String? = nil) {
             self.peripheral = peripheral
             // Prefer advertisedName from CBAdvertisementDataLocalNameKey: peripheral.name is
             // often nil at didDiscover time and only filled in once the device has been
@@ -137,7 +138,39 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
             name = advertisedName ?? peripheral.name
             uuid = peripheral.identifier.description
             self.firmwareVersion = firmwareVersion
+            self.realMacAddress = realMacAddress
         }
+    }
+
+    /// Best-known advertised local name per peripheral. V2 AirBeams emit two
+    /// packets: a pure advert with no local name, then a scan-response containing
+    /// `AirBeamMini:<MAC>`. iOS calls didDiscover for both — cache the richer one
+    /// so subsequent ad-only packets don't drop us back to a missing name.
+    private var lastKnownLocalName: [CBPeripheral: String] = [:]
+    private let lastKnownLocalNameLock = NSRecursiveLock()
+
+    private func cachedLocalName(for peripheral: CBPeripheral) -> String? {
+        lastKnownLocalNameLock.lock(); defer { lastKnownLocalNameLock.unlock() }
+        return lastKnownLocalName[peripheral]
+    }
+
+    private func setCachedLocalName(_ name: String, for peripheral: CBPeripheral) {
+        lastKnownLocalNameLock.lock(); defer { lastKnownLocalNameLock.unlock() }
+        lastKnownLocalName[peripheral] = name
+    }
+
+    /// Parse a real MAC out of a name like `AirBeamMini:24:58:7C:AC:A6:B6`.
+    /// Returns the colon-separated MAC (uppercased) when the trailing 6 bytes
+    /// look like a MAC; returns nil otherwise so callers can fall back.
+    private static func parseRealMac(fromAdvertisedName name: String?) -> String? {
+        guard let name = name else { return nil }
+        let parts = name.split(separator: ":").map(String.init)
+        // Expect: ["AirBeamMini", "24", "58", "7C", "AC", "A6", "B6"] — model + 6 hex bytes.
+        guard parts.count >= 7 else { return nil }
+        let tail = parts.suffix(6)
+        let hexByte = #"^[0-9A-Fa-f]{2}$"#
+        guard tail.allSatisfy({ $0.range(of: hexByte, options: .regularExpression) != nil }) else { return nil }
+        return tail.map { $0.uppercased() }.joined(separator: ":")
     }
     
     func startScanning(scanningWindow: Int = 30,
@@ -174,41 +207,34 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         if resolved == .v2 && stored != .v2 { setFirmwareVersion(.v2, for: peripheral) }
 
         let rawAdvertisedName = advertisementData[CBAdvertisementDataLocalNameKey] as? String
-
-        // DIAGNOSTIC: dump full advertisement payload for V2 devices to confirm whether
-        // firmware embeds MAC (or any stable unique ID) in advert/scan-response data.
-        if resolved == .v2 {
-            let mfgData = advertisementData[CBAdvertisementDataManufacturerDataKey] as? Data
-            let serviceData = advertisementData[CBAdvertisementDataServiceDataKey] as? [CBUUID: Data]
-            let serviceUUIDs = advertisementData[CBAdvertisementDataServiceUUIDsKey] as? [CBUUID]
-            let overflowUUIDs = advertisementData[CBAdvertisementDataOverflowServiceUUIDsKey] as? [CBUUID]
-            let solicitedUUIDs = advertisementData[CBAdvertisementDataSolicitedServiceUUIDsKey] as? [CBUUID]
-            let isConnectable = advertisementData[CBAdvertisementDataIsConnectable] as? NSNumber
-            let txPower = advertisementData[CBAdvertisementDataTxPowerLevelKey] as? NSNumber
-            Log.info("[ADVERT-DIAG V2] peripheral.identifier=\(peripheral.identifier.uuidString) peripheral.name=\(peripheral.name ?? "nil") localName=\(rawAdvertisedName ?? "nil")")
-            Log.info("[ADVERT-DIAG V2] manufacturerData=\(mfgData?.map { String(format: "%02x", $0) }.joined() ?? "nil") (\(mfgData?.count ?? 0) bytes)")
-            Log.info("[ADVERT-DIAG V2] serviceData=\(serviceData?.mapValues { $0.map { String(format: "%02x", $0) }.joined() } ?? [:])")
-            Log.info("[ADVERT-DIAG V2] serviceUUIDs=\(serviceUUIDs?.map { $0.uuidString } ?? []) overflowUUIDs=\(overflowUUIDs?.map { $0.uuidString } ?? []) solicitedUUIDs=\(solicitedUUIDs?.map { $0.uuidString } ?? [])")
-            Log.info("[ADVERT-DIAG V2] isConnectable=\(isConnectable?.boolValue.description ?? "nil") txPower=\(txPower?.stringValue ?? "nil") rssi=\(RSSI)")
-            Log.info("[ADVERT-DIAG V2] rawKeys=\(advertisementData.keys.sorted())")
+        if let raw = rawAdvertisedName, !raw.isEmpty {
+            setCachedLocalName(raw, for: peripheral)
         }
+        let cachedName = cachedLocalName(for: peripheral)
 
-        // V2 firmware advertises a bare `"airbeammini"` (some builds even fall through
-        // to the BLE stack's default GAP name `"nimble"`), so the scan list would
-        // either render the bare model name or hide the device under "Other". V1
-        // AirBeam3 advertises `"AirBeam3:<12-hex MAC>"` end-to-end, and the rest of
-        // the app expects that shape. Mirror it for V2 — `AirBeamMini:<12-hex>` —
-        // synthesised from the per-app CoreBluetooth UUID because iOS doesn't
-        // expose the real BLE MAC. The suffix is stable per (app, device).
+        // V2 AirBeamMini firmware advertises `AirBeamMini:<MAC-with-colons>` in the
+        // scan response. The pure-advert packet has no local name, so we cache the
+        // last-known good one across didDiscover calls. If we have not yet seen a
+        // proper name we synthesise a stable fallback from the per-app CoreBluetooth
+        // UUID so the device still shows up in the scan list (iOS itself never
+        // exposes the BLE MAC).
         let advertisedName: String?
+        let realMac: String?
         if resolved == .v2 {
-            let suffix = peripheral.identifier.uuidString
-                .replacingOccurrences(of: "-", with: "")
-                .suffix(12)
-                .lowercased()
-            advertisedName = "AirBeamMini:\(suffix)"
+            if let cachedName = cachedName, let parsedMac = Self.parseRealMac(fromAdvertisedName: cachedName) {
+                advertisedName = cachedName
+                realMac = parsedMac
+            } else {
+                let suffix = peripheral.identifier.uuidString
+                    .replacingOccurrences(of: "-", with: "")
+                    .suffix(12)
+                    .lowercased()
+                advertisedName = "AirBeamMini:\(suffix)"
+                realMac = nil
+            }
         } else {
             advertisedName = rawAdvertisedName
+            realMac = nil
         }
 
         queue.async {
@@ -216,7 +242,8 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
                 self.callbackQueue.async {
                     callback(Device(peripheral: peripheral,
                                     firmwareVersion: resolved,
-                                    advertisedName: advertisedName))
+                                    advertisedName: advertisedName,
+                                    realMacAddress: realMac))
                 }
             }
         }

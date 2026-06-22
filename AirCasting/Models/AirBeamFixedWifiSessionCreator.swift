@@ -161,15 +161,14 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                                  wifiPassword: String,
                                  completion: @escaping (Result<Void, Error>) -> Void) {
         let coordinate = session.location ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
-        // iOS has no access to the BLE MAC; CoreBluetooth only exposes a per-app
-        // UUID. The BE keys the airbeam record off `mac_address` and uses it to
-        // derive `sensor_package_name` — when we sent the raw UUID (e.g.
-        // "A81AE1F5-XXXX-…"), the dashboard's session header split it on `-`
-        // and rendered the leading hex segment instead of "AirBeamMini". Format
-        // the UUID as a colon-separated MAC-like string so the BE takes the
-        // colon path Android also exercises and stores a sensor_package_name
-        // that includes the model prefix.
-        let macAddress = macAddressLike(from: device.uuid)
+        // V2 firmware embeds the real BLE MAC in the advertised local name
+        // (e.g. `AirBeamMini:24:58:7C:AC:A6:B6`), and BluetoothManager parses it
+        // out into `realMacAddress`. Use that so the BE record keys off the same
+        // MAC Android sends from `BluetoothDevice.getAddress()` and a single
+        // physical AirBeam looks identical across platforms. Fall back to the
+        // UUID-derived MAC-like string only when the firmware advert has not
+        // surfaced a MAC yet (older builds, or scan response not yet received).
+        let macAddress = device.realMacAddress ?? macAddressLike(from: device.uuid)
         let body = V2FixedSessionAPI.RequestBody(
             uuid: sessionUUID.rawValue,
             title: name,

@@ -44,12 +44,25 @@ class SelectPeripheralViewModel: ObservableObject {
             // CBAdvertisementDataLocalNameKey, while CBPeripheral.name (when populated
             // from GAP) tends to be "AirBeamMini" capitalized.
             if device.name?.range(of: "airbeam", options: .caseInsensitive) != nil {
-                guard !self.airbeams.contains(where: { $0.uuid == device.uuid }) else { return }
-                self.airbeams.append(device)
+                Self.upsert(device, into: &self.airbeams)
             } else if !(device.name?.isEmpty ?? true) {
-                guard !self.otherDevices.contains(where: { $0.uuid == device.uuid }) else { return }
-                self.otherDevices.append(device)
+                Self.upsert(device, into: &self.otherDevices)
             }
+        }
+    }
+
+    /// Insert or replace a device by uuid. Replaces when the incoming entry
+    /// carries new information (real MAC parsed from the advert, or a different
+    /// name) so the UI upgrades from the UUID-suffix fallback to the firmware
+    /// `AirBeamMini:<MAC>` name once iOS surfaces the scan response.
+    private static func upsert(_ device: any BluetoothDevice, into list: inout [any BluetoothDevice]) {
+        if let idx = list.firstIndex(where: { $0.uuid == device.uuid }) {
+            let existing = list[idx]
+            let incomingIsBetter = (existing.realMacAddress == nil && device.realMacAddress != nil)
+                || (existing.name != device.name && device.realMacAddress != nil)
+            if incomingIsBetter { list[idx] = device }
+        } else {
+            list.append(device)
         }
     }
 }
