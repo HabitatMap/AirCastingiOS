@@ -362,12 +362,12 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
             guard let self = self else { return }
             self.bumpActiveSyncDrainingLocked()
             if let manual = self.activeManualSync {
-                Log.warning("[V2SYNC] chunk \(data.count)B → manual orchestrator")
+                Log.info("[V2SYNC] chunk \(data.count)B → manual orchestrator")
                 manual.handleSyncChunk(data)
                 return
             }
             if let intercept = self._syncChunkInterceptor {
-                Log.warning("[V2SYNC] chunk \(data.count)B → interceptor")
+                Log.info("[V2SYNC] chunk \(data.count)B → interceptor")
                 intercept(data)
                 return
             }
@@ -571,7 +571,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         // (RECEIVED + SAVED). Dial back to Log.info once the capture bug is fixed.
         let firstTS = records.first.map { String(format: "%.0f", $0.timestamp.timeIntervalSince1970) } ?? "?"
         let lastTS = records.last.map { String(format: "%.0f", $0.timestamp.timeIntervalSince1970) } ?? "?"
-        Log.warning("[V2SYNC] RECEIVED \(records.count) records ts=[\(firstTS)…\(lastTS)] configuredUUID=\(self.configuredSessionUUID?.rawValue ?? "nil") activeSession=\(self.activeSessionProvider.activeSession?.session.uuid.rawValue ?? "nil") deviceStatusUUID=\(self.lastStatus?.sessionUUID?.uuidString ?? "nil")")
+        Log.info("[V2SYNC] RECEIVED \(records.count) records ts=[\(firstTS)…\(lastTS)] configuredUUID=\(self.configuredSessionUUID?.rawValue ?? "nil") activeSession=\(self.activeSessionProvider.activeSession?.session.uuid.rawValue ?? "nil") deviceStatusUUID=\(self.lastStatus?.sessionUUID?.uuidString ?? "nil")")
         guard let sessionUUID = configuredSessionUUID else {
             Log.warning("[V2SYNC] DROPPED: no configured session UUID yet (\(records.count) records).")
             return
@@ -705,7 +705,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         queue.async { [weak self] in
             guard let self = self else { return }
             self.configuredSessionUUID = uuid
-            Log.warning("[V2SYNC] reconnect bound configuredSessionUUID=\(uuid.rawValue); mobileSessionActive=true")
+            Log.info("[V2SYNC] reconnect bound configuredSessionUUID=\(uuid.rawValue); mobileSessionActive=true")
             // Open the live-measurement gate immediately. The Core Data session row
             // already exists (we're resuming, not creating), and ContinueSession's
             // Ready can lag the device's first live indication by several seconds
@@ -816,7 +816,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
     /// then send GetSensors + the initial SetTime so the device is ready for a NewSessionConfig.
     func configureSession(uuid: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void) {
         configuredSessionUUID = uuid
-        Log.warning("[V2SYNC] configureSession bound configuredSessionUUID=\(uuid.rawValue) (new-connection path)")
+        Log.info("[V2SYNC] configureSession bound configuredSessionUUID=\(uuid.rawValue) (new-connection path)")
         subscribeAndAwaitStatus { [weak self] result in
             guard let self = self else { return }
             switch result {

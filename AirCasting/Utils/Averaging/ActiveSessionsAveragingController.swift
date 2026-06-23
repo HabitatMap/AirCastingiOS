@@ -39,14 +39,10 @@ enum AveragingWindow: Int {
 }
 
 enum TimeThreshold: Int {
-    // ⚠️⚠️⚠️ TEST ONLY — DO NOT MERGE. REVERT BEFORE SHIPPING. ⚠️⚠️⚠️
-    // Compressed thresholds so averaging engages within ~1 min instead of
-    // 2 h / 9 h, to exercise the averaging-during-active-sync path in a short
-    // force-quit repro. With these values: <30 s no averaging, 30–60 s → 5 s
-    // window, >60 s → 60 s window (same window the failed >9 h session used).
-    // PRODUCTION VALUES: firstThreshold = 7200 (2 h), secondThreshold = 32400 (9 h).
-    case firstThreshold = 30
-    case secondThreshold = 60
+    // Two hours: 60 * 60 * 2 = 7200
+    case firstThreshold = 7200
+    // Nine hours: 60 * 60 * 9 = 32400
+    case secondThreshold = 32400
 }
 
 final class ActiveSessionsAveragingController: NSObject {
@@ -104,14 +100,8 @@ final class ActiveSessionsAveragingController: NSObject {
     }
     
     private func startPeriodicAveraging(uuid: SessionUUID, window: AveragingWindow) {
-        // ⚠️ TEST ONLY — DO NOT MERGE. Fire every 1s (not every window.rawValue s) so
-        // multiple averaging passes land DURING an active sync even for a SHORT disconnect
-        // (no need to record an hour) — exercises the interleaved multi-pass path against a
-        // still-arriving (reverse-order) buffer. perform() still averages with the 60s window
-        // via checkWindow, so output stays 1-min.
-        // PRODUCTION: Timer.publish(every: TimeInterval(window.rawValue), on: .main, in: .common)
-        Log.info("Starting periodic averaging with window of \(window.rawValue)s (TEST tick=1s) for \(uuid)")
-        let timer = Timer.publish(every: 1, on: .main, in: .common)
+        Log.info("Starting periodic averaging with window of \(window.rawValue)s for \(uuid)")
+        let timer = Timer.publish(every: TimeInterval(window.rawValue), on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
                 guard let self = self else { return }
@@ -151,14 +141,7 @@ final class ActiveSessionsAveragingController: NSObject {
 
             guard let intervalStart = stream.session?.startTime else { Log.error("No session start time!"); return }
 
-            // DIAGNOSTIC (test): count what each averaging pass does to the rows.
-            // Identity check: fetched == emitted + deleted + reminderKept. If that
-            // holds yet rows still vanish from the chart, the loss is at the store
-            // save (unique (stream,time) constraint dedup of rewritten survivors),
-            // not in the algorithm. Remove with the threshold revert.
-            var emitted = 0
-            var deleted = 0
-            let reminder = averagingService.averageMeasurementsWithReminder(
+            _ = averagingService.averageMeasurementsWithReminder(
                 measurements: measurements,
                 startTime: intervalStart,
                 averagingWindow: averagingWindow) { averagedMeasurement, sourceMeasurements in
@@ -167,13 +150,10 @@ final class ActiveSessionsAveragingController: NSObject {
                     sourceMeasurements[lastMeasurementIndex].value = averagedMeasurement.value
                     sourceMeasurements[lastMeasurementIndex].time = averagedMeasurement.time
                     sourceMeasurements[lastMeasurementIndex].averagingWindow = averagingWindow.rawValue
-                    emitted += 1
 
                     guard sourceMeasurements.count > 1 else { return }
-                    deleted += sourceMeasurements.count - 1
                     storage.deleteMeasurements(Array(sourceMeasurements[0...lastMeasurementIndex-1]))
                 }
-            Log.warning("[V2SYNC] avg stream=\(stream.sensorName ?? "?") window=\(averagingWindow.rawValue)s fetched=\(measurements.count) emitted=\(emitted) deleted=\(deleted) reminderKept=\(reminder.count)")
         }
     }
 
