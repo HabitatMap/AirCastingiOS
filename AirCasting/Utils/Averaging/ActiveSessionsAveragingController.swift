@@ -135,7 +135,14 @@ final class ActiveSessionsAveragingController: NSObject {
 
             guard let intervalStart = stream.session?.startTime else { Log.error("No session start time!"); return }
 
-            _ = averagingService.averageMeasurementsWithReminder(
+            // DIAGNOSTIC (test): count what each averaging pass does to the rows.
+            // Identity check: fetched == emitted + deleted + reminderKept. If that
+            // holds yet rows still vanish from the chart, the loss is at the store
+            // save (unique (stream,time) constraint dedup of rewritten survivors),
+            // not in the algorithm. Remove with the threshold revert.
+            var emitted = 0
+            var deleted = 0
+            let reminder = averagingService.averageMeasurementsWithReminder(
                 measurements: measurements,
                 startTime: intervalStart,
                 averagingWindow: averagingWindow) { averagedMeasurement, sourceMeasurements in
@@ -144,10 +151,13 @@ final class ActiveSessionsAveragingController: NSObject {
                     sourceMeasurements[lastMeasurementIndex].value = averagedMeasurement.value
                     sourceMeasurements[lastMeasurementIndex].time = averagedMeasurement.time
                     sourceMeasurements[lastMeasurementIndex].averagingWindow = averagingWindow.rawValue
-                    
+                    emitted += 1
+
                     guard sourceMeasurements.count > 1 else { return }
+                    deleted += sourceMeasurements.count - 1
                     storage.deleteMeasurements(Array(sourceMeasurements[0...lastMeasurementIndex-1]))
                 }
+            Log.warning("[V2SYNC] avg stream=\(stream.sensorName ?? "?") window=\(averagingWindow.rawValue)s fetched=\(measurements.count) emitted=\(emitted) deleted=\(deleted) reminderKept=\(reminder.count)")
         }
     }
     
