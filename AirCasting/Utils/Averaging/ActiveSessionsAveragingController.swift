@@ -39,10 +39,14 @@ enum AveragingWindow: Int {
 }
 
 enum TimeThreshold: Int {
-    // Two hours: 60 * 60 * 2 = 7200
-    case firstThreshold = 7200
-    // Nine hours: 60 * 60 * 9 = 32400
-    case secondThreshold = 32400
+    // ⚠️⚠️⚠️ TEST ONLY — DO NOT MERGE. REVERT BEFORE SHIPPING. ⚠️⚠️⚠️
+    // Compressed thresholds so averaging engages within ~1 min instead of
+    // 2 h / 9 h, to exercise the averaging-during-active-sync path in a short
+    // force-quit repro. With these values: <30 s no averaging, 30–60 s → 5 s
+    // window, >60 s → 60 s window (same window the failed >9 h session used).
+    // PRODUCTION VALUES: firstThreshold = 7200 (2 h), secondThreshold = 32400 (9 h).
+    case firstThreshold = 30
+    case secondThreshold = 60
 }
 
 final class ActiveSessionsAveragingController: NSObject {
