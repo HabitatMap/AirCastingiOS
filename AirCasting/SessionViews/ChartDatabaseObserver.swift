@@ -30,9 +30,19 @@ final class ChartDatabaseObserver {
     }
     
     @objc private func contextChanged(_ n: Notification) {
-        guard let insertedObjects = (n.userInfo?[NSInsertedObjectsKey] as? NSSet)?.allObjects else { return }
-        let insertedMeasurements = insertedObjects.compactMap { $0 as? MeasurementEntity }
-        let filtered = insertedMeasurements.filter { $0.measurementStream?.session?.uuid.rawValue == session ||
+        // Collect changed measurements across inserted, updated and refreshed sets.
+        // Live recording inserts measurements directly, so they land under
+        // NSInsertedObjectsKey. V2 sessions are written on a background context and
+        // reach the viewContext via `automaticallyMergesChangesFromParent` (after the
+        // sync-burst flush in PersistenceController) — there the merged rows surface
+        // as updated/refreshed, not inserted. Watching only inserts left the chart
+        // stale after a V2 sync until the user re-selected a stream.
+        let changedObjects = [NSInsertedObjectsKey, NSUpdatedObjectsKey, NSRefreshedObjectsKey]
+            .compactMap { (n.userInfo?[$0] as? NSSet)?.allObjects }
+            .flatMap { $0 }
+        guard !changedObjects.isEmpty else { return }
+        let changedMeasurements = changedObjects.compactMap { $0 as? MeasurementEntity }
+        let filtered = changedMeasurements.filter { $0.measurementStream?.session?.uuid.rawValue == session ||
             $0.measurementStream?.externalSession?.uuid.rawValue == session &&
             $0.measurementStream?.sensorName == sensor }
         guard let newestMeasurement = filtered.sorted(by: { $0.time > $1.time }).first else { return }
