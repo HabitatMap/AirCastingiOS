@@ -571,7 +571,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         // (RECEIVED + SAVED). Dial back to Log.info once the capture bug is fixed.
         let firstTS = records.first.map { String(format: "%.0f", $0.timestamp.timeIntervalSince1970) } ?? "?"
         let lastTS = records.last.map { String(format: "%.0f", $0.timestamp.timeIntervalSince1970) } ?? "?"
-        Log.warning("[V2SYNC] RECEIVED \(records.count) records ts=[\(firstTS)…\(lastTS)] configuredUUID=\(configuredSessionUUID?.rawValue ?? "nil") activeSession=\(activeSessionProvider.activeSession?.session.uuid.rawValue ?? "nil") deviceStatusUUID=\(lastStatus?.sessionUUID?.uuidString ?? "nil")")
+        Log.warning("[V2SYNC] RECEIVED \(records.count) records ts=[\(firstTS)…\(lastTS)] configuredUUID=\(self.configuredSessionUUID?.rawValue ?? "nil") activeSession=\(self.activeSessionProvider.activeSession?.session.uuid.rawValue ?? "nil") deviceStatusUUID=\(self.lastStatus?.sessionUUID?.uuidString ?? "nil")")
         guard let sessionUUID = configuredSessionUUID else {
             Log.warning("[V2SYNC] DROPPED: no configured session UUID yet (\(records.count) records).")
             return
