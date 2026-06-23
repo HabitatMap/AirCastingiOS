@@ -211,6 +211,10 @@ struct Strings {
                                                            comment: "")
         static let avgSessionMin: String = NSLocalizedString("1 min avg -",
                                                              comment: "")
+        static let avgSession5Min: String = NSLocalizedString("5 mins avg -",
+                                                              comment: "")
+        static let avgSession10Min: String = NSLocalizedString("10 mins avg -",
+                                                               comment: "")
     }
     
     struct SingleMeasurementView {

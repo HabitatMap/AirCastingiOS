@@ -52,8 +52,23 @@ struct ChartView: View {
     func descriptionText(stream: MeasurementStreamEntity?) -> some View {
         guard let stream = stream else { return Text("") }
         if let session = stream.session {
-            return Text("\(session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(formatter.unitString(for: stream))")
+            return Text("\(averageLabel(for: session)) \(formatter.unitString(for: stream))")
         }
         return Text("\(Strings.SessionCartView.avgSessionH) \(formatter.unitString(for: stream))")
+    }
+
+    /// Chart averaging-window label. Fixed sessions average over 1 hr; mobile
+    /// sessions over 1 min, except V2 mobile sessions configured with a coarser
+    /// native interval (5 or 10 min), which average over that window.
+    private func averageLabel(for session: SessionEntity) -> String {
+        guard session.isMobile else { return Strings.SessionCartView.avgSessionH }
+        if session.deviceFirmwareVersion == .v2 {
+            switch session.nativeMeasurementIntervalSeconds {
+            case 300: return Strings.SessionCartView.avgSession5Min
+            case 600: return Strings.SessionCartView.avgSession10Min
+            default: break
+            }
+        }
+        return Strings.SessionCartView.avgSessionMin
     }
 }
