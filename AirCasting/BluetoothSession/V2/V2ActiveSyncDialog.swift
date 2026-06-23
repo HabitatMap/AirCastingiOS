@@ -15,6 +15,7 @@ import SwiftUI
 import AirCastingStyling
 
 struct V2ActiveSyncDialog: View {
+    var isFinalizing: Bool = false
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text(Strings.V2ActiveSyncDialog.title)
@@ -26,7 +27,7 @@ struct V2ActiveSyncDialog: View {
                 .fixedSize(horizontal: false, vertical: true)
             HStack(spacing: 12) {
                 ProgressView()
-                Text(Strings.V2ActiveSyncDialog.progressLabel)
+                Text(isFinalizing ? Strings.V2ActiveSyncDialog.finalizingLabel : Strings.V2ActiveSyncDialog.progressLabel)
                     .font(Fonts.muliRegularHeading3)
                     .foregroundColor(.aircastingGray)
             }
@@ -41,6 +42,7 @@ struct V2ActiveSyncDialog: View {
 /// the dialog while a sync burst is in flight.
 final class V2ActiveSyncObserver: ObservableObject {
     @Published private(set) var isDraining: Bool = false
+    @Published private(set) var isFinalizing: Bool = false
     private var observer: NSObjectProtocol?
 
     init() {
@@ -54,6 +56,7 @@ final class V2ActiveSyncObserver: ObservableObject {
                   let draining = info[AirCastingNotificationKeys.V2SyncDrainChanged.isDraining] as? Bool
             else { return }
             self.isDraining = draining
+            self.isFinalizing = (info[AirCastingNotificationKeys.V2SyncDrainChanged.isFinalizing] as? Bool) ?? false
         }
     }
 
@@ -73,7 +76,7 @@ struct V2ActiveSyncDialogModifier: ViewModifier {
                 get: { observer.isDraining },
                 set: { _ in /* dismissal driven by observer state only */ }
             )) {
-                V2ActiveSyncDialog()
+                V2ActiveSyncDialog(isFinalizing: observer.isFinalizing)
             }
     }
 }

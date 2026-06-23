@@ -58,6 +58,17 @@ class PersistenceController: ObservableObject {
     private var syncBurstDepth: Int = 0
     private var syncBurstHasDeferredChange: Bool = false
 
+    /// True while at least one V2 sync burst is in flight. The averaging
+    /// controller reads this to suppress periodic averaging while a reverse-order
+    /// backfill is still arriving — averaging a half-arrived 60s window then
+    /// re-averaging the rest collides on the (measurementStream,time) unique
+    /// constraint (PM1/PM2.5 desync + wrong value). One clean pass runs at drain
+    /// via ActiveSessionsAveragingController.averageSessionNow().
+    var isSyncBurstActive: Bool {
+        syncBurstLock.lock(); defer { syncBurstLock.unlock() }
+        return syncBurstDepth > 0
+    }
+
     // V2 sync chunks can overlap live measurements on `(stream, time)`.
     // The unique constraint on MeasurementEntity dedupes them — keep the existing row
     // so live writes that landed first aren't clobbered by a later sync replay.

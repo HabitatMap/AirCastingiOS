@@ -30,5 +30,6 @@ enum AirCastingNotificationKeys {
     enum V2SyncDrainChanged {
         static let deviceUUID = "deviceUUID"
         static let isDraining = "isDraining"
+        static let isFinalizing = "isFinalizing"
     }
 }

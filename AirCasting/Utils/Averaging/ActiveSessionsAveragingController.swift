@@ -52,6 +52,7 @@ enum TimeThreshold: Int {
 final class ActiveSessionsAveragingController: NSObject {
     @Injected var storage: AveragingServiceStorage
     @Injected private var averagingService: MeasurementsAveragingService
+    @Injected private var persistenceController: PersistenceController
     private var timers: [SessionUUID : AnyCancellable] = [:]
     private var fetchedResultsController: NSFetchedResultsController<SessionEntity>?
     
@@ -125,6 +126,15 @@ final class ActiveSessionsAveragingController: NSObject {
                     if windowDidChange {
                         self.startPeriodicAveraging(uuid: uuid, window: checkWindow)
                     }
+                    // Suppress periodic averaging while a V2 sync burst is back-filling:
+                    // the reverse-order replay arrives mid-window, so averaging a
+                    // half-arrived window then re-averaging the rest collides on the
+                    // (measurementStream,time) unique constraint (PM1/PM2.5 desync +
+                    // wrong value). One clean pass runs at drain via averageSessionNow().
+                    guard !self.persistenceController.isSyncBurstActive else {
+                        Log.info("Periodic averaging skipped for \(uuid) — V2 sync burst active")
+                        return
+                    }
                     self.perform(storage: storage,
                                  session: session,
                                  averagingWindow: checkWindow)
@@ -166,7 +176,29 @@ final class ActiveSessionsAveragingController: NSObject {
             Log.warning("[V2SYNC] avg stream=\(stream.sensorName ?? "?") window=\(averagingWindow.rawValue)s fetched=\(measurements.count) emitted=\(emitted) deleted=\(deleted) reminderKept=\(reminder.count)")
         }
     }
-    
+
+    /// Run a single averaging pass for a session immediately, bypassing the
+    /// sync-burst gate. Called at V2 active-sync drain (after every back-filled
+    /// row has arrived) so the whole backlog is averaged in one clean pass —
+    /// every window is full → no partial re-average, no (measurementStream,time)
+    /// constraint collision. `completion` fires after the editContext save lands.
+    func averageSessionNow(uuid: SessionUUID, completion: @escaping () -> Void) {
+        storage.accessStorage { [weak self] storage in
+            defer { completion() }
+            guard let self = self else { return }
+            guard let session = try? storage.getExistingSession(with: uuid),
+                  let window = self.averagingWindowFor(startTime: session.startTime,
+                                                       nativeInterval: session.nativeMeasurementIntervalSeconds)
+            else {
+                Log.info("averageSessionNow: no session/window for \(uuid), skipping")
+                return
+            }
+            Log.info("averageSessionNow: post-sync averaging pass for \(uuid) window=\(window.rawValue)s")
+            self.perform(storage: storage, session: session, averagingWindow: window)
+            try? storage.save()
+        }
+    }
+
     private func averagingWindowFor(startTime: Date?, nativeInterval: Int) -> AveragingWindow? {
         guard let startTime = startTime else {
             Log.info("Can't calculate averaging window, session doesn't have the startTime")

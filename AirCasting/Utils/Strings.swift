@@ -1263,6 +1263,7 @@ struct Strings {
         static let title = NSLocalizedString("Syncing measurements", comment: "")
         static let description = NSLocalizedString("Syncing your AirBeam Mini's stored data. This may take a few minutes. Please keep the app open and stay near the device.", comment: "")
         static let progressLabel = NSLocalizedString("Sync in progress…", comment: "")
+        static let finalizingLabel = NSLocalizedString("Finalizing measurements…", comment: "")
         static let stopDisabledLabel = NSLocalizedString("Wait for sync to finish", comment: "")
     }
 

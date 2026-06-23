@@ -631,9 +631,13 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         let work = DispatchWorkItem { [weak self] in
             self?.queue.async {
                 guard let self = self, self.isActiveSyncDrainingStorage else { return }
-                self.isActiveSyncDrainingStorage = false
-                self.postSyncDrainNotificationLocked(false)
-                self.exitBurstGateLocked()
+                // Chunks stopped for the idle window → every back-filled row is now in
+                // the DB. Run ONE clean averaging pass over the complete backlog BEFORE
+                // hiding the dialog (so a finish can't race the average), keeping the
+                // dialog up with a "finalizing" label. Periodic averaging stays gated by
+                // the still-open burst; averageSessionNow bypasses that gate.
+                self.postSyncDrainNotificationLocked(true, finalizing: true)
+                self.runPostSyncAveragingThenFinishLocked()
             }
         }
         syncDrainResetWorkItem = work
@@ -642,6 +646,24 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
             postSyncDrainNotificationLocked(true)
             enterBurstGateLocked()
         }
+    }
+
+    /// Drain tail: average the just-arrived backlog in one clean pass, then exit
+    /// the burst gate and tell the dialog to dismiss. Keeps the dialog up (with the
+    /// "finalizing" label) until the averaging save lands, so the user can't finish
+    /// the session mid-average. Runs on `queue`.
+    private func runPostSyncAveragingThenFinishLocked() {
+        let finish: () -> Void = { [weak self] in
+            self?.queue.async {
+                guard let self = self else { return }
+                self.isActiveSyncDrainingStorage = false
+                self.exitBurstGateLocked()
+                self.postSyncDrainNotificationLocked(false)
+            }
+        }
+        guard let uuid = configuredSessionUUID else { finish(); return }
+        Resolver.resolve(ActiveSessionsAveragingController.self)
+            .averageSessionNow(uuid: uuid) { finish() }
     }
 
     /// Tracks whether this configurator currently holds a burst-gate slot on
@@ -661,14 +683,15 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         persistenceController.exitSyncBurst()
     }
 
-    private func postSyncDrainNotificationLocked(_ draining: Bool) {
+    private func postSyncDrainNotificationLocked(_ draining: Bool, finalizing: Bool = false) {
         let deviceUUID = device.uuid
         NotificationCenter.default.post(
             name: .v2SyncDrainChanged,
             object: nil,
             userInfo: [
                 AirCastingNotificationKeys.V2SyncDrainChanged.deviceUUID: deviceUUID,
-                AirCastingNotificationKeys.V2SyncDrainChanged.isDraining: draining
+                AirCastingNotificationKeys.V2SyncDrainChanged.isDraining: draining,
+                AirCastingNotificationKeys.V2SyncDrainChanged.isFinalizing: finalizing
             ]
         )
     }
