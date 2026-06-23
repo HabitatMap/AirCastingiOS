@@ -103,8 +103,14 @@ final class ActiveSessionsAveragingController: NSObject {
     }
     
     private func startPeriodicAveraging(uuid: SessionUUID, window: AveragingWindow) {
-        Log.info("Starting periodic averaging with window of \(window.rawValue)s for \(uuid)")
-        let timer = Timer.publish(every: TimeInterval(window.rawValue), on: .main, in: .common)
+        // ⚠️ TEST ONLY — DO NOT MERGE. Fire every 1s (not every window.rawValue s) so
+        // multiple averaging passes land DURING an active sync even for a SHORT disconnect
+        // (no need to record an hour) — exercises the interleaved multi-pass path against a
+        // still-arriving (reverse-order) buffer. perform() still averages with the 60s window
+        // via checkWindow, so output stays 1-min.
+        // PRODUCTION: Timer.publish(every: TimeInterval(window.rawValue), on: .main, in: .common)
+        Log.info("Starting periodic averaging with window of \(window.rawValue)s (TEST tick=1s) for \(uuid)")
+        let timer = Timer.publish(every: 1, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
                 guard let self = self else { return }
