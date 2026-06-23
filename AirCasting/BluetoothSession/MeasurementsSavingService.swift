@@ -226,7 +226,7 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
                     entries.append((streamIDs.pm25, record.pm25.measuredValue, record.time, location))
                 }
                 try storage.appendMeasurementValues(entries)
-                Log.info("V2 sync batch: \(records.count) records (\(entries.count) measurements) saved for \(sessionUUID)")
+                Log.warning("[V2SYNC] SAVED batch: \(records.count) records (\(entries.count) measurements) for \(sessionUUID)")
             } catch {
                 Log.error("V2 sync batch save failed: \(error)")
             }
