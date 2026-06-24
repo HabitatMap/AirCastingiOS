@@ -240,11 +240,13 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
             // permanently lose records that hadn't been replayed yet.
             configurator.awaitSyncDrain { drainResult in
                 if case .failure(let error) = drainResult {
-                    Log.error("V2 stop: sync drain wait timed out (\(error)). Proceeding with DiscardSession; some records may be lost.")
+                    Log.error("[V2SYNC] stop: sync drain wait timed out (\(error)) for \(uuid). Proceeding with DiscardSession; un-replayed records still on the device will be WIPED and lost.")
+                } else {
+                    Log.info("[V2SYNC] stop: sync drained cleanly before DiscardSession for \(uuid).")
                 }
                 configurator.discardSession { result in
                     if case .failure(let error) = result {
-                        Log.error("V2 DiscardSession on stop failed: \(error). Disconnecting anyway.")
+                        Log.error("[V2SYNC] DiscardSession on stop failed: \(error). Disconnecting anyway.")
                     }
                     proceedToDisconnect()
                 }

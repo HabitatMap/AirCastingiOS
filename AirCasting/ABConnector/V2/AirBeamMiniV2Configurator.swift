@@ -63,6 +63,19 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
     // has_measurements byte, so we infer drain via "Sync indication seen in the
     // last 3 s" and surface it as an observable property.
     private var syncDrainResetWorkItem: DispatchWorkItem?
+
+    // Per-sync-burst capture accounting — diagnostics for the missing-middle
+    // offline-backfill data loss. Reset when a burst opens (first chunk in
+    // bumpActiveSyncDrainingLocked) and summarised at drain. The invariant
+    // `received == handedToSave + dropped` must hold; a mismatch means a parsed
+    // chunk was neither saved nor counted dropped (a capture bug worth flagging
+    // loudly). tsSpan brackets the replayed window so it can be compared against
+    // the disconnect duration + the device's ~13.7h ring-buffer cap.
+    private var syncBurstReceived = 0
+    private var syncBurstSaved = 0
+    private var syncBurstDropped = 0
+    private var syncBurstNewestTS: TimeInterval?
+    private var syncBurstOldestTS: TimeInterval?
     private var isActiveSyncDrainingStorage: Bool = false
     private static let syncDrainIdleTimeoutSeconds: TimeInterval = 3.0
     var isActiveSyncDraining: Bool {
@@ -572,8 +585,13 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         let firstTS = records.first.map { String(format: "%.0f", $0.timestamp.timeIntervalSince1970) } ?? "?"
         let lastTS = records.last.map { String(format: "%.0f", $0.timestamp.timeIntervalSince1970) } ?? "?"
         Log.info("[V2SYNC] RECEIVED \(records.count) records ts=[\(firstTS)…\(lastTS)] configuredUUID=\(self.configuredSessionUUID?.rawValue ?? "nil") activeSession=\(self.activeSessionProvider.activeSession?.session.uuid.rawValue ?? "nil") deviceStatusUUID=\(self.lastStatus?.sessionUUID?.uuidString ?? "nil")")
+        syncBurstReceived += records.count
+        let burstTS = records.map { $0.timestamp.timeIntervalSince1970 }
+        if let mn = burstTS.min() { syncBurstOldestTS = syncBurstOldestTS.map { Swift.min($0, mn) } ?? mn }
+        if let mx = burstTS.max() { syncBurstNewestTS = syncBurstNewestTS.map { Swift.max($0, mx) } ?? mx }
         guard let sessionUUID = configuredSessionUUID else {
-            Log.warning("[V2SYNC] DROPPED: no configured session UUID yet (\(records.count) records).")
+            syncBurstDropped += records.count
+            Log.warning("[V2SYNC] DROPPED: no configured session UUID yet (\(records.count) records). burst dropped total=\(self.syncBurstDropped)")
             return
         }
         // Single-session V2 firmware: the AirBeam only ever holds the session it is
@@ -590,7 +608,8 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         }
         guard let active = activeSessionProvider.activeSession,
               active.session.uuid == sessionUUID else {
-            Log.warning("[V2SYNC] DROPPED: active session missing or uuid mismatch.")
+            syncBurstDropped += records.count
+            Log.warning("[V2SYNC] DROPPED: active session missing or uuid mismatch (\(records.count) records). burst dropped total=\(self.syncBurstDropped)")
             return
         }
 
@@ -621,6 +640,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         measurementsSaver.saveV2SyncBatch(batch,
                                           sessionUUID: sessionUUID,
                                           locationless: locationless)
+        syncBurstSaved += records.count
         NotificationCenter.default.post(
             name: .v2MeasurementSaved,
             object: nil,
@@ -635,6 +655,22 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         let work = DispatchWorkItem { [weak self] in
             self?.queue.async {
                 guard let self = self, self.isActiveSyncDrainingStorage else { return }
+                // DIAGNOSTIC: summarise this sync burst before finalizing so a recurrence
+                // of the missing-middle loss can be pinpointed to the capture layer. If
+                // received != handedToSave + dropped, a parsed chunk vanished without
+                // being saved or counted dropped — a capture bug. tsSpan vs disconnect
+                // duration also reveals device-buffer (~13.7h) overflow vs app-side loss.
+                let burstSpan: String
+                if let newest = self.syncBurstNewestTS, let oldest = self.syncBurstOldestTS {
+                    burstSpan = String(format: "[%.0f…%.0f] %.1fmin", newest, oldest, (newest - oldest) / 60)
+                } else {
+                    burstSpan = "n/a"
+                }
+                Log.info("[V2SYNC] sync burst drained: received=\(self.syncBurstReceived) handedToSave=\(self.syncBurstSaved) dropped=\(self.syncBurstDropped) tsSpan=\(burstSpan) session=\(self.configuredSessionUUID?.rawValue ?? "nil")")
+                let burstMismatch = self.syncBurstReceived - self.syncBurstSaved - self.syncBurstDropped
+                if burstMismatch != 0 {
+                    Log.error("[V2SYNC] CAPTURE MISMATCH: received(\(self.syncBurstReceived)) != handedToSave(\(self.syncBurstSaved)) + dropped(\(self.syncBurstDropped)); \(burstMismatch) records unaccounted for.")
+                }
                 // Chunks stopped for the idle window → every back-filled row is now in
                 // the DB. Run ONE clean averaging pass over the complete backlog BEFORE
                 // hiding the dialog (so a finish can't race the average), keeping the
@@ -647,6 +683,13 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         syncDrainResetWorkItem = work
         queue.asyncAfter(deadline: .now() + Self.syncDrainIdleTimeoutSeconds, execute: work)
         if !wasDraining {
+            // New burst opening — reset the capture accounting.
+            syncBurstReceived = 0
+            syncBurstSaved = 0
+            syncBurstDropped = 0
+            syncBurstNewestTS = nil
+            syncBurstOldestTS = nil
+            Log.info("[V2SYNC] sync burst opening for \(self.configuredSessionUUID?.rawValue ?? "nil")")
             postSyncDrainNotificationLocked(true)
             enterBurstGateLocked()
         }
@@ -738,6 +781,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                     }
                     switch status {
                     case .running(_, let deviceUUID):
+                        Log.info("[V2SYNC] reconnect status=Running deviceUUID=\(deviceUUID) appUUID=\(parsedExpected)")
                         if deviceUUID != parsedExpected {
                             // Single-session FW: trust the device's session as ours rather
                             // than aborting resume. Aborting here stranded the backfill (it
@@ -748,7 +792,8 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                         self.queue.async { self.mobileSessionActive = true }
                         self.scheduleHourlySetTime()
                         completion(.success(()))
-                    case .hasSavedSession(_, let deviceUUID, _, _):
+                    case .hasSavedSession(_, let deviceUUID, let stored, _):
+                        Log.info("[V2SYNC] reconnect status=HasSavedSession storedMeasurements=\(stored) deviceUUID=\(deviceUUID) appUUID=\(parsedExpected)")
                         if deviceUUID != parsedExpected {
                             // Single-session FW: trust the device's session as ours rather
                             // than aborting resume. Aborting here stranded the backfill (it
