@@ -13,6 +13,11 @@ protocol HiddenMobileSessionFinishingStorage {
     func save() throws
     func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) throws
     func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws
+    /// Look up the DISCONNECTED mobile session recorded by the AirBeam with this BLE
+    /// peripheral UUID, mapped to a `Session` value. Used on reconnect to rebuild the
+    /// in-memory active session after a cold relaunch (the in-memory provider is emptied
+    /// on app kill), so the V2 backfill binds and is captured instead of dropped.
+    func disconnectedMobileSession(forPeripheralUUID peripheralUUID: String) throws -> Session?
 }
 
 class DefaultMobileSessionFinishingStorage: MobileSessionFinishingStorage {
@@ -81,5 +86,23 @@ class DefaultHiddenMobileSessionFinishingStorage: HiddenMobileSessionFinishingSt
     func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         sessionEntity.endTime = endTime.currentUTCTimeZoneDate
+    }
+
+    func disconnectedMobileSession(forPeripheralUUID peripheralUUID: String) throws -> Session? {
+        let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "type == %@ AND status == %li AND bluetoothConnection.peripheralUUID == %@",
+                                        SessionType.mobile.rawValue,
+                                        SessionStatus.DISCONNECTED.rawValue,
+                                        peripheralUUID)
+        request.fetchLimit = 1
+        guard let entity = try context.fetch(request).first else { return nil }
+        return Session(uuid: entity.uuid,
+                       type: entity.type,
+                       name: entity.name,
+                       deviceType: entity.deviceType,
+                       location: entity.location,
+                       startTime: entity.startTime,
+                       locationless: entity.locationless,
+                       measurementInterval: entity.measurementInterval)
     }
 }

@@ -13,6 +13,7 @@ protocol BluetoothSessionRecordingController {
 
 enum SessionRecordingControllerError: Error {
     case sessionAlreadyInProgress
+    case noSessionToResume
 }
 
 class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingController {
@@ -94,34 +95,38 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
         //   - Running: nothing to send; sync chunks + live indications flow on their own.
         //   - HasSavedSession: send ContinueSession (0x10) to transition the device to Running.
         if device.firmwareVersion == .v2 {
-            guard let activeSession = self.activeSessionProvider.activeSession else {
-                completion(.success(()))
+            if let activeSession = self.activeSessionProvider.activeSession {
+                self.resumeV2Session(device: device, activeSession: activeSession, completion: completion)
                 return
             }
-            let configurator = Resolver.resolve(AirBeamMiniV2Configurator.self, args: device)
-            configurator.resumeSessionAfterReconnect(uuid: activeSession.session.uuid) { [weak self] result in
+            // No in-memory active session. The provider is in-memory only and is emptied
+            // on app kill, so a cold relaunch mid-session lands here. Rebuild the active
+            // session from the on-disk DISCONNECTED row this device owns and bind it,
+            // instead of silently reporting success (which left configuredSessionUUID
+            // unbound, so the entire offline backfill was dropped on reconnect). If there
+            // is genuinely nothing to resume, fail loudly — never resolve silently.
+            storage.accessStorage { [weak self] hidden in
                 guard let self = self else { return }
-                switch result {
-                case .success:
-                    if !activeSession.session.locationless {
-                        self.locationTracker.start()
+                let restored: Session?
+                do {
+                    restored = try hidden.disconnectedMobileSession(forPeripheralUUID: device.uuid)
+                } catch {
+                    Log.error("V2 resumeRecording: failed to look up DISCONNECTED session for \(device.uuid): \(error)")
+                    restored = nil
+                }
+                DispatchQueue.main.async {
+                    guard let restored = restored else {
+                        Log.error("V2 resumeRecording: no active session in memory and no DISCONNECTED session on disk for \(device.uuid) — cannot resume.")
+                        completion(.failure(SessionRecordingControllerError.noSessionToResume))
+                        return
                     }
-                    // V2: re-arm the backfill sampler. Idempotent — if the app wasn't
-                    // killed, the existing sampler stays; on cold-relaunch this is the
-                    // path that restarts location capture for the previously DISCONNECTED
-                    // session.
-                    if !activeSession.session.locationless {
-                        let interval = TimeInterval(activeSession.session.measurementInterval.flatMap(Int.init) ?? 1)
-                        self.v2LocationBackfillCoordinator.startSampling(
-                            sessionUUID: activeSession.session.uuid,
-                            intervalSeconds: interval
-                        )
+                    Log.info("V2 resumeRecording: restored active session \(restored.uuid) from disk for reconnecting device \(device.uuid)")
+                    self.activeSessionProvider.setActiveSession(session: restored, device: device)
+                    guard let activeSession = self.activeSessionProvider.activeSession else {
+                        completion(.failure(SessionRecordingControllerError.noSessionToResume))
+                        return
                     }
-                    self.isRecording = true
-                    completion(.success(()))
-                case .failure(let error):
-                    Log.error("V2 resume after reconnect failed: \(error)")
-                    completion(.failure(error))
+                    self.resumeV2Session(device: device, activeSession: activeSession, completion: completion)
                 }
             }
             return
@@ -150,6 +155,37 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
                     completion(.failure(error))
                 }
             }
+    }
+
+    private func resumeV2Session(device: any BluetoothDevice,
+                                 activeSession: MobileSession,
+                                 completion: @escaping (Result<Void, Error>) -> Void) {
+        let configurator = Resolver.resolve(AirBeamMiniV2Configurator.self, args: device)
+        configurator.resumeSessionAfterReconnect(uuid: activeSession.session.uuid) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                if !activeSession.session.locationless {
+                    self.locationTracker.start()
+                }
+                // V2: re-arm the backfill sampler. Idempotent — if the app wasn't
+                // killed, the existing sampler stays; on cold-relaunch this is the
+                // path that restarts location capture for the previously DISCONNECTED
+                // session.
+                if !activeSession.session.locationless {
+                    let interval = TimeInterval(activeSession.session.measurementInterval.flatMap(Int.init) ?? 1)
+                    self.v2LocationBackfillCoordinator.startSampling(
+                        sessionUUID: activeSession.session.uuid,
+                        intervalSeconds: interval
+                    )
+                }
+                self.isRecording = true
+                completion(.success(()))
+            case .failure(let error):
+                Log.error("V2 resume after reconnect failed: \(error)")
+                completion(.failure(error))
+            }
+        }
     }
 
     func stopRecordingSession(with uuid: SessionUUID, databaseChange: (MobileSessionFinishingStorage) -> Void) {
