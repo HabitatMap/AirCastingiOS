@@ -477,12 +477,12 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                 finalize()
                 return
             }
+            // Single-session V2 firmware: trust the device's session as ours instead
+            // of dropping on UUID mismatch (see persistSyncChunkLocked for rationale).
             if let statusUUID = self.lastStatus?.sessionUUID,
                let configuredParsed = UUID(uuidString: sessionUUID.rawValue),
                statusUUID != configuredParsed {
-                Log.warning("V2 manual sync persist dropped: device session \(statusUUID) != active \(configuredParsed)")
-                finalize()
-                return
+                Log.info("V2 manual sync persist: device session \(statusUUID) != active \(configuredParsed) — trusting device; attributing \(records.count) records to active session.")
             }
             guard let active = self.activeSessionProvider.activeSession,
                   active.session.uuid == sessionUUID else {
@@ -576,13 +576,17 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
             Log.warning("[V2SYNC] DROPPED: no configured session UUID yet (\(records.count) records).")
             return
         }
-        // Compare device's reported session UUID (from last Status) to the active app
-        // session UUID — drop chunks belonging to an older session still on device storage.
+        // Single-session V2 firmware: the AirBeam only ever holds the session it is
+        // currently recording, and we only ever sync the device this active session
+        // owns — so the device's reported session UUID IS this session. A mismatch can
+        // only be app-side identity drift; the buffered data still belongs here. Trust
+        // the device and attribute the backfill to the active session instead of
+        // dropping it. Dropping here was the missing-middle data-loss bug: the offline
+        // window vanished while the post-reconnect live stream (no UUID check) survived.
         if let statusUUID = lastStatus?.sessionUUID,
            let configuredParsed = UUID(uuidString: sessionUUID.rawValue),
            statusUUID != configuredParsed {
-            Log.warning("[V2SYNC] DROPPED: device session \(statusUUID) != active \(configuredParsed)")
-            return
+            Log.info("[V2SYNC] device session \(statusUUID) != active \(configuredParsed) — trusting device (single-session FW); attributing \(records.count) records to active session.")
         }
         guard let active = activeSessionProvider.activeSession,
               active.session.uuid == sessionUUID else {
@@ -734,20 +738,22 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                     }
                     switch status {
                     case .running(_, let deviceUUID):
-                        guard deviceUUID == parsedExpected else {
-                            Log.error("V2 reconnect Running with mismatched uuid device=\(deviceUUID) app=\(parsedExpected)")
-                            completion(.failure(AirBeamMiniV2ConfiguratorError.sessionUUIDMismatch))
-                            return
+                        if deviceUUID != parsedExpected {
+                            // Single-session FW: trust the device's session as ours rather
+                            // than aborting resume. Aborting here stranded the backfill (it
+                            // got dropped by the per-chunk UUID guard while live survived).
+                            Log.warning("V2 reconnect Running uuid mismatch device=\(deviceUUID) app=\(parsedExpected) — trusting device; proceeding.")
                         }
                         // Scenario A: no command needed; firmware streams sync + live automatically.
                         self.queue.async { self.mobileSessionActive = true }
                         self.scheduleHourlySetTime()
                         completion(.success(()))
                     case .hasSavedSession(_, let deviceUUID, _, _):
-                        guard deviceUUID == parsedExpected else {
-                            Log.error("V2 reconnect HasSavedSession with mismatched uuid device=\(deviceUUID) app=\(parsedExpected)")
-                            completion(.failure(AirBeamMiniV2ConfiguratorError.sessionUUIDMismatch))
-                            return
+                        if deviceUUID != parsedExpected {
+                            // Single-session FW: trust the device's session as ours rather
+                            // than aborting resume. Aborting here stranded the backfill (it
+                            // got dropped by the per-chunk UUID guard while live survived).
+                            Log.warning("V2 reconnect HasSavedSession uuid mismatch device=\(deviceUUID) app=\(parsedExpected) — trusting device; proceeding.")
                         }
                         self.sendContinueSession { [weak self] result in
                             guard let self = self else { return }
