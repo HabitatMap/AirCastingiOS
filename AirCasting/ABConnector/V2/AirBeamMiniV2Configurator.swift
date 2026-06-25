@@ -73,6 +73,10 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
     // the disconnect duration + the device's ~13.7h ring-buffer cap.
     private var syncBurstReceived = 0
     private var syncBurstSaved = 0
+    // Records CONFIRMED committed to CoreData (vs `syncBurstSaved`, which only counts
+    // records handed to the async saver). A gap between the two = a silent persist
+    // failure — the missing-middle data loss. Surfaced at drain.
+    private var syncBurstPersisted = 0
     private var syncBurstDropped = 0
     private var syncBurstNewestTS: TimeInterval?
     private var syncBurstOldestTS: TimeInterval?
@@ -639,7 +643,14 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         }
         measurementsSaver.saveV2SyncBatch(batch,
                                           sessionUUID: sessionUUID,
-                                          locationless: locationless)
+                                          locationless: locationless,
+                                          onPersisted: { [weak self] persistedCount in
+                                              // Fires on the storage queue after the
+                                              // CoreData write actually commits. Hop
+                                              // back to our serial queue to update the
+                                              // confirmed-persist counter.
+                                              self?.queue.async { self?.syncBurstPersisted += persistedCount }
+                                          })
         syncBurstSaved += records.count
         NotificationCenter.default.post(
             name: .v2MeasurementSaved,
@@ -666,10 +677,18 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                 } else {
                     burstSpan = "n/a"
                 }
-                Log.info("[V2SYNC] sync burst drained: received=\(self.syncBurstReceived) handedToSave=\(self.syncBurstSaved) dropped=\(self.syncBurstDropped) tsSpan=\(burstSpan) session=\(self.configuredSessionUUID?.rawValue ?? "nil")")
+                Log.info("[V2SYNC] sync burst drained: received=\(self.syncBurstReceived) handedToSave=\(self.syncBurstSaved) persisted=\(self.syncBurstPersisted) dropped=\(self.syncBurstDropped) tsSpan=\(burstSpan) session=\(self.configuredSessionUUID?.rawValue ?? "nil")")
                 let burstMismatch = self.syncBurstReceived - self.syncBurstSaved - self.syncBurstDropped
                 if burstMismatch != 0 {
                     Log.error("[V2SYNC] CAPTURE MISMATCH: received(\(self.syncBurstReceived)) != handedToSave(\(self.syncBurstSaved)) + dropped(\(self.syncBurstDropped)); \(burstMismatch) records unaccounted for.")
+                }
+                // handedToSave counts records given to the async saver; persisted counts
+                // records the saver confirmed committing to CoreData. A shortfall is a
+                // real persist failure (the missing-middle data loss) — not a capture
+                // bug — so surface it loudly even though capture accounting balanced.
+                let persistMismatch = self.syncBurstSaved - self.syncBurstPersisted
+                if persistMismatch != 0 {
+                    Log.error("[V2SYNC] PERSIST MISMATCH: handedToSave(\(self.syncBurstSaved)) != persisted(\(self.syncBurstPersisted)); \(persistMismatch) records failed to commit to CoreData (data loss).")
                 }
                 // Chunks stopped for the idle window → every back-filled row is now in
                 // the DB. Run ONE clean averaging pass over the complete backlog BEFORE
@@ -686,6 +705,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
             // New burst opening — reset the capture accounting.
             syncBurstReceived = 0
             syncBurstSaved = 0
+            syncBurstPersisted = 0
             syncBurstDropped = 0
             syncBurstNewestTS = nil
             syncBurstOldestTS = nil

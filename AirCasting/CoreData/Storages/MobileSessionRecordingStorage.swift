@@ -89,17 +89,19 @@ class DefaultHiddenMobileSessionRecordingStorage: HiddenMobileSessionRecordingSt
                                               time: Date,
                                               location: CLLocationCoordinate2D?)]) throws {
         guard !entries.isEmpty else { return }
-        // Cache the stream entities by local ID so a burst of records for the
-        // same stream avoids hitting `existingObject(with:)` N times.
+        // Resolve every DISTINCT stream up front, before inserting any measurement.
+        // `existingObject(with:)` throws (CoreData 133000) if a stream's objectID is
+        // no longer in the store — e.g. a stale/temporary id. Doing all the lookups
+        // first keeps a failing batch atomic: it throws with ZERO measurements
+        // inserted, so the caller can clear its id cache, re-resolve, and retry
+        // without risking duplicate rows (which would then trip the
+        // (measurementStream,time) uniqueness constraint).
         var streamCache: [NSManagedObjectID: MeasurementStreamEntity] = [:]
+        for id in Set(entries.map { $0.streamID.id }) {
+            streamCache[id] = try context.existingObject(with: id) as! MeasurementStreamEntity
+        }
         for entry in entries {
-            let streamEntity: MeasurementStreamEntity
-            if let cached = streamCache[entry.streamID.id] {
-                streamEntity = cached
-            } else {
-                streamEntity = try context.existingObject(with: entry.streamID.id) as! MeasurementStreamEntity
-                streamCache[entry.streamID.id] = streamEntity
-            }
+            let streamEntity = streamCache[entry.streamID.id]!
             let newMeasurement = MeasurementEntity(context: context)
             newMeasurement.location = entry.location
             newMeasurement.time = entry.time
@@ -165,7 +167,17 @@ class DefaultHiddenMobileSessionRecordingStorage: HiddenMobileSessionRecordingSt
             threshold.thresholdHigh = stream.thresholdHigh
             threshold.thresholdVeryHigh = stream.thresholdVeryHigh
         }
-        
+
+        // A freshly-inserted object carries a TEMPORARY objectID until a save reaches
+        // the persistent store. Callers (notably the V2 sync path's v2SyncStreamCache)
+        // cache this `localID` and resolve it later via `existingObject(with:)`. A
+        // temporary objectID is invalidated the moment the context is refreshed
+        // (`refreshAllObjects()` from the shared-editContext averaging save), after
+        // which the cached id throws CoreData 133000 "object not found in store" and
+        // every subsequent measurement batch is silently dropped — the missing-middle
+        // data loss. Mint a permanent id now so the cached id stays resolvable.
+        try context.obtainPermanentIDs(for: [newStream])
+
         return newStream.localID
     }
 }

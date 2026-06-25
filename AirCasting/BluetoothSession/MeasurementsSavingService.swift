@@ -31,15 +31,33 @@ protocol MeasurementsSavingService {
     /// transaction. Used by `AirBeamMiniV2Configurator.persistSyncChunkLocked`
     /// and `persistManualSyncRecords` to avoid the per-record `updateStreams`
     /// storm that froze the UI during active-reconnect sync.
+    /// `onPersisted` fires (on the storage queue) with the number of RECORDS
+    /// actually committed once the CoreData write succeeds — distinct from the
+    /// records merely handed off. Callers use it for confirmed-persist accounting
+    /// so a silent persist failure can't masquerade as a successful save.
     func saveV2SyncBatch(_ records: [(pm1: ABMeasurementStream,
                                       pm25: ABMeasurementStream,
                                       time: Date,
                                       locationOverride: CLLocationCoordinate2D?)],
                          sessionUUID: SessionUUID,
-                         locationless: Bool)
+                         locationless: Bool,
+                         onPersisted: ((Int) -> Void)?)
     /// Drop any cached stream IDs for the session. Call on session stop /
     /// reconnect-reset so a re-created session doesn't reuse stale IDs.
     func clearV2SyncStreamCache(for sessionUUID: SessionUUID)
+}
+
+extension MeasurementsSavingService {
+    /// Back-compat convenience for callers that don't need confirmed-persist
+    /// accounting (SD-card sync, manual finish-dialog sync).
+    func saveV2SyncBatch(_ records: [(pm1: ABMeasurementStream,
+                                      pm25: ABMeasurementStream,
+                                      time: Date,
+                                      locationOverride: CLLocationCoordinate2D?)],
+                         sessionUUID: SessionUUID,
+                         locationless: Bool) {
+        saveV2SyncBatch(records, sessionUUID: sessionUUID, locationless: locationless, onPersisted: nil)
+    }
 }
 
 class DefaultMeasurementsSaver: MeasurementsSavingService {
@@ -187,7 +205,8 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
                                       time: Date,
                                       locationOverride: CLLocationCoordinate2D?)],
                          sessionUUID: SessionUUID,
-                         locationless: Bool) {
+                         locationless: Bool,
+                         onPersisted: ((Int) -> Void)?) {
         guard !records.isEmpty else { return }
         // Resolve the fallback (phone last-known fix) once on the caller's
         // thread — pulling it inside `accessStorage` would hop to the
@@ -201,7 +220,11 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         }
         persistence.accessStorage { [weak self] storage in
             guard let self = self else { return }
-            do {
+
+            // One append attempt: (re)resolve the stream IDs and write all paired
+            // records. `appendMeasurementValues` resolves streams before inserting
+            // anything, so a stale-id throw leaves the batch atomic (no partial rows).
+            func attempt() throws {
                 let streamIDs = try self.resolveV2SyncStreamIDs(
                     sessionUUID: sessionUUID,
                     pm1Template: records[0].pm1,
@@ -226,9 +249,30 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
                     entries.append((streamIDs.pm25, record.pm25.measuredValue, record.time, location))
                 }
                 try storage.appendMeasurementValues(entries)
-                Log.info("[V2SYNC] SAVED batch: \(records.count) records (\(entries.count) measurements) for \(sessionUUID)")
+            }
+
+            do {
+                try attempt()
+                Log.info("[V2SYNC] SAVED batch: \(records.count) records (\(records.count * 2) measurements) for \(sessionUUID)")
+                onPersisted?(records.count)
+            } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == 133000 {
+                // The cached stream objectID went stale — a temporary id invalidated
+                // by a context refresh (the shared-editContext averaging save), or a
+                // removed/old stream. This was the missing-middle data loss: every
+                // later batch reused the dead id and was silently dropped. Self-heal:
+                // drop the cache, re-resolve the stream fresh (now minted with a
+                // permanent id), and retry the batch ONCE before giving up.
+                Log.warning("[V2SYNC] save hit CoreData 133000 (stale stream id) for \(sessionUUID); clearing stream cache and retrying once (\(records.count) records).")
+                self.v2SyncStreamCache.removeValue(forKey: sessionUUID)
+                do {
+                    try attempt()
+                    Log.info("[V2SYNC] SAVED batch after retry: \(records.count) records (\(records.count * 2) measurements) for \(sessionUUID)")
+                    onPersisted?(records.count)
+                } catch {
+                    Log.error("[V2SYNC] V2 sync batch save FAILED after retry — \(records.count) records LOST for \(sessionUUID): \(error)")
+                }
             } catch {
-                Log.error("V2 sync batch save failed: \(error)")
+                Log.error("[V2SYNC] V2 sync batch save failed — \(records.count) records LOST for \(sessionUUID): \(error)")
             }
         }
     }
