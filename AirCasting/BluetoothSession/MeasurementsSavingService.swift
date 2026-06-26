@@ -163,12 +163,11 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         // Resolve LocationTracker lazily inside the call so DefaultMeasurementsSaver
         // (eagerly built at app boot via the BluetoothSessionRecordingController inject
         // chain) doesn't force CLLocationManager init during launch.
-        let location: CLLocationCoordinate2D
+        let location: CLLocationCoordinate2D?
         if locationless {
             location = .undefined
         } else {
-            let tracker = Resolver.resolve(LocationTracker.self)
-            location = tracker.location.value?.coordinate ?? .undefined
+            location = freshFixCoordinate(context: "LiveSave \(sessionUUID) stream=\(measurement.sensorName) ts=\(time.timeIntervalSince1970)")
         }
         updateStreams(stream: measurement, sessionUUID: sessionUUID, location: location, time: time)
     }
@@ -183,7 +182,7 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         // known fix when no buffered match exists — preserves pre-backfill behavior
         // for cold-launch races, permission-denied gaps, and outside-tolerance
         // timestamps.
-        let location: CLLocationCoordinate2D
+        let location: CLLocationCoordinate2D?
         let source: String
         if locationless {
             location = .undefined
@@ -192,11 +191,10 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
             location = locationOverride
             source = "backfill-override"
         } else {
-            let tracker = Resolver.resolve(LocationTracker.self)
-            location = tracker.location.value?.coordinate ?? .undefined
-            source = "fallback-current-fix"
+            location = freshFixCoordinate(context: "SyncFallback \(sessionUUID) stream=\(measurement.sensorName) ts=\(time.timeIntervalSince1970)")
+            source = location == nil ? "fallback-stale-dropped" : "fallback-current-fix"
         }
-        Log.info("V2LocationBackfill.Save: \(sessionUUID) stream=\(measurement.sensorName) ts=\(time.timeIntervalSince1970) src=\(source) lat=\(location.latitude) lon=\(location.longitude)")
+        Log.info("V2LocationBackfill.Save: \(sessionUUID) stream=\(measurement.sensorName) ts=\(time.timeIntervalSince1970) src=\(source) lat=\(location?.latitude.description ?? "nil") lon=\(location?.longitude.description ?? "nil")")
         updateStreams(stream: measurement, sessionUUID: sessionUUID, location: location, time: time)
     }
 
@@ -211,12 +209,11 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         // Resolve the fallback (phone last-known fix) once on the caller's
         // thread — pulling it inside `accessStorage` would hop to the
         // LocationTracker queue per chunk.
-        let fallbackLocation: CLLocationCoordinate2D
+        let fallbackLocation: CLLocationCoordinate2D?
         if locationless {
             fallbackLocation = .undefined
         } else {
-            let tracker = Resolver.resolve(LocationTracker.self)
-            fallbackLocation = tracker.location.value?.coordinate ?? .undefined
+            fallbackLocation = freshFixCoordinate(context: "SyncBatchFallback \(sessionUUID) records=\(records.count)")
         }
         persistence.accessStorage { [weak self] storage in
             guard let self = self else { return }
@@ -236,18 +233,23 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
                                time: Date,
                                location: CLLocationCoordinate2D?)] = []
                 entries.reserveCapacity(records.count * 2)
+                var nOverride = 0, nFallbackFresh = 0, nFallbackStaleDropped = 0, nLocationless = 0
                 for record in records {
-                    let location: CLLocationCoordinate2D
+                    let location: CLLocationCoordinate2D?
                     if locationless {
                         location = .undefined
+                        nLocationless += 1
                     } else if let override = record.locationOverride {
                         location = override
+                        nOverride += 1
                     } else {
                         location = fallbackLocation
+                        if fallbackLocation == nil { nFallbackStaleDropped += 1 } else { nFallbackFresh += 1 }
                     }
                     entries.append((streamIDs.pm1, record.pm1.measuredValue, record.time, location))
                     entries.append((streamIDs.pm25, record.pm25.measuredValue, record.time, location))
                 }
+                Log.info("V2LocationBackfill.BatchSrc: \(sessionUUID) records=\(records.count) override=\(nOverride) fallbackFresh=\(nFallbackFresh) fallbackStaleDropped=\(nFallbackStaleDropped) locationless=\(nLocationless)")
                 try storage.appendMeasurementValues(entries)
             }
 
@@ -308,6 +310,43 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         let resolved = (pm1: pm1ID, pm25: pm25ID)
         v2SyncStreamCache[sessionUUID] = resolved
         return resolved
+    }
+
+    /// Maximum age a phone GPS fix may have before we refuse to stamp it onto
+    /// a measurement. CoreLocation keeps the last fix in `location.value`
+    /// indefinitely once it throttles delivery (stationary / backgrounded
+    /// device), so a blind `location.value` read can peg a measurement to a
+    /// fix that is minutes old and hundreds of metres away — the "blue dot
+    /// pops back" bug. Above this age we store NO coordinate (nil) so the map
+    /// holds the last good point instead of snapping, and nudge CoreLocation
+    /// for a fresh fix. Tuned to sit well above normal ~1 Hz delivery yet
+    /// below the observed stale-hold windows (20 s+). Mirrors the sampler's
+    /// own stale-fix guard in [[v2-location-backfill]] (`V2LocationSampler`).
+    private static let maxLiveFixAgeSeconds: TimeInterval = 10
+
+    /// Resolve the phone's current fix coordinate, or nil when there is no fix
+    /// or the cached fix has gone stale (see `maxLiveFixAgeSeconds`). Storing
+    /// nil makes the map/graph skip the point (the dot holds at the last good
+    /// location) rather than snapping to a stale coordinate. Logs the decision
+    /// and fix age so a test session's logs reveal exactly which coordinate
+    /// each measurement was stamped with and why.
+    private func freshFixCoordinate(context: String) -> CLLocationCoordinate2D? {
+        // Resolve lazily (not at init) so building this saver at app boot
+        // doesn't force CLLocationManager creation — same rationale as the
+        // other LocationTracker resolves on the save paths.
+        let tracker = Resolver.resolve(LocationTracker.self)
+        guard let fix = tracker.location.value else {
+            Log.warning("V2Location.\(context): no fix available → store nil")
+            return nil
+        }
+        let age = -fix.timestamp.timeIntervalSinceNow
+        if age > Self.maxLiveFixAgeSeconds {
+            Log.warning("V2Location.\(context): STALE fix age=\(String(format: "%.1f", age))s > \(Self.maxLiveFixAgeSeconds)s lat=\(fix.coordinate.latitude) lon=\(fix.coordinate.longitude) → store nil + nudge CoreLocation")
+            tracker.requestOneShotUpdate()
+            return nil
+        }
+        Log.info("V2Location.\(context): fresh fix age=\(String(format: "%.1f", age))s lat=\(fix.coordinate.latitude) lon=\(fix.coordinate.longitude)")
+        return fix.coordinate
     }
 
     private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, location: CLLocationCoordinate2D?, time: Date) {
