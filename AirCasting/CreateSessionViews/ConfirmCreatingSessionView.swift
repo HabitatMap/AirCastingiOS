@@ -239,20 +239,38 @@ extension ConfirmCreatingSessionView {
             DispatchQueue.main.async {
                 switch result {
                 case .success:
-                    self.creatingSessionFlowContinues = false
                     if sessionContext.sessionType == .mobile {
+                        self.creatingSessionFlowContinues = false
                         selectedSection.section = .mobileActive
+                        tabSelection.update(to: .dashboard)
+                        isActive = false
+                    } else if let sessionUUID = sessionContext.sessionUUID {
+                        // Fixed session: the airbeam still has to join wifi/cellular
+                        // and push its first sample to BE (~couple of seconds, and
+                        // invisible to the phone). Keep the loading spinner up and
+                        // wait for that first measurement before navigating, so the
+                        // dashboard card is already populated instead of showing the
+                        // "Measurements will appear in 3 minutes" placeholder.
+                        downloadMeasurementsService.awaitFirstMeasurement(for: sessionUUID) {
+                            self.creatingSessionFlowContinues = false
+                            selectedSection.section = .following
+                            tabSelection.update(to: .dashboard)
+                            isActive = false
+                        }
                     } else {
+                        // No session UUID to wait on — fall back to navigating now.
+                        self.creatingSessionFlowContinues = false
                         selectedSection.section = .following
                         downloadMeasurementsService.triggerQuickRefresh()
+                        tabSelection.update(to: .dashboard)
+                        isActive = false
                     }
-                    tabSelection.update(to: .dashboard)
 
                 case .failure(let error):
                     self.error = error as NSError
                     Log.warning("Failed to create session \(error)")
+                    isActive = false
                 }
-                isActive = false
             }
         }
     }
