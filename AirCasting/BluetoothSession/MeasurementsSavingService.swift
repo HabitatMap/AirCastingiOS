@@ -191,8 +191,8 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
             location = locationOverride
             source = "backfill-override"
         } else {
-            location = freshFixCoordinate(context: "SyncFallback \(sessionUUID) stream=\(measurement.sensorName) ts=\(time.timeIntervalSince1970)")
-            source = location == nil ? "fallback-stale-dropped" : "fallback-current-fix"
+            location = fallbackCoordinate(forRecordTime: time, context: "SyncFallback \(sessionUUID) stream=\(measurement.sensorName) ts=\(time.timeIntervalSince1970)")
+            source = location == nil ? "fallback-dropped" : "fallback-current-fix"
         }
         Log.info("V2LocationBackfill.Save: \(sessionUUID) stream=\(measurement.sensorName) ts=\(time.timeIntervalSince1970) src=\(source) lat=\(location?.latitude.description ?? "nil") lon=\(location?.longitude.description ?? "nil")")
         updateStreams(stream: measurement, sessionUUID: sessionUUID, location: location, time: time)
@@ -233,7 +233,11 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
                                time: Date,
                                location: CLLocationCoordinate2D?)] = []
                 entries.reserveCapacity(records.count * 2)
-                var nOverride = 0, nFallbackFresh = 0, nFallbackStaleDropped = 0, nLocationless = 0
+                // Compare each record's own timestamp against "now" (same
+                // fake-UTC domain the device stamps records with) so we only
+                // borrow the sync-time current fix for near-real-time records.
+                let now = DateBuilder.getFakeUTCDate()
+                var nOverride = 0, nFallbackUsed = 0, nFallbackDropped = 0, nLocationless = 0
                 for record in records {
                     let location: CLLocationCoordinate2D?
                     if locationless {
@@ -242,14 +246,23 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
                     } else if let override = record.locationOverride {
                         location = override
                         nOverride += 1
+                    } else if let fb = fallbackLocation,
+                              abs(now.timeIntervalSince(record.time)) <= Self.maxFallbackRecordAgeSeconds {
+                        // Near-real-time reconnect gap: the current fix is a sane stand-in.
+                        location = fb
+                        nFallbackUsed += 1
                     } else {
-                        location = fallbackLocation
-                        if fallbackLocation == nil { nFallbackStaleDropped += 1 } else { nFallbackFresh += 1 }
+                        // No sample match AND (no fresh fix OR this is a deferred/bulk
+                        // sync of an old record). Borrowing the current fix here stamps
+                        // an old measurement with where the phone is NOW — the km-scale
+                        // "dot pops back". Store nil so the map holds instead.
+                        location = nil
+                        nFallbackDropped += 1
                     }
                     entries.append((streamIDs.pm1, record.pm1.measuredValue, record.time, location))
                     entries.append((streamIDs.pm25, record.pm25.measuredValue, record.time, location))
                 }
-                Log.info("V2LocationBackfill.BatchSrc: \(sessionUUID) records=\(records.count) override=\(nOverride) fallbackFresh=\(nFallbackFresh) fallbackStaleDropped=\(nFallbackStaleDropped) locationless=\(nLocationless)")
+                Log.info("V2LocationBackfill.BatchSrc: \(sessionUUID) records=\(records.count) override=\(nOverride) fallbackUsed=\(nFallbackUsed) fallbackDropped=\(nFallbackDropped) locationless=\(nLocationless)")
                 try storage.appendMeasurementValues(entries)
             }
 
@@ -347,6 +360,30 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         }
         Log.info("V2Location.\(context): fresh fix age=\(String(format: "%.1f", age))s lat=\(fix.coordinate.latitude) lon=\(fix.coordinate.longitude)")
         return fix.coordinate
+    }
+
+    /// Max gap between a backfilled record's own timestamp and "now" for which
+    /// we allow borrowing the phone's CURRENT fix as a fallback. The current
+    /// fix is only a sane stand-in for a record taken ~now (a near-real-time
+    /// reconnect gap). For DEFERRED / bulk sync — records minutes-to-hours old
+    /// replayed long after the phone moved on — the current fix is FRESH BUT
+    /// WRONG: it's where the phone is now, not where the record was taken.
+    /// Stamping old records with it produced the kilometre-scale "dot pops
+    /// back" seen in deferred-sync sessions (the staleness guard can't catch
+    /// it — the fix isn't stale, it's the wrong record's location). Beyond this
+    /// gap we store nil so the map holds at the last good point.
+    private static let maxFallbackRecordAgeSeconds: TimeInterval = 30
+
+    /// Backfill fallback coordinate for a single record: the current fix, but
+    /// only when the record is recent enough that "now" ≈ the record's time
+    /// (see `maxFallbackRecordAgeSeconds`). Otherwise nil.
+    private func fallbackCoordinate(forRecordTime recordTime: Date, context: String) -> CLLocationCoordinate2D? {
+        let recordAge = abs(DateBuilder.getFakeUTCDate().timeIntervalSince(recordTime))
+        guard recordAge <= Self.maxFallbackRecordAgeSeconds else {
+            Log.warning("V2Location.\(context): record \(String(format: "%.1f", recordAge))s old (> \(Self.maxFallbackRecordAgeSeconds)s) — deferred sync, current fix is wrong for this record → store nil")
+            return nil
+        }
+        return freshFixCoordinate(context: context)
     }
 
     private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, location: CLLocationCoordinate2D?, time: Date) {
