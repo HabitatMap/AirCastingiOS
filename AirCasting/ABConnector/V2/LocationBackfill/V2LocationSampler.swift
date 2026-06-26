@@ -89,15 +89,24 @@ final class V2LocationSampler {
             Log.info("V2LocationBackfill.Sampler[\(uuidStr)]: tick — no current location yet, skipping")
             return
         }
-        // Stale-fix nudge: CoreLocation may have throttled delivery while
-        // the app is backgrounded. If the cached fix's `timestamp` is
-        // older than 2 × the session interval, ask for a fresh one. The
-        // new fix flows through `didUpdateLocations` → `location.value`
-        // and will be picked up by the next tick.
+        // Stale-fix drop + nudge: CoreLocation may have throttled delivery
+        // while the app is backgrounded. If the cached fix's `timestamp` is
+        // older than 2 × the session interval, ask for a fresh one AND drop
+        // this tick. `persist()` stamps the sample with the current
+        // fake-UTC wall clock, not the fix's own timestamp — so persisting a
+        // stale fix would file an OLD coordinate under a FRESH timestamp.
+        // `nearest()` then matches that poisoned sample to disconnect-window
+        // records and snaps them all to one stale coordinate (typically the
+        // first fix of a stationary session), making the map dot pop back to
+        // the start. The fresh fix from the nudge flows through
+        // `didUpdateLocations` → `location.value` and is picked up by a later
+        // tick. Missing a few samples here is harmless: the backfill lookup
+        // falls through to the sync-time current fix when no sample matches.
         let fixAge = -location.timestamp.timeIntervalSinceNow
         if fixAge > interval * 2 {
-            Log.info("V2LocationBackfill.Sampler[\(uuidStr)]: tick — fix age \(String(format: "%.1f", fixAge))s > \(interval * 2)s, nudging CoreLocation")
+            Log.info("V2LocationBackfill.Sampler[\(uuidStr)]: tick — fix age \(String(format: "%.1f", fixAge))s > \(interval * 2)s, nudging CoreLocation and dropping stale fix")
             locationTracker.requestOneShotUpdate()
+            return
         }
         guard location.horizontalAccuracy >= 0,
               location.horizontalAccuracy <= Self.maxAcceptableHorizontalAccuracyMeters else {
