@@ -24,6 +24,16 @@ protocol LocationSampleStore {
     func nearestBatch(sessionUUID: SessionUUID,
                       timestamps: [Date],
                       tolerance: TimeInterval) -> [LocationSample?]
+    /// For each input timestamp, the most recent sample at or before it —
+    /// the "last known location" (sample-and-hold / carry-forward). Returns
+    /// one element per input timestamp in the same order; nil only when no
+    /// sample exists at or before that timestamp (e.g. a record taken before
+    /// the session's first fix). Used to fill backfilled records that fell
+    /// outside every sample's tolerance window so the measurement keeps a
+    /// coordinate (the dot holds at the last good point) instead of being
+    /// dropped from the map/CSV.
+    func latestSampleAtOrBefore(sessionUUID: SessionUUID,
+                                timestamps: [Date]) -> [LocationSample?]
     func deleteAll(sessionUUID: SessionUUID)
     func deleteOrphans(activeSessionUUIDs: Set<SessionUUID>)
 }
@@ -158,6 +168,60 @@ final class DefaultLocationSampleStore: LocationSampleStore {
             }
         }
         Log.info("V2LocationBackfill.Store: nearestBatch \(sessionUUID) n=\(timestamps.count) samples=\(sampleCount) tol=\(tolerance) hits=\(hits)")
+        return results
+    }
+
+    func latestSampleAtOrBefore(sessionUUID: SessionUUID,
+                                timestamps: [Date]) -> [LocationSample?] {
+        guard !timestamps.isEmpty else { return [] }
+        var results: [LocationSample?] = Array(repeating: nil, count: timestamps.count)
+        var hits = 0
+        var sampleCount = 0
+        context.performAndWait { [context] in
+            guard let maxTs = timestamps.max() else { return }
+            // Only samples at or before the latest target can be "last known"
+            // for any of these timestamps.
+            let request = NSFetchRequest<NSManagedObject>(entityName: "LocationSampleEntity")
+            request.predicate = NSPredicate(
+                format: "sessionUUID == %@ AND timestamp <= %@",
+                sessionUUID.rawValue, maxTs as NSDate
+            )
+            request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: true)]
+            do {
+                let rows = try context.fetch(request)
+                guard !rows.isEmpty else { return }
+                let samples: [(Date, Double, Double)] = rows.compactMap { row in
+                    guard let ts = row.value(forKey: "timestamp") as? Date,
+                          let lat = row.value(forKey: "latitude") as? Double,
+                          let lon = row.value(forKey: "longitude") as? Double else { return nil }
+                    return (ts, lat, lon)
+                }
+                guard !samples.isEmpty else { return }
+                sampleCount = samples.count
+
+                // Process targets in ascending order with a monotonic cursor:
+                // for each target, advance to the latest sample whose timestamp
+                // is <= target. cursor == -1 means no sample precedes this
+                // target (record taken before the first fix) → leave nil.
+                let indexed = timestamps.enumerated().sorted { $0.element < $1.element }
+                var cursor = -1
+                for (originalIndex, target) in indexed {
+                    while cursor + 1 < samples.count, samples[cursor + 1].0 <= target {
+                        cursor += 1
+                    }
+                    guard cursor >= 0 else { continue }
+                    let s = samples[cursor]
+                    results[originalIndex] = LocationSample(sessionUUID: sessionUUID,
+                                                            timestamp: s.0,
+                                                            latitude: s.1,
+                                                            longitude: s.2)
+                    hits += 1
+                }
+            } catch {
+                Log.error("V2LocationBackfill.Store: latestSampleAtOrBefore fetch failed: \(error)")
+            }
+        }
+        Log.info("V2LocationBackfill.Store: latestSampleAtOrBefore \(sessionUUID) n=\(timestamps.count) samples=\(sampleCount) heldHits=\(hits)")
         return results
     }
 

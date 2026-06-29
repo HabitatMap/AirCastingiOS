@@ -158,14 +158,21 @@ final class DefaultV2LocationBackfillCoordinator: V2LocationBackfillCoordinator 
         // tick may have skipped under background coalescing — either way
         // a slightly-off sample is still a better override than the
         // sync-time current fix (which is typically the user's home).
-        guard wide > tight,
-              let match = store.nearest(sessionUUID: sessionUUID,
-                                        timestamp: timestamp,
-                                        tolerance: wide) else {
-            return nil
+        if wide > tight,
+           let match = store.nearest(sessionUUID: sessionUUID,
+                                     timestamp: timestamp,
+                                     tolerance: wide) {
+            Log.warning("V2LocationBackfill.Coord: lookup \(sessionUUID) — tight miss, wide hit Δ=\(match.timestamp.timeIntervalSince(timestamp))s")
+            return match.coordinate
         }
-        Log.warning("V2LocationBackfill.Coord: lookup \(sessionUUID) — tight miss, wide hit Δ=\(match.timestamp.timeIntervalSince(timestamp))s")
-        return match.coordinate
+        // No sample inside tolerance: hold the last known location (most recent
+        // sample at or before this timestamp). See `locations(for:at:)`.
+        if let held = store.latestSampleAtOrBefore(sessionUUID: sessionUUID,
+                                                   timestamps: [timestamp]).first ?? nil {
+            Log.info("V2LocationBackfill.Coord: lookup \(sessionUUID) — no sample in tolerance, holding last known Δ=\(held.timestamp.timeIntervalSince(timestamp))s")
+            return held.coordinate
+        }
+        return nil
     }
 
     func locations(for sessionUUID: SessionUUID, at timestamps: [Date]) -> [CLLocationCoordinate2D?] {
@@ -179,26 +186,48 @@ final class DefaultV2LocationBackfillCoordinator: V2LocationBackfillCoordinator 
         let tightHits = primary.reduce(0) { $0 + ($1 == nil ? 0 : 1) }
         var coords = primary.map { $0?.coordinate }
 
-        if tightHits == timestamps.count || wide <= tight {
-            Log.info("V2LocationBackfill.Coord: batchLookup \(sessionUUID) n=\(timestamps.count) interval=\(interval)s tight=\(tight)s tightHits=\(tightHits) hasActiveSampler=\(hasSampler)")
-            return coords
-        }
-
         // Tight miss: retry the missing slots only, at wide tolerance.
-        let missingPairs: [(Int, Date)] = primary.enumerated().compactMap { idx, sample in
-            sample == nil ? (idx, timestamps[idx]) : nil
-        }
-        let wideMatches = store.nearestBatch(sessionUUID: sessionUUID,
-                                             timestamps: missingPairs.map { $0.1 },
-                                             tolerance: wide)
         var wideHits = 0
-        for ((idx, _), sample) in zip(missingPairs, wideMatches) {
-            if let sample = sample {
-                coords[idx] = sample.coordinate
-                wideHits += 1
+        var wideMisses = 0
+        if tightHits < timestamps.count && wide > tight {
+            let missingPairs: [(Int, Date)] = primary.enumerated().compactMap { idx, sample in
+                sample == nil ? (idx, timestamps[idx]) : nil
+            }
+            wideMisses = missingPairs.count
+            let wideMatches = store.nearestBatch(sessionUUID: sessionUUID,
+                                                 timestamps: missingPairs.map { $0.1 },
+                                                 tolerance: wide)
+            for ((idx, _), sample) in zip(missingPairs, wideMatches) {
+                if let sample = sample {
+                    coords[idx] = sample.coordinate
+                    wideHits += 1
+                }
             }
         }
-        Log.info("V2LocationBackfill.Coord: batchLookup \(sessionUUID) n=\(timestamps.count) interval=\(interval)s tight=\(tight)s wide=\(wide)s tightHits=\(tightHits) wideHits=\(wideHits)/\(missingPairs.count) hasActiveSampler=\(hasSampler)")
+
+        // Carry-forward: any record still without a sample inside tolerance
+        // holds the LAST KNOWN location — the most recent sample at or before
+        // its own timestamp. This keeps the PM measurement present with a
+        // coordinate (the dot holds at the last good point) instead of being
+        // dropped to nil (no location → excluded from map/CSV) or snapped to
+        // the sync-time current fix (the old "dot pops back" bug). Time-based,
+        // so it is correct regardless of the newest-first chunk replay order.
+        let stillMissing: [(Int, Date)] = coords.enumerated().compactMap { idx, coord in
+            coord == nil ? (idx, timestamps[idx]) : nil
+        }
+        var heldHits = 0
+        if !stillMissing.isEmpty {
+            let held = store.latestSampleAtOrBefore(sessionUUID: sessionUUID,
+                                                    timestamps: stillMissing.map { $0.1 })
+            for ((idx, _), sample) in zip(stillMissing, held) {
+                if let sample = sample {
+                    coords[idx] = sample.coordinate
+                    heldHits += 1
+                }
+            }
+        }
+
+        Log.info("V2LocationBackfill.Coord: batchLookup \(sessionUUID) n=\(timestamps.count) interval=\(interval)s tight=\(tight)s wide=\(wide)s tightHits=\(tightHits) wideHits=\(wideHits)/\(wideMisses) heldHits=\(heldHits)/\(stillMissing.count) hasActiveSampler=\(hasSampler)")
         return coords
     }
 
