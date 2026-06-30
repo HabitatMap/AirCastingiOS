@@ -65,6 +65,8 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
                         completion(.deviceBusy)
                     case .unknown:
                         completion(.unknown(nil))
+                    case .characteristicNotFound:
+                        completion(.unknown(bluetoothError))
                     }
                 } catch {
                     completion(.unknown(error))

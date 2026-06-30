@@ -122,6 +122,17 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         firmwareVersionByPeripheral[peripheral] = version
     }
 
+    func refreshedDevice(for device: any BluetoothDevice) -> any BluetoothDevice {
+        guard let device = device as? Device else { return device }
+        let resolved = firmwareVersion(for: device.peripheral)
+        guard resolved != device.firmwareVersion else { return device }
+        Log.info("Refreshed device firmware \(device.firmwareVersion) -> \(resolved) for \(device.uuid) (GATT re-resolved)")
+        return Device(peripheral: device.peripheral,
+                      firmwareVersion: resolved,
+                      advertisedName: device.name,
+                      realMacAddress: device.realMacAddress)
+    }
+
     private struct Device: BluetoothDevice {
         fileprivate let peripheral: CBPeripheral
         var name: String?
@@ -285,6 +296,11 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         case timeout
         case deviceBusy
         case unknown
+        /// The requested service/characteristic was not found on the peripheral
+        /// (e.g. a v2 device routed into the v1 configurator looks up a service it
+        /// does not expose). Surfaced instead of silently returning so the caller's
+        /// completion fails and the reconnect chain can retry rather than hang.
+        case characteristicNotFound
     }
     
     func connect(to device: any BluetoothDevice, timeout: TimeInterval, completion: @escaping ConnectionCallback) throws {
@@ -532,7 +548,12 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         guard let characteristic = getCharacteristic(serviceID: serviceUUID,
                                                      charID: characteristicUUID,
                                                      peripheral: device.peripheral) else {
-            Log.error("Unable to get characteristic from \(String(describing: device.peripheral))")
+            Log.error("Unable to get characteristic from \(String(describing: device.peripheral)) — failing send (service=\(serviceID) char=\(characteristicID))")
+            // Fail loud instead of silently returning. A silent return left the
+            // configurator's write completion unfulfilled, so the reconnect chain
+            // hung forever ("AB connected / app disconnected") instead of erroring
+            // and retrying.
+            callbackQueue.async { completion(.failure(BluetoothDriverError.characteristicNotFound)) }
             return
         }
         Log.info("Writing value to peripheral")
@@ -569,7 +590,7 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
                                                      charID: characteristicUUID,
                                                      peripheral: device.peripheral) else {
             Log.error("Unable to read value: characteristic \(characteristicID) not found")
-            return
+            throw BluetoothDriverError.characteristicNotFound
         }
         queue.async {
             device.peripheral.readValue(for: characteristic)

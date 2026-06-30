@@ -207,6 +207,7 @@ class BluetoothConnectionHandlerMock: BluetoothConnectionHandler {
     func connect(to device: any BluetoothDevice, timeout: TimeInterval, completion: @escaping BluetoothManager.ConnectionCallback) {}
     func disconnect(from device: any BluetoothDevice) { disconnectCalls += 1}
     func discoverCharacteristics(for device: any BluetoothDevice, timeout: TimeInterval, completion: @escaping BluetoothManager.CharacteristicsDicoveryCallback) {}
+    func refreshedDevice(for device: any BluetoothDevice) -> any BluetoothDevice { device }
 }
 
 class AirBeamConfiguratorMock: AirBeamConfigurator {

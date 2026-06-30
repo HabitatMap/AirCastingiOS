@@ -186,6 +186,14 @@ class DefaultReconnectionController: ReconnectionController, BluetoothConnection
     }
 
     private func completeReconnection(for device: any BluetoothDevice, attempt: Int) {
+        // Re-resolve firmware from live GATT state (service discovery just
+        // completed and re-stamped the version). The `device` snapshot carried
+        // from the disconnect event can be stale: after a process restart the
+        // in-memory firmware cache is empty and a reconnecting peripheral defaults
+        // to .v1, which routed a v2 AirBeam into the v1 configurator → wrong-service
+        // lookup → silent hang ("AB connected / app disconnected"). Branch on the
+        // refreshed value and carry it downstream (didReconnect → resumeRecording).
+        let device = bluetootConnector.refreshedDevice(for: device)
         switch device.firmwareVersion {
         case .v1:
             guard finalizeReconnectIfStillNeeded(device: device) else { return }
