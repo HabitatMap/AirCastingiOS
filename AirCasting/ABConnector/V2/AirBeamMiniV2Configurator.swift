@@ -677,7 +677,13 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                 } else {
                     burstSpan = "n/a"
                 }
-                Log.info("[V2SYNC] sync burst drained: received=\(self.syncBurstReceived) handedToSave=\(self.syncBurstSaved) persisted=\(self.syncBurstPersisted) dropped=\(self.syncBurstDropped) tsSpan=\(burstSpan) session=\(self.configuredSessionUUID?.rawValue ?? "nil")")
+                // Log the session's recorded start so the END log alone reveals
+                // whether the device buffered from the start: for the FIRST burst of
+                // a session, oldest-buffered ≫ sessionRecordedStart means the head
+                // window was never on the SD card (the start-of-session gap). The
+                // recording-time log is gone by sync time (file cap ~30k lines).
+                let sessionRecordedStart = self.activeSessionProvider.activeSession?.session.startTime?.timeIntervalSince1970
+                Log.info("[V2SYNC] sync burst drained: received=\(self.syncBurstReceived) handedToSave=\(self.syncBurstSaved) persisted=\(self.syncBurstPersisted) dropped=\(self.syncBurstDropped) tsSpan=\(burstSpan) sessionRecordedStart=\(sessionRecordedStart.map { String(format: "%.0f", $0) } ?? "nil") session=\(self.configuredSessionUUID?.rawValue ?? "nil")")
                 let burstMismatch = self.syncBurstReceived - self.syncBurstSaved - self.syncBurstDropped
                 if burstMismatch != 0 {
                     Log.error("[V2SYNC] CAPTURE MISMATCH: received(\(self.syncBurstReceived)) != handedToSave(\(self.syncBurstSaved)) + dropped(\(self.syncBurstDropped)); \(burstMismatch) records unaccounted for.")
@@ -709,7 +715,8 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
             syncBurstDropped = 0
             syncBurstNewestTS = nil
             syncBurstOldestTS = nil
-            Log.info("[V2SYNC] sync burst opening for \(self.configuredSessionUUID?.rawValue ?? "nil")")
+            let openingSessionStart = self.activeSessionProvider.activeSession?.session.startTime?.timeIntervalSince1970
+            Log.info("[V2SYNC] sync burst opening for \(self.configuredSessionUUID?.rawValue ?? "nil") sessionRecordedStart=\(openingSessionStart.map { String(format: "%.0f", $0) } ?? "nil")")
             postSyncDrainNotificationLocked(true)
             enterBurstGateLocked()
         }

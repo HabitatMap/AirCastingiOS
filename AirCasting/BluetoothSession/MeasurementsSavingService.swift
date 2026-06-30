@@ -73,6 +73,20 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
     private var v2SyncStreamCache: [SessionUUID: (pm1: MeasurementStreamLocalID,
                                                   pm25: MeasurementStreamLocalID)] = [:]
 
+    /// Last LIVE measurement timestamp seen per session, used only to log a
+    /// warning when the live stream skips a span (recording paused / BT
+    /// disconnected and no measurement was saved). Surfaces start-of-session
+    /// gaps — e.g. the ~35 min hole at session start in the 8-hr separated-device
+    /// report — at the moment the stream resumes, which a buffer-side check
+    /// cannot see (the hole was inside the live-saved region, before the device's
+    /// SD buffer took over). Lock-protected: `saveV2LiveMeasurement` may be
+    /// invoked off the storage queue.
+    private var lastLiveMeasurementTS: [SessionUUID: TimeInterval] = [:]
+    private let lastLiveMeasurementLock = NSLock()
+    /// Live gap above this (seconds) is logged. Sits above a few missed ~1 Hz
+    /// samples so healthy sessions stay quiet; the reported holes were 75 s+.
+    private static let liveMeasurementGapWarnSeconds: TimeInterval = 5
+
     class PeripheralMeasurementTimeLocationManager {
         @Injected private var locationTracker: LocationTracker
 
@@ -163,6 +177,7 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         // Resolve LocationTracker lazily inside the call so DefaultMeasurementsSaver
         // (eagerly built at app boot via the BluetoothSessionRecordingController inject
         // chain) doesn't force CLLocationManager init during launch.
+        logLiveMeasurementGapIfNeeded(sessionUUID: sessionUUID, time: time)
         let location: CLLocationCoordinate2D?
         if locationless {
             location = .undefined
@@ -170,6 +185,22 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
             location = freshFixCoordinate(context: "LiveSave \(sessionUUID) stream=\(measurement.sensorName) ts=\(time.timeIntervalSince1970)")
         }
         updateStreams(stream: measurement, sessionUUID: sessionUUID, location: location, time: time)
+    }
+
+    /// Logs a warning when the live measurement stream skips a span — i.e. no
+    /// live measurement was saved between the previous one and this one for the
+    /// session. PM1 + PM2.5 arrive as two calls at the same `time`, so the
+    /// second is a no-op (gap 0). The high-water mark only ever advances.
+    private func logLiveMeasurementGapIfNeeded(sessionUUID: SessionUUID, time: Date) {
+        let ts = time.timeIntervalSince1970
+        lastLiveMeasurementLock.lock(); defer { lastLiveMeasurementLock.unlock() }
+        if let prev = lastLiveMeasurementTS[sessionUUID] {
+            let gap = ts - prev
+            if gap > Self.liveMeasurementGapWarnSeconds {
+                Log.warning("V2Location.LiveGap \(sessionUUID): \(String(format: "%.0f", gap))s gap in LIVE measurements (prev ts=\(String(format: "%.0f", prev)) → now ts=\(String(format: "%.0f", ts))) — nothing saved for this span (recording paused / BT disconnected?)")
+            }
+        }
+        if ts > (lastLiveMeasurementTS[sessionUUID] ?? 0) { lastLiveMeasurementTS[sessionUUID] = ts }
     }
 
     func saveV2SyncMeasurement(_ measurement: ABMeasurementStream,
@@ -299,6 +330,9 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         persistence.accessStorage { [weak self] _ in
             self?.v2SyncStreamCache.removeValue(forKey: sessionUUID)
         }
+        lastLiveMeasurementLock.lock()
+        lastLiveMeasurementTS.removeValue(forKey: sessionUUID)
+        lastLiveMeasurementLock.unlock()
     }
 
     private func resolveV2SyncStreamIDs(sessionUUID: SessionUUID,
