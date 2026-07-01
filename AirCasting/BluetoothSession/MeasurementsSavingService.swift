@@ -82,6 +82,15 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
     /// SD buffer took over). Lock-protected: `saveV2LiveMeasurement` may be
     /// invoked off the storage queue.
     private var lastLiveMeasurementTS: [SessionUUID: TimeInterval] = [:]
+    /// Last coordinate actually stamped on a LIVE measurement per session — the
+    /// live-path carry-forward source. When the current fix is stale/absent we
+    /// hold this (the previous live measurement's location) instead of storing
+    /// nil, which the location-keyed export drops (producing the mid-session
+    /// track holes while the phone sat stationary and CoreLocation throttled).
+    /// Live measurements arrive in time order, so this IS "the measurement
+    /// before them". In-memory is sufficient: live recording restarts with the
+    /// app. Guarded by `lastLiveMeasurementLock`.
+    private var lastKnownLiveLocationBySession: [SessionUUID: CLLocationCoordinate2D] = [:]
     private let lastLiveMeasurementLock = NSLock()
     /// Live gap above this (seconds) is logged. Sits above a few missed ~1 Hz
     /// samples so healthy sessions stay quiet; the reported holes were 75 s+.
@@ -181,10 +190,32 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         let location: CLLocationCoordinate2D?
         if locationless {
             location = .undefined
+        } else if let fresh = freshFixCoordinate(context: "LiveSave \(sessionUUID) stream=\(measurement.sensorName) ts=\(time.timeIntervalSince1970)") {
+            location = fresh
+            rememberLastKnownLiveLocation(fresh, for: sessionUUID)
         } else {
-            location = freshFixCoordinate(context: "LiveSave \(sessionUUID) stream=\(measurement.sensorName) ts=\(time.timeIntervalSince1970)")
+            // Stale or no fix: hold the last known live location (the previous
+            // live measurement's coordinate) instead of nil — the live-path
+            // analogue of the backfill carry-forward. Storing nil dropped the
+            // measurement from the location-keyed export, producing the
+            // mid-session track holes seen while the phone sat stationary and
+            // CoreLocation throttled. nil only until the session's first fresh fix.
+            location = lastKnownLiveLocationValue(for: sessionUUID)
+            if location != nil {
+                Log.info("V2Location.LiveCarryForward \(sessionUUID) ts=\(time.timeIntervalSince1970): stale/no fix → holding last-known live location")
+            }
         }
         updateStreams(stream: measurement, sessionUUID: sessionUUID, location: location, time: time)
+    }
+
+    private func rememberLastKnownLiveLocation(_ coord: CLLocationCoordinate2D, for sessionUUID: SessionUUID) {
+        lastLiveMeasurementLock.lock(); defer { lastLiveMeasurementLock.unlock() }
+        lastKnownLiveLocationBySession[sessionUUID] = coord
+    }
+
+    private func lastKnownLiveLocationValue(for sessionUUID: SessionUUID) -> CLLocationCoordinate2D? {
+        lastLiveMeasurementLock.lock(); defer { lastLiveMeasurementLock.unlock() }
+        return lastKnownLiveLocationBySession[sessionUUID]
     }
 
     /// Logs a warning when the live measurement stream skips a span — i.e. no
@@ -332,6 +363,7 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         }
         lastLiveMeasurementLock.lock()
         lastLiveMeasurementTS.removeValue(forKey: sessionUUID)
+        lastKnownLiveLocationBySession.removeValue(forKey: sessionUUID)
         lastLiveMeasurementLock.unlock()
     }
 
