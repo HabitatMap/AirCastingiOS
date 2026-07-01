@@ -53,7 +53,11 @@ extension DocumentsFileLoggerStore {
             try systemHandle.seekToEnd()
             let data = ("\n"+buffer.joined(separator: "\n")).data(using: .utf8)!
             try systemHandle.write(contentsOf: data)
-            try systemHandle.synchronize()
+            // No fsync: write()+close() hands the data to the OS, which preserves it
+            // across an app crash (process death) — that is all we need for crash
+            // diagnostics. fsync (durability across power loss / kernel panic) isn't
+            // worth its cost per line, especially with maxBufferSize=1 during dense
+            // sync-replay bursts where it would back up the logging queue.
             try systemHandle.close()
             buffer = []
             try performFileTrimming()

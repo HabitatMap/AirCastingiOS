@@ -79,7 +79,14 @@ class DocumentsFileLoggerStore: FileLoggerStore, FileLoggerResettable, LogfilePr
         let handle = try LogHandle(filePath: fileURL,
                                    headerLineCount: UInt(headerProvider.headerText.isEmpty ? 0 : headerProvider.headerText.components(separatedBy: .newlines).count),
                                    maxLogs: maxLogs,
-                                   overflowThreshold: overflowThreshold)
+                                   overflowThreshold: overflowThreshold,
+                                   // Flush every line: a crash is not a clean
+                                   // termination, so any buffered lines are lost —
+                                   // exactly the crash-trigger lines we need. Cost is
+                                   // bounded by dropping the per-line fsync in
+                                   // saveBufferContents (an app crash keeps the OS
+                                   // write; only power loss would need fsync).
+                                   maxBufferSize: 1)
         currentHandle = handle
         return handle
     }

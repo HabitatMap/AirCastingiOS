@@ -26,10 +26,16 @@ class LoggerBuilder {
                                                       device: "\(Device.current)",
                                                       os: "\(Device.current.systemName ?? "??") \(Device.current.systemVersion ?? "??")") as FileLoggerHeaderProvider
     }()
+    // maxLogs sized to retain a full 9h+ session: real logs average ~3.6 lines/s
+    // (8h-tail sample: 30468 lines / 8345 s), so 300k covers ~20h typical and
+    // ~10h at the densest sustained rate — the whole trace survives a mid-session
+    // crash (the file is append-only across relaunch; see DocumentsFileLoggerStore).
+    // overflowThreshold raised so trimming this larger file happens rarely (once
+    // per 25k lines over cap) instead of every 500 lines.
     lazy var store: DocumentsFileLoggerStore = DocumentsFileLoggerStore(logDirectory: "logs",
                                                                         logFilename: "log.txt",
-                                                                        maxLogs: 30000,
-                                                                        overflowThreshold: 500,
+                                                                        maxLogs: 300000,
+                                                                        overflowThreshold: 25000,
                                                                         headerProvider: headerProvider)
     
     // TODO: Refactor this so it doesn't require withType to be called
