@@ -45,6 +45,10 @@ protocol MeasurementsSavingService {
     /// Drop any cached stream IDs for the session. Call on session stop /
     /// reconnect-reset so a re-created session doesn't reuse stale IDs.
     func clearV2SyncStreamCache(for sessionUUID: SessionUUID)
+    /// Diagnostic: log the session's stored measurement coverage (counts,
+    /// null-location rows, largest time gap) so a data gap can be classified
+    /// from the shared log. Call at session finish, after any sync drain.
+    func logMeasurementCoverage(for sessionUUID: SessionUUID)
 }
 
 extension MeasurementsSavingService {
@@ -365,6 +369,12 @@ class DefaultMeasurementsSaver: MeasurementsSavingService {
         lastLiveMeasurementTS.removeValue(forKey: sessionUUID)
         lastKnownLiveLocationBySession.removeValue(forKey: sessionUUID)
         lastLiveMeasurementLock.unlock()
+    }
+
+    func logMeasurementCoverage(for sessionUUID: SessionUUID) {
+        persistence.accessStorage { storage in
+            storage.logMeasurementCoverage(sessionUUID: sessionUUID)
+        }
     }
 
     private func resolveV2SyncStreamIDs(sessionUUID: SessionUUID,

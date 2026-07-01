@@ -26,6 +26,17 @@ protocol HiddenMobileSessionRecordingStorage {
                                               time: Date,
                                               location: CLLocationCoordinate2D?)]) throws
     func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) throws
+    /// Diagnostic: log the session's stored measurement coverage so a data gap
+    /// can be classified from the log WITHOUT DB access on the user's device.
+    /// Per stream logs total measurements, how many carry NO location (nil
+    /// lat/long — these are dropped from the location-keyed CSV/map export), the
+    /// stored time span, and the largest gap between consecutive stored rows.
+    /// Reading the result: a large `nullLocation` with a small `largestGap` means
+    /// the measurements EXIST but are location-less (export-excluded, recoverable);
+    /// a large `largestGap` means rows are genuinely ABSENT for that span (never
+    /// captured). Note `.undefined` (200,200) locationless rows count as located,
+    /// not null — so `nullLocation` isolates the stale-fix holes.
+    func logMeasurementCoverage(sessionUUID: SessionUUID)
 }
 
 class DefaultMobileSessionRecordingStorage: MobileSessionRecordingStorage {
@@ -119,7 +130,57 @@ class DefaultHiddenMobileSessionRecordingStorage: HiddenMobileSessionRecordingSt
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         sessionEntity.status = sessionStatus
     }
-    
+
+    func logMeasurementCoverage(sessionUUID: SessionUUID) {
+        do {
+            let session = try context.existingSession(uuid: sessionUUID)
+            let streams = session.allStreams
+            guard !streams.isEmpty else {
+                Log.info("[V2DIAG] coverage \(sessionUUID): no streams")
+                return
+            }
+            for stream in streams {
+                let streamName = stream.sensorName ?? "?"
+                // Fetch only time + lat/long, no fault of the full entity graph,
+                // sorted by time — cheap enough for a one-shot finish-time scan.
+                let request = NSFetchRequest<NSManagedObject>(entityName: "MeasurementEntity")
+                request.predicate = NSPredicate(format: "measurementStream == %@", stream)
+                request.sortDescriptors = [NSSortDescriptor(key: "time", ascending: true)]
+                request.propertiesToFetch = ["time", "latitude", "longitude"]
+                request.returnsObjectsAsFaults = false
+                let rows = try context.fetch(request)
+                guard !rows.isEmpty else {
+                    Log.info("[V2DIAG] coverage \(sessionUUID) stream=\(streamName): 0 measurements")
+                    continue
+                }
+                var nullLocation = 0
+                var gapsOver10s = 0
+                var largestGap: TimeInterval = 0
+                var largestGapAt: TimeInterval = 0
+                var prev: Date?
+                var firstTS: TimeInterval = 0
+                var lastTS: TimeInterval = 0
+                for row in rows {
+                    guard let t = row.value(forKey: "time") as? Date else { continue }
+                    if prev == nil { firstTS = t.timeIntervalSince1970 }
+                    lastTS = t.timeIntervalSince1970
+                    let lat = row.value(forKey: "latitude") as? Double
+                    let lon = row.value(forKey: "longitude") as? Double
+                    if lat == nil || lon == nil { nullLocation += 1 }
+                    if let p = prev {
+                        let gap = t.timeIntervalSince(p)
+                        if gap > 10 { gapsOver10s += 1 }
+                        if gap > largestGap { largestGap = gap; largestGapAt = p.timeIntervalSince1970 }
+                    }
+                    prev = t
+                }
+                Log.info("[V2DIAG] coverage \(sessionUUID) stream=\(streamName): measurements=\(rows.count) nullLocation=\(nullLocation) span=[\(String(format: "%.0f", firstTS))…\(String(format: "%.0f", lastTS))] largestGap=\(String(format: "%.0f", largestGap))s@\(String(format: "%.0f", largestGapAt)) gapsOver10s=\(gapsOver10s)")
+            }
+        } catch {
+            Log.error("[V2DIAG] coverage \(sessionUUID): fetch failed \(error)")
+        }
+    }
+
     private func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws {
         let stream = try context.existingObject(with: id.id) as! MeasurementStreamEntity
 

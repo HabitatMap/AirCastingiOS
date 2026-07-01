@@ -184,6 +184,8 @@ class MeasurementsSavingServiceMock: MeasurementsSavingService {
                                time: Date,
                                locationless: Bool,
                                locationOverride: CLLocationCoordinate2D?) { }
+
+    func logMeasurementCoverage(for sessionUUID: AirCasting.SessionUUID) { }
 }
 
 class MeasurementsRecordingServicesMock: MeasurementsRecordingServices {

@@ -222,6 +222,11 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
 
         let proceedToDisconnect: () -> Void = { [weak self] in
             guard let self = self else { return }
+            // Diagnostic: with all backfill drained, log the session's measurement
+            // coverage so a data gap can be classified from the finish log
+            // (null-location rows = export-excluded/recoverable vs a true row gap
+            // = never captured). See MeasurementsSavingService.logMeasurementCoverage.
+            self.measurementsSaver.logMeasurementCoverage(for: uuid)
             try? self.btManager.disconnect(from: device)
             if device.firmwareVersion == .v1 {
                 self.measurementsRecorder.stopRecording()
