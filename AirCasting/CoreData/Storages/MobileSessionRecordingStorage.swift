@@ -154,9 +154,9 @@ class DefaultHiddenMobileSessionRecordingStorage: HiddenMobileSessionRecordingSt
                     continue
                 }
                 var nullLocation = 0
-                var gapsOver10s = 0
-                var largestGap: TimeInterval = 0
-                var largestGapAt: TimeInterval = 0
+                var gaps: [(at: TimeInterval, dur: TimeInterval)] = []
+                var totalGapSeconds: TimeInterval = 0
+                var minDelta = TimeInterval.greatestFiniteMagnitude
                 var prev: Date?
                 var firstTS: TimeInterval = 0
                 var lastTS: TimeInterval = 0
@@ -169,12 +169,21 @@ class DefaultHiddenMobileSessionRecordingStorage: HiddenMobileSessionRecordingSt
                     if lat == nil || lon == nil { nullLocation += 1 }
                     if let p = prev {
                         let gap = t.timeIntervalSince(p)
-                        if gap > 10 { gapsOver10s += 1 }
-                        if gap > largestGap { largestGap = gap; largestGapAt = p.timeIntervalSince1970 }
+                        if gap > 0 { minDelta = Swift.min(minDelta, gap) }
+                        // >10s = more than a couple of missed native/averaged samples.
+                        if gap > 10 { gaps.append((p.timeIntervalSince1970, gap)); totalGapSeconds += gap }
                     }
                     prev = t
                 }
-                Log.info("[V2DIAG] coverage \(sessionUUID) stream=\(streamName): measurements=\(rows.count) nullLocation=\(nullLocation) span=[\(String(format: "%.0f", firstTS))…\(String(format: "%.0f", lastTS))] largestGap=\(String(format: "%.0f", largestGap))s@\(String(format: "%.0f", largestGapAt)) gapsOver10s=\(gapsOver10s)")
+                // Expected count from the tightest observed cadence (minDelta ≈ the
+                // native interval): a shortfall vs actual = time not covered by rows.
+                let span = lastTS - firstTS
+                let expected = (minDelta.isFinite && minDelta > 0) ? Int(span / minDelta) + 1 : rows.count
+                // List every significant hole (largest first), not just the biggest.
+                let topGaps = gaps.sorted { $0.dur > $1.dur }.prefix(8)
+                    .map { "\(String(format: "%.0f", $0.dur))s@\(String(format: "%.0f", $0.at))" }
+                    .joined(separator: ", ")
+                Log.info("[V2DIAG] coverage \(sessionUUID) stream=\(streamName): measurements=\(rows.count) expected≈\(expected) nullLocation=\(nullLocation) span=[\(String(format: "%.0f", firstTS))…\(String(format: "%.0f", lastTS))] gaps>10s=\(gaps.count) totalGapSeconds=\(String(format: "%.0f", totalGapSeconds)) topGaps=[\(topGaps)]")
             }
         } catch {
             Log.error("[V2DIAG] coverage \(sessionUUID): fetch failed \(error)")

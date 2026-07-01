@@ -141,19 +141,33 @@ final class ActiveSessionsAveragingController: NSObject {
 
             guard let intervalStart = stream.session?.startTime else { Log.error("No session start time!"); return }
 
+            // In/out accounting so averaging can't silently lose rows: each bucket
+            // keeps exactly 1 row (the averaged one) and deletes the rest, so
+            // kept (= source - deleted) must equal buckets. A mismatch = loss.
+            let sourceCount = measurements.count
+            var buckets = 0
+            var deleted = 0
             _ = averagingService.averageMeasurementsWithReminder(
                 measurements: measurements,
                 startTime: intervalStart,
                 averagingWindow: averagingWindow) { averagedMeasurement, sourceMeasurements in
                     guard sourceMeasurements.count > 0 else { return }
+                    buckets += 1
                     let lastMeasurementIndex = sourceMeasurements.endIndex-1
                     sourceMeasurements[lastMeasurementIndex].value = averagedMeasurement.value
                     sourceMeasurements[lastMeasurementIndex].time = averagedMeasurement.time
                     sourceMeasurements[lastMeasurementIndex].averagingWindow = averagingWindow.rawValue
 
                     guard sourceMeasurements.count > 1 else { return }
-                    storage.deleteMeasurements(Array(sourceMeasurements[0...lastMeasurementIndex-1]))
+                    let toDelete = Array(sourceMeasurements[0...lastMeasurementIndex-1])
+                    deleted += toDelete.count
+                    storage.deleteMeasurements(toDelete)
                 }
+            if sourceCount > 0 {
+                let kept = sourceCount - deleted
+                let tag = kept == buckets ? "" : " MISMATCH(kept!=buckets → averaging loss)"
+                Log.info("[V2DIAG] averaging \(session.uuid) stream=\(stream.sensorName ?? "?") window=\(averagingWindow.rawValue)s: source=\(sourceCount) buckets=\(buckets) deleted=\(deleted) kept=\(kept)\(tag)")
+            }
         }
     }
 

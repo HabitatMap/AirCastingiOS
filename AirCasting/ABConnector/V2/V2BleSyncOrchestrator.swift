@@ -161,6 +161,11 @@ final class V2BleSyncOrchestrator {
             let records = self.collectedRecords
             let total = self.receivedBytes
             let expected = self.expectedBytes
+            // Reconciliation: device-reported on-disk size (expected) vs received.
+            // A byte shortfall means the transfer dropped records the device still
+            // held (device-vs-app loss), distinct from expected being small to
+            // begin with (device never recorded them).
+            Log.info("[V2SYNC] manual sync complete: records=\(records.count) receivedBytes=\(total) expectedBytes=\(expected.map(String.init) ?? "nil") ≈expectedRecords=\(expected.map { String($0 / 8) } ?? "nil") byteShortfall=\(expected.map { Int($0) - total } ?? 0)")
             let completion = self.completionHandler
             self.completionHandler = nil
             self.progressHandler?(Progress(receivedBytes: total,

@@ -80,6 +80,19 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
     private var syncBurstDropped = 0
     private var syncBurstNewestTS: TimeInterval?
     private var syncBurstOldestTS: TimeInterval?
+    // Live-stream capture accounting — the live path had NO loss visibility
+    // (handleMeasurementNotification dropped silently). `received` = a valid live
+    // measurement parsed; `saved` = handed to the saver. received-saved =
+    // droppedInactive + droppedSessionMismatch. parseFailed/deliveryErrors are
+    // pre-parse. Incremented on the BLE callback queue; a small lock guards the
+    // cross-thread summary read at reconnect/teardown/finish.
+    private var liveReceived = 0
+    private var liveSaved = 0
+    private var liveParseFailed = 0
+    private var liveDeliveryErrors = 0
+    private var liveDroppedInactive = 0
+    private var liveDroppedSessionMismatch = 0
+    private let liveAccountingLock = NSLock()
     private var isActiveSyncDrainingStorage: Bool = false
     private static let syncDrainIdleTimeoutSeconds: TimeInterval = 3.0
     var isActiveSyncDraining: Bool {
@@ -161,6 +174,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
     /// also need a fresh Status read because the device's state may have changed
     /// (e.g., HasSavedSession after a power cycle that interrupted a Running session).
     func prepareForReconnect() {
+        logLiveAccounting(context: "disconnect/prepareForReconnect")
         runOnQueueSync {
             self.fallbackReadWorkItem?.cancel()
             self.fallbackReadWorkItem = nil
@@ -181,6 +195,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
     }
 
     func teardown() {
+        logLiveAccounting(context: "teardown")
         runOnQueueSync {
             self.fallbackReadWorkItem?.cancel()
             self.fallbackReadWorkItem = nil
@@ -281,6 +296,14 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                         return
                     }
                     self.lastStatus = status
+                    // Device-side "expected" size: on-disk bytes the device holds
+                    // for this session (framing ≈ 8B/record + 5B/block). Compared
+                    // against received/persisted, this is the device-vs-app loss
+                    // boundary: received ≪ expected => transfer/app loss; expected
+                    // itself small vs session span => the device never recorded it.
+                    if let fileSize = status.fileSize {
+                        Log.info("[V2SYNC] device status \(status) fileSize=\(fileSize)B ≈\(fileSize / 8) records (expected on-disk)")
+                    }
                     self.fallbackReadWorkItem?.cancel()
                     let awaiter = self.statusAwaiter
                     self.statusAwaiter = nil
@@ -338,15 +361,30 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
     }
 
     private func handleMeasurementNotification(_ result: Result<Data?, Error>) {
-        guard mobileSessionActive,
-              case .success(let optional) = result,
-              let data = optional,
-              let live = V2MeasurementParser.parseLive(data),
-              let uuid = configuredSessionUUID else { return }
+        // Every early return below is a DROPPED live measurement — previously
+        // silent. Count + reason-log each so live-stream loss is diagnosable.
+        guard case .success(let optional) = result, let data = optional else {
+            liveAccountingLock.lock(); liveDeliveryErrors += 1; liveAccountingLock.unlock()
+            if case .failure(let error) = result { Log.warning("[V2LIVE] delivery error: \(error)") }
+            return
+        }
+        guard let live = V2MeasurementParser.parseLive(data) else {
+            liveAccountingLock.lock(); liveParseFailed += 1; let pf = liveParseFailed; liveAccountingLock.unlock()
+            Log.warning("[V2LIVE] parse failed for \(data.count)B live indication (parseFailed=\(pf))")
+            return
+        }
+        liveAccountingLock.lock(); liveReceived += 1; let received = liveReceived; liveAccountingLock.unlock()
+        guard mobileSessionActive, let uuid = configuredSessionUUID else {
+            liveAccountingLock.lock(); liveDroppedInactive += 1; liveAccountingLock.unlock()
+            return
+        }
         // Drop measurements that arrive before the recording controller has created the
         // Core Data session row — saving a stream against a nonexistent session fails.
         guard let active = activeSessionProvider.activeSession,
-              active.session.uuid == uuid else { return }
+              active.session.uuid == uuid else {
+            liveAccountingLock.lock(); liveDroppedSessionMismatch += 1; liveAccountingLock.unlock()
+            return
+        }
 
         let streams = V2StreamFactory.makeStreams(pm1: Double(live.pm1),
                                                   pm25: Double(live.pm25))
@@ -359,11 +397,23 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                                                 sessionUUID: uuid,
                                                 time: live.timestamp,
                                                 locationless: locationless)
+        liveAccountingLock.lock(); liveSaved += 1; liveAccountingLock.unlock()
+        if received % 300 == 0 { logLiveAccounting(context: "periodic") }
         NotificationCenter.default.post(
             name: .v2MeasurementSaved,
             object: nil,
             userInfo: [AirCastingNotificationKeys.V2MeasurementSaved.sessionUUID: uuid]
         )
+    }
+
+    /// Summary of live-stream capture. received-saved = the measurements that
+    /// arrived but were NOT saved (droppedInactive + droppedSessionMismatch).
+    func logLiveAccounting(context: String) {
+        liveAccountingLock.lock()
+        let r = liveReceived, s = liveSaved, pf = liveParseFailed, de = liveDeliveryErrors
+        let di = liveDroppedInactive, sm = liveDroppedSessionMismatch
+        liveAccountingLock.unlock()
+        Log.info("[V2LIVE] accounting (\(context)) received=\(r) saved=\(s) parseFailed=\(pf) deliveryErrors=\(de) droppedInactive=\(di) droppedSessionMismatch=\(sm) session=\(self.configuredSessionUUID?.rawValue ?? "nil")")
     }
 
     // MARK: - Sync chunk handling (Phase 3)
@@ -683,7 +733,11 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                 // window was never on the SD card (the start-of-session gap). The
                 // recording-time log is gone by sync time (file cap ~30k lines).
                 let sessionRecordedStart = self.activeSessionProvider.activeSession?.session.startTime?.timeIntervalSince1970
-                Log.info("[V2SYNC] sync burst drained: received=\(self.syncBurstReceived) handedToSave=\(self.syncBurstSaved) persisted=\(self.syncBurstPersisted) dropped=\(self.syncBurstDropped) tsSpan=\(burstSpan) sessionRecordedStart=\(sessionRecordedStart.map { String(format: "%.0f", $0) } ?? "nil") session=\(self.configuredSessionUUID?.rawValue ?? "nil")")
+                // Device-reported on-disk size, if a HasSavedSession status carried
+                // it (nil on the pure active/Running path, which has no size).
+                let deviceFileSize = self.lastStatus?.fileSize
+                let deviceExpected = deviceFileSize.map { "\($0)B ≈\($0 / 8) records" } ?? "n/a (Running path)"
+                Log.info("[V2SYNC] sync burst drained: received=\(self.syncBurstReceived) handedToSave=\(self.syncBurstSaved) persisted=\(self.syncBurstPersisted) dropped=\(self.syncBurstDropped) tsSpan=\(burstSpan) sessionRecordedStart=\(sessionRecordedStart.map { String(format: "%.0f", $0) } ?? "nil") deviceExpected=\(deviceExpected) session=\(self.configuredSessionUUID?.rawValue ?? "nil")")
                 let burstMismatch = self.syncBurstReceived - self.syncBurstSaved - self.syncBurstDropped
                 if burstMismatch != 0 {
                     Log.error("[V2SYNC] CAPTURE MISMATCH: received(\(self.syncBurstReceived)) != handedToSave(\(self.syncBurstSaved)) + dropped(\(self.syncBurstDropped)); \(burstMismatch) records unaccounted for.")
