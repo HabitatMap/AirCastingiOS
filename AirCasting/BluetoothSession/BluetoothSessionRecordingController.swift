@@ -202,7 +202,13 @@ class MobileAirBeamSessionRecordingController: BluetoothSessionRecordingControll
         v2LocationBackfillCoordinator.stopSampling(sessionUUID: uuid)
 
         // The code below the guard is performed only for active sessions
-        guard let activeSession = activeSessionProvider.activeSession, activeSession.session.uuid == uuid else { return }
+        guard let activeSession = activeSessionProvider.activeSession, activeSession.session.uuid == uuid else {
+            // Finishing a non-active (e.g. DISCONNECTED-card) session: nothing to
+            // drain, so its data is already complete — log coverage here since the
+            // active branch's proceedToDisconnect won't run.
+            measurementsSaver.logMeasurementCoverage(for: uuid)
+            return
+        }
 
         let device = activeSession.device
         let locationless = activeSession.session.locationless
