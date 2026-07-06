@@ -16,40 +16,33 @@ final class UpdateSessionParamsService {
 
     func updateSessionsParams(session: SessionEntity, output: FixedSession.FixedMeasurementOutput) throws {
         Log.info("Updating session params in core data for session: \(session.uuid) [\(session.name ?? "N/A")]")
-        // BE persists fixed-session `Session#start_time`, `Session#end_time`,
-        // and `Measurement#time` via `Utils.to_local_as_utc(epoch,
-        // session.time_zone)` on V2 ingest. The wall clock is the session's
-        // `time_zone` column:
-        //   - Indoor sessions: BE defaults `time_zone` to UTC.
-        //   - Outdoor sessions WITH lat/lng: BE looks up the geo TZ (≈ phone
-        //     TZ in normal use), so the numerals already align with fakeUTC.
-        //   - Outdoor sessions WITHOUT a resolvable lat/lng (nil, 0,0,
-        //     200,200 sentinels): BE falls back to UTC like indoor.
+        // Now that the app uploads its `time_zone` when creating a V2 fixed
+        // session, BE stores that and returns `Session#end_time` and
+        // `Measurement#time` via `Utils.to_local_as_utc(epoch,
+        // session.time_zone)` in the phone's wall clock — already aligned with
+        // iOS's fakeUTC convention, so no shift is applied (`shiftFixedTimestamps`
+        // is always false; see `sessionRequiresUtcShift`).
         //
-        // iOS uses the fakeUTC convention (wall-clock numerals as a UTC
-        // moment in the phone's TZ). Shift real-UTC numerals (indoor /
-        // locationless V2 fixed) to the phone wall clock on persist; leave
-        // already-aligned geo-TZ numerals alone.
-        //
-        // V1 fixed-session timestamps round-trip through BE's
-        // `skip_time_zone_conversion_for_attributes` adapter unchanged, so
-        // V1 stays at fakeUTC end-to-end and the gate stays false.
-        //
-        // Previously this site split the gate per timestamp kind under the
-        // theory that BE wrote `start_time` as the raw server clock without
-        // geo conversion. Empirically (NYC EDT test, local 05:00) the V2
-        // outdoor card double-shifted to ~01:00 — BE applies the same
-        // `to_local_as_utc` to `start_time` as it does to measurements once
-        // geo resolves. Collapse back to a single gate so V2 outdoor
-        // start_time / end_time / measurements all stay in BE's geo-TZ
-        // numerals untouched, and V2 indoor / locationless all get the UTC
-        // → phone-wall-clock shift.
+        // `Session#start_time` is the exception: BE sets it itself at session
+        // creation from the raw server clock (UTC) and does NOT run it through
+        // `to_local_as_utc`, so re-reading it here delivers numerals ~offset
+        // behind the wall clock (outdoor V2 card start read 2h behind in a
+        // UTC+2 Warsaw test while end_time / measurements were correct).
+        // start_time never changes after the session begins, and iOS already
+        // stamps the correct wall-clock value locally at creation
+        // (`AirBeamFixedWifiSessionCreator` → `getFakeUTCDate()`), so keep the
+        // stored value and only fall back to BE's when we have none (defensive;
+        // an app-created fixed session always has a local start). Mirrors
+        // Android setting start_time once in `SessionDownloadService` and never
+        // touching it during measurement refresh.
         let shiftFixedTimestamps = Self.sessionRequiresUtcShift(session: session, output: output)
         session.uuid = output.uuid
         session.type = output.type
         session.name = output.title
         session.tags  = output.tag_list
-        session.startTime = output.start_time.shiftedForFixedSession(isIndoor: shiftFixedTimestamps)
+        if session.startTime == nil {
+            session.startTime = output.start_time.shiftedForFixedSession(isIndoor: shiftFixedTimestamps)
+        }
         session.endTime = output.end_time.shiftedForFixedSession(isIndoor: shiftFixedTimestamps)
         session.version = output.version
         guard let context = session.managedObjectContext else {
