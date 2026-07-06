@@ -36,10 +36,12 @@ enum V2FixedSessionAPI {
         // it via BLE, the BE returns a non-2xx and the firmware Nacks 0x02.
         let uuid: String
         let title: String
-        // Indoor sessions send `nil` lat/lng — BE has no location to publish and
-        // must not geo-derive a TZ for them; the `time_zone` field below is
-        // authoritative instead. Mirrors Android `CreateFixedSessionV3Body`
-        // (`latitude = if (indoor) null else ...`).
+        // Sent for every fixed session, indoor included — indoor / locationless
+        // sessions carry the `(200, 200)` sentinel location so the numerals go
+        // up unchanged (BE derives the session TZ from the `time_zone` field
+        // below, not from these coords). Optional only so a session with no
+        // stored location at all encodes `null` rather than a bogus 0. Mirrors
+        // Android `CreateFixedSessionV3Body` (`latitude = session.location?.latitude`).
         let latitude: Double?
         let longitude: Double?
         let contribute: Bool

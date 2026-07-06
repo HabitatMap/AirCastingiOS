@@ -171,8 +171,8 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
         let body = V2FixedSessionAPI.RequestBody(
             uuid: sessionUUID.rawValue,
             title: name,
-            latitude: isIndoor ? nil : session.location?.latitude,
-            longitude: isIndoor ? nil : session.location?.longitude,
+            latitude: session.location?.latitude,
+            longitude: session.location?.longitude,
             contribute: contribute,
             is_indoor: isIndoor,
             time_zone: TimeZone.current.identifier,
