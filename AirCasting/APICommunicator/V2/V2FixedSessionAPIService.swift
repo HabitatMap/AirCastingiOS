@@ -36,10 +36,19 @@ enum V2FixedSessionAPI {
         // it via BLE, the BE returns a non-2xx and the firmware Nacks 0x02.
         let uuid: String
         let title: String
-        let latitude: Double
-        let longitude: Double
+        // Indoor sessions send `nil` lat/lng — BE has no location to publish and
+        // must not geo-derive a TZ for them; the `time_zone` field below is
+        // authoritative instead. Mirrors Android `CreateFixedSessionV3Body`
+        // (`latitude = if (indoor) null else ...`).
+        let latitude: Double?
+        let longitude: Double?
         let contribute: Bool
         let is_indoor: Bool
+        // Phone's TZ id (e.g. "Europe/Warsaw"). BE stores it as the session's
+        // `time_zone` and returns all timestamp numerals in this wall clock, so
+        // the app no longer has to UTC-shift indoor / locationless fixed
+        // sessions on download. Mirrors Android `time_zone` on the V3 body.
+        let time_zone: String
         let airbeam: AirbeamParams
         let streams: [StreamRequestParams]
     }

@@ -160,7 +160,6 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                                  wifiSSID: String,
                                  wifiPassword: String,
                                  completion: @escaping (Result<Void, Error>) -> Void) {
-        let coordinate = session.location ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
         // V2 firmware embeds the real BLE MAC in the advertised local name
         // (e.g. `AirBeamMini:24:58:7C:AC:A6:B6`), and BluetoothManager parses it
         // out into `realMacAddress`. Use that so the BE record keys off the same
@@ -172,10 +171,11 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
         let body = V2FixedSessionAPI.RequestBody(
             uuid: sessionUUID.rawValue,
             title: name,
-            latitude: coordinate.latitude,
-            longitude: coordinate.longitude,
+            latitude: isIndoor ? nil : session.location?.latitude,
+            longitude: isIndoor ? nil : session.location?.longitude,
             contribute: contribute,
             is_indoor: isIndoor,
+            time_zone: TimeZone.current.identifier,
             airbeam: .init(mac_address: macAddress,
                            model: "AirBeamMini",
                            name: name),
