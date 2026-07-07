@@ -172,11 +172,8 @@ private extension UpdateSessionParamsService {
     /// instead, which the app controls and ships in the canonical
     /// `"{model}-{stream}"` shape ("AirBeamMini-PM1", "AirBeam3-PM1", ...).
     func derivedPackageName(from streamOutput: FixedSession.StreamOutput) -> String {
-        if let prefix = streamOutput.sensor_name.split(separator: "-", maxSplits: 1, omittingEmptySubsequences: false).first,
-           !prefix.isEmpty {
-            return String(prefix)
-        }
-        return streamOutput.sensor_package_name
+        SensorPackageName.derived(fromSensorName: streamOutput.sensor_name,
+                                  fallback: streamOutput.sensor_package_name)
     }
 
     func fillMeasurement(_ entity: MeasurementEntity, with measurement: FixedSession.MeasurementOutput, isIndoor: Bool) {
@@ -213,5 +210,27 @@ private extension UpdateSessionParamsService {
             fillMeasurement(newMeasurement, with: $0, isIndoor: isIndoor)
             newMeasurement.measurementStream = entity
         }
+    }
+}
+
+/// Shared recovery of the human device model name for a fixed-session stream.
+/// The BE stores `sensor_package_name` from the airbeam record's `mac_address`
+/// — a MAC-like string for V2 Mini sessions, which have no real BLE MAC — and
+/// `SessionTypeIndicator` splits it on `:` / `-` and renders the leading hex
+/// pair as the device label ("Fixed : 26" / "Fixed : B6"). The canonical
+/// `sensor_name` ("AirBeamMini-PM1", "AirBeam3-PM1", ...) is app-controlled, so
+/// recover the model prefix from it and fall back to the raw package name only
+/// when the sensor name has no `-`-delimited prefix.
+///
+/// Used by both the followed download path (`UpdateSessionParamsService`) and
+/// the BE session-list sync (`SynchronizationDataConverter`) so an UNfollowed
+/// fixed card shows "AirBeamMini" without waiting to be followed.
+enum SensorPackageName {
+    static func derived(fromSensorName sensorName: String, fallback: String) -> String {
+        if let prefix = sensorName.split(separator: "-", maxSplits: 1, omittingEmptySubsequences: false).first,
+           !prefix.isEmpty {
+            return String(prefix)
+        }
+        return fallback
     }
 }

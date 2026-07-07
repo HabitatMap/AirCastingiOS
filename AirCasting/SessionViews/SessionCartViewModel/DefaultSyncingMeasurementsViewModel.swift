@@ -19,19 +19,37 @@ final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel, O
     
     var sessionDownloader: MeasurementsDownloadable
     @Injected private var persistence: SyncingMeasurementsStorage
+    @Injected private var measurementUpdatingService: MeasurementUpdatingService
     var task: Cancellable?
     var session: SessionEntity
     @Published var showLoadingIndicator = true
-    
+
     init(sessionDownloader: MeasurementsDownloadable, session: SessionEntity) {
         self.sessionDownloader = sessionDownloader
         self.session = session
         showLoadingIndicator = !session.isDormant
     }
-    
+
     func syncMeasurements() {
         showLoadingIndicator = true
-        
+
+        // Fixed sessions: download this one session through the same proven
+        // realtime path the periodic downloader and followed sessions use
+        // (getFixedMeasurement → updateSessionsParams). That path also refreshes
+        // the stream's sensorPackageName to the real model name ("AirBeamMini"),
+        // so an UNfollowed fixed card gets both its measurements and correct
+        // device label on expand without having to be followed. The generic
+        // empty.json path below is kept for non-fixed (mobile) sessions.
+        if session.isFixed {
+            let lastMeasurementTime = session.allStreams.compactMap(\.lastMeasurementTime).max()
+            let lastSynced = SyncHelper().calculateLastSync(sessionEndTime: session.endTime,
+                                                            lastMeasurementTime: lastMeasurementTime)
+            measurementUpdatingService.downloadMeasurements(for: session.uuid, lastSynced: lastSynced) { [weak self] in
+                DispatchQueue.main.async { self?.showLoadingIndicator = false }
+            }
+            return
+        }
+
         task = sessionDownloader.downloadSessionWithMeasurement(uuid: session.uuid) { [persistence] result in
             switch result {
             case .success(let data):

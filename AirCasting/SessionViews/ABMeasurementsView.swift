@@ -105,6 +105,10 @@ struct _ABMeasurementsView: View {
             }
         }
         .onChange(of: isCollapsed, perform: { _ in
+            // Expanding a card downloads measurements for that one session. The
+            // periodic downloader only covers followed sessions, so an
+            // UNfollowed fixed card must re-sync on every expand to stay fresh;
+            // otherwise fill only when it has no values yet.
             if isCollapsed == false && (!hasAnyMeasurements || session.isUnfollowedFixed) {
                 measurementsViewModel.syncMeasurements()
             }
