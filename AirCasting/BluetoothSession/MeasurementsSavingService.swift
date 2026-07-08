@@ -29,7 +29,7 @@ protocol MeasurementsSavingService {
     /// V2 path: batched chunk save. Resolves the PM1 + PM2.5 stream IDs once
     /// for the session and writes all paired records inside a single CoreData
     /// transaction. Used by `AirBeamMiniV2Configurator.persistSyncChunkLocked`
-    /// and `persistManualSyncRecords` to avoid the per-record `updateStreams`
+    /// and `persistManualSyncWindow` to avoid the per-record `updateStreams`
     /// storm that froze the UI during active-reconnect sync.
     /// `onPersisted` fires (on the storage queue) with the number of RECORDS
     /// actually committed once the CoreData write succeeds — distinct from the

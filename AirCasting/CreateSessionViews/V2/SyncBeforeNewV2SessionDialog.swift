@@ -114,12 +114,14 @@ final class SyncBeforeNewV2SessionViewModel: ObservableObject {
                 guard let self = self else { return }
                 self.isSyncing = false
                 switch result {
-                case .success(let records):
+                case .success(let summary):
                     // Start-path Sync: records are NOT persisted because the
                     // device's stored session was a previous one. Firmware
                     // auto-clears on its Stop handler; we keep the BLE link
-                    // open and proceed straight to NewSessionConfig.
-                    Log.info("V2 start-path manual sync completed (\(records.count) records discarded — not the active session)")
+                    // open and proceed straight to NewSessionConfig. No
+                    // `persistWindow` sink is installed, so the orchestrator
+                    // just drains the device without touching the DB.
+                    Log.info("V2 start-path manual sync completed (\(summary.recordCount) records discarded — not the active session)")
                     self.onResolved(.proceedWithNewSession)
                 case .failure(let error):
                     Log.error("V2 start-path manual sync failed: \(error)")

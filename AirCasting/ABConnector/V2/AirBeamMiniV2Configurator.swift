@@ -122,6 +122,18 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
     /// Phase 6.
     private var activeManualSync: V2BleSyncOrchestrator?
 
+    // Streaming manual-sync persistence (Phase 6 chunked save). The orchestrator
+    // flushes bounded record windows here as they arrive instead of buffering the
+    // whole session in RAM, so an interrupted finish (crash / force-quit / slow
+    // CoreData at 100%) loses at most the last window rather than the entire
+    // full-flash session — matching how the live and reconnect-drain paths save.
+    // The sync burst gate + location save-batch span the whole sync: opened
+    // lazily on the first window, closed in `endManualSyncPersist` (and defensively
+    // on teardown / prepareForReconnect so the gate can't leak).
+    private var manualSyncPersistOpen = false
+    private var manualSyncLocationless = false
+    private var manualSyncBackfillUUID: SessionUUID?
+
     init(device: any BluetoothDevice) {
         self.device = device
         queue.setSpecific(key: Self.queueIdentityKey, value: queueIdentity)
@@ -184,6 +196,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
             self.syncDrainResetWorkItem = nil
             self.isActiveSyncDrainingStorage = false
             self.exitBurstGateLocked()
+            self.closeManualSyncPersistLocked()
             self.dispatcher.resetSessionStartGuard()
             for token in self.subscriptionTokens {
                 _ = self.btCommunicator.unsubscribeCharacteristicObserver(token: token)
@@ -204,6 +217,7 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
             self.syncDrainResetWorkItem = nil
             self.isActiveSyncDrainingStorage = false
             self.exitBurstGateLocked()
+            self.closeManualSyncPersistLocked()
             self._syncChunkInterceptor = nil
             self.dispatcher.cancelAll(AirBeamMiniV2ConfiguratorError.notImplemented)
             self.invalidateSetTimeTimerLocked()
@@ -497,67 +511,41 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         }
     }
 
-    /// Persist a batch of records collected by the manual-sync orchestrator
-    /// for the currently active mobile session. Mirrors `persistSyncChunkLocked`
-    /// but takes already-parsed records (the orchestrator parses incrementally
-    /// for progress accounting). `completion` fires after the batched save
-    /// transactions have drained on the `editContext` queue, so callers can
-    /// safely tear down the active session knowing the records have landed.
-    func persistManualSyncRecords(_ records: [V2SyncRecord],
-                                  completion: (() -> Void)? = nil) {
-        guard !records.isEmpty else { completion?(); return }
-        // Open the save batch on the caller thread so a concurrent
-        // `stopSampling` (the finish-dialog calls us then immediately
-        // requests stop) defers its buffer wipe until our save loop
-        // ends. The lookup + record save loop itself runs on
-        // `queue.async` so an 8000-record sync replay doesn't freeze
-        // the SwiftUI dialog button handler that triggered it.
-        guard let preResolvedUUID = self.configuredSessionUUID else {
-            Log.info("V2 manual sync persist: no configured session UUID (\(records.count) records).")
-            completion?()
-            return
-        }
-        v2LocationBackfillCoordinator.beginSaveBatch(sessionUUID: preResolvedUUID)
-        // Coalesce SwiftUI re-renders for the manual-sync replay's burst — the
-        // active-sync drain gate already fired its idle exit by the time this
-        // path runs (chunks ended; Ready landed; user tapped Done). Without a
-        // fresh burst gate the per-batch save would still hit `viewContext`
-        // merge churn while finishing a multi-thousand-record session.
-        persistenceController.enterSyncBurst()
-
-        let finalize: () -> Void = { [weak self] in
-            guard let self = self else { completion?(); return }
-            // Pair entry/exit with a FIFO tail so the burst exit and
-            // location-backfill close fire after the save lands on
-            // `editContext`. Caller's completion runs after that.
-            self.persistenceController.editContext.perform {
-                self.v2LocationBackfillCoordinator.endSaveBatch(sessionUUID: preResolvedUUID)
-                self.persistenceController.exitSyncBurst()
-                completion?()
-            }
-        }
-
+    /// Persist ONE window of records handed over incrementally by the manual-sync
+    /// orchestrator, attributed to the configured session. Mirrors
+    /// `persistSyncChunkLocked` but takes already-parsed records and does NOT
+    /// hard-drop on an active-session mismatch (the finish flow may be a
+    /// standalone session with no `activeSession`) — it keys on
+    /// `configuredSessionUUID`, the session the device data belongs to.
+    ///
+    /// The sync burst gate + location save-batch are opened lazily on the first
+    /// window and span the whole sync; `endManualSyncPersist` closes them. Runs
+    /// the save on `queue`; the write itself is async on the `editContext` queue.
+    func persistManualSyncWindow(_ records: [V2SyncRecord]) {
         queue.async { [weak self] in
-            guard let self = self else { completion?(); return }
+            guard let self = self, !records.isEmpty else { return }
             guard let sessionUUID = self.configuredSessionUUID else {
-                Log.info("V2 manual sync persist: no configured session UUID (\(records.count) records).")
-                finalize()
+                Log.warning("[V2SYNC] manual window dropped: no configured session UUID (\(records.count) records)")
                 return
             }
-            // Single-session V2 firmware: trust the device's session as ours instead
-            // of dropping on UUID mismatch (see persistSyncChunkLocked for rationale).
+            if !self.manualSyncPersistOpen {
+                self.manualSyncPersistOpen = true
+                self.manualSyncBackfillUUID = sessionUUID
+                self.manualSyncLocationless = self.resolveLocationlessLocked(sessionUUID)
+                self.v2LocationBackfillCoordinator.beginSaveBatch(sessionUUID: sessionUUID)
+                // Coalesce SwiftUI re-renders across the whole replay burst so
+                // the per-window save doesn't churn `viewContext` merges while
+                // finishing a multi-thousand-record session.
+                self.persistenceController.enterSyncBurst()
+            }
+            // Single-session V2 firmware: trust the device's session as ours
+            // instead of dropping on UUID mismatch (see persistSyncChunkLocked).
             if let statusUUID = self.lastStatus?.sessionUUID,
                let configuredParsed = UUID(uuidString: sessionUUID.rawValue),
                statusUUID != configuredParsed {
-                Log.info("V2 manual sync persist: device session \(statusUUID) != active \(configuredParsed) — trusting device; attributing \(records.count) records to active session.")
+                Log.info("[V2SYNC] manual window: device session \(statusUUID) != configured \(configuredParsed) — trusting device; attributing \(records.count) records.")
             }
-            guard let active = self.activeSessionProvider.activeSession,
-                  active.session.uuid == sessionUUID else {
-                Log.info("V2 manual sync persist: active session missing or uuid mismatch.")
-                finalize()
-                return
-            }
-            let locationless = active.session.locationless
+            let locationless = self.manualSyncLocationless
             let overrides: [CLLocationCoordinate2D?]
             if locationless {
                 overrides = Array(repeating: nil, count: records.count)
@@ -585,8 +573,51 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                 object: nil,
                 userInfo: [AirCastingNotificationKeys.V2MeasurementSaved.sessionUUID: sessionUUID]
             )
-            finalize()
         }
+    }
+
+    /// Close the streaming manual-sync persist gate. `completion` fires after a
+    /// FIFO tail on the `editContext` queue, i.e. once every `persistManualSyncWindow`
+    /// transaction has committed — so callers can flip the session to FINISHED
+    /// knowing the records have landed. No-op (immediate completion) when no
+    /// window was ever persisted.
+    func endManualSyncPersist(completion: @escaping () -> Void) {
+        queue.async { [weak self] in
+            guard let self = self, self.manualSyncPersistOpen else { completion(); return }
+            let backfillUUID = self.manualSyncBackfillUUID
+            self.manualSyncPersistOpen = false
+            self.manualSyncBackfillUUID = nil
+            self.persistenceController.editContext.perform {
+                if let backfillUUID = backfillUUID {
+                    self.v2LocationBackfillCoordinator.endSaveBatch(sessionUUID: backfillUUID)
+                }
+                self.persistenceController.exitSyncBurst()
+                completion()
+            }
+        }
+    }
+
+    /// Defensive close for teardown / reconnect so the burst gate + backfill
+    /// batch can't leak if a manual sync is interrupted before its terminal.
+    /// Must be called on `queue`.
+    private func closeManualSyncPersistLocked() {
+        guard manualSyncPersistOpen else { return }
+        manualSyncPersistOpen = false
+        if let backfillUUID = manualSyncBackfillUUID {
+            v2LocationBackfillCoordinator.endSaveBatch(sessionUUID: backfillUUID)
+        }
+        manualSyncBackfillUUID = nil
+        persistenceController.exitSyncBurst()
+    }
+
+    private func resolveLocationlessLocked(_ sessionUUID: SessionUUID) -> Bool {
+        var result = false
+        persistenceController.editContext.performAndWait {
+            if let session = try? self.persistenceController.editContext.existingSession(uuid: sessionUUID) {
+                result = session.locationless
+            }
+        }
+        return result
     }
 
     /// Convenience: build + return the orchestrator. The caller owns its

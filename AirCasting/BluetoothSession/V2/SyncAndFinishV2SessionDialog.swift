@@ -105,7 +105,6 @@ final class SyncAndFinishV2SessionViewModel: ObservableObject {
     private let configurator: AirBeamMiniV2Configurator
     private let onFinish: (Bool) -> Void
     private var orchestrator: V2BleSyncOrchestrator?
-    private var pendingRecords: [V2SyncRecord] = []
 
     init(configurator: AirBeamMiniV2Configurator,
          onFinish: @escaping (Bool) -> Void) {
@@ -121,7 +120,7 @@ final class SyncAndFinishV2SessionViewModel: ObservableObject {
         progressPercent = 0
         let orchestrator = configurator.makeManualSyncOrchestrator()
         self.orchestrator = orchestrator
-        pendingRecords.removeAll()
+        let configurator = self.configurator
         orchestrator.start(progress: { [weak self] progress in
             DispatchQueue.main.async {
                 guard let self = self else { return }
@@ -131,12 +130,18 @@ final class SyncAndFinishV2SessionViewModel: ObservableObject {
                     self.descriptionState = .initial(eta: Self.etaString(fileSize: expected))
                 }
             }
+        }, persistWindow: { window in
+            // Stream each window to the DB as it arrives so an interrupted
+            // finish loses at most the last window, not the whole session.
+            configurator.persistManualSyncWindow(window)
+        }, finalize: { done in
+            configurator.endManualSyncPersist(completion: done)
         }, completion: { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 switch result {
-                case .success(let records):
-                    self.pendingRecords = records
+                case .success:
+                    // Records already streamed to the DB and drained by `finalize`.
                     self.state = .succeeded
                     self.descriptionState = .plain(Strings.SyncAndFinishV2SessionDialog.syncSucceededDescription)
                 case .failure(let error):
@@ -148,30 +153,18 @@ final class SyncAndFinishV2SessionViewModel: ObservableObject {
         })
     }
 
-    /// Mid-stream cancel + finish. Records collected so far are dropped; the
-    /// `0x11 DiscardSession` wipes on-device storage.
+    /// Mid-stream cancel + finish. Whatever windows already streamed to the DB
+    /// stay saved; the `0x11 DiscardSession` wipes on-device storage and the
+    /// orchestrator's terminal `finalize` closes the persist gate.
     func discardAndFinish() {
         orchestrator?.cancelAndDiscard()
-        pendingRecords.removeAll()
         onFinish(true)
     }
 
-    /// Post-success or post-failure finish. On success, the collected records
-    /// are persisted to the local DB before the session is marked FINISHED.
-    /// `onFinish` runs *after* the persist transaction has drained so the
-    /// caller's `stopSession` teardown (which clears the active-session
-    /// reference) doesn't race the save loop — the configurator's save block
-    /// guards on `activeSessionProvider.activeSession` and would drop the
-    /// records if it ran on a still-pending `queue.async` slot.
+    /// Post-success or post-failure finish. Records were streamed to the DB and
+    /// the final batch drained before `completion` fired, so the data has
+    /// already landed — just hand control back to the caller.
     func finish() {
-        if state == .succeeded, !pendingRecords.isEmpty {
-            let records = pendingRecords
-            pendingRecords.removeAll()
-            configurator.persistManualSyncRecords(records) { [weak self] in
-                DispatchQueue.main.async { self?.onFinish(true) }
-            }
-            return
-        }
         onFinish(true)
     }
 

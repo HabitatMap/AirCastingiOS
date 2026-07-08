@@ -68,14 +68,40 @@ final class V2BleSyncOrchestrator {
         let percent: Int
     }
 
+    /// Terminal summary. The records themselves are streamed to the DB in
+    /// bounded windows as they arrive (`persistWindow`), so the orchestrator no
+    /// longer hands back the whole session — only the counts needed for logging
+    /// and byte reconciliation.
+    struct Summary: Equatable {
+        let recordCount: Int
+        let receivedBytes: Int
+        let expectedBytes: UInt64?
+    }
+
+    /// Max records buffered before a flush to `persistWindow`. Bounds RAM (and
+    /// the data lost if the app is killed mid-finish) to one window instead of
+    /// the entire full-flash session, while keeping each CoreData transaction
+    /// large enough to avoid the per-indication save storm.
+    private static let windowSize = 1000
+
     private weak var configurator: AirBeamMiniV2Configurator?
     private let queue = DispatchQueue(label: "ab.v2.sync.orchestrator")
 
     private var receivedBytes: Int = 0
+    private var receivedRecordCount: Int = 0
     private var expectedBytes: UInt64?
-    private var collectedRecords: [V2SyncRecord] = []
+    /// Bounded buffer flushed to `persistWindow` every `windowSize` records.
+    private var pendingWindow: [V2SyncRecord] = []
     private var progressHandler: ((Progress) -> Void)?
-    private var completionHandler: ((Result<[V2SyncRecord], Error>) -> Void)?
+    /// Called on `queue` with each full window (and the tail on terminal) so the
+    /// owner can persist incrementally. Nil for drain-only flows (e.g. the
+    /// start-path sync that discards records).
+    private var persistWindow: (([V2SyncRecord]) -> Void)?
+    /// Called on terminal, after the last window flush, to drain the persistence
+    /// pipeline; its callback delivers the final completion so callers can
+    /// finalize the session knowing every window has committed.
+    private var finalizeHandler: ((@escaping () -> Void) -> Void)?
+    private var completionHandler: ((Result<Summary, Error>) -> Void)?
     private var isRunning: Bool = false
     private var cancelled: Bool = false
 
@@ -84,11 +110,15 @@ final class V2BleSyncOrchestrator {
     }
 
     /// Kick off a manual sync. `progress` is called from a background queue
-    /// after every chunk; UI must marshal to main. `completion` fires once
-    /// with the accumulated records on Ready or with a `SyncError` on failure
-    /// or cancellation.
+    /// after every chunk; UI must marshal to main. Records are streamed to
+    /// `persistWindow` in bounded windows as they arrive (nil = drain-only, no
+    /// persistence). On terminal, `finalize` drains the persistence pipeline and
+    /// its callback delivers `completion` — which fires once with a `Summary` on
+    /// Ready or a `SyncError` on failure/cancellation.
     func start(progress: @escaping (Progress) -> Void,
-               completion: @escaping (Result<[V2SyncRecord], Error>) -> Void) {
+               persistWindow: (([V2SyncRecord]) -> Void)? = nil,
+               finalize: ((@escaping () -> Void) -> Void)? = nil,
+               completion: @escaping (Result<Summary, Error>) -> Void) {
         queue.async { [weak self] in
             guard let self = self else { completion(.failure(SyncError.configuratorReleased)); return }
             guard !self.isRunning else { completion(.failure(SyncError.alreadyRunning)); return }
@@ -98,9 +128,12 @@ final class V2BleSyncOrchestrator {
             self.isRunning = true
             self.cancelled = false
             self.receivedBytes = 0
+            self.receivedRecordCount = 0
             self.expectedBytes = nil
-            self.collectedRecords.removeAll()
+            self.pendingWindow.removeAll(keepingCapacity: true)
             self.progressHandler = progress
+            self.persistWindow = persistWindow
+            self.finalizeHandler = finalize
             self.completionHandler = completion
 
             // Seed file_size from the current Status if it already carries one
@@ -149,36 +182,46 @@ final class V2BleSyncOrchestrator {
                 return
             }
             self.receivedBytes += 5 + 8 * records.count
-            self.collectedRecords.append(contentsOf: records)
+            self.receivedRecordCount += records.count
+            self.pendingWindow.append(contentsOf: records)
+            if self.pendingWindow.count >= Self.windowSize {
+                self.flushWindowLocked()
+            }
             self.emitProgressLocked()
         }
+    }
+
+    /// Flush the buffered window to `persistWindow`. No-op when empty or when no
+    /// sink is installed (drain-only sync). Runs on `queue`.
+    private func flushWindowLocked() {
+        guard !pendingWindow.isEmpty else { return }
+        persistWindow?(pendingWindow)
+        pendingWindow.removeAll(keepingCapacity: true)
     }
 
     func handleReady() {
         queue.async { [weak self] in
             guard let self = self, self.isRunning else { return }
             self.isRunning = false
-            let records = self.collectedRecords
+            // Persist the tail window before summarising. Records streamed so
+            // far are already committed; this flushes the last partial window.
+            self.flushWindowLocked()
             let total = self.receivedBytes
             let expected = self.expectedBytes
             // Reconciliation: device-reported on-disk size (expected) vs received.
             // A byte shortfall means the transfer dropped records the device still
             // held (device-vs-app loss), distinct from expected being small to
             // begin with (device never recorded them).
-            Log.info("[V2SYNC] manual sync complete: records=\(records.count) receivedBytes=\(total) expectedBytes=\(expected.map(String.init) ?? "nil") ≈expectedRecords=\(expected.map { String($0 / 8) } ?? "nil") byteShortfall=\(expected.map { Int($0) - total } ?? 0)")
-            let completion = self.completionHandler
-            self.completionHandler = nil
+            Log.info("[V2SYNC] manual sync complete: records=\(self.receivedRecordCount) receivedBytes=\(total) expectedBytes=\(expected.map(String.init) ?? "nil") ≈expectedRecords=\(expected.map { String($0 / 8) } ?? "nil") byteShortfall=\(expected.map { Int($0) - total } ?? 0)")
+            let summary = Summary(recordCount: self.receivedRecordCount,
+                                  receivedBytes: total,
+                                  expectedBytes: expected)
             self.progressHandler?(Progress(receivedBytes: total,
                                            expectedBytes: expected,
                                            percent: 100))
             self.progressHandler = nil
-            self.collectedRecords.removeAll()
-            self.configurator?.endManualSync(orchestrator: self)
-            if self.cancelled {
-                completion?(.failure(SyncError.cancelled))
-            } else {
-                completion?(.success(records))
-            }
+            let cancelled = self.cancelled
+            self.finishTerminalLocked(cancelled ? .failure(SyncError.cancelled) : .success(summary))
         }
     }
 
@@ -186,12 +229,12 @@ final class V2BleSyncOrchestrator {
         queue.async { [weak self] in
             guard let self = self, self.isRunning else { return }
             self.isRunning = false
-            let completion = self.completionHandler
-            self.completionHandler = nil
+            // Persist what streamed so far; a re-sync dedups via the unique
+            // (measurementStream,time) constraint, and syncFailed retains the
+            // records on the device for retry.
+            self.flushWindowLocked()
             self.progressHandler = nil
-            self.collectedRecords.removeAll()
-            self.configurator?.endManualSync(orchestrator: self)
-            completion?(.failure(SyncError.nack(error, raw: raw)))
+            self.finishTerminalLocked(.failure(SyncError.nack(error, raw: raw)))
         }
     }
 
@@ -199,12 +242,28 @@ final class V2BleSyncOrchestrator {
         queue.async { [weak self] in
             guard let self = self, self.isRunning else { return }
             self.isRunning = false
-            let completion = self.completionHandler
-            self.completionHandler = nil
+            self.flushWindowLocked()
             self.progressHandler = nil
-            self.collectedRecords.removeAll()
-            self.configurator?.endManualSync(orchestrator: self)
-            completion?(.failure(error))
+            self.finishTerminalLocked(.failure(error))
+        }
+    }
+
+    /// Shared terminal tail: clear per-run handlers, drain the persistence
+    /// pipeline via `finalize` (if any), then deliver `completion`. Runs on
+    /// `queue`; `completion` fires after every window has committed.
+    private func finishTerminalLocked(_ result: Result<Summary, Error>) {
+        let completion = self.completionHandler
+        self.completionHandler = nil
+        self.persistWindow = nil
+        let finalize = self.finalizeHandler
+        self.finalizeHandler = nil
+        self.pendingWindow.removeAll(keepingCapacity: false)
+        self.configurator?.endManualSync(orchestrator: self)
+        let deliver: () -> Void = { completion?(result) }
+        if let finalize = finalize {
+            finalize(deliver)
+        } else {
+            deliver()
         }
     }
 
