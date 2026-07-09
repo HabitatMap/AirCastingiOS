@@ -199,12 +199,14 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                                                      current: String(progress.percent),
                                                      total: "100")
                     }
-                }, persistWindow: { window in
+                }, persistWindow: { window, onPersisted in
                     // Stream each window to the DB as it arrives so an interrupted
                     // finish (crash / force-quit / slow CoreData at 100%) loses at
                     // most the last window, not the whole full-flash session — the
                     // firmware auto-wipes its storage on Ready regardless.
-                    configurator.persistManualSyncWindow(window)
+                    // `onPersisted` reports committed records so progress tracks
+                    // real DB persistence, not just bytes received.
+                    configurator.persistManualSyncWindow(window, onPersisted: onPersisted)
                 }, finalize: { done in
                     // Drain the last window on the editContext queue, then deliver
                     // completion — so the session is only flipped to FINISHED once

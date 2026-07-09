@@ -130,10 +130,11 @@ final class SyncAndFinishV2SessionViewModel: ObservableObject {
                     self.descriptionState = .initial(eta: Self.etaString(fileSize: expected))
                 }
             }
-        }, persistWindow: { window in
+        }, persistWindow: { window, onPersisted in
             // Stream each window to the DB as it arrives so an interrupted
             // finish loses at most the last window, not the whole session.
-            configurator.persistManualSyncWindow(window)
+            // `onPersisted` reports committed records for persist-based progress.
+            configurator.persistManualSyncWindow(window, onPersisted: onPersisted)
         }, finalize: { done in
             configurator.endManualSyncPersist(completion: done)
         }, completion: { [weak self] result in

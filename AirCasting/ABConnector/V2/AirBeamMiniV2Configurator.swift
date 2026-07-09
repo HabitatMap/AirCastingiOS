@@ -521,7 +521,10 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
     /// The sync burst gate + location save-batch are opened lazily on the first
     /// window and span the whole sync; `endManualSyncPersist` closes them. Runs
     /// the save on `queue`; the write itself is async on the `editContext` queue.
-    func persistManualSyncWindow(_ records: [V2SyncRecord]) {
+    /// `onPersisted` fires (on the storage queue) with the number of records
+    /// actually committed, so the caller can drive persist-based progress.
+    func persistManualSyncWindow(_ records: [V2SyncRecord],
+                                 onPersisted: ((Int) -> Void)? = nil) {
         queue.async { [weak self] in
             guard let self = self, !records.isEmpty else { return }
             guard let sessionUUID = self.configuredSessionUUID else {
@@ -567,7 +570,8 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
             }
             self.measurementsSaver.saveV2SyncBatch(batch,
                                                    sessionUUID: sessionUUID,
-                                                   locationless: locationless)
+                                                   locationless: locationless,
+                                                   onPersisted: onPersisted)
             NotificationCenter.default.post(
                 name: .v2MeasurementSaved,
                 object: nil,

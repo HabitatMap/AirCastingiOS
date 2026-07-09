@@ -89,14 +89,24 @@ final class V2BleSyncOrchestrator {
 
     private var receivedBytes: Int = 0
     private var receivedRecordCount: Int = 0
+    /// Records CONFIRMED committed to the DB (persist-path progress driver).
+    /// When persisting, the progress bar tracks this — not bytes received — so it
+    /// keeps moving while the DB consumer drains a backlog instead of freezing
+    /// near 100% with the receive already done.
+    private var persistedRecordCount: Int = 0
+    /// True when a `persistWindow` sink was installed at `start` — i.e. progress
+    /// should be driven off persisted records rather than received records.
+    private var persistTracking: Bool = false
     private var expectedBytes: UInt64?
     /// Bounded buffer flushed to `persistWindow` every `windowSize` records.
     private var pendingWindow: [V2SyncRecord] = []
     private var progressHandler: ((Progress) -> Void)?
     /// Called on `queue` with each full window (and the tail on terminal) so the
-    /// owner can persist incrementally. Nil for drain-only flows (e.g. the
-    /// start-path sync that discards records).
-    private var persistWindow: (([V2SyncRecord]) -> Void)?
+    /// owner can persist incrementally. The second argument is a completion the
+    /// owner invokes (with the number of records committed) once the batch lands
+    /// in the DB, so progress can advance on real persistence. Nil for drain-only
+    /// flows (e.g. the start-path sync that discards records).
+    private var persistWindow: (([V2SyncRecord], @escaping (Int) -> Void) -> Void)?
     /// Called on terminal, after the last window flush, to drain the persistence
     /// pipeline; its callback delivers the final completion so callers can
     /// finalize the session knowing every window has committed.
@@ -116,7 +126,7 @@ final class V2BleSyncOrchestrator {
     /// its callback delivers `completion` — which fires once with a `Summary` on
     /// Ready or a `SyncError` on failure/cancellation.
     func start(progress: @escaping (Progress) -> Void,
-               persistWindow: (([V2SyncRecord]) -> Void)? = nil,
+               persistWindow: (([V2SyncRecord], @escaping (Int) -> Void) -> Void)? = nil,
                finalize: ((@escaping () -> Void) -> Void)? = nil,
                completion: @escaping (Result<Summary, Error>) -> Void) {
         queue.async { [weak self] in
@@ -129,6 +139,8 @@ final class V2BleSyncOrchestrator {
             self.cancelled = false
             self.receivedBytes = 0
             self.receivedRecordCount = 0
+            self.persistedRecordCount = 0
+            self.persistTracking = persistWindow != nil
             self.expectedBytes = nil
             self.pendingWindow.removeAll(keepingCapacity: true)
             self.progressHandler = progress
@@ -192,11 +204,19 @@ final class V2BleSyncOrchestrator {
     }
 
     /// Flush the buffered window to `persistWindow`. No-op when empty or when no
-    /// sink is installed (drain-only sync). Runs on `queue`.
+    /// sink is installed (drain-only sync). Runs on `queue`. The owner reports
+    /// the committed count back so progress advances on real persistence.
     private func flushWindowLocked() {
         guard !pendingWindow.isEmpty else { return }
-        persistWindow?(pendingWindow)
+        let window = pendingWindow
         pendingWindow.removeAll(keepingCapacity: true)
+        persistWindow?(window) { [weak self] persistedCount in
+            self?.queue.async {
+                guard let self = self else { return }
+                self.persistedRecordCount += persistedCount
+                self.emitProgressLocked()
+            }
+        }
     }
 
     func handleReady() {
@@ -270,7 +290,13 @@ final class V2BleSyncOrchestrator {
     private func emitProgressLocked() {
         let pct: Int
         if let expected = expectedBytes, expected > 0 {
-            let raw = Int((Double(receivedBytes) / Double(expected)) * 100)
+            // Denominator in records (~8 on-disk bytes each). When persisting,
+            // drive the bar off records actually committed to the DB so it keeps
+            // moving while a save backlog drains instead of freezing once receive
+            // completes; otherwise (drain-only) track received records.
+            let expectedRecords = Double(expected) / 8.0
+            let done = Double(persistTracking ? persistedRecordCount : receivedRecordCount)
+            let raw = Int((done / expectedRecords) * 100)
             pct = max(0, min(99, raw))
         } else {
             pct = 0
