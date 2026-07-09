@@ -34,7 +34,14 @@ class SDCardMobileSessionFinisher : SessionFinisher {
                 }
 
                 sessionEntity.status = .FINISHED
-                if let endTime = sessionEntity.lastMeasurementTime {
+                // Use a bounded fetch (one indexed row per stream) for the end
+                // time. `sessionEntity.lastMeasurementTime` materializes the
+                // ENTIRE `measurements` ordered set into an array AND sorts it
+                // (MeaurementStreamExtension.latestMeasurementEntity) — for a
+                // just-synced full-flash session that faults hundreds of
+                // thousands of rows and blocks this `performAndWait` (and the
+                // sync dialog at 100%) for tens of seconds.
+                if let endTime = latestMeasurementTime(for: sessionEntity) {
                     Log.info("SD Sync measurement end time for session (UUID | name) \(sessionEntity.uuid) \(sessionEntity.name ?? ""): \(endTime)")
                     sessionEntity.endTime = endTime
                 }
@@ -59,5 +66,23 @@ class SDCardMobileSessionFinisher : SessionFinisher {
         if activeSessionProvider.activeSession?.session.uuid == uuid {
             activeSessionProvider.clearActiveSession()
         }
+    }
+
+    /// Latest measurement time for the session via a bounded, index-served
+    /// fetch: one `time`-DESC `fetchLimit = 1` query per stream (served by the
+    /// `(measurementStream, time)` unique index), maxed across streams. Does NOT
+    /// materialize or sort the measurements relation. Must be called on
+    /// `context`'s queue (this runs inside `callAsFunction`'s `performAndWait`).
+    private func latestMeasurementTime(for session: SessionEntity) -> Date? {
+        var latest: Date?
+        for stream in session.allStreams {
+            let request = NSFetchRequest<NSManagedObject>(entityName: "MeasurementEntity")
+            request.predicate = NSPredicate(format: "measurementStream == %@", stream)
+            request.sortDescriptors = [NSSortDescriptor(key: "time", ascending: false)]
+            request.fetchLimit = 1
+            guard let time = (try? context.fetch(request))?.first?.value(forKey: "time") as? Date else { continue }
+            if latest == nil || time > latest! { latest = time }
+        }
+        return latest
     }
 }
