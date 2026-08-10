@@ -52,6 +52,8 @@ struct MainTabBarView: View {
             appearance.shadowImage = UIImage.mainTabBarShadow
             UITabBar.appearance().standardAppearance = appearance
             UITabBar.appearance().scrollEdgeAppearance = appearance
+            // centres the (title-less) tab bar images vertically
+            UITabBarItem.appearance().imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
             performSessionsUpdate()
             measurementUpdatingService.start()
         }
@@ -281,15 +283,8 @@ class SearchAndFollowButton: ObservableObject {
     }
 }
 
-// extension that allows us to centre images in the tabView
-extension UITabBarController {
-    open override func viewWillLayoutSubviews() {
-        let array = self.viewControllers
-        for controller in array! {
-            controller.tabBarItem.imageInsets = UIEdgeInsets(top: 6,
-                                                             left: 0,
-                                                             bottom: -6,
-                                                             right: 0)
-        }
-    }
-}
+// NOTE: image centring used to be done by overriding `viewWillLayoutSubviews()` in a
+// UITabBarController extension. That override applied to *every* UITabBarController in the
+// process (including UIKit's own private ones), never called super, and force-unwrapped
+// `viewControllers`, which crashed on launch when UIKit laid out a tab bar controller that had
+// no view controllers set yet. The insets are configured through the appearance proxy instead.
