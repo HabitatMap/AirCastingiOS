@@ -36,7 +36,8 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
     @Injected private var v2LocationBackfillCoordinator: V2LocationBackfillCoordinator
     @Injected private var persistenceController: PersistenceController
 
-    private let device: any BluetoothDevice
+    private var device: any BluetoothDevice
+    private let deviceLock = NSLock()
     private let queue = DispatchQueue(label: "ab.v2.configurator")
     /// Key used to detect "am I already on `queue`?" so `teardown` (and any
     /// other `queue.sync` site reachable from a dispatcher completion fired
@@ -137,6 +138,30 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
     init(device: any BluetoothDevice) {
         self.device = device
         queue.setSpecific(key: Self.queueIdentityKey, value: queueIdentity)
+    }
+
+    func updateDevice(_ newDevice: any BluetoothDevice) {
+        deviceLock.lock()
+        defer { deviceLock.unlock() }
+        if newDevice.realMacAddress != nil || device.realMacAddress == nil {
+            device = newDevice
+        }
+    }
+
+    private var streamPackageName: String {
+        deviceLock.lock()
+        let currentDevice = device
+        deviceLock.unlock()
+        if let mac = currentDevice.realMacAddress, !mac.isEmpty {
+            return "AirBeamMini:\(mac)"
+        }
+        if let name = currentDevice.name, !name.isEmpty {
+            if let parsed = BluetoothManager.parseAirBeamMiniAdvertisedName(name) {
+                return parsed.normalizedName
+            }
+            return name
+        }
+        return "AirBeamMini"
     }
 
     /// Runs `work` synchronously on `queue`. If already on `queue` (re-entrant
@@ -401,7 +426,8 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
         }
 
         let streams = V2StreamFactory.makeStreams(pm1: Double(live.pm1),
-                                                  pm25: Double(live.pm25))
+                                                  pm25: Double(live.pm25),
+                                                  packageName: streamPackageName)
         let locationless = active.session.locationless
         measurementsSaver.saveV2LiveMeasurement(streams.pm1,
                                                 sessionUUID: uuid,
@@ -563,9 +589,11 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                          time: Date,
                          locationOverride: CLLocationCoordinate2D?)] = []
             batch.reserveCapacity(records.count)
+            let packageName = self.streamPackageName
             for (index, record) in records.enumerated() {
                 let streams = V2StreamFactory.makeStreams(pm1: Double(record.pm1),
-                                                          pm25: Double(record.pm25))
+                                                          pm25: Double(record.pm25),
+                                                          packageName: packageName)
                 batch.append((streams.pm1, streams.pm25, record.timestamp, overrides[index]))
             }
             self.measurementsSaver.saveV2SyncBatch(batch,
@@ -721,9 +749,11 @@ final class AirBeamMiniV2Configurator: AirBeamConfigurator {
                      time: Date,
                      locationOverride: CLLocationCoordinate2D?)] = []
         batch.reserveCapacity(records.count)
+        let packageName = streamPackageName
         for (index, record) in records.enumerated() {
             let streams = V2StreamFactory.makeStreams(pm1: Double(record.pm1),
-                                                      pm25: Double(record.pm25))
+                                                      pm25: Double(record.pm25),
+                                                      packageName: packageName)
             batch.append((streams.pm1, streams.pm25, record.timestamp, overrides[index]))
         }
         measurementsSaver.saveV2SyncBatch(batch,

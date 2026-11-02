@@ -58,6 +58,14 @@ struct SelectPeripheralView: View {
             .onDisappear {
                 viewModel.viewDisappeared()
             }
+            .onReceive(viewModel.$airbeams) { airbeams in
+                guard let selectedUUID = selection?.uuid,
+                      let updated = airbeams.first(where: { $0.uuid == selectedUUID }) else { return }
+                if updated.name != selection?.name || updated.realMacAddress != selection?.realMacAddress {
+                    selection = updated
+                    sessionContext.device = updated
+                }
+            }
             .padding()
             .background(Color.aircastingBackground.ignoresSafeArea())
             .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)

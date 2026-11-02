@@ -2,22 +2,37 @@
 //
 
 import XCTest
+@testable import AirCasting
 
 final class SelectPeripheralViewModel: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    func testParseOldV2AdvertisedNameNormalizesMacAndSubtractsTwo() throws {
+        let parsed = try XCTUnwrap(
+            BluetoothManager.parseAirBeamMiniAdvertisedName("AirBeamMini:24:58:7C:AC:A6:B6")
+        )
+        XCTAssertEqual(parsed.normalizedName, "AirBeamMini:24587CACA6B4")
+        XCTAssertEqual(parsed.macAddress, "24587CACA6B4")
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    func testParseOldV2AdvertisedNamePreservesLeadingZerosAndHandlesByteBorrow() throws {
+        let parsedLeadingZero = try XCTUnwrap(
+            BluetoothManager.parseAirBeamMiniAdvertisedName("AirBeamMini:00:18:96:10:70:00")
+        )
+        XCTAssertEqual(parsedLeadingZero.normalizedName, "AirBeamMini:001896106FFE")
+        XCTAssertEqual(parsedLeadingZero.macAddress, "001896106FFE")
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    func testParseNewV2AdvertisedNameKeepsSingleColonNameAndExtractsMac() throws {
+        let parsed = try XCTUnwrap(
+            BluetoothManager.parseAirBeamMiniAdvertisedName("AirBeamMini:24587CACA6B4")
+        )
+        XCTAssertEqual(parsed.normalizedName, "AirBeamMini:24587CACA6B4")
+        XCTAssertEqual(parsed.macAddress, "24587CACA6B4")
+    }
+
+    func testParseOtherAirBeamReturnsNil() {
+        XCTAssertNil(BluetoothManager.parseAirBeamMiniAdvertisedName("AirBeam3:0018961070D6"))
+        XCTAssertNil(BluetoothManager.parseAirBeamMiniAdvertisedName("airbeammini"))
+        XCTAssertNil(BluetoothManager.parseAirBeamMiniAdvertisedName(nil))
     }
 }
