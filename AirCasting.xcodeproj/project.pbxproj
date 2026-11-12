@@ -463,12 +463,12 @@
 		D1A0670130042026000021AB /* V2BleSyncOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000022AB /* V2BleSyncOrchestrator.swift */; };
 		D1A0670130042026000023AB /* SyncBeforeNewV2SessionDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000024AB /* SyncBeforeNewV2SessionDialog.swift */; };
 		D1A0670130042026000025AB /* SyncAndFinishV2SessionDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000026AB /* SyncAndFinishV2SessionDialog.swift */; };
-		D1A067013004207000001AB /* V2ActiveSyncDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A067013004207000002AB /* V2ActiveSyncDialog.swift */; };
 		D1A0670130042026000027AB /* LocationSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000028AB /* LocationSample.swift */; };
 		D1A0670130042026000029AB /* LocationSampleStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000030AB /* LocationSampleStore.swift */; };
 		D1A0670130042026000031AB /* V2LocationSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000032AB /* V2LocationSampler.swift */; };
 		D1A0670130042026000033AB /* V2LocationBackfillCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000034AB /* V2LocationBackfillCoordinator.swift */; };
 		D1A0670130042026000037AB /* LocationSampleStoreContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000036AB /* LocationSampleStoreContainer.swift */; };
+		D1A067013004207000001AB /* V2ActiveSyncDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A067013004207000002AB /* V2ActiveSyncDialog.swift */; };
 		DD009D662698844A009F0443 /* DeleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD009D652698844A009F0443 /* DeleteView.swift */; };
 		DD123EBF27BD1CD3001083C3 /* SearchMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD123EBE27BD1CD3001083C3 /* SearchMapView.swift */; };
 		DD123EC227BD2C53001083C3 /* SearchMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD123EC127BD2C53001083C3 /* SearchMapViewModel.swift */; };
@@ -1086,12 +1086,12 @@
 		D1A0670130042026000022AB /* V2BleSyncOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2BleSyncOrchestrator.swift; sourceTree = "<group>"; };
 		D1A0670130042026000024AB /* SyncBeforeNewV2SessionDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SyncBeforeNewV2SessionDialog.swift; path = V2/SyncBeforeNewV2SessionDialog.swift; sourceTree = "<group>"; };
 		D1A0670130042026000026AB /* SyncAndFinishV2SessionDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SyncAndFinishV2SessionDialog.swift; path = V2/SyncAndFinishV2SessionDialog.swift; sourceTree = "<group>"; };
-		D1A067013004207000002AB /* V2ActiveSyncDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = V2ActiveSyncDialog.swift; path = V2/V2ActiveSyncDialog.swift; sourceTree = "<group>"; };
 		D1A0670130042026000028AB /* LocationSample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSample.swift; sourceTree = "<group>"; };
 		D1A0670130042026000030AB /* LocationSampleStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSampleStore.swift; sourceTree = "<group>"; };
 		D1A0670130042026000032AB /* V2LocationSampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2LocationSampler.swift; sourceTree = "<group>"; };
 		D1A0670130042026000034AB /* V2LocationBackfillCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2LocationBackfillCoordinator.swift; sourceTree = "<group>"; };
 		D1A0670130042026000036AB /* LocationSampleStoreContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSampleStoreContainer.swift; sourceTree = "<group>"; };
+		D1A067013004207000002AB /* V2ActiveSyncDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = V2ActiveSyncDialog.swift; path = V2/V2ActiveSyncDialog.swift; sourceTree = "<group>"; };
 		DD009D652698844A009F0443 /* DeleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteView.swift; sourceTree = "<group>"; };
 		DD123EBE27BD1CD3001083C3 /* SearchMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMapView.swift; sourceTree = "<group>"; };
 		DD123EC127BD2C53001083C3 /* SearchMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMapViewModel.swift; sourceTree = "<group>"; };
@@ -1233,28 +1233,8 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		33DBE7D32E40DCFE003234F1 /* CommonUI */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = CommonUI;
-			sourceTree = "<group>";
-		};
-		33DBE7DB2E41FC88003234F1 /* Preview */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = Preview;
-			sourceTree = "<group>";
-		};
+		33DBE7D32E40DCFE003234F1 /* CommonUI */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = CommonUI; sourceTree = "<group>"; };
+		33DBE7DB2E41FC88003234F1 /* Preview */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Preview; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3342,9 +3322,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AirCasting/Pods-AirCasting-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AirCasting/Pods-AirCasting-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -3359,9 +3343,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AirCasting/Pods-AirCasting-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AirCasting/Pods-AirCasting-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -4207,7 +4195,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 18;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -4217,7 +4205,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.28.11;
+				MARKETING_VERSION = 1.28.14;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4234,11 +4222,9 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 15;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = LXAGXH6CF6;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 18;
+				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -4246,11 +4232,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.28.11;
+				MARKETING_VERSION = 1.28.14;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "AC Ad Hoc distribution";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -4326,7 +4311,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;
@@ -4335,7 +4320,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.28.11;
+				MARKETING_VERSION = 1.28.14;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
