@@ -227,9 +227,28 @@ private extension UpdateSessionParamsService {
 /// fixed card shows "AirBeamMini" without waiting to be followed.
 enum SensorPackageName {
     static func derived(fromSensorName sensorName: String, fallback: String) -> String {
-        if let prefix = sensorName.split(separator: "-", maxSplits: 1, omittingEmptySubsequences: false).first,
-           !prefix.isEmpty {
-            return String(prefix)
+        if let parsed = BluetoothManager.parseAirBeamMiniAdvertisedName(fallback) {
+            return parsed.normalizedName
+        }
+        let trimmedFallback = fallback.trimmingCharacters(in: .whitespacesAndNewlines)
+        let modelPrefix = sensorName
+            .split(separator: "-", maxSplits: 1, omittingEmptySubsequences: false)
+            .first
+            .map(String.init) ?? ""
+        if !trimmedFallback.isEmpty {
+            let lowerFallback = trimmedFallback.lowercased()
+            if lowerFallback.hasPrefix("airbeam") || lowerFallback.hasPrefix("builtin") {
+                return trimmedFallback
+            }
+            if !modelPrefix.isEmpty {
+                let candidate = "\(modelPrefix):\(trimmedFallback)"
+                if let parsed = BluetoothManager.parseAirBeamMiniAdvertisedName(candidate) {
+                    return parsed.normalizedName
+                }
+            }
+        }
+        if !modelPrefix.isEmpty {
+            return modelPrefix
         }
         return fallback
     }

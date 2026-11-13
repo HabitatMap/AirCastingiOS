@@ -161,13 +161,15 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                                  wifiPassword: String,
                                  completion: @escaping (Result<Void, Error>) -> Void) {
         // V2 firmware embeds the real BLE MAC in the advertised local name
-        // (e.g. `AirBeamMini:24:58:7C:AC:A6:B6`), and BluetoothManager parses it
-        // out into `realMacAddress`. Use that so the BE record keys off the same
-        // MAC Android sends from `BluetoothDevice.getAddress()` and a single
-        // physical AirBeam looks identical across platforms. Fall back to the
-        // UUID-derived MAC-like string only when the firmware advert has not
-        // surfaced a MAC yet (older builds, or scan response not yet received).
-        let macAddress = device.realMacAddress ?? macAddressLike(from: device.uuid)
+        // (e.g. `AirBeamMini:A23456789E`, or normalized with -2 from V2 1.0.0
+        // `AirBeamMini:A2:34:56:78:A1`), and BluetoothManager parses it out
+        // into `realMacAddress`. Look up the BLE address strictly from the BLE
+        // device name (never synthesize from CoreBluetooth UUID).
+        let refreshedDevice = bluetoothConnectionHandler.refreshedDevice(for: device)
+        let macAddress = refreshedDevice.realMacAddress
+            ?? device.realMacAddress
+            ?? BluetoothManager.parseAirBeamMiniAdvertisedName(refreshedDevice.name ?? device.name)?.macAddress
+            ?? ""
         let body = V2FixedSessionAPI.RequestBody(
             uuid: sessionUUID.rawValue,
             title: name,
@@ -244,18 +246,5 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                 }
             }
         }
-    }
-
-    /// Derive a stable MAC-like identifier from the per-app CoreBluetooth UUID.
-    /// Format: "XX:XX:XX:XX:XX:XX" (uppercase hex). Uses the last 12 hex chars
-    /// of the UUID — they are the most-randomised section.
-    private func macAddressLike(from uuid: String) -> String {
-        let hex = uuid.replacingOccurrences(of: "-", with: "").uppercased()
-        let tail = String(hex.suffix(12)).padding(toLength: 12, withPad: "0", startingAt: 0)
-        return stride(from: 0, to: tail.count, by: 2).map {
-            let start = tail.index(tail.startIndex, offsetBy: $0)
-            let end = tail.index(start, offsetBy: 2)
-            return String(tail[start..<end])
-        }.joined(separator: ":")
     }
 }

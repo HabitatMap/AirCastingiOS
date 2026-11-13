@@ -46,6 +46,7 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     private lazy var selectedStream = streamOptions.first
     private let apiClient: ShareSessionAPIServices
     @Injected private var sessionSynchronizer: SessionSynchronizer
+    private var syncSubscription: AnyCancellable?
     
     var streamOptions: [ShareSessionStreamOptionViewModel] {
         willSet {
@@ -130,12 +131,24 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     
     private func fireUploadingSession(onEnd: @escaping () -> Void) throws {
         if sessionSynchronizer.syncInProgress.value {
-            var subscription: AnyCancellable?
-            subscription = sessionSynchronizer.syncInProgress.receive(on: DispatchQueue.main).sink { value in
-                guard value == false else { return }
-                subscription?.cancel()
-                onEnd()
-            }
+            syncSubscription = sessionSynchronizer.syncInProgress
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] value in
+                    guard value == false else { return }
+                    self?.syncSubscription?.cancel()
+                    self?.syncSubscription = nil
+                    guard let self = self else {
+                        onEnd()
+                        return
+                    }
+                    if self.session.urlLocation == nil {
+                        self.sessionSynchronizer.triggerSynchronization(options: [.upload], completion: {
+                            DispatchQueue.main.async { onEnd() }
+                        })
+                    } else {
+                        onEnd()
+                    }
+                }
             return
         }
         sessionSynchronizer.triggerSynchronization(options: [.upload], completion: {

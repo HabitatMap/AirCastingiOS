@@ -18,6 +18,10 @@ class AirbeamConnectionViewModel: ObservableObject {
     private let device: any BluetoothDevice
     private let sessionContext: CreateSessionContext
     
+    private var currentDevice: any BluetoothDevice {
+        sessionContext.device ?? device
+    }
+
     required init(sessionContext: CreateSessionContext,
                   device: any BluetoothDevice) {
         self.device = device
@@ -28,10 +32,11 @@ class AirbeamConnectionViewModel: ObservableObject {
     struct NoSessionUUID: Error {}
     
     func connectToAirBeam() {
-        self.bluetoothConnectionProtector.isAirBeamAvailableForNewConnection(peripheraUUID: device.uuid) { result in
+        let targetDevice = currentDevice
+        self.bluetoothConnectionProtector.isAirBeamAvailableForNewConnection(peripheraUUID: targetDevice.uuid) { result in
             switch result {
             case .success(_):
-                self.airBeamConnectionController.connectToAirBeam(device: self.device) { result in
+                self.airBeamConnectionController.connectToAirBeam(device: targetDevice) { result in
                     guard result == AirBeamServicesConnectionResult.success else {
                         DispatchQueue.main.async {
                             self.getAlert(result)
@@ -68,7 +73,7 @@ class AirbeamConnectionViewModel: ObservableObject {
             completion(.failure(NoSessionUUID.init()))
             return
         }
-        configurator
+        Resolver.resolve(AirBeamConfigurator.self, args: currentDevice)
             .configureSession(uuid: sessionUUID, completion: completion)
     }
     

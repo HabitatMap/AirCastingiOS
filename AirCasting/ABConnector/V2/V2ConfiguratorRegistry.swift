@@ -13,10 +13,18 @@ final class V2ConfiguratorRegistry {
 
     func configurator(for device: any BluetoothDevice) -> AirBeamMiniV2Configurator {
         lock.lock(); defer { lock.unlock() }
-        if let existing = cache[device.uuid] { return existing }
+        if let existing = cache[device.uuid] {
+            existing.updateDevice(device)
+            return existing
+        }
         let new = AirBeamMiniV2Configurator(device: device)
         cache[device.uuid] = new
         return new
+    }
+
+    func updateIfPresent(device: any BluetoothDevice) {
+        lock.lock(); defer { lock.unlock() }
+        cache[device.uuid]?.updateDevice(device)
     }
 
     func release(deviceUUID: String) {

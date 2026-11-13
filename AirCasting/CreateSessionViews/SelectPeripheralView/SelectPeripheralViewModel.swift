@@ -53,13 +53,14 @@ class SelectPeripheralViewModel: ObservableObject {
 
     /// Insert or replace a device by uuid. Replaces when the incoming entry
     /// carries new information (real MAC parsed from the advert, or a different
-    /// name) so the UI upgrades from the UUID-suffix fallback to the firmware
+    /// name) so the UI upgrades from a bare GAP name to the firmware
     /// `AirBeamMini:<MAC>` name once iOS surfaces the scan response.
     private static func upsert(_ device: any BluetoothDevice, into list: inout [any BluetoothDevice]) {
         if let idx = list.firstIndex(where: { $0.uuid == device.uuid }) {
             let existing = list[idx]
             let incomingIsBetter = (existing.realMacAddress == nil && device.realMacAddress != nil)
                 || (existing.name != device.name && device.realMacAddress != nil)
+                || (existing.name?.contains(":") != true && device.name?.contains(":") == true)
             if incomingIsBetter { list[idx] = device }
         } else {
             list.append(device)

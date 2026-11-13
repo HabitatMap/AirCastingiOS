@@ -120,11 +120,7 @@ final class UpdateSessionParamsServiceTests: ACTestCase {
             XCTAssertEqual(databaseMeasurementStream.measurementShortType, modelMeasurementStream.measurement_short_type)
             XCTAssertEqual(databaseMeasurementStream.measurementType, modelMeasurementStream.measurement_type)
             XCTAssertEqual(databaseMeasurementStream.sensorName, modelMeasurementStream.sensor_name)
-            // `sensorPackageName` is derived from `sensor_name`'s model prefix
-            // because the BE's value is a MAC-like string that the dashboard
-            // session header would split on `-` / `:` and render as a hex pair.
-            XCTAssertEqual(databaseMeasurementStream.sensorPackageName,
-                           modelMeasurementStream.sensor_name.split(separator: "-", maxSplits: 1, omittingEmptySubsequences: false).first.map(String.init))
+            XCTAssertEqual(databaseMeasurementStream.sensorPackageName, modelMeasurementStream.sensor_package_name)
             XCTAssertEqual(databaseMeasurementStream.thresholdHigh, modelMeasurementStream.threshold_high)
             XCTAssertEqual(databaseMeasurementStream.thresholdLow, modelMeasurementStream.threshold_low)
             XCTAssertEqual(databaseMeasurementStream.thresholdMedium, modelMeasurementStream.threshold_medium)
@@ -143,5 +139,26 @@ final class UpdateSessionParamsServiceTests: ACTestCase {
                 XCTAssertEqual(databaseMeasurement.time, modelMeasurement.time)
             }
         }
+    }
+
+    func testSensorPackageNameDerivedPreservesAndNormalizesBleNames() {
+        XCTAssertEqual(SensorPackageName.derived(fromSensorName: "AirBeamMini-PM1",
+                                                 fallback: "AirBeamMini:A23456789E"),
+                       "AirBeamMini:A23456789E")
+        XCTAssertEqual(SensorPackageName.derived(fromSensorName: "AirBeamMini-PM1",
+                                                 fallback: "AirBeamMini:A2:34:56:78:A1"),
+                       "AirBeamMini:A23456789F")
+        XCTAssertEqual(SensorPackageName.derived(fromSensorName: "AirBeamMini-PM1",
+                                                 fallback: "AirBeamMini:a23456789e"),
+                       "AirBeamMini:a23456789e")
+        XCTAssertEqual(SensorPackageName.derived(fromSensorName: "AirBeam3-PM1",
+                                                 fallback: "AirBeam3:a23456789e"),
+                       "AirBeam3:a23456789e")
+        XCTAssertEqual(SensorPackageName.derived(fromSensorName: "AirBeamMini-PM1",
+                                                 fallback: "A23456789E"),
+                       "AirBeamMini:A23456789E")
+        XCTAssertEqual(SensorPackageName.derived(fromSensorName: "AirBeamMini-PM1",
+                                                 fallback: "A2:34:56:78:A1"),
+                       "AirBeamMini:A23456789F")
     }
 }

@@ -98,7 +98,7 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
             Log.info("BT central went down; synthesizing disconnect for \(snapshot.count) tracked peripheral(s)")
             for peripheral in snapshot {
                 let version = self.firmwareVersion(for: peripheral)
-                self.callConnectionObserversWithDisconnect(for: .init(peripheral: peripheral, firmwareVersion: version))
+                self.callConnectionObserversWithDisconnect(for: self.makeDevice(for: peripheral, firmwareVersion: version))
             }
             self.trackedConnectedPeripherals.removeAll()
         }
@@ -125,12 +125,13 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
     func refreshedDevice(for device: any BluetoothDevice) -> any BluetoothDevice {
         guard let device = device as? Device else { return device }
         let resolved = firmwareVersion(for: device.peripheral)
-        guard resolved != device.firmwareVersion else { return device }
-        Log.info("Refreshed device firmware \(device.firmwareVersion) -> \(resolved) for \(device.uuid) (GATT re-resolved)")
-        return Device(peripheral: device.peripheral,
-                      firmwareVersion: resolved,
-                      advertisedName: device.name,
-                      realMacAddress: device.realMacAddress)
+        let refreshed = makeDevice(for: device.peripheral,
+                                   firmwareVersion: resolved,
+                                   rawAdvertisedName: device.name)
+        if resolved != device.firmwareVersion || refreshed.name != device.name || refreshed.realMacAddress != device.realMacAddress {
+            Log.info("Refreshed device \(device.uuid) fw=\(device.firmwareVersion)->\(resolved) name=\(device.name ?? "nil")->\(refreshed.name ?? "nil")")
+        }
+        return refreshed
     }
 
     private struct Device: BluetoothDevice {
@@ -146,10 +147,16 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
             // often nil at didDiscover time and only filled in once the device has been
             // connected or its GAP name characteristic read. Falling back kept airbeams out
             // of the SelectPeripheral list when iOS hadn't cached the name yet.
-            name = advertisedName ?? peripheral.name
+            let candidateName = advertisedName ?? peripheral.name
+            if let parsed = BluetoothManager.parseAirBeamMiniAdvertisedName(candidateName) {
+                name = parsed.normalizedName
+                self.realMacAddress = realMacAddress ?? parsed.macAddress
+            } else {
+                name = candidateName
+                self.realMacAddress = realMacAddress
+            }
             uuid = peripheral.identifier.description
             self.firmwareVersion = firmwareVersion
-            self.realMacAddress = realMacAddress
         }
     }
 
@@ -157,31 +164,106 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
     /// packets: a pure advert with no local name, then a scan-response containing
     /// `AirBeamMini:<MAC>`. iOS calls didDiscover for both — cache the richer one
     /// so subsequent ad-only packets don't drop us back to a missing name.
-    private var lastKnownLocalName: [CBPeripheral: String] = [:]
+    private static let persistedLocalNamesKey = "bt.lastKnownLocalNameByPeripheralUUID"
+    private var lastKnownLocalName: [UUID: String] = [:]
     private let lastKnownLocalNameLock = NSRecursiveLock()
 
     private func cachedLocalName(for peripheral: CBPeripheral) -> String? {
         lastKnownLocalNameLock.lock(); defer { lastKnownLocalNameLock.unlock() }
-        return lastKnownLocalName[peripheral]
+        if let inMemory = lastKnownLocalName[peripheral.identifier] {
+            return inMemory
+        }
+        if let persisted = (UserDefaults.standard.dictionary(forKey: Self.persistedLocalNamesKey) as? [String: String])?[peripheral.identifier.uuidString] {
+            lastKnownLocalName[peripheral.identifier] = persisted
+            return persisted
+        }
+        return nil
     }
 
     private func setCachedLocalName(_ name: String, for peripheral: CBPeripheral) {
         lastKnownLocalNameLock.lock(); defer { lastKnownLocalNameLock.unlock() }
-        lastKnownLocalName[peripheral] = name
+        if let existing = lastKnownLocalName[peripheral.identifier],
+           Self.parseAirBeamMiniAdvertisedName(existing) != nil,
+           Self.parseAirBeamMiniAdvertisedName(name) == nil {
+            return
+        }
+        let normalizedToCache = Self.parseAirBeamMiniAdvertisedName(name)?.normalizedName ?? name
+        lastKnownLocalName[peripheral.identifier] = normalizedToCache
+        if Self.parseAirBeamMiniAdvertisedName(normalizedToCache) != nil {
+            var dict = (UserDefaults.standard.dictionary(forKey: Self.persistedLocalNamesKey) as? [String: String]) ?? [:]
+            if dict[peripheral.identifier.uuidString] != normalizedToCache {
+                dict[peripheral.identifier.uuidString] = normalizedToCache
+                UserDefaults.standard.set(dict, forKey: Self.persistedLocalNamesKey)
+            }
+        }
     }
 
-    /// Parse a real MAC out of a name like `AirBeamMini:24:58:7C:AC:A6:B6`.
-    /// Returns the colon-separated MAC (uppercased) when the trailing 6 bytes
-    /// look like a MAC; returns nil otherwise so callers can fall back.
-    private static func parseRealMac(fromAdvertisedName name: String?) -> String? {
-        guard let name = name else { return nil }
-        let parts = name.split(separator: ":").map(String.init)
-        // Expect: ["AirBeamMini", "24", "58", "7C", "AC", "A6", "B6"] — model + 6 hex bytes.
-        guard parts.count >= 7 else { return nil }
-        let tail = parts.suffix(6)
-        let hexByte = #"^[0-9A-Fa-f]{2}$"#
-        guard tail.allSatisfy({ $0.range(of: hexByte, options: .regularExpression) != nil }) else { return nil }
-        return tail.map { $0.uppercased() }.joined(separator: ":")
+    private func makeDevice(for peripheral: CBPeripheral,
+                            firmwareVersion: FirmwareVersion,
+                            rawAdvertisedName: String? = nil) -> Device {
+        if let raw = rawAdvertisedName, !raw.isEmpty {
+            setCachedLocalName(raw, for: peripheral)
+        }
+        let cachedName = cachedLocalName(for: peripheral)
+        let candidateName: String?
+        if Self.parseAirBeamMiniAdvertisedName(rawAdvertisedName) != nil {
+            candidateName = rawAdvertisedName
+        } else if Self.parseAirBeamMiniAdvertisedName(cachedName) != nil {
+            candidateName = cachedName
+        } else if Self.parseAirBeamMiniAdvertisedName(peripheral.name) != nil {
+            candidateName = peripheral.name
+        } else {
+            candidateName = rawAdvertisedName ?? cachedName ?? peripheral.name
+        }
+
+        let advertisedName: String?
+        let realMac: String?
+        if let parsed = Self.parseAirBeamMiniAdvertisedName(candidateName) {
+            advertisedName = parsed.normalizedName
+            realMac = parsed.macAddress
+        } else {
+            advertisedName = candidateName
+            realMac = nil
+        }
+
+        return Device(peripheral: peripheral,
+                      firmwareVersion: firmwareVersion,
+                      advertisedName: advertisedName,
+                      realMacAddress: realMac)
+    }
+
+    /// Parse a BLE device name containing `:` and normalize 1.0.0 AirBeamMini names:
+    /// - `AirBeamMini:A2:34:56:78:A1` (V2 1.0.0, multiple colons) -> strips colons,
+    ///   subtracts 2 from the 48-bit MAC, and returns `("AirBeamMini:A23456789F", "A23456789F")`.
+    /// - `AirBeamMini:A23456789E` (V2 1.0.1, single colon) -> kept untouched as
+    ///   `("AirBeamMini:A23456789E", "A23456789E")`.
+    /// - `AirBeamMini:a23456789e` (V1 ABM, single colon) -> kept untouched as
+    ///   `("AirBeamMini:a23456789e", "a23456789e")`.
+    /// - `AirBeam3:a23456789e` (AB3, single colon) -> kept untouched as
+    ///   `("AirBeam3:a23456789e", "a23456789e")`.
+    static func parseAirBeamMiniAdvertisedName(_ name: String?) -> (normalizedName: String, macAddress: String)? {
+        guard let name = name?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !name.isEmpty,
+              let firstColon = name.firstIndex(of: ":") else { return nil }
+        let prefix = String(name[..<firstColon])
+        let afterFirstColon = String(name[name.index(after: firstColon)...])
+        let colonCount = name.filter { $0 == ":" }.count
+        let hex12Pattern = #"^[0-9A-Fa-f]{12}$"#
+
+        if colonCount > 1 {
+            // Only normalize 1.0.0 AirBeamMini names (`AirBeamMini:XX:XX:XX:XX:XX:XX`)
+            guard prefix.lowercased() == "airbeammini" else { return nil }
+            let cleanHex = afterFirstColon.replacingOccurrences(of: ":", with: "")
+            guard cleanHex.range(of: hex12Pattern, options: .regularExpression) != nil,
+                  let macValue = UInt64(cleanHex, radix: 16) else { return nil }
+            let adjustedValue = macValue >= 2 ? (macValue - 2) : 0
+            let adjustedMac = String(format: "%012llX", adjustedValue)
+            return (normalizedName: "AirBeamMini:\(adjustedMac)", macAddress: adjustedMac)
+        } else {
+            guard afterFirstColon.range(of: hex12Pattern, options: .regularExpression) != nil else { return nil }
+            let canonicalPrefix = prefix.lowercased() == "airbeammini" ? "AirBeamMini" : prefix
+            return (normalizedName: "\(canonicalPrefix):\(afterFirstColon)", macAddress: afterFirstColon)
+        }
     }
     
     func startScanning(scanningWindow: Int = 30,
@@ -218,43 +300,17 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         if resolved == .v2 && stored != .v2 { setFirmwareVersion(.v2, for: peripheral) }
 
         let rawAdvertisedName = advertisementData[CBAdvertisementDataLocalNameKey] as? String
-        if let raw = rawAdvertisedName, !raw.isEmpty {
-            setCachedLocalName(raw, for: peripheral)
-        }
-        let cachedName = cachedLocalName(for: peripheral)
-
-        // V2 AirBeamMini firmware advertises `AirBeamMini:<MAC-with-colons>` in the
-        // scan response. The pure-advert packet has no local name, so we cache the
-        // last-known good one across didDiscover calls. If we have not yet seen a
-        // proper name we synthesise a stable fallback from the per-app CoreBluetooth
-        // UUID so the device still shows up in the scan list (iOS itself never
-        // exposes the BLE MAC).
-        let advertisedName: String?
-        let realMac: String?
-        if resolved == .v2 {
-            if let cachedName = cachedName, let parsedMac = Self.parseRealMac(fromAdvertisedName: cachedName) {
-                advertisedName = cachedName
-                realMac = parsedMac
-            } else {
-                let suffix = peripheral.identifier.uuidString
-                    .replacingOccurrences(of: "-", with: "")
-                    .suffix(12)
-                    .lowercased()
-                advertisedName = "AirBeamMini:\(suffix)"
-                realMac = nil
-            }
-        } else {
-            advertisedName = rawAdvertisedName
-            realMac = nil
+        let device = makeDevice(for: peripheral,
+                                firmwareVersion: resolved,
+                                rawAdvertisedName: rawAdvertisedName)
+        if resolved == .v2, device.realMacAddress != nil {
+            Resolver.resolve(V2ConfiguratorRegistry.self).updateIfPresent(device: device)
         }
 
         queue.async {
             self.deviceDiscoveryCallbacks.forEach { callback in
                 self.callbackQueue.async {
-                    callback(Device(peripheral: peripheral,
-                                    firmwareVersion: resolved,
-                                    advertisedName: advertisedName,
-                                    realMacAddress: realMac))
+                    callback(device)
                 }
             }
         }
@@ -385,7 +441,7 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         let version = firmwareVersion(for: peripheral)
         queue.async {
             self.trackedConnectedPeripherals.remove(peripheral)
-            self.callConnectionObserversWithDisconnect(for: .init(peripheral: peripheral, firmwareVersion: version))
+            self.callConnectionObserversWithDisconnect(for: self.makeDevice(for: peripheral, firmwareVersion: version))
         }
     }
     

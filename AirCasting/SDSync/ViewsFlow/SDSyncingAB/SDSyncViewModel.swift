@@ -40,8 +40,10 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     @Injected private var reconnectGuard: SessionManagingReconnectionController
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
     @Injected private var v2LocationBackfillCoordinator: V2LocationBackfillCoordinator
+    @Injected private var sessionSynchronizer: SessionSynchronizer
     private let sessionContext: CreateSessionContext
     private var v2Orchestrator: V2BleSyncOrchestrator?
+    private var syncCancellable: AnyCancellable?
 
     init(sessionContext: CreateSessionContext,
          device: any BluetoothDevice) {
@@ -245,6 +247,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                             // `clearSDCard` ordering. Safe when there's no
                             // matching active session (early return).
                             self.finishActiveSessionIfMatchingDevice()
+                            self.triggerBackendSyncWhenReady()
                             self.disconnectAirBeam()
                         }
                     case .failure(let error):
@@ -308,6 +311,21 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
             Log.info("[SD SYNC] Stopped active session \(active.session.uuid) post-sync")
         } catch {
             Log.error("[SD SYNC] Failed to stop active session post-sync: \(error)")
+        }
+    }
+
+    private func triggerBackendSyncWhenReady() {
+        if sessionSynchronizer.syncInProgress.value {
+            syncCancellable = sessionSynchronizer.syncInProgress
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] inProgress in
+                    guard !inProgress, let self = self else { return }
+                    self.syncCancellable?.cancel()
+                    self.syncCancellable = nil
+                    self.sessionSynchronizer.triggerSynchronization()
+                }
+        } else {
+            sessionSynchronizer.triggerSynchronization()
         }
     }
     
