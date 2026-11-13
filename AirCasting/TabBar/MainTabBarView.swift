@@ -53,7 +53,7 @@ struct MainTabBarView: View {
             UITabBar.appearance().standardAppearance = appearance
             UITabBar.appearance().scrollEdgeAppearance = appearance
             // centres the (title-less) tab bar images vertically
-            UITabBarItem.appearance().imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
+            //UITabBarItem.appearance().imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0) //causes crash
             performSessionsUpdate()
             measurementUpdatingService.start()
         }
