@@ -47,6 +47,21 @@ extension Date {
         let date = self
         return Date(timeIntervalSinceReferenceDate: (date.timeIntervalSinceReferenceDate / 3600.0).rounded(.towardZero) * 3600.0)
     }
+
+    /// Move a BE-supplied real-UTC `Date` to the fakeUTC convention iOS uses
+    /// internally (wall-clock numerals as a UTC moment in the phone's TZ).
+    /// Returns the date unchanged when `isIndoor` is `false` — the parameter
+    /// is named for the original caller's indoor-vs-outdoor split, but the
+    /// underlying semantics is simply "apply the BE-UTC → phone-wall-clock
+    /// shift". `UpdateSessionParamsService` derives the bool per timestamp
+    /// kind: V2 fixed `Session#start_time` always needs the shift (BE writes
+    /// the production server clock without `to_local_as_utc`), while V2
+    /// `Session#end_time` and `Measurement#time` only need it when BE's
+    /// `session.time_zone` defaults to UTC (indoor / locationless).
+    func shiftedForFixedSession(isIndoor: Bool) -> Date {
+        guard isIndoor else { return self }
+        return self.currentUTCTimeZoneDate
+    }
 }
 // swiftlint:enable airCasting_date
 

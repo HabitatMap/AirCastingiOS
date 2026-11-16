@@ -140,4 +140,25 @@ final class UpdateSessionParamsServiceTests: ACTestCase {
             }
         }
     }
+
+    func testSensorPackageNameDerivedPreservesAndNormalizesBleNames() {
+        XCTAssertEqual(SensorPackageName.derived(fromSensorName: "AirBeamMini-PM1",
+                                                 fallback: "AirBeamMini:A23456789E"),
+                       "AirBeamMini:A23456789E")
+        XCTAssertEqual(SensorPackageName.derived(fromSensorName: "AirBeamMini-PM1",
+                                                 fallback: "AirBeamMini:A2:34:56:78:A1"),
+                       "AirBeamMini:A23456789F")
+        XCTAssertEqual(SensorPackageName.derived(fromSensorName: "AirBeamMini-PM1",
+                                                 fallback: "AirBeamMini:a23456789e"),
+                       "AirBeamMini:a23456789e")
+        XCTAssertEqual(SensorPackageName.derived(fromSensorName: "AirBeam3-PM1",
+                                                 fallback: "AirBeam3:a23456789e"),
+                       "AirBeam3:a23456789e")
+        XCTAssertEqual(SensorPackageName.derived(fromSensorName: "AirBeamMini-PM1",
+                                                 fallback: "A23456789E"),
+                       "AirBeamMini:A23456789E")
+        XCTAssertEqual(SensorPackageName.derived(fromSensorName: "AirBeamMini-PM1",
+                                                 fallback: "A2:34:56:78:A1"),
+                       "AirBeamMini:A23456789F")
+    }
 }

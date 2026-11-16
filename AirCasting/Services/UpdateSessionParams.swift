@@ -16,12 +16,34 @@ final class UpdateSessionParamsService {
 
     func updateSessionsParams(session: SessionEntity, output: FixedSession.FixedMeasurementOutput) throws {
         Log.info("Updating session params in core data for session: \(session.uuid) [\(session.name ?? "N/A")]")
+        // Now that the app uploads its `time_zone` when creating a V2 fixed
+        // session, BE stores that and returns `Session#end_time` and
+        // `Measurement#time` via `Utils.to_local_as_utc(epoch,
+        // session.time_zone)` in the phone's wall clock — already aligned with
+        // iOS's fakeUTC convention, so no shift is applied (`shiftFixedTimestamps`
+        // is always false; see `sessionRequiresUtcShift`).
+        //
+        // `Session#start_time` is the exception: BE sets it itself at session
+        // creation from the raw server clock (UTC) and does NOT run it through
+        // `to_local_as_utc`, so re-reading it here delivers numerals ~offset
+        // behind the wall clock (outdoor V2 card start read 2h behind in a
+        // UTC+2 Warsaw test while end_time / measurements were correct).
+        // start_time never changes after the session begins, and iOS already
+        // stamps the correct wall-clock value locally at creation
+        // (`AirBeamFixedWifiSessionCreator` → `getFakeUTCDate()`), so keep the
+        // stored value and only fall back to BE's when we have none (defensive;
+        // an app-created fixed session always has a local start). Mirrors
+        // Android setting start_time once in `SessionDownloadService` and never
+        // touching it during measurement refresh.
+        let shiftFixedTimestamps = Self.sessionRequiresUtcShift(session: session, output: output)
         session.uuid = output.uuid
         session.type = output.type
         session.name = output.title
         session.tags  = output.tag_list
-        session.startTime = output.start_time
-        session.endTime = output.end_time
+        if session.startTime == nil {
+            session.startTime = output.start_time.shiftedForFixedSession(isIndoor: shiftFixedTimestamps)
+        }
+        session.endTime = output.end_time.shiftedForFixedSession(isIndoor: shiftFixedTimestamps)
         session.version = output.version
         guard let context = session.managedObjectContext else {
             throw Error.missingContext(output)
@@ -37,13 +59,13 @@ final class UpdateSessionParamsService {
 
         try streamDiff.inserted.forEach {
             let stream = MeasurementStreamEntity(context: context)
-            try fillStream(stream, with: $0)
+            try fillStream(stream, with: $0, isIndoor: shiftFixedTimestamps)
             stream.session = session
         }
         
         try streamDiff.common.forEach { oldStream, streamOutput in
             oldStream.sensorName = streamOutput.sensor_name
-            oldStream.sensorPackageName = streamOutput.sensor_package_name
+            oldStream.sensorPackageName = derivedPackageName(from: streamOutput)
             oldStream.measurementType = streamOutput.measurement_type
             oldStream.measurementShortType = streamOutput.measurement_short_type
             oldStream.unitName = streamOutput.unit_name
@@ -67,18 +89,18 @@ final class UpdateSessionParamsService {
 
             let oldMeasurements = oldStream.measurements?.array as? [MeasurementEntity] ?? []
             let measurementDiff = diff(oldMeasurements, streamOutput.measurements) {
-                return $0.time == $1.time && $0.value == Double($1.value)
+                return $0.time == $1.time.shiftedForFixedSession(isIndoor: shiftFixedTimestamps) && $0.value == Double($1.value)
             }
             measurementDiff.inserted.forEach {
                 let newMeasurement = MeasurementEntity(context: context)
-                fillMeasurement(newMeasurement, with: $0)
+                fillMeasurement(newMeasurement, with: $0, isIndoor: shiftFixedTimestamps)
                 newMeasurement.measurementStream = oldStream
             }
-            
+
             measurementDiff.common.forEach { oldMeasurement, measurementOutput in
                 oldMeasurement.value = Double(measurementOutput.value)
                 oldMeasurement.location = CLLocationCoordinate2D(latitude: measurementOutput.latitude, longitude: measurementOutput.longitude)
-                oldMeasurement.time = measurementOutput.time
+                oldMeasurement.time = measurementOutput.time.shiftedForFixedSession(isIndoor: shiftFixedTimestamps)
             }
         }
     }
@@ -101,20 +123,69 @@ final class UpdateSessionParamsService {
         entity.urlLocation = session.urlLocation
         entity.version = session.version
         entity.status = session.status
+        // 0 = "unknown / legacy" — interpreted as 1s native by the averaging gate.
+        entity.measurementInterval = session.measurementInterval ?? 0
+    }
+}
+
+extension UpdateSessionParamsService {
+    /// Whether iOS must UTC-shift this fixed session's downloaded timestamp
+    /// numerals to the phone's wall clock. Now always `false`: the app sends
+    /// its `time_zone` when creating a V2 fixed session
+    /// (`V2FixedSessionAPI.RequestBody.time_zone`), so BE stores that as the
+    /// session's `time_zone` and writes `Session#start_time`,
+    /// `Session#end_time`, and `Measurement#time` via
+    /// `Utils.to_local_as_utc(epoch, session.time_zone)` in the phone's wall
+    /// clock. Those numerals already match iOS's fakeUTC display convention
+    /// for every app-created fixed session — indoor, locationless, or outdoor
+    /// — so no shift is needed; shifting would double-count the offset.
+    ///
+    /// Before this, BE defaulted `time_zone` to UTC for indoor / locationless
+    /// sessions and iOS had to shift those back. Mirrors Android dropping the
+    /// `isIndoor && isAirBeamMiniV2` special case once the client began
+    /// uploading `time_zone` (dev commit 2b33244aa). Kept as a single gate so
+    /// the download cursor and the persist path stay in lockstep.
+    ///
+    /// External (government / OpenAQ) sessions are not app-created, so we never
+    /// upload their `time_zone`; their download path is handled separately in
+    /// `DownloadMeasurementsService` and is unaffected.
+    static func sessionRequiresUtcShift(session: SessionEntity, output: FixedSession.FixedMeasurementOutput) -> Bool {
+        false
+    }
+
+    static func sessionRequiresUtcShift(session: SessionEntity) -> Bool {
+        false
+    }
+
+    func sessionRequiresUtcShift(session: SessionEntity, output: FixedSession.FixedMeasurementOutput) -> Bool {
+        Self.sessionRequiresUtcShift(session: session, output: output)
     }
 }
 
 private extension UpdateSessionParamsService {
-    func fillMeasurement(_ entity: MeasurementEntity, with measurement: FixedSession.MeasurementOutput) {
-        entity.value = Double(measurement.value)
-        entity.location = CLLocationCoordinate2D(latitude: measurement.latitude, longitude: measurement.longitude)
-        entity.time = measurement.time
+    /// Fixed-session streams from the BE carry `sensor_package_name` derived
+    /// from the airbeam record's `mac_address`. For V2 Mini sessions the iOS
+    /// app has no real BLE MAC available, so the BE ends up storing whatever
+    /// MAC-like string the app synthesized (e.g. "BD:F1:54:09:78:1E") — and
+    /// `SessionTypeIndicator` splits on `:` / `-` and renders the leading hex
+    /// pair as the device label. Recover the model name from `sensor_name`
+    /// instead, which the app controls and ships in the canonical
+    /// `"{model}-{stream}"` shape ("AirBeamMini-PM1", "AirBeam3-PM1", ...).
+    func derivedPackageName(from streamOutput: FixedSession.StreamOutput) -> String {
+        SensorPackageName.derived(fromSensorName: streamOutput.sensor_name,
+                                  fallback: streamOutput.sensor_package_name)
     }
 
-    func fillStream(_ entity: MeasurementStreamEntity, with streamOutput: FixedSession.StreamOutput) throws {
+    func fillMeasurement(_ entity: MeasurementEntity, with measurement: FixedSession.MeasurementOutput, isIndoor: Bool) {
+        entity.value = Double(measurement.value)
+        entity.location = CLLocationCoordinate2D(latitude: measurement.latitude, longitude: measurement.longitude)
+        entity.time = measurement.time.shiftedForFixedSession(isIndoor: isIndoor)
+    }
+
+    func fillStream(_ entity: MeasurementStreamEntity, with streamOutput: FixedSession.StreamOutput, isIndoor: Bool) throws {
         entity.id = streamOutput.id
         entity.sensorName = streamOutput.sensor_name
-        entity.sensorPackageName = streamOutput.sensor_package_name
+        entity.sensorPackageName = derivedPackageName(from: streamOutput)
         entity.measurementType = streamOutput.measurement_type
         entity.measurementShortType = streamOutput.measurement_short_type
         entity.unitName = streamOutput.unit_name
@@ -128,10 +199,57 @@ private extension UpdateSessionParamsService {
         guard let context = entity.managedObjectContext else {
             throw Error.missingContext(entity)
         }
+        // Propagate the caller's shift flag — first-batch measurements on a
+        // newly-created stream go through this path, and silently defaulting to
+        // `isIndoor: false` here meant V2 indoor / locationless sessions stored
+        // their initial measurement batch in raw UTC while the session times
+        // were correctly shifted, so the graph plotted the first measurement
+        // two hours before the card's start time.
         streamOutput.measurements.forEach {
             let newMeasurement = MeasurementEntity(context: context)
-            fillMeasurement(newMeasurement, with: $0)
+            fillMeasurement(newMeasurement, with: $0, isIndoor: isIndoor)
             newMeasurement.measurementStream = entity
         }
+    }
+}
+
+/// Shared recovery of the human device model name for a fixed-session stream.
+/// The BE stores `sensor_package_name` from the airbeam record's `mac_address`
+/// — a MAC-like string for V2 Mini sessions, which have no real BLE MAC — and
+/// `SessionTypeIndicator` splits it on `:` / `-` and renders the leading hex
+/// pair as the device label ("Fixed : 26" / "Fixed : B6"). The canonical
+/// `sensor_name` ("AirBeamMini-PM1", "AirBeam3-PM1", ...) is app-controlled, so
+/// recover the model prefix from it and fall back to the raw package name only
+/// when the sensor name has no `-`-delimited prefix.
+///
+/// Used by both the followed download path (`UpdateSessionParamsService`) and
+/// the BE session-list sync (`SynchronizationDataConverter`) so an UNfollowed
+/// fixed card shows "AirBeamMini" without waiting to be followed.
+enum SensorPackageName {
+    static func derived(fromSensorName sensorName: String, fallback: String) -> String {
+        if let parsed = BluetoothManager.parseAirBeamMiniAdvertisedName(fallback) {
+            return parsed.normalizedName
+        }
+        let trimmedFallback = fallback.trimmingCharacters(in: .whitespacesAndNewlines)
+        let modelPrefix = sensorName
+            .split(separator: "-", maxSplits: 1, omittingEmptySubsequences: false)
+            .first
+            .map(String.init) ?? ""
+        if !trimmedFallback.isEmpty {
+            let lowerFallback = trimmedFallback.lowercased()
+            if lowerFallback.hasPrefix("airbeam") || lowerFallback.hasPrefix("builtin") {
+                return trimmedFallback
+            }
+            if !modelPrefix.isEmpty {
+                let candidate = "\(modelPrefix):\(trimmedFallback)"
+                if let parsed = BluetoothManager.parseAirBeamMiniAdvertisedName(candidate) {
+                    return parsed.normalizedName
+                }
+            }
+        }
+        if !modelPrefix.isEmpty {
+            return modelPrefix
+        }
+        return fallback
     }
 }

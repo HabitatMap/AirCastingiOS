@@ -19,21 +19,39 @@ class DefaultUserTriggeredReconnectionController: UserTriggeredReconnectionContr
     @Injected private var bluetootConnector: BluetoothConnectionHandler
     @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
     @Injected private var sessionRecorder: BluetoothSessionRecordingController
-    
+    @Injected private var reconnectionController: ReconnectionController
+    @Injected private var measurementsSaver: MeasurementsSavingService
+
     func reconnectWithPeripheral(deviceUUID: String, session: Session, completion: @escaping (Result<Void, UserTriggeredReconnectionError>) -> Void) {
+        // Branch A — active session still owns the device. Don't run a parallel
+        // BLE connect from here; that races the auto-retry chain over the shared
+        // V2 configurator (subscribe / awaiter slot / status cache). Instead kick
+        // the existing chain to attempt immediately. Auto chain handles connect →
+        // discover → V2 status → ContinueSession → SetTime → resumeRecording →
+        // status flip RECORDING. Card unmounts on the status flip.
+        if let active = activeSessionProvider.activeSession,
+           active.device.uuid == deviceUUID {
+            Log.info("Manual reconnect requested; kicking auto-retry chain for \(deviceUUID)")
+            reconnectionController.kickReconnectNow(for: active.device)
+            completion(.success(()))
+            return
+        }
+
+        // Branch B — no active session (auto-retry exhausted, moved to
+        // standalone). Scan, connect, set active session, resume.
         guard activeSessionProvider.activeSession == nil else {
             Log.info("Tried to resume session when there was another active session in progress")
             completion(.failure(.anotherActiveSessionInProgress))
             return
         }
-        
+
         var discoveredDevices: [any BluetoothDevice] = []
         btScanner.startScanning(scanningWindow: 5, onDeviceDiscovered: { discoveredDevices.append($0) }, onScanningFinished: { [weak self] in
             guard let device = discoveredDevices.first(where: { $0.uuid == deviceUUID }) else {
                 completion(.failure(.deviceNotDiscovered))
                 return
             }
-            
+
             self?.connect(to: device, session: session) { result in
                 switch result {
                 case .success():
@@ -76,9 +94,10 @@ class DefaultUserTriggeredReconnectionController: UserTriggeredReconnectionContr
     
     private func resume(_ session: Session, device: any BluetoothDevice, completion: @escaping (Result<Void, UserTriggeredReconnectionError>) -> Void) {
         activeSessionProvider.setActiveSession(session: session, device: device)
-        sessionRecorder.resumeRecording(device: device) { result in
+        sessionRecorder.resumeRecording(device: device) { [weak self] result in
             switch result {
             case .success():
+                self?.measurementsSaver.changeStatusToRecording(for: session.uuid)
                 completion(.success(()))
             case .failure(let error):
                 Log.error("Failed to resume recording: \(error)")

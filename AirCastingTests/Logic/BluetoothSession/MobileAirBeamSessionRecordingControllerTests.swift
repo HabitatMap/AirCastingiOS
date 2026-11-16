@@ -173,6 +173,19 @@ class MeasurementsSavingServiceMock: MeasurementsSavingService {
     func changeStatusToRecording(for sessionUUID: AirCasting.SessionUUID) {
         changeStatusToRecordingCalls += 1
     }
+
+    func saveV2LiveMeasurement(_ measurement: ABMeasurementStream,
+                               sessionUUID: AirCasting.SessionUUID,
+                               time: Date,
+                               locationless: Bool) { }
+
+    func saveV2SyncMeasurement(_ measurement: ABMeasurementStream,
+                               sessionUUID: AirCasting.SessionUUID,
+                               time: Date,
+                               locationless: Bool,
+                               locationOverride: CLLocationCoordinate2D?) { }
+
+    func logMeasurementCoverage(for sessionUUID: AirCasting.SessionUUID) { }
 }
 
 class MeasurementsRecordingServicesMock: MeasurementsRecordingServices {
@@ -196,6 +209,7 @@ class BluetoothConnectionHandlerMock: BluetoothConnectionHandler {
     func connect(to device: any BluetoothDevice, timeout: TimeInterval, completion: @escaping BluetoothManager.ConnectionCallback) {}
     func disconnect(from device: any BluetoothDevice) { disconnectCalls += 1}
     func discoverCharacteristics(for device: any BluetoothDevice, timeout: TimeInterval, completion: @escaping BluetoothManager.CharacteristicsDicoveryCallback) {}
+    func refreshedDevice(for device: any BluetoothDevice) -> any BluetoothDevice { device }
 }
 
 class AirBeamConfiguratorMock: AirBeamConfigurator {
@@ -211,7 +225,7 @@ class AirBeamConfiguratorMock: AirBeamConfigurator {
         self.device = device
     }
 
-    func configureMobileSession(location: CLLocationCoordinate2D, completion: @escaping (Result<Void, Error>) -> Void) {
+    func configureMobileSession(location: CLLocationCoordinate2D, intervalSeconds: Int?, completion: @escaping (Result<Void, Error>) -> Void) {
         callsHistory.append(.configureMobileSession)
         completion(fakeResult)
 
@@ -249,6 +263,7 @@ class LocationTrackerMock: LocationTracker {
     func stop() {
         callsHistory.append(.stop)
     }
+    func requestOneShotUpdate() { }
 }
 
 class ActiveMobileSessionProvidingServiceMock: ActiveMobileSessionProvidingService {

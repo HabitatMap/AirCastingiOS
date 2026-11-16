@@ -161,12 +161,19 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                     completion(.failure(SDMobileSavingErrors.savingFailed))
                     return
                 }
-                
+
                 do {
                     try self.saveData(streamsWithMeasurements, session: &sessionData)
                     try self.averageUnaveragedMeasurements(sessionUUID: sessionData.uuid, averagingWindow: sessionData.averaging ?? .zeroWindow)
+                    // Defensive cleanup: any MeasurementEntity in editContext with
+                    // nil `time` or nil `measurementStream` will pass child-context
+                    // save but fail store-level validation when sourceOfTruthContext
+                    // saves to the PSC — surfacing as `try!` SIGABRT in
+                    // PersistenceController.saveMainContext. Sweep orphans here so
+                    // the parent context only ever receives valid rows.
+                    self.deleteOrphanedMeasurements()
                     try self.context.save()
-                    
+
                     completion(.success(()))
                 } catch {
                     completion(.failure(error))
@@ -322,6 +329,27 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
             try averageUnaveragedMeasurements(stream: $0, averagingWindow: averagingWindow)
             try databaseStorage.sortAllMeasurements(stream: $0, context: context)
         })
+    }
+
+    /// Find and delete any MeasurementEntity row in the edit context that is
+    /// missing the required `time` or `measurementStream` columns. These can
+    /// arrive in the DB from a prior interrupted SD sync / recording flow
+    /// (e.g., a crash mid-insert leaving partial state) or from a managed
+    /// object that lost its relationship via an unrelated to-many replacement.
+    /// Without cleanup the parent context's `try!` save in
+    /// `PersistenceController.saveMainContext` triggers SIGABRT when the
+    /// PSC validates the model and finds the nil-required columns.
+    private func deleteOrphanedMeasurements() {
+        let request = MeasurementEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "time == nil OR measurementStream == nil")
+        do {
+            let orphans = try context.fetch(request)
+            guard !orphans.isEmpty else { return }
+            Log.warning("[SD SYNC] Removing \(orphans.count) orphaned MeasurementEntity row(s) before save (missing time/stream)")
+            orphans.forEach(context.delete(_:))
+        } catch {
+            Log.error("[SD SYNC] Orphan sweep failed: \(error)")
+        }
     }
     
     private func averageUnaveragedMeasurements(stream: MeasurementStreamEntity, averagingWindow: AveragingWindow) throws {

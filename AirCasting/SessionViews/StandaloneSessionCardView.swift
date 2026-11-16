@@ -13,7 +13,13 @@ struct StandaloneSessionCardView: View {
     @EnvironmentObject var selectedSection: SelectedSection
     @Injected private var networkChecker: NetworkChecker
     @InjectedObject private var userSettings: UserSettings
+    @StateObject private var reconnectViewModel: ReconnectSessionCardViewModel
     @State private var alert: AlertInfo?
+
+    init(session: SessionEntity) {
+        self.session = session
+        _reconnectViewModel = StateObject(wrappedValue: ReconnectSessionCardViewModel(session: session))
+    }
     
     var body: some View {
         Group {
@@ -50,12 +56,55 @@ struct StandaloneSessionCardView: View {
             Text(Strings.StandaloneSessionCardView.description)
                 .font(Fonts.moderateRegularHeading3)
                 .multilineTextAlignment(.center)
+            reconnectButton
             finishAndSyncButton
             finishAndDontSyncButton
             .padding()
         }
-        .alert(item: $alert, content: { $0.makeAlert() })
+        // SwiftUI quirk: stacking multiple `.alert(item:)` modifiers (here:
+        // card's own `alert` + `reconnectViewModel.alert`) plus the embedded
+        // SessionHeaderView's `.alert(_:isPresented:)` on a sibling view tree
+        // causes the card's alerts to never fire. Symptom is the user-reported
+        // "Finish & sync / Finish & don't sync buttons do nothing" — the
+        // button-tap closure sets `alert = ...` but no UIAlert appears.
+        //
+        // Workaround: present each alert via iOS 15+ `.alert(_:isPresented:)`
+        // bound to a Bool. The Bool-binding API is not affected by the
+        // `.alert(item:)` shadowing bug. Native UIAlert presentation
+        // (centered popup, V1 visual parity) is preserved — `.confirmationDialog`
+        // would render an action sheet from the bottom instead.
+        .alert(
+            alert?.title ?? "",
+            isPresented: Binding(
+                get: { alert != nil },
+                set: { newValue in if !newValue { alert = nil } }
+            ),
+            presenting: alert,
+            actions: { info in
+                ForEach(Array(info.buttons.enumerated()), id: \.offset) { _, type in
+                    switch type {
+                    case .cancel(let title):
+                        Button(title, role: .cancel, action: { alert = nil })
+                    case .default(let title, nil):
+                        Button(title, action: { alert = nil })
+                    case .default(let title, let action):
+                        Button(title, action: { action?(); alert = nil })
+                    }
+                }
+            },
+            message: { info in Text(info.message) }
+        )
+        .alert(item: $reconnectViewModel.alert, content: { $0.makeAlert() })
         .padding()
+    }
+
+    var reconnectButton: some View {
+        Button(reconnectViewModel.buttonLabel) {
+            reconnectViewModel.onRecconectTap()
+        }
+        .disabled(reconnectViewModel.connectingState != .idle)
+        .font(Fonts.muliBoldHeading1)
+        .buttonStyle(BlueButtonStyle())
     }
 
     var finishAndSyncButton: some View {
@@ -88,7 +137,8 @@ struct StandaloneSessionCardView: View {
 
     func finishSessionAndSyncAlertAction() {
         finishAndSyncButtonTapped.finishAndSyncButtonWasTapped = true
-        standaloneSessionToSyncAndFinish.uuid = session.uuid
+        standaloneSessionToSyncAndFinish.setSession(session.uuid,
+                                                    isV2: session.deviceFirmwareVersion == .v2)
         tabSelection.update(to: .createSession)
         selectedSection.mobileSessionWasFinished = true
     }

@@ -12,6 +12,14 @@ protocol SessionCreatingStorage {
 protocol HiddenSessionCreatingStorage {
     func save() throws
     func createSession(_ session: Session) throws
+    /// Stamp the just-created session's `BluetoothConnectionEntity` with the
+    /// firmware version and the BLE peripheral identifier so downstream code
+    /// (notably `SessionEntity.deviceFirmwareVersion`) can route by V1 vs V2.
+    /// V2 fixed sessions don't go through `MeasurementsSavingService.createSession`
+    /// (the only other site that builds this entity), so without this hook the
+    /// V1-default fallback masks them as V1 — which then double-shifts the
+    /// indoor BE-timestamp round-trip.
+    func stampBluetoothConnection(sessionUUID: SessionUUID, peripheralUUID: String, firmwareVersion: FirmwareVersion) throws
 }
 
 class DefaultSessionCreatingStorage: SessionCreatingStorage {
@@ -51,7 +59,15 @@ class DefaultHiddenSessionCreatingStorage: HiddenSessionCreatingStorage {
         let sessionEntity = newSessionEntity()
         updateSessionParamsService.updateSessionsParams(sessionEntity, session: session)
     }
-    
+
+    func stampBluetoothConnection(sessionUUID: SessionUUID, peripheralUUID: String, firmwareVersion: FirmwareVersion) throws {
+        let entity: SessionEntity = try context.existingSession(uuid: sessionUUID)
+        let connection = entity.bluetoothConnection ?? BluetoothConnectionEntity(context: context)
+        connection.peripheralUUID = peripheralUUID
+        connection.firmwareVersionRaw = Int16(firmwareVersion == .v2 ? 1 : 0)
+        connection.session = entity
+    }
+
     private func newSessionEntity() -> SessionEntity {
         let sessionEntity = SessionEntity(context: context)
         let uiState = UIStateEntity(context: context)

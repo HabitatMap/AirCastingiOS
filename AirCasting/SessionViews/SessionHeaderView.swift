@@ -32,6 +32,8 @@ struct SessionHeaderView: View {
     @State var showThresholdAlertModal = false
     @State private var isShowingFinishSessionAlert = false
     @State private var isShowingEmailSentAlert = false
+    @State private var syncAndFinishViewModel: SyncAndFinishV2SessionViewModel? = nil
+    @StateObject private var activeSyncObserver = V2ActiveSyncObserver()
     
     var body: some View {
         if #available(iOS 15, *) {
@@ -141,6 +143,20 @@ private extension SessionHeaderView {
             $isShowingFinishSessionAlert
         )
         .alert(InAppAlerts.shareFileRequestSent(), $isShowingEmailSentAlert)
+        .sheet(isPresented: Binding(
+            get: { syncAndFinishViewModel != nil },
+            set: { newValue in if !newValue { syncAndFinishViewModel = nil } }
+        )) {
+            if let vm = syncAndFinishViewModel {
+                SyncAndFinishV2SessionDialog(viewModel: vm)
+            }
+        }
+        .sheet(isPresented: Binding(
+            get: { activeSyncObserver.isDraining && session.isActive && syncAndFinishViewModel == nil },
+            set: { _ in }
+        )) {
+            V2ActiveSyncDialog()
+        }
         .foregroundColor(.aircastingGray)
     }
     
@@ -203,8 +219,19 @@ private extension SessionHeaderView {
         Button {
             isShowingFinishSessionAlert = true
         } label: {
-            Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
+            VStack(alignment: .leading) {
+                Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
+                if isStopBlockedBySync {
+                    Text(Strings.V2ActiveSyncDialog.stopDisabledLabel)
+                        .font(Fonts.moderateRegularHeading4)
+                }
+            }
         }
+        .disabled(isStopBlockedBySync)
+    }
+
+    private var isStopBlockedBySync: Bool {
+        session.deviceFirmwareVersion == .v2 && activeSyncObserver.isDraining
     }
     
     var actionsMenuMobileEnterStandaloneMode: some View {
@@ -269,6 +296,17 @@ private extension SessionHeaderView {
     }
     
     private func finishSessionAlertAction() {
+        // Phase 6: re-evaluate at confirm-time (not at button-tap time) whether
+        // the V2 device has unsynced storage or is mid-drain. If so, chain
+        // the SyncAndFinish dialog instead of stopping immediately.
+        if let dialogVM = makeSyncAndFinishViewModelIfNeeded() {
+            syncAndFinishViewModel = dialogVM
+            return
+        }
+        performStopSession()
+    }
+
+    private func performStopSession() {
         let sessionStopper = Resolver.resolve(SessionStoppable.self, args: self.session)
         do {
             try sessionStopper.stopSession()
@@ -277,12 +315,37 @@ private extension SessionHeaderView {
             Log.info("error when stpoing session - \(error)")
         }
     }
+
+    private func makeSyncAndFinishViewModelIfNeeded() -> SyncAndFinishV2SessionViewModel? {
+        let activeProvider = Resolver.resolve(ActiveMobileSessionProvidingService.self)
+        guard let active = activeProvider.activeSession,
+              active.session.uuid == session.uuid,
+              active.device.firmwareVersion == .v2 else { return nil }
+        let configurator = Resolver.resolve(AirBeamMiniV2Configurator.self, args: active.device)
+        let hasSavedMeasurements: Bool
+        if case .hasSavedSession(_, _, let stored, _) = configurator.lastStatus {
+            hasSavedMeasurements = stored
+        } else {
+            hasSavedMeasurements = false
+        }
+        guard hasSavedMeasurements || configurator.isActiveSyncDraining else { return nil }
+        return SyncAndFinishV2SessionViewModel(
+            configurator: configurator,
+            onFinish: { [self] _ in
+                DispatchQueue.main.async {
+                    self.syncAndFinishViewModel = nil
+                    self.performStopSession()
+                }
+            }
+        )
+    }
 }
 
 private extension SessionHeaderView {
     func checkStandaloneActionAvaibility() -> Bool {
         guard let devType = session.deviceType else { return false }
         return devType == .AIRBEAM &&
+        session.deviceFirmwareVersion != .v2 &&
         session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode)
     }
 }

@@ -74,6 +74,13 @@ final class MobilePeripheralSessionCreator: SessionCreator {
                 assertionFailure("invalidCreateSessionContext \(sessionContext)")
                 throw MobilePeripheralSessionCreatorError.invalidCreateSessionContext(sessionContext)
             }
+            // Persist the user-picked native interval on the Session so the averaging
+            // gate can read it later. V1 devices ignore it on the wire (no opcode), but
+            // we still record what the user chose for analytics / future use.
+            let intervalForEntity: Int16? = sessionContext.intervalSeconds.flatMap { value in
+                guard value >= 1 else { return nil }
+                return Int16(clamping: value)
+            }
             let session = Session(uuid: sessionUUID,
                                   type: sessionType,
                                   name: sessionContext.sessionName,
@@ -83,7 +90,8 @@ final class MobilePeripheralSessionCreator: SessionCreator {
                                   contribute: contribute,
                                   locationless: sessionContext.locationless,
                                   tags: sessionContext.sessionTags,
-                                  status: .NEW)
+                                  status: .NEW,
+                                  measurementInterval: intervalForEntity)
             recorder.startRecording(session: session, device: device, completion: completion)
         } catch {
             assertionFailure("Can't start recording mobile bluetooth session: \(error)")

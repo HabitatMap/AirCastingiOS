@@ -21,6 +21,12 @@ class FixedSession {
         let deleted: Bool?
         let version: Int16
         let streams: [String : StreamOutput]
+        // BE serializes session timestamps as "session-TZ wall-clock numerals + Z".
+        // For outdoor sessions BE uses the location-derived TZ (≈ phone TZ);
+        // for indoor (`is_indoor == true`) BE has no coordinates and falls back
+        // to UTC, so the numerals ARE real UTC and must be shifted to the phone's
+        // wall clock to match the app's fakeUTCDate display convention.
+        let is_indoor: Bool?
     }
     
     struct StreamOutput: Decodable, Hashable, Identifiable {

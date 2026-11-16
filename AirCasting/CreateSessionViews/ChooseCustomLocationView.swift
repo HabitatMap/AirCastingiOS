@@ -86,11 +86,22 @@ struct ChooseCustomLocationView: View {
     
     var confirmButton: some View {
         Button(action: {
-            guard let location = location else {
-                assertionFailure("Location wasn't set")
+            // `location` is only populated by `indicateMapLocationChange`, which
+            // fires when the user drags the map. If the user accepts the default
+            // (map snapped to GPS via `stickHardToTheUser`), `location` stays nil
+            // and the previous `assertionFailure("Location wasn't set")` crashed
+            // the outdoor fixed-session wizard. Fall back to the last known GPS
+            // coordinate the `BindableLocationTracker` already exposes — that's
+            // the same point the map is centered on.
+            let resolved = location ?? locationTracker.getLastKnownLocation().map {
+                CLLocationCoordinate2D(latitude: $0.coordinate.latitude,
+                                       longitude: $0.coordinate.longitude)
+            }
+            guard let confirmed = resolved else {
+                Log.error("ChooseCustomLocationView: no GPS and no map-picked location available")
                 return
             }
-            sessionContext.startingLocation = location
+            sessionContext.startingLocation = confirmed
             isConfirmCreatingSessionActive.toggle()
         }, label: {
             Text(Strings.Commons.continue)

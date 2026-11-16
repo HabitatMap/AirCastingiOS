@@ -18,7 +18,13 @@ protocol LocationAuthorization {
 protocol LocationTracker {
     func start()
     func stop()
-    func oneTimeLocationUpdate() async throws -> CLLocation 
+    func oneTimeLocationUpdate() async throws -> CLLocation
+    /// Ask CoreLocation for a single fresh fix without disturbing the
+    /// existing continuous-updates subscription. Used by the V2
+    /// disconnect-window sampler to nudge CoreLocation when
+    /// `location.value` has gone stale (typical for long-backgrounded
+    /// sessions where the OS throttles delivery on a stationary device).
+    func requestOneShotUpdate()
     var location: CurrentValueSubject<CLLocation?, Never> { get }
 }
 
@@ -41,7 +47,7 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
     private var locationContinuation: CheckedContinuation<CLLocation, Error>?
     
     var location: CurrentValueSubject<CLLocation?, Never> = .init(nil)
-    
+
     init(locationManager: CLLocationManager) {
         self.locationManager = locationManager
         super.init()
@@ -53,11 +59,28 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
         referenceLock.lock(); defer { referenceLock.unlock() }
         if locationStartReference == 0 {
             requestAuthorization()
+            // Re-assert background delivery on every fresh start. The
+            // manager is configured once at injection time, but defensive
+            // re-assertion guards against any future code path that
+            // toggles either flag and forgets to restore them — a single
+            // missed re-set is enough to mute background samples on a
+            // 2 h+ session.
+            locationManager.allowsBackgroundLocationUpdates = true
+            locationManager.pausesLocationUpdatesAutomatically = false
             locationManager.startUpdatingLocation()
         }
         locationStartReference += 1
         Log.info("Started location tracking (refcount: \(self.locationStartReference))")
         assert(locationStartReference >= 0)
+    }
+
+    func requestOneShotUpdate() {
+        // Cheap nudge: CoreLocation queues this against the same delegate;
+        // the new fix (when delivered) flows through `didUpdateLocations`
+        // and pops out via `location.value` like any other update. No
+        // continuation is involved (see `oneTimeLocationUpdate(...)` for
+        // the awaitable variant).
+        locationManager.requestLocation()
     }
     
     func stop() {
@@ -65,7 +88,13 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
         locationStartReference -= 1
         if locationStartReference == 0 {
             locationManager.stopUpdatingLocation()
-            location.value = nil
+            // Keep last-known location in `location.value` across stop/start cycles.
+            // Mobile-session reconnect briefly drops refcount to 0 when SwiftUI
+            // re-evaluates the session card body across the DISCONNECTED status flip,
+            // and the V2 measurement-save path falls back to `.undefined` (200,200)
+            // whenever `location.value == nil`. Retaining the last fix mirrors
+            // Android's fused-location behavior — CoreLocation overwrites it on the
+            // next real update once tracking resumes.
         }
         Log.info("Stopped location tracking (refcount: \(self.locationStartReference))")
         assert(locationStartReference >= 0)

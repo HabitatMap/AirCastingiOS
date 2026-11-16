@@ -2,7 +2,6 @@
 //
 
 import Foundation
-import SwiftUICore
 import SwiftUI
 
 struct PreviewBluetoothDevice: BluetoothDevice {

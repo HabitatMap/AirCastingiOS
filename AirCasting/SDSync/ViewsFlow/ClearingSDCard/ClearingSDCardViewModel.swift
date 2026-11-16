@@ -29,6 +29,7 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
     private let device: any BluetoothDevice
     @Injected private var airBeamConnectionController: AirBeamConnectionController
     @Injected private var sdSyncController: SDSyncController
+    @Injected private var reconnectGuard: SessionManagingReconnectionController
     private var error = ClearingSDCardError.undefined
     @Published var alert: AlertInfo?
     @Published private var isClearingCompletedValue: Bool = false
@@ -42,8 +43,14 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
     }
     
     func clearSDCardButtonTapped() {
+        // Suppress auto-reconnect for the duration of the standalone clear-SD
+        // flow. Without it, an active mobile recording session on the same
+        // device would trigger `shouldReconnect` after the clear-flow's
+        // explicit disconnect, racing CoreBluetooth state.
+        reconnectGuard.suppressReconnect(deviceUUID: device.uuid)
         self.airBeamConnectionController.connectToAirBeam(device: device) { result in
             guard result == .success else {
+                self.reconnectGuard.releaseReconnect(deviceUUID: self.device.uuid)
                 DispatchQueue.main.async {
                     self.isClearingCompletedValue = false
                     self.error = ClearingSDCardError.noConnection
@@ -52,6 +59,7 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
                 return
             }
             self.sdSyncController.clearSDCard(self.device) { result in
+                self.reconnectGuard.releaseReconnect(deviceUUID: self.device.uuid)
                 self.airBeamConnectionController.disconnectAirBeam(device: self.device)
                 DispatchQueue.main.async {
                     self.isClearingCompletedValue = result

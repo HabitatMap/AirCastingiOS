@@ -61,7 +61,18 @@ final class ChartViewModel: ObservableObject {
     // MARK: Chart refresh
     
     private var timeUnit: TimeInterval {
-        session.isMobile ? .minute : .hour
+        guard session.isMobile else { return .hour }
+        // V2 mobile sessions can record at a coarser native interval (5 or 10 min).
+        // Each stored measurement is already a device-side average over that window,
+        // so the chart must bin by the native interval — binning by 1 minute would
+        // leave most windows empty and collapse the visible time range. Other mobile
+        // sessions keep the 1-minute window.
+        if stream?.session?.deviceFirmwareVersion == .v2,
+           let nativeInterval = stream?.session?.nativeMeasurementIntervalSeconds,
+           nativeInterval > 60 {
+            return TimeInterval(nativeInterval)
+        }
+        return .minute
     }
 
     private func generateEntries() {

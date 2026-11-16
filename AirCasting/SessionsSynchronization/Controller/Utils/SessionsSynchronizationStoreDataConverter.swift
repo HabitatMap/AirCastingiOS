@@ -12,7 +12,13 @@ struct SynchronizationDataConverter {
                 measurementShortType: stream.measurementShortType,
                 measurementType: stream.measurementType,
                 sensorName: stream.sensorName,
-                sensorPackageName: stream.sensorPackageName,
+                // Recover the model name ("AirBeamMini") from the canonical
+                // sensor_name; the BE stores the synthesized MAC in
+                // sensor_package_name, which would otherwise render as
+                // "Fixed : 26" for UNfollowed fixed cards (the followed
+                // download path already applies this via derivedPackageName).
+                sensorPackageName: SensorPackageName.derived(fromSensorName: stream.sensorName,
+                                                             fallback: stream.sensorPackageName),
                 thresholdHigh: stream.thresholdHigh,
                 thresholdLow: stream.thresholdLow,
                 thresholdMedium: stream.thresholdMedium,

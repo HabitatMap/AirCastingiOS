@@ -3,6 +3,7 @@
 
 import Foundation
 import Combine
+import CoreLocation
 import Resolver
 
 struct SDSyncProgressViewModel {
@@ -34,7 +35,15 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     @Injected private var airBeamConnectionController: AirBeamConnectionController
     @Injected private var btConnectionChecker: BluetoothPeripheralConnectionChecker
     @Injected private var sdSyncController: SDSyncController
+    @Injected private var sessionFinisher: SessionFinisher
+    @Injected private var persistenceController: PersistenceController
+    @Injected private var reconnectGuard: SessionManagingReconnectionController
+    @Injected private var activeSessionProvider: ActiveMobileSessionProvidingService
+    @Injected private var v2LocationBackfillCoordinator: V2LocationBackfillCoordinator
+    @Injected private var sessionSynchronizer: SessionSynchronizer
     private let sessionContext: CreateSessionContext
+    private var v2Orchestrator: V2BleSyncOrchestrator?
+    private var syncCancellable: AnyCancellable?
 
     init(sessionContext: CreateSessionContext,
          device: any BluetoothDevice) {
@@ -43,16 +52,33 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     }
 
     func connectToAirBeamAndSync(_ standaloneSessionToSyncAndFinish: StandaloneSessionToSyncAndFinish) {
+        // Suppress auto-reconnect for the duration of the SD sync flow: if the
+        // user has an active mobile session on this device, `shouldReconnect`
+        // would otherwise return true and the reconnect chain would race the
+        // SD-sync's own explicit connect/disconnect calls (stale
+        // CBCharacteristic pointers → CoreBluetooth malloc abort during clear
+        // SD card step). `disconnectAirBeam` releases the suppression on every
+        // terminal branch of the flow.
+        reconnectGuard.suppressReconnect(deviceUUID: device.uuid)
         self.airBeamConnectionController.connectToAirBeam(device: device) { result in
             Log.info("[SD SYNC] Completed connecting to AB")
             guard result == .success else {
+                self.reconnectGuard.releaseReconnect(deviceUUID: self.device.uuid)
                 DispatchQueue.main.async {
                     self.presentNextScreen = false
                     self.getConnectionAlert(result)
                 }
                 return
             }
-            
+            // V2 has no SD card — use the BLE manual-sync flow (StartBleSync 0x16)
+            // instead of the V1 SDCardAirBeamServices CSV download. Persisted records
+            // are saved through `MeasurementsSavingService.saveV2SyncMeasurement`
+            // which does not require an active session, so the standalone-finish
+            // path works the same as for V1.
+            if self.device.firmwareVersion == .v2 {
+                self.runV2ManualSync(standaloneSessionToSyncAndFinish)
+                return
+            }
             self.sdSyncController.syncFromAirbeam(standaloneSessionToSyncAndFinish: standaloneSessionToSyncAndFinish,
                                                   self.device,
                                                   progress: { [weak self] newStatus in
@@ -90,6 +116,173 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
         }
     }
 
+    // MARK: - V2 BLE manual sync (Phase 6)
+
+    private func runV2ManualSync(_ standaloneSessionToSyncAndFinish: StandaloneSessionToSyncAndFinish) {
+        if let sessionUUID = standaloneSessionToSyncAndFinish.uuid {
+            // Standalone-card "Finish recording & sync" path: caller already
+            // pinned the session UUID via `StandaloneSessionToSyncAndFinish`.
+            startV2ManualSync(sessionUUID: sessionUUID,
+                              standaloneSessionToSyncAndFinish: standaloneSessionToSyncAndFinish)
+            return
+        }
+        // "Sync data from SD card" entry point (Settings / ChooseSessionType):
+        // V1 ABM has no SD card and works through this path by discovering
+        // session metadata from the BLE stream; V2 should do the same.
+        // Read the device's HasSavedSession Status, match against an existing
+        // app session by UUID, and only then drive the orchestrator.
+        let configurator = Resolver.resolve(AirBeamMiniV2Configurator.self, args: device)
+        configurator.discoverSavedSessionUUID { [weak self] discoverResult in
+            guard let self = self else { return }
+            switch discoverResult {
+            case .failure(let error):
+                Log.error("[SD SYNC V2] discoverSavedSessionUUID failed: \(error)")
+                DispatchQueue.main.async {
+                    self.alert = self.alertForError(.readingDataFailure)
+                    self.presentNextScreen = false
+                }
+                self.disconnectAirBeam()
+            case .success(nil):
+                Log.info("[SD SYNC V2] device idle — nothing to sync")
+                DispatchQueue.main.async {
+                    self.alert = InAppAlerts.v2NoSavedSessionAlert { self.shouldDismiss = true }
+                    self.presentNextScreen = false
+                }
+                self.disconnectAirBeam()
+            case .success(.some(let deviceUUID)):
+                let sessionUUID = SessionUUID(stringLiteral: deviceUUID.uuidString)
+                guard self.appSessionExists(sessionUUID: sessionUUID) else {
+                    Log.error("[SD SYNC V2] no app session matches device UUID \(deviceUUID)")
+                    DispatchQueue.main.async {
+                        self.alert = InAppAlerts.v2NoMatchingAppSessionAlert { self.shouldDismiss = true }
+                        self.presentNextScreen = false
+                    }
+                    self.disconnectAirBeam()
+                    return
+                }
+                self.startV2ManualSync(sessionUUID: sessionUUID,
+                                       standaloneSessionToSyncAndFinish: standaloneSessionToSyncAndFinish)
+            }
+        }
+    }
+
+    private func appSessionExists(sessionUUID: SessionUUID) -> Bool {
+        let ctx = persistenceController.editContext
+        var found = false
+        ctx.performAndWait {
+            found = (try? ctx.existingSession(uuid: sessionUUID)) != nil
+        }
+        return found
+    }
+
+    private func startV2ManualSync(sessionUUID: SessionUUID,
+                                   standaloneSessionToSyncAndFinish: StandaloneSessionToSyncAndFinish) {
+        let configurator = Resolver.resolve(AirBeamMiniV2Configurator.self, args: device)
+        configurator.configureSession(uuid: sessionUUID) { [weak self] configureResult in
+            guard let self = self else { return }
+            switch configureResult {
+            case .failure(let error):
+                Log.error("[SD SYNC V2] configureSession failed: \(error)")
+                DispatchQueue.main.async {
+                    self.alert = self.alertForError(.readingDataFailure)
+                    self.presentNextScreen = false
+                }
+                self.disconnectAirBeam()
+            case .success:
+                // Tag mobile-session status for progress UI parity with the V1 path.
+                DispatchQueue.main.async {
+                    self.progressValue = .init(title: Strings.SyncingABView.mobile, current: "0", total: "100")
+                }
+                let orchestrator = configurator.makeManualSyncOrchestrator()
+                self.v2Orchestrator = orchestrator
+                orchestrator.start(progress: { [weak self] progress in
+                    DispatchQueue.main.async {
+                        self?.progressValue = .init(title: Strings.SyncingABView.mobile,
+                                                     current: String(progress.percent),
+                                                     total: "100")
+                    }
+                }, persistWindow: { window, onPersisted in
+                    // Stream each window to the DB as it arrives so an interrupted
+                    // finish (crash / force-quit / slow CoreData at 100%) loses at
+                    // most the last window, not the whole full-flash session — the
+                    // firmware auto-wipes its storage on Ready regardless.
+                    // `onPersisted` reports committed records so progress tracks
+                    // real DB persistence, not just bytes received.
+                    configurator.persistManualSyncWindow(window, onPersisted: onPersisted)
+                }, finalize: { done in
+                    // Drain the last window on the editContext queue, then deliver
+                    // completion — so the session is only flipped to FINISHED once
+                    // every record has committed.
+                    configurator.endManualSyncPersist(completion: done)
+                }, completion: { [weak self] result in
+                    guard let self = self else { return }
+                    self.v2Orchestrator = nil
+                    switch result {
+                    case .success(let summary):
+                        Log.info("[SD SYNC V2] orchestrator completed with \(summary.recordCount) records")
+                        // Records were streamed to the DB window-by-window and the
+                        // final batch drained by `finalize`; flip the session to FINISHED.
+                        self.finishV2StandaloneSession(uuid: sessionUUID) { finishResult in
+                            DispatchQueue.main.async {
+                                switch finishResult {
+                                case .success:
+                                    self.isDownloadingFinished = true
+                                    self.presentNextScreen = true
+                                case .failure:
+                                    self.alert = self.alertForError(.mobileSessionsProcessingFailure)
+                                    self.presentNextScreen = false
+                                }
+                            }
+                            DispatchQueue.main.async {
+                                standaloneSessionToSyncAndFinish.clearSessionUuid()
+                            }
+                            // V1 parity: when the user kicks off SD sync while a
+                            // mobile session is still active on this device (DB
+                            // status RECORDING/DISCONNECTED, not standalone),
+                            // `SDCardMobileSessionFinisher` guards on
+                            // `isInStandaloneMode` and no-ops — leaving the
+                            // session pinned to the mobile-active tab forever.
+                            // Explicitly stop the active session here so it
+                            // transitions to FINISHED, mirroring the V1
+                            // `clearSDCard` ordering. Safe when there's no
+                            // matching active session (early return).
+                            self.finishActiveSessionIfMatchingDevice()
+                            self.triggerBackendSyncWhenReady()
+                            self.disconnectAirBeam()
+                        }
+                    case .failure(let error):
+                        Log.error("[SD SYNC V2] orchestrator failed: \(error)")
+                        // Whatever streamed so far stays saved; just stop here.
+                        DispatchQueue.main.async {
+                            self.alert = self.alertForError(.readingDataFailure)
+                            self.presentNextScreen = false
+                        }
+                        self.disconnectAirBeam()
+                    }
+                })
+            }
+        }
+    }
+
+    private func finishV2StandaloneSession(uuid: SessionUUID,
+                                           completion: @escaping (Result<Void, Error>) -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                try self.sessionFinisher(uuid: uuid)
+                // Standalone-finish bypasses `stopRecordingSession`, so the
+                // backfill sampler + persisted buffer would otherwise keep
+                // accumulating writes for a session that is already FINISHED.
+                // Tell the coordinator the session is done so it stops the
+                // sampler and (refcount-permitting) wipes the buffer.
+                self.v2LocationBackfillCoordinator.stopSampling(sessionUUID: uuid)
+                completion(.success(()))
+            } catch {
+                Log.error("[SD SYNC V2] finishStandaloneSession failed: \(error)")
+                completion(.failure(error))
+            }
+        }
+    }
+
     private func clearSDCard() {
         self.sdSyncController.clearSDCard(self.device) { result in
             DispatchQueue.main.async {
@@ -98,7 +291,41 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                     Log.error("[SD SYNC] Couldn't clear SD card after sync")
                 }
             }
+            // If the user kicked off SD sync while a mobile recording session
+            // was still active on this device, the wizard is logically an
+            // end-of-session intent — stop the active session first so the
+            // subsequent BLE disconnect doesn't trigger the auto-reconnect
+            // chain (`shouldReconnect == true` while `activeSession` matches)
+            // and silently resume recording behind the SDSyncCompleteView.
+            self.finishActiveSessionIfMatchingDevice()
             self.disconnectAirBeam()
+        }
+    }
+
+    private func finishActiveSessionIfMatchingDevice() {
+        guard let active = activeSessionProvider.activeSession,
+              active.device.uuid == device.uuid else { return }
+        let stopper = Resolver.resolve(SessionStoppable.self, args: active.session)
+        do {
+            try stopper.stopSession()
+            Log.info("[SD SYNC] Stopped active session \(active.session.uuid) post-sync")
+        } catch {
+            Log.error("[SD SYNC] Failed to stop active session post-sync: \(error)")
+        }
+    }
+
+    private func triggerBackendSyncWhenReady() {
+        if sessionSynchronizer.syncInProgress.value {
+            syncCancellable = sessionSynchronizer.syncInProgress
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] inProgress in
+                    guard !inProgress, let self = self else { return }
+                    self.syncCancellable?.cancel()
+                    self.syncCancellable = nil
+                    self.sessionSynchronizer.triggerSynchronization()
+                }
+        } else {
+            sessionSynchronizer.triggerSynchronization()
         }
     }
     
@@ -107,6 +334,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
             guard let self = self else { return }
             guard result == .success else {
                 Log.info("[SD SYNC] Reconnecting failed")
+                self.reconnectGuard.releaseReconnect(deviceUUID: self.device.uuid)
                 DispatchQueue.main.async {
                     self.presentNextScreen = false
                     self.alert = InAppAlerts.failedSDClearingAlert {
@@ -120,6 +348,11 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     }
 
     private func disconnectAirBeam() {
+        // Releasing here covers every SD-sync terminal branch since each one
+        // routes through this helper. After this call the recording-session
+        // auto-reconnect chain is allowed to fire again on the next
+        // didDisconnect event.
+        reconnectGuard.releaseReconnect(deviceUUID: device.uuid)
         airBeamConnectionController.disconnectAirBeam(device: device)
     }
     

@@ -453,6 +453,22 @@
 		B3FD77C6267C94AF00E97CC2 /* SessionUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD77B5267C94AF00E97CC2 /* SessionUploadService.swift */; };
 		B3FD77C8267C997800E97CC2 /* PersistenceController+Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD77C7267C997800E97CC2 /* PersistenceController+Database.swift */; };
 		B3FFBA2B273DC0690095BA4A /* RefreshControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FFBA2A273DC0690095BA4A /* RefreshControl.swift */; };
+		D1A0670130042026000001AB /* FirmwareVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000002AB /* FirmwareVersion.swift */; };
+		D1A0670130042026000003AB /* AirBeamMiniV2Configurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000004AB /* AirBeamMiniV2Configurator.swift */; };
+		D1A0670130042026000007AB /* V2BinaryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000008AB /* V2BinaryProtocol.swift */; };
+		D1A0670130042026000009AB /* V2ResponseDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000010AB /* V2ResponseDispatcher.swift */; };
+		D1A0670130042026000011AB /* V2MeasurementParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000012AB /* V2MeasurementParser.swift */; };
+		D1A0670130042026000013AB /* V2ConfiguratorRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000014AB /* V2ConfiguratorRegistry.swift */; };
+		D1A0670130042026000015AB /* V2FixedSessionAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000016AB /* V2FixedSessionAPIService.swift */; };
+		D1A0670130042026000021AB /* V2BleSyncOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000022AB /* V2BleSyncOrchestrator.swift */; };
+		D1A0670130042026000023AB /* SyncBeforeNewV2SessionDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000024AB /* SyncBeforeNewV2SessionDialog.swift */; };
+		D1A0670130042026000025AB /* SyncAndFinishV2SessionDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000026AB /* SyncAndFinishV2SessionDialog.swift */; };
+		D1A0670130042026000027AB /* LocationSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000028AB /* LocationSample.swift */; };
+		D1A0670130042026000029AB /* LocationSampleStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000030AB /* LocationSampleStore.swift */; };
+		D1A0670130042026000031AB /* V2LocationSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000032AB /* V2LocationSampler.swift */; };
+		D1A0670130042026000033AB /* V2LocationBackfillCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000034AB /* V2LocationBackfillCoordinator.swift */; };
+		D1A0670130042026000037AB /* LocationSampleStoreContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0670130042026000036AB /* LocationSampleStoreContainer.swift */; };
+		D1A067013004207000001AB /* V2ActiveSyncDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A067013004207000002AB /* V2ActiveSyncDialog.swift */; };
 		DD009D662698844A009F0443 /* DeleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD009D652698844A009F0443 /* DeleteView.swift */; };
 		DD123EBF27BD1CD3001083C3 /* SearchMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD123EBE27BD1CD3001083C3 /* SearchMapView.swift */; };
 		DD123EC227BD2C53001083C3 /* SearchMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD123EC127BD2C53001083C3 /* SearchMapViewModel.swift */; };
@@ -707,6 +723,8 @@
 		33B397D8284FB77400C95387 /* PhotoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPicker.swift; sourceTree = "<group>"; };
 		33BA3369266E4D1000899343 /* MobileSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSession.swift; sourceTree = "<group>"; };
 		33C9A458290ADB12003CC326 /* AirCasting v9.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v9.xcdatamodel"; sourceTree = "<group>"; };
+		33C9A458290ADB12003CC327 /* AirCasting v10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v10.xcdatamodel"; sourceTree = "<group>"; };
+		33C9A458290ADB12003CC328 /* AirCasting v11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v11.xcdatamodel"; sourceTree = "<group>"; };
 		33D07A232825963000F25B4C /* ExternalSessionEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
 		33D07A242825963000F25B4C /* ExternalSessionEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		33D8031528F84050004A4CFA /* SDSyncAveragingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncAveragingServiceTests.swift; sourceTree = "<group>"; };
@@ -1058,6 +1076,22 @@
 		B3FFBA2A273DC0690095BA4A /* RefreshControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshControl.swift; sourceTree = "<group>"; };
 		C9465CB8088B13036D9D0698 /* Pods-AirCastingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCastingTests.release.xcconfig"; path = "Target Support Files/Pods-AirCastingTests/Pods-AirCastingTests.release.xcconfig"; sourceTree = "<group>"; };
 		CB5D891DE46054E9150BEF6B /* Pods-AirCastingTests.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCastingTests.beta.xcconfig"; path = "Target Support Files/Pods-AirCastingTests/Pods-AirCastingTests.beta.xcconfig"; sourceTree = "<group>"; };
+		D1A0670130042026000002AB /* FirmwareVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirmwareVersion.swift; sourceTree = "<group>"; };
+		D1A0670130042026000004AB /* AirBeamMiniV2Configurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamMiniV2Configurator.swift; sourceTree = "<group>"; };
+		D1A0670130042026000008AB /* V2BinaryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2BinaryProtocol.swift; sourceTree = "<group>"; };
+		D1A0670130042026000010AB /* V2ResponseDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2ResponseDispatcher.swift; sourceTree = "<group>"; };
+		D1A0670130042026000012AB /* V2MeasurementParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2MeasurementParser.swift; sourceTree = "<group>"; };
+		D1A0670130042026000014AB /* V2ConfiguratorRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2ConfiguratorRegistry.swift; sourceTree = "<group>"; };
+		D1A0670130042026000016AB /* V2FixedSessionAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2FixedSessionAPIService.swift; sourceTree = "<group>"; };
+		D1A0670130042026000022AB /* V2BleSyncOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2BleSyncOrchestrator.swift; sourceTree = "<group>"; };
+		D1A0670130042026000024AB /* SyncBeforeNewV2SessionDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SyncBeforeNewV2SessionDialog.swift; path = V2/SyncBeforeNewV2SessionDialog.swift; sourceTree = "<group>"; };
+		D1A0670130042026000026AB /* SyncAndFinishV2SessionDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SyncAndFinishV2SessionDialog.swift; path = V2/SyncAndFinishV2SessionDialog.swift; sourceTree = "<group>"; };
+		D1A0670130042026000028AB /* LocationSample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSample.swift; sourceTree = "<group>"; };
+		D1A0670130042026000030AB /* LocationSampleStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSampleStore.swift; sourceTree = "<group>"; };
+		D1A0670130042026000032AB /* V2LocationSampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2LocationSampler.swift; sourceTree = "<group>"; };
+		D1A0670130042026000034AB /* V2LocationBackfillCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2LocationBackfillCoordinator.swift; sourceTree = "<group>"; };
+		D1A0670130042026000036AB /* LocationSampleStoreContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSampleStoreContainer.swift; sourceTree = "<group>"; };
+		D1A067013004207000002AB /* V2ActiveSyncDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = V2ActiveSyncDialog.swift; path = V2/V2ActiveSyncDialog.swift; sourceTree = "<group>"; };
 		DD009D652698844A009F0443 /* DeleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteView.swift; sourceTree = "<group>"; };
 		DD123EBE27BD1CD3001083C3 /* SearchMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMapView.swift; sourceTree = "<group>"; };
 		DD123EC127BD2C53001083C3 /* SearchMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMapViewModel.swift; sourceTree = "<group>"; };
@@ -1283,6 +1317,7 @@
 				3320F2F129250CEC00EFFB2D /* BluetoothStateHandler.swift */,
 				3320F2FD292692F000EFFB2D /* BluetoothPeripheralConnectionChecker.swift */,
 				33F96EA7293E7F4F00FE7F0A /* BluetoothDevice.swift */,
+				D1A0670130042026000002AB /* FirmwareVersion.swift */,
 			);
 			path = Bluetooth;
 			sourceTree = "<group>";
@@ -1395,6 +1430,8 @@
 				B31DD84329252ED600AF491B /* StandaloneModeController.swift */,
 				B31DD83F29252EBD00AF491B /* ActiveMobileSessionProvidingService.swift */,
 				3320F2F5292657F800EFFB2D /* MeasurementsSavingService.swift */,
+				D1A0670130042026000026AB /* SyncAndFinishV2SessionDialog.swift */,
+				D1A067013004207000002AB /* V2ActiveSyncDialog.swift */,
 			);
 			path = BluetoothSession;
 			sourceTree = "<group>";
@@ -1647,6 +1684,7 @@
 				DD28047826B3D7370060F55E /* AirBeamConnectionController.swift */,
 				AC8CFF7D25EE5F9200FB2918 /* AirBeam3Configurator.swift */,
 				AC8CFF7625ECF8B100FB2918 /* HexMessagesBuilder.swift */,
+				D1A0670130042026000005AB /* V2 */,
 			);
 			path = ABConnector;
 			sourceTree = "<group>";
@@ -1725,6 +1763,7 @@
 				DD80AE2127BA5EF500D9B123 /* ChooseLocationPickerService.swift */,
 				DD80AE2527BA5F1D00D9B123 /* PlacePicker */,
 				331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */,
+				D1A0670130042026000024AB /* SyncBeforeNewV2SessionDialog.swift */,
 			);
 			path = CreateSessionViews;
 			sourceTree = "<group>";
@@ -1919,6 +1958,7 @@
 				3392B3F928A1601000432B92 /* DeleteThresholdAlertService.swift */,
 				3392B3FD28A3D5D000432B92 /* FetchThresholdAlertsService.swift */,
 				332066A72892DB2F00798AC1 /* DormantStreamAlertService.swift */,
+				D1A0670130042026000017AB /* V2 */,
 			);
 			path = APICommunicator;
 			sourceTree = "<group>";
@@ -2675,6 +2715,40 @@
 			path = Adapters;
 			sourceTree = "<group>";
 		};
+		D1A0670130042026000005AB /* V2 */ = {
+			isa = PBXGroup;
+			children = (
+				D1A0670130042026000004AB /* AirBeamMiniV2Configurator.swift */,
+				D1A0670130042026000008AB /* V2BinaryProtocol.swift */,
+				D1A0670130042026000010AB /* V2ResponseDispatcher.swift */,
+				D1A0670130042026000012AB /* V2MeasurementParser.swift */,
+				D1A0670130042026000014AB /* V2ConfiguratorRegistry.swift */,
+				D1A0670130042026000022AB /* V2BleSyncOrchestrator.swift */,
+				D1A0670130042026000035AB /* LocationBackfill */,
+			);
+			path = V2;
+			sourceTree = "<group>";
+		};
+		D1A0670130042026000017AB /* V2 */ = {
+			isa = PBXGroup;
+			children = (
+				D1A0670130042026000016AB /* V2FixedSessionAPIService.swift */,
+			);
+			path = V2;
+			sourceTree = "<group>";
+		};
+		D1A0670130042026000035AB /* LocationBackfill */ = {
+			isa = PBXGroup;
+			children = (
+				D1A0670130042026000028AB /* LocationSample.swift */,
+				D1A0670130042026000030AB /* LocationSampleStore.swift */,
+				D1A0670130042026000036AB /* LocationSampleStoreContainer.swift */,
+				D1A0670130042026000032AB /* V2LocationSampler.swift */,
+				D1A0670130042026000034AB /* V2LocationBackfillCoordinator.swift */,
+			);
+			path = LocationBackfill;
+			sourceTree = "<group>";
+		};
 		DD07575B268B2D3300C8DF88 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
@@ -3301,7 +3375,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" == \"Release\" ] \nthen\n    echo \"FirebaseCrashlytics\"\n    \"${BUILD_DIR%Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\nelse\n    echo \"Will run FirebaseCrashlytics in release mode\"\nfi\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" == \"Release\" ] || [ \"${CONFIGURATION}\" == \"Beta\" ]\nthen\n    echo \"FirebaseCrashlytics\"\n    \"${BUILD_DIR%Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\nelse\n    echo \"Skipping FirebaseCrashlytics dSYM upload (runs only for Release/Beta)\"\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		D0705B790E4A73A912964DD5 /* [CP] Check Pods Manifest.lock */ = {
@@ -3578,6 +3652,22 @@
 				B3EBB10626A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift in Sources */,
 				AC08A662266E2AEC0081697C /* ABMeasurementsView.swift in Sources */,
 				33F96EA8293E7F4F00FE7F0A /* BluetoothDevice.swift in Sources */,
+				D1A0670130042026000001AB /* FirmwareVersion.swift in Sources */,
+				D1A0670130042026000003AB /* AirBeamMiniV2Configurator.swift in Sources */,
+				D1A0670130042026000007AB /* V2BinaryProtocol.swift in Sources */,
+				D1A0670130042026000009AB /* V2ResponseDispatcher.swift in Sources */,
+				D1A0670130042026000011AB /* V2MeasurementParser.swift in Sources */,
+				D1A0670130042026000015AB /* V2FixedSessionAPIService.swift in Sources */,
+				D1A0670130042026000013AB /* V2ConfiguratorRegistry.swift in Sources */,
+				D1A0670130042026000021AB /* V2BleSyncOrchestrator.swift in Sources */,
+				D1A0670130042026000027AB /* LocationSample.swift in Sources */,
+				D1A0670130042026000029AB /* LocationSampleStore.swift in Sources */,
+				D1A0670130042026000031AB /* V2LocationSampler.swift in Sources */,
+				D1A0670130042026000033AB /* V2LocationBackfillCoordinator.swift in Sources */,
+				D1A0670130042026000037AB /* LocationSampleStoreContainer.swift in Sources */,
+				D1A0670130042026000023AB /* SyncBeforeNewV2SessionDialog.swift in Sources */,
+				D1A0670130042026000025AB /* SyncAndFinishV2SessionDialog.swift in Sources */,
+				D1A067013004207000001AB /* V2ActiveSyncDialog.swift in Sources */,
 				335B54BF28BD01C300BA92D2 /* CustomSwipeAction.swift in Sources */,
 				FA4F1B75281809B2002711B4 /* AirBeamStreamSuffixes.swift in Sources */,
 				33A16E7B2DF6F76400D9142A /* Concurrency.swift in Sources */,
@@ -4105,7 +4195,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 19;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -4115,7 +4205,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.25.2;
+				MARKETING_VERSION = 1.28.15;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4132,11 +4222,9 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = LXAGXH6CF6;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 19;
+				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -4144,11 +4232,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.25.2;
+				MARKETING_VERSION = 1.28.15;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Marta's ad hoc 2";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -4224,7 +4311,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 19;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;
@@ -4233,7 +4320,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.25.2;
+				MARKETING_VERSION = 1.28.15;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4500,6 +4587,8 @@
 		338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				33C9A458290ADB12003CC328 /* AirCasting v11.xcdatamodel */,
+				33C9A458290ADB12003CC327 /* AirCasting v10.xcdatamodel */,
 				33C9A458290ADB12003CC326 /* AirCasting v9.xcdatamodel */,
 				FA9E08C828926C07006475D6 /* AirCasting v8.xcdatamodel */,
 				336BFBCD2857788E008D4645 /* AirCasting v7.xcdatamodel */,
@@ -4510,7 +4599,7 @@
 				DDF551D427985AAB009D1347 /* AirCasting v2.xcdatamodel */,
 				338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */,
 			);
-			currentVersion = 33C9A458290ADB12003CC326 /* AirCasting v9.xcdatamodel */;
+			currentVersion = 33C9A458290ADB12003CC328 /* AirCasting v11.xcdatamodel */;
 			path = AirCasting.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

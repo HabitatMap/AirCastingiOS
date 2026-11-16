@@ -5,6 +5,8 @@ import Foundation
 import CoreBluetooth
 import Resolver
 
+private let v2ServiceCBUUID = CBUUID(string: "a0e1f000-0001-4b3c-8e9a-1f2d3c4b5a60")
+
 public enum BluetoothDeviceAuthorizationState {
     case notDetermined
     case denied
@@ -66,6 +68,7 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         case .resetting:
             Log.info("central.state is .resetting")
             deviceState = .resetting
+            notifyConnectedAsDisconnected()
         case .unsupported:
             Log.info("central.state is .unsupported")
             deviceState = .unsupported
@@ -75,6 +78,11 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         case .poweredOff:
             Log.info("central.state is .poweredOff")
             deviceState = .poweredOff
+            // Toggling BT off does not fire didDisconnectPeripheral for connected
+            // peripherals — synthesize a disconnect for each tracked peripheral so
+            // the reconnection controller's retry loop kicks in and the active
+            // session card flips to DISCONNECTED.
+            notifyConnectedAsDisconnected()
         case .poweredOn:
             Log.info("central.state is .poweredOn")
             deviceState = .poweredOn
@@ -82,21 +90,179 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
             fatalError()
         }
     }
+
+    private func notifyConnectedAsDisconnected() {
+        queue.async {
+            let snapshot = self.trackedConnectedPeripherals
+            guard !snapshot.isEmpty else { return }
+            Log.info("BT central went down; synthesizing disconnect for \(snapshot.count) tracked peripheral(s)")
+            for peripheral in snapshot {
+                let version = self.firmwareVersion(for: peripheral)
+                self.callConnectionObserversWithDisconnect(for: self.makeDevice(for: peripheral, firmwareVersion: version))
+            }
+            self.trackedConnectedPeripherals.removeAll()
+        }
+    }
     
     // MARK: Scanning
     
     private typealias DiscoveryCallback = (Device) -> Void
     private var deviceDiscoveryCallbacks: [DiscoveryCallback] = []
-    
+
+    private var firmwareVersionByPeripheral: [CBPeripheral: FirmwareVersion] = [:]
+    private let firmwareVersionLock = NSRecursiveLock()
+
+    private func firmwareVersion(for peripheral: CBPeripheral) -> FirmwareVersion {
+        firmwareVersionLock.lock(); defer { firmwareVersionLock.unlock() }
+        return firmwareVersionByPeripheral[peripheral] ?? .v1
+    }
+
+    fileprivate func setFirmwareVersion(_ version: FirmwareVersion, for peripheral: CBPeripheral) {
+        firmwareVersionLock.lock(); defer { firmwareVersionLock.unlock() }
+        firmwareVersionByPeripheral[peripheral] = version
+    }
+
+    func refreshedDevice(for device: any BluetoothDevice) -> any BluetoothDevice {
+        guard let device = device as? Device else { return device }
+        let resolved = firmwareVersion(for: device.peripheral)
+        let refreshed = makeDevice(for: device.peripheral,
+                                   firmwareVersion: resolved,
+                                   rawAdvertisedName: device.name)
+        if resolved != device.firmwareVersion || refreshed.name != device.name || refreshed.realMacAddress != device.realMacAddress {
+            Log.info("Refreshed device \(device.uuid) fw=\(device.firmwareVersion)->\(resolved) name=\(device.name ?? "nil")->\(refreshed.name ?? "nil")")
+        }
+        return refreshed
+    }
+
     private struct Device: BluetoothDevice {
         fileprivate let peripheral: CBPeripheral
         var name: String?
         var uuid: String
-        
-        init(peripheral: CBPeripheral) {
+        var firmwareVersion: FirmwareVersion
+        var realMacAddress: String?
+
+        init(peripheral: CBPeripheral, firmwareVersion: FirmwareVersion = .v1, advertisedName: String? = nil, realMacAddress: String? = nil) {
             self.peripheral = peripheral
-            name = peripheral.name
+            // Prefer advertisedName from CBAdvertisementDataLocalNameKey: peripheral.name is
+            // often nil at didDiscover time and only filled in once the device has been
+            // connected or its GAP name characteristic read. Falling back kept airbeams out
+            // of the SelectPeripheral list when iOS hadn't cached the name yet.
+            let candidateName = advertisedName ?? peripheral.name
+            if let parsed = BluetoothManager.parseAirBeamMiniAdvertisedName(candidateName) {
+                name = parsed.normalizedName
+                self.realMacAddress = realMacAddress ?? parsed.macAddress
+            } else {
+                name = candidateName
+                self.realMacAddress = realMacAddress
+            }
             uuid = peripheral.identifier.description
+            self.firmwareVersion = firmwareVersion
+        }
+    }
+
+    /// Best-known advertised local name per peripheral. V2 AirBeams emit two
+    /// packets: a pure advert with no local name, then a scan-response containing
+    /// `AirBeamMini:<MAC>`. iOS calls didDiscover for both — cache the richer one
+    /// so subsequent ad-only packets don't drop us back to a missing name.
+    private static let persistedLocalNamesKey = "bt.lastKnownLocalNameByPeripheralUUID"
+    private var lastKnownLocalName: [UUID: String] = [:]
+    private let lastKnownLocalNameLock = NSRecursiveLock()
+
+    private func cachedLocalName(for peripheral: CBPeripheral) -> String? {
+        lastKnownLocalNameLock.lock(); defer { lastKnownLocalNameLock.unlock() }
+        if let inMemory = lastKnownLocalName[peripheral.identifier] {
+            return inMemory
+        }
+        if let persisted = (UserDefaults.standard.dictionary(forKey: Self.persistedLocalNamesKey) as? [String: String])?[peripheral.identifier.uuidString] {
+            lastKnownLocalName[peripheral.identifier] = persisted
+            return persisted
+        }
+        return nil
+    }
+
+    private func setCachedLocalName(_ name: String, for peripheral: CBPeripheral) {
+        lastKnownLocalNameLock.lock(); defer { lastKnownLocalNameLock.unlock() }
+        if let existing = lastKnownLocalName[peripheral.identifier],
+           Self.parseAirBeamMiniAdvertisedName(existing) != nil,
+           Self.parseAirBeamMiniAdvertisedName(name) == nil {
+            return
+        }
+        let normalizedToCache = Self.parseAirBeamMiniAdvertisedName(name)?.normalizedName ?? name
+        lastKnownLocalName[peripheral.identifier] = normalizedToCache
+        if Self.parseAirBeamMiniAdvertisedName(normalizedToCache) != nil {
+            var dict = (UserDefaults.standard.dictionary(forKey: Self.persistedLocalNamesKey) as? [String: String]) ?? [:]
+            if dict[peripheral.identifier.uuidString] != normalizedToCache {
+                dict[peripheral.identifier.uuidString] = normalizedToCache
+                UserDefaults.standard.set(dict, forKey: Self.persistedLocalNamesKey)
+            }
+        }
+    }
+
+    private func makeDevice(for peripheral: CBPeripheral,
+                            firmwareVersion: FirmwareVersion,
+                            rawAdvertisedName: String? = nil) -> Device {
+        if let raw = rawAdvertisedName, !raw.isEmpty {
+            setCachedLocalName(raw, for: peripheral)
+        }
+        let cachedName = cachedLocalName(for: peripheral)
+        let candidateName: String?
+        if Self.parseAirBeamMiniAdvertisedName(rawAdvertisedName) != nil {
+            candidateName = rawAdvertisedName
+        } else if Self.parseAirBeamMiniAdvertisedName(cachedName) != nil {
+            candidateName = cachedName
+        } else if Self.parseAirBeamMiniAdvertisedName(peripheral.name) != nil {
+            candidateName = peripheral.name
+        } else {
+            candidateName = rawAdvertisedName ?? cachedName ?? peripheral.name
+        }
+
+        let advertisedName: String?
+        let realMac: String?
+        if let parsed = Self.parseAirBeamMiniAdvertisedName(candidateName) {
+            advertisedName = parsed.normalizedName
+            realMac = parsed.macAddress
+        } else {
+            advertisedName = candidateName
+            realMac = nil
+        }
+
+        return Device(peripheral: peripheral,
+                      firmwareVersion: firmwareVersion,
+                      advertisedName: advertisedName,
+                      realMacAddress: realMac)
+    }
+
+    /// Parse a BLE device name containing `:` and normalize 1.0.0 AirBeamMini names:
+    /// - `AirBeamMini:A2:34:56:78:A1` (V2 1.0.0, multiple colons) -> strips colons,
+    ///   subtracts 2 from the 48-bit MAC, and returns `("AirBeamMini:A23456789F", "A23456789F")`.
+    /// - `AirBeamMini:A23456789E` (V2 1.0.1, single colon) -> kept untouched as
+    ///   `("AirBeamMini:A23456789E", "A23456789E")`.
+    /// - `AirBeamMini:a23456789e` (V1 ABM, single colon) -> kept untouched as
+    ///   `("AirBeamMini:a23456789e", "a23456789e")`.
+    /// - `AirBeam3:a23456789e` (AB3, single colon) -> kept untouched as
+    ///   `("AirBeam3:a23456789e", "a23456789e")`.
+    static func parseAirBeamMiniAdvertisedName(_ name: String?) -> (normalizedName: String, macAddress: String)? {
+        guard let name = name?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !name.isEmpty,
+              let firstColon = name.firstIndex(of: ":") else { return nil }
+        let prefix = String(name[..<firstColon])
+        let afterFirstColon = String(name[name.index(after: firstColon)...])
+        let colonCount = name.filter { $0 == ":" }.count
+        let hex12Pattern = #"^[0-9A-Fa-f]{12}$"#
+
+        if colonCount > 1 {
+            // Only normalize 1.0.0 AirBeamMini names (`AirBeamMini:XX:XX:XX:XX:XX:XX`)
+            guard prefix.lowercased() == "airbeammini" else { return nil }
+            let cleanHex = afterFirstColon.replacingOccurrences(of: ":", with: "")
+            guard cleanHex.range(of: hex12Pattern, options: .regularExpression) != nil,
+                  let macValue = UInt64(cleanHex, radix: 16) else { return nil }
+            let adjustedValue = macValue >= 2 ? (macValue - 2) : 0
+            let adjustedMac = String(format: "%012llX", adjustedValue)
+            return (normalizedName: "AirBeamMini:\(adjustedMac)", macAddress: adjustedMac)
+        } else {
+            guard afterFirstColon.range(of: hex12Pattern, options: .regularExpression) != nil else { return nil }
+            let canonicalPrefix = prefix.lowercased() == "airbeammini" ? "AirBeamMini" : prefix
+            return (normalizedName: "\(canonicalPrefix):\(afterFirstColon)", macAddress: afterFirstColon)
         }
     }
     
@@ -126,9 +292,26 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
+        let advertisedServices = advertisementData[CBAdvertisementDataServiceUUIDsKey] as? [CBUUID] ?? []
+        let detected: FirmwareVersion = advertisedServices.contains(v2ServiceCBUUID) ? .v2 : .v1
+        // Promote to .v2 when advertisement says so; never downgrade an already-confirmed v2.
+        let stored = firmwareVersion(for: peripheral)
+        let resolved: FirmwareVersion = (stored == .v2 || detected == .v2) ? .v2 : .v1
+        if resolved == .v2 && stored != .v2 { setFirmwareVersion(.v2, for: peripheral) }
+
+        let rawAdvertisedName = advertisementData[CBAdvertisementDataLocalNameKey] as? String
+        let device = makeDevice(for: peripheral,
+                                firmwareVersion: resolved,
+                                rawAdvertisedName: rawAdvertisedName)
+        if resolved == .v2, device.realMacAddress != nil {
+            Resolver.resolve(V2ConfiguratorRegistry.self).updateIfPresent(device: device)
+        }
+
         queue.async {
             self.deviceDiscoveryCallbacks.forEach { callback in
-                self.callbackQueue.async { callback(Device(peripheral: peripheral)) }
+                self.callbackQueue.async {
+                    callback(device)
+                }
             }
         }
     }
@@ -137,6 +320,10 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
     
     private var callbackQueue = DispatchQueue(label: "bluetooth.driver.callback.queue")
     private var connectionObservers: [BluetoothConnectionObserver] = []
+    /// Peripherals we have an active connection to. Needed so we can synthesize
+    /// disconnect events when the central goes `.poweredOff` (e.g., user toggles
+    /// BT off on the phone) — CoreBluetooth does not fire didDisconnect in that case.
+    private var trackedConnectedPeripherals: Set<CBPeripheral> = []
     
     func addConnectionObserver(_ observer: BluetoothConnectionObserver) {
         queue.async {
@@ -165,6 +352,11 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         case timeout
         case deviceBusy
         case unknown
+        /// The requested service/characteristic was not found on the peripheral
+        /// (e.g. a v2 device routed into the v1 configurator looks up a service it
+        /// does not expose). Surfaced instead of silently returning so the caller's
+        /// completion fails and the reconnect chain can retry rather than hang.
+        case characteristicNotFound
     }
     
     func connect(to device: any BluetoothDevice, timeout: TimeInterval, completion: @escaping ConnectionCallback) throws {
@@ -221,6 +413,7 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         queue.async {
             Log.verbose("Did connect to BT device \(peripheral.name ?? "unnamed")")
             peripheral.delegate = self
+            self.trackedConnectedPeripherals.insert(peripheral)
             guard let callbacks = self.connectionCallbacks[peripheral] else {
                 return
             }
@@ -245,8 +438,10 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         Log.info("Disconnected peripheral \(peripheral) with error: \(String(describing: error?.localizedDescription))")
+        let version = firmwareVersion(for: peripheral)
         queue.async {
-            self.callConnectionObserversWithDisconnect(for: .init(peripheral: peripheral))
+            self.trackedConnectedPeripherals.remove(peripheral)
+            self.callConnectionObserversWithDisconnect(for: self.makeDevice(for: peripheral, firmwareVersion: version))
         }
     }
     
@@ -347,6 +542,11 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
     }
     
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        if let services = peripheral.services,
+           services.contains(where: { $0.uuid == v2ServiceCBUUID }) {
+            // Connection-time confirmation: stamp v2 once GATT discovery proves the V2 service is present.
+            setFirmwareVersion(.v2, for: peripheral)
+        }
         queue.async {
             if let services = peripheral.services {
                 for service in services {
@@ -404,7 +604,12 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         guard let characteristic = getCharacteristic(serviceID: serviceUUID,
                                                      charID: characteristicUUID,
                                                      peripheral: device.peripheral) else {
-            Log.error("Unable to get characteristic from \(String(describing: device.peripheral))")
+            Log.error("Unable to get characteristic from \(String(describing: device.peripheral)) — failing send (service=\(serviceID) char=\(characteristicID))")
+            // Fail loud instead of silently returning. A silent return left the
+            // configurator's write completion unfulfilled, so the reconnect chain
+            // hung forever ("AB connected / app disconnected") instead of erroring
+            // and retrying.
+            callbackQueue.async { completion(.failure(BluetoothDriverError.characteristicNotFound)) }
             return
         }
         Log.info("Writing value to peripheral")
@@ -433,6 +638,21 @@ final class BluetoothManager: NSObject, BluetoothCommunicator, CBCentralManagerD
         return characteristic
     }
     
+    func readValue(for device: any BluetoothDevice, serviceID: String, characteristicID: String) throws {
+        guard let device = device as? Device else { Log.error("BluetoothManager received unexpected device type"); throw WrongDeviceType() }
+        let serviceUUID = CBUUID(string: serviceID)
+        let characteristicUUID = CBUUID(string: characteristicID)
+        guard let characteristic = getCharacteristic(serviceID: serviceUUID,
+                                                     charID: characteristicUUID,
+                                                     peripheral: device.peripheral) else {
+            Log.error("Unable to read value: characteristic \(characteristicID) not found")
+            throw BluetoothDriverError.characteristicNotFound
+        }
+        queue.async {
+            device.peripheral.readValue(for: characteristic)
+        }
+    }
+
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
         queue.async {
             Log.verbose("Did write value for characteristic: \(characteristic), error: \(String(describing: error))")

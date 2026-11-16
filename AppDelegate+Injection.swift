@@ -125,6 +125,10 @@ extension Resolver: ResolverRegistering {
 
         main.register { LocationServiceAdapter(tracker: Resolver.resolve()) as LocationService }.scope(.unique)
 
+        // MARK: - V2 disconnect-window location backfill
+        main.register { DefaultLocationSampleStore() as LocationSampleStore }.scope(.application)
+        main.register { DefaultV2LocationBackfillCoordinator() as V2LocationBackfillCoordinator }.scope(.application)
+
         // MARK: - Settings
         main.register { UserSettings(userDefaults: .standard) }.scope(.cached)
         main.register { DefaultSettingsController() as SettingsController }
@@ -151,7 +155,7 @@ extension Resolver: ResolverRegistering {
         .scope(.cached)
         main.register { UserState() }.scope(.application)
         main.register { SyncedMeasurementsDownloadingService() as SyncedMeasurementsDownloader }
-        main.register { ConnectingAirBeamServicesBluetooth() as ConnectingAirBeamServices }
+        main.register { ConnectingAirBeamServicesBluetooth() as ConnectingAirBeamServices }.scope(.application)
         main.register { DefaultAirBeamConnectionController() as AirBeamConnectionController }
         main.register { DefaultSessionUpdateService() as SessionUpdateService }
         main.register { DefaultLogoutController() as LogoutController }
@@ -163,8 +167,19 @@ extension Resolver: ResolverRegistering {
         main.register { NotificationsManager() }.scope(.application)
 
         // MARK: - AirBeam configuration
-        main.register { (_, args) in
-            AirBeam3Configurator(device: args()) as AirBeamConfigurator
+        main.register { V2ConfiguratorRegistry() }.scope(.application)
+        main.register { (resolver, args) -> AirBeamMiniV2Configurator in
+            let device: any BluetoothDevice = args()
+            return resolver.resolve(V2ConfiguratorRegistry.self).configurator(for: device)
+        }
+        main.register { (resolver, args) -> AirBeamConfigurator in
+            let device: any BluetoothDevice = args()
+            switch device.firmwareVersion {
+            case .v2:
+                return resolver.resolve(AirBeamMiniV2Configurator.self, args: device)
+            case .v1:
+                return AirBeam3Configurator(device: device)
+            }
         }
 
         // MARK: - Session stopping

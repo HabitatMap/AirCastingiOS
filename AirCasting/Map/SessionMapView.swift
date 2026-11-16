@@ -55,10 +55,20 @@ struct SessionMapView: View {
     }
     
     private var pathPoints: [_MapView.PathPoint] {
-        return selectedStream?.allMeasurements?.compactMap {
-            guard let location = $0.location else { return nil }
-            return .init(lat: location.latitude, long: location.longitude, value: round(getValue(of: $0)))
-        } ?? []
+        // `allMeasurements` returns the underlying NSOrderedSet in insertion
+        // order, not time order. During an active-reconnect sync, BLE
+        // interleaves live indications (current GPS) with sync indications
+        // (backfilled disconnect-window GPS); both append at the tail of
+        // the ordered set. Rendering in insertion order makes the polyline
+        // bounce between the live point and each backfill point — a
+        // star-burst around the user's current location. Sorting by time
+        // matches the Graph view's existing defensive sort in `Graph.swift`.
+        return selectedStream?.allMeasurements?
+            .sorted(by: { $0.time < $1.time })
+            .compactMap {
+                guard let location = $0.location else { return nil }
+                return .init(lat: location.latitude, long: location.longitude, value: round(getValue(of: $0)))
+            } ?? []
     }
     
     private var curentThreshold: SensorThreshold? {
@@ -189,10 +199,14 @@ import GoogleMaps
 fileprivate extension SessionMapView {
     
     private var heatmapPoints: [HeatMapPoint] {
-        return selectedStream?.allMeasurements?.compactMap {
-            guard let location = $0.location else { return nil }
-            return .init(location: location, measurement: round(getValue(of: $0)))
-        } ?? []
+        // See `pathPoints` for the time-sort rationale — same insertion-order
+        // hazard applies to the heatmap point list.
+        return selectedStream?.allMeasurements?
+            .sorted(by: { $0.time < $1.time })
+            .compactMap {
+                guard let location = $0.location else { return nil }
+                return .init(location: location, measurement: round(getValue(of: $0)))
+            } ?? []
     }
     
     private func overlayHeatMap(on mapView: GMSMapView) {

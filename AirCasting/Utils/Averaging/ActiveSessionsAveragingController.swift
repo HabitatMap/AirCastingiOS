@@ -48,6 +48,7 @@ enum TimeThreshold: Int {
 final class ActiveSessionsAveragingController: NSObject {
     @Injected var storage: AveragingServiceStorage
     @Injected private var averagingService: MeasurementsAveragingService
+    @Injected private var persistenceController: PersistenceController
     private var timers: [SessionUUID : AnyCancellable] = [:]
     private var fetchedResultsController: NSFetchedResultsController<SessionEntity>?
     
@@ -69,14 +70,31 @@ final class ActiveSessionsAveragingController: NSObject {
     private func scheduleAveraging(session: SessionEntity) {
         let uuid = session.uuid
         guard let startTime = session.startTime else { return }
-        
+
+        // Sparse-interval gate: if the user picked a native interval ≥ the 60s second
+        // window (the coarsest averaging bucket), every bucket would hold ≤ 1 sample
+        // and the leftover-sweep in `perform(...)` would wipe the only row in the
+        // window. Skip scheduling entirely. Android parity: commit `c4cdd9b9a`.
+        let nativeInterval = session.nativeMeasurementIntervalSeconds
+        guard nativeInterval < AveragingWindow.secondThresholdWindow.rawValue else {
+            Log.info("Skipping periodic averaging schedule for \(session.uuid): native interval \(nativeInterval)s ≥ 60s")
+            return
+        }
+
+        // First-window pick: if the native interval ≥ 5s, the 5s window is also too
+        // coarse — fast-forward straight to the 60s window (still scheduled at the
+        // 2h threshold so the FRC delegate doesn't have to re-pick later).
+        let initialWindow: AveragingWindow = nativeInterval < AveragingWindow.firstThresholdWindow.rawValue
+            ? .firstThresholdWindow
+            : .secondThresholdWindow
+
         let fromSessionStartToFirstThreshold = (startTime.timeIntervalSince(DateBuilder.getFakeUTCDate()) + Double(TimeThreshold.firstThreshold.rawValue) + Double(1))
-        Log.info("Scheduling periodic averaging start in \(fromSessionStartToFirstThreshold)s for \(session.uuid) [\(session.name ?? "unnamed")]")
+        Log.info("Scheduling periodic averaging start in \(fromSessionStartToFirstThreshold)s for \(session.uuid) [\(session.name ?? "unnamed")] firstWindow=\(initialWindow.rawValue)s nativeInterval=\(nativeInterval)s")
         let timer = Timer.publish(every: TimeInterval(fromSessionStartToFirstThreshold), on: .main, in: .common)
             .autoconnect()
             .first()
             .sink { [weak self] _ in
-                self?.startPeriodicAveraging(uuid: uuid, window: .firstThresholdWindow)
+                self?.startPeriodicAveraging(uuid: uuid, window: initialWindow)
             }
         timers[uuid] = timer
     }
@@ -92,10 +110,20 @@ final class ActiveSessionsAveragingController: NSObject {
                         Log.info("Couldnt get session with uuid:\(uuid) from db to start periodic averaging")
                         return }
                     Log.info("Periodic averaging fired for \(session.name ?? "N/A")")
-                    guard let checkWindow = self.averagingWindowFor(startTime: session.startTime) else {return}
+                    guard let checkWindow = self.averagingWindowFor(startTime: session.startTime,
+                                                                    nativeInterval: session.nativeMeasurementIntervalSeconds) else {return}
                     let windowDidChange = checkWindow != window
                     if windowDidChange {
                         self.startPeriodicAveraging(uuid: uuid, window: checkWindow)
+                    }
+                    // Suppress periodic averaging while a V2 sync burst is back-filling:
+                    // the reverse-order replay arrives mid-window, so averaging a
+                    // half-arrived window then re-averaging the rest collides on the
+                    // (measurementStream,time) unique constraint (PM1/PM2.5 desync +
+                    // wrong value). One clean pass runs at drain via averageSessionNow().
+                    guard !self.persistenceController.isSyncBurstActive else {
+                        Log.info("Periodic averaging skipped for \(uuid) — V2 sync burst active")
+                        return
                     }
                     self.perform(storage: storage,
                                  session: session,
@@ -113,23 +141,59 @@ final class ActiveSessionsAveragingController: NSObject {
 
             guard let intervalStart = stream.session?.startTime else { Log.error("No session start time!"); return }
 
+            // In/out accounting so averaging can't silently lose rows: each bucket
+            // keeps exactly 1 row (the averaged one) and deletes the rest, so
+            // kept (= source - deleted) must equal buckets. A mismatch = loss.
+            let sourceCount = measurements.count
+            var buckets = 0
+            var deleted = 0
             _ = averagingService.averageMeasurementsWithReminder(
                 measurements: measurements,
                 startTime: intervalStart,
                 averagingWindow: averagingWindow) { averagedMeasurement, sourceMeasurements in
                     guard sourceMeasurements.count > 0 else { return }
+                    buckets += 1
                     let lastMeasurementIndex = sourceMeasurements.endIndex-1
                     sourceMeasurements[lastMeasurementIndex].value = averagedMeasurement.value
                     sourceMeasurements[lastMeasurementIndex].time = averagedMeasurement.time
                     sourceMeasurements[lastMeasurementIndex].averagingWindow = averagingWindow.rawValue
-                    
+
                     guard sourceMeasurements.count > 1 else { return }
-                    storage.deleteMeasurements(Array(sourceMeasurements[0...lastMeasurementIndex-1]))
+                    let toDelete = Array(sourceMeasurements[0...lastMeasurementIndex-1])
+                    deleted += toDelete.count
+                    storage.deleteMeasurements(toDelete)
                 }
+            if sourceCount > 0 {
+                let kept = sourceCount - deleted
+                let tag = kept == buckets ? "" : " MISMATCH(kept!=buckets → averaging loss)"
+                Log.info("[V2DIAG] averaging \(session.uuid) stream=\(stream.sensorName ?? "?") window=\(averagingWindow.rawValue)s: source=\(sourceCount) buckets=\(buckets) deleted=\(deleted) kept=\(kept)\(tag)")
+            }
         }
     }
-    
-    private func averagingWindowFor(startTime: Date?) -> AveragingWindow? {
+
+    /// Run a single averaging pass for a session immediately, bypassing the
+    /// sync-burst gate. Called at V2 active-sync drain (after every back-filled
+    /// row has arrived) so the whole backlog is averaged in one clean pass —
+    /// every window is full → no partial re-average, no (measurementStream,time)
+    /// constraint collision. `completion` fires after the editContext save lands.
+    func averageSessionNow(uuid: SessionUUID, completion: @escaping () -> Void) {
+        storage.accessStorage { [weak self] storage in
+            defer { completion() }
+            guard let self = self else { return }
+            guard let session = try? storage.getExistingSession(with: uuid),
+                  let window = self.averagingWindowFor(startTime: session.startTime,
+                                                       nativeInterval: session.nativeMeasurementIntervalSeconds)
+            else {
+                Log.info("averageSessionNow: no session/window for \(uuid), skipping")
+                return
+            }
+            Log.info("averageSessionNow: post-sync averaging pass for \(uuid) window=\(window.rawValue)s")
+            self.perform(storage: storage, session: session, averagingWindow: window)
+            try? storage.save()
+        }
+    }
+
+    private func averagingWindowFor(startTime: Date?, nativeInterval: Int) -> AveragingWindow? {
         guard let startTime = startTime else {
             Log.info("Can't calculate averaging window, session doesn't have the startTime")
             return nil
@@ -138,9 +202,15 @@ final class ActiveSessionsAveragingController: NSObject {
         if sessionDuration <= TimeInterval(TimeThreshold.firstThreshold.rawValue) {
             return .zeroWindow
         } else if sessionDuration <= TimeInterval(TimeThreshold.secondThreshold.rawValue) {
-            return .firstThresholdWindow
+            // 5s-native sessions can't be averaged at the 5s window (≤ 1 sample per
+            // bucket → leftover-sweep wipes the row); fall back to zero/passthrough
+            // until the duration crosses into the 60s-window range.
+            return nativeInterval < AveragingWindow.firstThresholdWindow.rawValue ? .firstThresholdWindow : .zeroWindow
         }
-        return .secondThresholdWindow
+        // 60s+ native sessions also can't be averaged at the 60s window — keep them
+        // at the passthrough zero window. (scheduleAveraging short-circuits before
+        // we ever get here for ≥ 60s native, but the gate stays for safety.)
+        return nativeInterval < AveragingWindow.secondThresholdWindow.rawValue ? .secondThresholdWindow : .zeroWindow
     }
 }
 

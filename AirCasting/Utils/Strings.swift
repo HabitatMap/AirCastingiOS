@@ -211,6 +211,10 @@ struct Strings {
                                                            comment: "")
         static let avgSessionMin: String = NSLocalizedString("1 min avg -",
                                                              comment: "")
+        static let avgSession5Min: String = NSLocalizedString("5 mins avg -",
+                                                              comment: "")
+        static let avgSession10Min: String = NSLocalizedString("10 mins avg -",
+                                                               comment: "")
     }
     
     struct SingleMeasurementView {
@@ -752,6 +756,20 @@ struct Strings {
                                                                       comment: "")
         static let sessionTagPlaceholder: String = NSLocalizedString("Tags",
                                                                      comment: "")
+        static let intervalTitle: String = NSLocalizedString("Measurement interval",
+                                                             comment: "")
+        static let intervalTip: String = NSLocalizedString("Choosing longer measurement interval will help conserve AirBeam's battery",
+                                                          comment: "")
+        static let interval1Second: String = NSLocalizedString("1 second",
+                                                               comment: "")
+        static let interval5Seconds: String = NSLocalizedString("5 seconds",
+                                                                comment: "")
+        static let interval1Minute: String = NSLocalizedString("1 minute",
+                                                               comment: "")
+        static let interval5Minutes: String = NSLocalizedString("5 minutes",
+                                                                comment: "")
+        static let interval10Minutes: String = NSLocalizedString("10 minutes",
+                                                                 comment: "")
     }
     
     enum AirBeamConnector {
@@ -830,8 +848,12 @@ struct Strings {
                                                                 comment: "")
         static let finishAndDontSyncButtonLabel = NSLocalizedString("Finish recording & don't sync",
                                                                     comment: "")
+        static let reconnectButtonLabel = NSLocalizedString("Reconnect",
+                                                            comment: "Manual reconnect button on the disconnected session card")
+        static let reconnectingButtonLabel = NSLocalizedString("Reconnecting…",
+                                                               comment: "Manual reconnect button while a connect attempt is in flight")
     }
-    
+
     enum ReconnectSessionCardView {
         static let heading = NSLocalizedString("Measurement device disconnected",
                                                comment: "")
@@ -910,7 +932,13 @@ struct Strings {
         static let readingDataFailMessage: String = NSLocalizedString("Something interrupted connection with the AirBeam. Please try again.", comment: "")
         static let processingFixedFailMessage: String = NSLocalizedString("Something went wrong when sending fixed sessions data to the server. Please try again later.", comment: "")
         static let processingMobileFailMessage: String = NSLocalizedString("Something went wrong when saving mobile sessions data to the database. Please try again.", comment: "")
-        
+
+        static let v2NoSavedSessionTitle: String = NSLocalizedString("Nothing to sync",
+                                                          comment: "")
+        static let v2NoSavedSessionMessage: String = NSLocalizedString("Your AirBeam has no saved measurements to sync.", comment: "")
+        static let v2NoMatchingAppSessionTitle: String = NSLocalizedString("Session not found",
+                                                          comment: "")
+        static let v2NoMatchingAppSessionMessage: String = NSLocalizedString("Your AirBeam has measurements stored, but the matching session is missing on this device.", comment: "")
     }
     
     enum SDSyncCompleteView {
@@ -1214,5 +1242,49 @@ struct Strings {
         static let title = NSLocalizedString("Microphone calibration", comment: "")
         static let settingsItemTitle = NSLocalizedString("Phone microphone calibration", comment: "")
         static let settingsItemDescription = NSLocalizedString("Adjust via trial & error until the measurements in the app match your reference sound level meter. For most phones it's between 80 and 100.", comment: "")
+    }
+
+    enum SyncBeforeNewV2SessionDialog {
+        static let title = NSLocalizedString("AirBeam has unsynced measurements", comment: "")
+        /// Split into two parts so the ETA can be rendered in bold via `Text` concatenation
+        /// and the description can line-break between the rationale and the ETA hint.
+        static let descriptionPrefix = NSLocalizedString("Your AirBeam still has measurements stored from a previous session.\nSync now (about ", comment: "")
+        static let descriptionSuffix = NSLocalizedString(") before starting a new session, discard them, or cancel.", comment: "")
+        static let syncingDescription = NSLocalizedString("Syncing stored measurements from AirBeam…", comment: "")
+        static let syncFailedDescription = NSLocalizedString("Sync failed. Measurements remain on the device. Try again or discard.", comment: "")
+        static let syncButton = NSLocalizedString("Sync", comment: "")
+        static let discardButton = NSLocalizedString("Discard", comment: "")
+        static let progressFormat = NSLocalizedString("Progress: %d%%", comment: "")
+        static let secondsFormat = NSLocalizedString("%d sec.", comment: "")
+        static let minutesFormat = NSLocalizedString("%d min.", comment: "")
+    }
+
+    enum V2ActiveSyncDialog {
+        static let title = NSLocalizedString("Syncing measurements", comment: "")
+        static let description = NSLocalizedString("Syncing your AirBeam Mini's stored data. This may take a few minutes. Please keep the app open and stay near the device.", comment: "")
+        static let progressLabel = NSLocalizedString("Sync in progress…", comment: "")
+        static let finalizingLabel = NSLocalizedString("Finalizing measurements…", comment: "")
+        static let stopDisabledLabel = NSLocalizedString("Wait for sync to finish", comment: "")
+    }
+
+    enum SyncAndFinishV2SessionDialog {
+        static let title = NSLocalizedString("Syncing measurements", comment: "")
+        static let succeededTitle = NSLocalizedString("Sync complete", comment: "")
+        static let failedTitle = NSLocalizedString("Sync failed", comment: "")
+        /// Split into three parts so the ETA can be rendered in bold via `Text`
+        /// concatenation, matching the Android layout: "Syncing unsaved
+        /// measurements from your AirBeam. This will take **about <ETA>**.
+        /// The session will finish once the sync completes."
+        static let descriptionPrefix = NSLocalizedString("Syncing unsaved measurements from your AirBeam. This will take ", comment: "")
+        static let descriptionEtaPrefix = NSLocalizedString("about ", comment: "")
+        static let descriptionSuffix = NSLocalizedString(". The session will finish once the sync completes.", comment: "")
+        static let descriptionNoEta = NSLocalizedString("Syncing unsaved measurements from your AirBeam. The session will finish once the sync completes.", comment: "")
+        static let syncSucceededDescription = NSLocalizedString("The measurements from your AirBeam were synchronized. The session has been finished.", comment: "")
+        static let syncFailedDescription = NSLocalizedString("We couldn't sync the measurements from your AirBeam. The data is still on the device — please try again from the dashboard.", comment: "")
+        static let preparingButton = NSLocalizedString("Preparing sync…", comment: "")
+        static let syncingProgressFormat = NSLocalizedString("Syncing… %d%%", comment: "")
+        static let discardAndFinishButton = NSLocalizedString("Discard & Finish", comment: "")
+        static let doneButton = NSLocalizedString("Done", comment: "")
+        static let continueButton = NSLocalizedString("Continue", comment: "")
     }
 }

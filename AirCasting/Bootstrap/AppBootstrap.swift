@@ -11,7 +11,8 @@ class AppBootstrap {
     @Injected private var firstRunInfoProvider: FirstRunInfoProvidable
     @Injected private var deauthorizable: Deauthorizable
     @Injected private var averagingService: ActiveSessionsAveragingController
-    
+    @Injected private var v2LocationBackfillCoordinator: V2LocationBackfillCoordinator
+
     func bootstrap() {
         if firstRunInfoProvider.isFirstAppLaunch {
             handleFirstAppLaunch()
@@ -25,6 +26,12 @@ class AppBootstrap {
         GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
         GMSPlacesClient.provideAPIKey(GOOGLE_PLACES_KEY)
         averagingService.start()
+        // V2 disconnect-window backfill: restart samplers for any V2
+        // mobile sessions left RECORDING / DISCONNECTED on disk. An app
+        // kill mid-session would otherwise leave the disconnect window
+        // unsampled until BLE reconnect (which in the "Finish & sync"
+        // flow never happens).
+        v2LocationBackfillCoordinator.bootstrap()
     }
     
     private func handleFirstAppLaunch() {
